@@ -16,7 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.views.decorators.csrf import csrf_exempt
-from hoyai.api import views as rest_view
+
+from api import views as rest_view
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -37,4 +38,6 @@ urlpatterns = [
     url(r'^api/v1/type/rule/target/cate/(?P<cate>.*)/subcate/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
+    url(r'^api/v1/type/cluster/target/train/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.ClusterTrainRequest.as_view())),
 ]

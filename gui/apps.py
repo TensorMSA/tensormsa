@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class HoyaiviewConfig(AppConfig):
+class GuiConfig(AppConfig):
     name = 'gui'

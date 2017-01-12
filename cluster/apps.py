@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class HoyaiclusterConfig(AppConfig):
+class ClusterConfig(AppConfig):
     name = 'cluster'

@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class HoyaiserviceConfig(AppConfig):
+class MasterConfig(AppConfig):
     name = 'master'
