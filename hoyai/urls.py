@@ -40,4 +40,14 @@ urlpatterns = [
 
     url(r'^api/v1/type/cluster/target/train/(?P<nnid>.*)/',
         csrf_exempt(rest_view.ClusterTrainRequest.as_view())),
+    url(r'^api/v1/type/wf/target/init/mode/easy/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.WorkflowInitEasy.as_view())),
+    url(r'^api/v1/type/wf/target/init/mode/custom/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.WorkflowInitCustom.as_view())),
+    url(r'^api/v1/type/wf/target/init/mode/history/(?P<nnid>.*)/ver//(?P<ver>.*)/batch//(?P<bver>.*)/',
+        csrf_exempt(rest_view.WorkflowInitHistory.as_view())),
+    url(r'^api/v1/type/wf/target/init/mode/history/(?P<nnid>.*)/active/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkflowInitHistory.as_view())),
+    url(r'^api/v1/type/wf/target/init/mode/history/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.WorkflowInitHistory.as_view())),
 ]

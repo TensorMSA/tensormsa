@@ -2,3 +2,6 @@ from .conf_server_data import ConfServerData
 from .common_nninfo_list import CommonNNInfoList
 from .rule_cate_list import RuleCateList
 from .cluster_train_request import ClusterTrainRequest
+from .workflow_init_easy import WorkflowInitEasy
+from .workflow_init_custom import WorkflowInitCustom
+from .workflow_init_history import WorkflowInitHistory

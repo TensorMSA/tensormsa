@@ -1,11 +1,11 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.train.init_train import add, mul
 
 
-class ClusterTrainRequest(APIView):
+class WorkflowInitEasy :
     """
+
     """
     def post(self, request, nnid):
         """
@@ -24,7 +24,6 @@ class ClusterTrainRequest(APIView):
         """
         try:
             return_data = ""
-            res = add.delay(2, 3)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -43,7 +42,7 @@ class ClusterTrainRequest(APIView):
 
     def delete(self, request, nnid):
         """
-        - desc : delete data
+        - desc : delete  data
         """
         try:
             return_data = ""
