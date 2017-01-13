@@ -3,6 +3,10 @@
 class WorkFlowStateMenu :
 
     """
+    2. Table
+    WF_TASK_MENU_RULE
+    WF_TASK_SUBMENU_RULE
+
     """
 
     def get_serizied_menu_info(self):

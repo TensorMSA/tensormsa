@@ -6,6 +6,9 @@ class WorkFlowStateManager :
     NN_WF_NODE_INFO
     NN_WF_NODE_RELATION
     """
+    def duplicate_state_info(self, nn_id, wf_ver):
+
+        return None
 
     def get_state_draw_info(self):
 

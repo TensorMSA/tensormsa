@@ -1,7 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.train.init_train import add, mul
+from cluster.service.init_train import add, mul
 
 
 class ClusterTrainRequest(APIView):
