@@ -1,6 +1,6 @@
 from cluster.common.common_node import WorkFlowCommonNode
 
-class NeuralNetNode(WorkFlowCommonNode):
+class EvalNode(WorkFlowCommonNode):
     """
 
     """
