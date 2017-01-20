@@ -3,7 +3,7 @@ from .common_nninfo_list import CommonNNInfoList
 from .rule_cate_list import RuleCateList
 from .cluster_train_request import ClusterTrainRequest
 from .workflow_init_easy import WorkFlowInitEasy
-from .workflow_init_custom import WorkflowInitCustom
+from .workflow_init_custom import WorkFlowInitCustom
 from .workflow_init_history import WorkFlowInitHistory
 from .workflow_state_manager import WorkFlowStateManager
 from .workflow_node_manager import WorkFlowNodeManager
