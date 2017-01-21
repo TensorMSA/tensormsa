@@ -16,3 +16,29 @@ class NNCommonManager :
         """
         return None
 
+
+    def delete_nn_info(self, nn_id_list):
+        """
+        deleted selected nn_info
+        :param nn_id_list: list of nn_ids
+        :return:
+        """
+        return None
+
+    def update_nn_info(self, nn_id, obj):
+        """
+        update nn_info
+        :param nn_id:
+        :param obj : json object
+        :return:
+        """
+        return None
+
+    def insert_nn_info(self, nn_id, obj):
+        """
+        insert nn_info
+        :param nn_id:
+        :param obj : json object
+        :return:
+        """
+        return None
