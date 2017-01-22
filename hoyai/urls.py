@@ -38,8 +38,11 @@ urlpatterns = [
     url(r'^api/v1/type/rule/target/cate/(?P<cate>.*)/subcate/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
+    url(r'^api/v1/type/train/nnid/(?P<nnid>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.ClusterSingleRequest.as_view())),
     url(r'^api/v1/type/cluster/target/service/(?P<nnid>.*)/',
         csrf_exempt(rest_view.ClusterTrainRequest.as_view())),
+
     url(r'^api/v1/type/wf/target/init/mode/easy/(?P<nnid>.*)/',
         csrf_exempt(rest_view.WorkFlowInitEasy.as_view())),
     url(r'^api/v1/type/wf/target/init/mode/custom/(?P<nnid>.*)/',
@@ -55,5 +58,10 @@ urlpatterns = [
     url(r'^api/v1/type/wf/target/node/nnid/(?P<nnid>.*)/wfver/(?P<wfver>.*)/',
         csrf_exempt(rest_view.WorkFlowNodeManager.as_view())),
     url(r'^api/v1/type/wf/target/menu/',
+        csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
+
+    url(r'^api/v1/type/wf/state/data/detail/localimg/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
+    url(r'^api/v1/type/wf/state/data/detail/s3img/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
 ]
