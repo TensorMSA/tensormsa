@@ -1,36 +1,31 @@
-from master.workflow.data.workflow_data import WorkFlowData
 
-
-class WorkFlowDataFrame(WorkFlowData) :
-    """
-    1. Definition
-    handle preview and settings for frame data
-    2. Tables
-    NN_WF_NODE_INFO (NODE_CONFIG_DATA : Json Field)
+class WorkFlowData :
     """
 
+    """
 
-    def load_data(self, type, conn):
+    def get_node_status(self):
         """
-
-        :param type:
-        :param conn:
+        return node status info (nn_id, nn_ver, node_type, node_prg, etc)
         :return:
         """
-        self._load_local_frame()
-        self._load_s3_frame()
-        self._load_hbase_frame()
-        self._load_rdb_frame()
-
         return None
 
+    def load_data(self):
+        """
+        extract data from target server
+        1. connect datastore (use common data manager)
+        2. return limited number of data from source
+        :return:
+        """
+        pass
 
     def get_step_source(self):
         """
         getter for source step
         :return:obj(json) to make view
         """
-        return None
+        pass
 
     def put_step_source(self, obj):
         """
@@ -38,14 +33,14 @@ class WorkFlowDataFrame(WorkFlowData) :
         :param obj: config data from view
         :return:boolean
         """
-        return None
+        pass
 
     def get_step_preprocess(self):
         """
         getter for preprocess
         :return:obj(json) to make view
         """
-        return None
+        pass
 
     def put_step_preprocess(self, obj):
         """
@@ -53,14 +48,14 @@ class WorkFlowDataFrame(WorkFlowData) :
         :param obj: config data from view
         :return:boolean
         """
-        return None
+        pass
 
     def get_step_store(self):
         """
         getter for store
         :return:obj(json) to make view
         """
-        return None
+        pass
 
     def put_step_store(self, obj):
         """
@@ -68,24 +63,4 @@ class WorkFlowDataFrame(WorkFlowData) :
         :param obj: config data from view
         :return:boolean
         """
-        return None
-
-    def _load_local_frame(self, conn):
-
-        return None
-
-    def _load_s3_frame(self, conn):
-
-        return None
-
-    def _load_rdb_frame(self, conn):
-
-        return None
-
-    def _load_hbase_frame(self, conn):
-
-        return None
-
-    def _set_default_column_type(self):
-
-        return None
+        pass

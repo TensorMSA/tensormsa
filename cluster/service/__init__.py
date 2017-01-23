@@ -1,1 +1,2 @@
 from .workflow_train_task import WorkFlowTrainTask
+from .workflow_predict_task import WorkFlowPredictTask

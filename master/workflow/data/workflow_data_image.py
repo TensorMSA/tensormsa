@@ -1,5 +1,6 @@
+from master.workflow.data.workflow_data import WorkFlowData
 
-class WorkFlowDataImage :
+class WorkFlowDataImage(WorkFlowData) :
     """
     1. Definition
     handle preview and settings for image data
@@ -7,32 +8,81 @@ class WorkFlowDataImage :
     NN_WF_NODE_INFO (NODE_CONFIG_DATA : Json Field) 
     """
 
-    def get_lable_list(self):
+    def load_data(self, type, conn):
         """
 
+        :param type:
+        :param conn:
         :return:
         """
-        return []
+        self._load_local_img()
+        self._load_s3_img()
 
-    def get_preview_urls(self):
+        return None
+
+
+    def get_step_source(self):
         """
-
-        :return:
+        getter for source step
+        :return:obj(json) to make view
         """
-        return []
+        return None
 
-    def save_all(self, obj):
+    def put_step_source(self, obj):
         """
-
-        :param obj:
-        :return:
+        putter for source step
+        :param obj: config data from view
+        :return:boolean
         """
         self._insert_preview_images()
         self._set_preivew_paths()
         self._set_lable_list()
-        self._set_preprocess_info()
-        self._set_target_store_info()
         return None
+
+    def get_step_preprocess(self):
+        """
+        getter for preprocess
+        :return:obj(json) to make view
+        """
+        return None
+
+    def put_step_preprocess(self, obj):
+        """
+        putter for preprocess
+        :param obj: config data from view
+        :return:boolean
+        """
+        return None
+
+    def get_step_store(self):
+        """
+        getter for store
+        :return:obj(json) to make view
+        """
+        return None
+
+    def put_step_store(self, obj):
+        """
+        putter for store
+        :param obj: config data from view
+        :return:boolean
+        """
+        return None
+
+    def _get_lable_list(self):
+        """
+
+        :return:
+        """
+        return []
+
+    def _get_preview_urls(self):
+        """
+
+        :return:
+        """
+        return []
+
 
     def _insert_preview_images(self):
         """
@@ -57,18 +107,10 @@ class WorkFlowDataImage :
         """
         return None
 
-    def _set_preprocess_info(self, preprocess_info):
-        """
+    def _load_local_img(self, conn):
 
-        :param preprocess_info:
-        :return:
-        """
         return None
 
-    def _set_target_store_info(self, store_info):
-        """
+    def _load_s3_img(self, conn):
 
-        :param store_info:
-        :return:
-        """
         return None

@@ -10,5 +10,14 @@ from .workflow_node_manager import WorkFlowNodeManager
 from .workflow_menu_manager import WorkFlowMenuManager
 from .cluster_single_request import ClusterSingleRequest
 from .workflow_data_img_pre import WorkFlowDataImgPre
-from .workflow_data_img_source import WorkFlowDataImgSource
+from .workflow_data_img_source_local import WorkFlowDataImgSourceLocal
+from .workflow_data_img_source_s3 import WorkFlowDataImgSourceS3
 from .workflow_data_img_store import WorkFlowDataImgStore
+from .workflow_data_frame_pre import WorkFlowDataFramePre
+from .workflow_data_frame_source_hbase import WorkFlowDataFrameSourceHbase
+from .workflow_data_frame_source_local import WorkFlowDataFrameSourceLocal
+from .workflow_data_frame_source_rdb import WorkFlowDataFrameSourceRdb
+from .workflow_data_frame_source_s3 import WorkFlowDataFrameSourceS3
+from .workflow_data_frame_store import WorkFlowDataFrameStore
+from .workflow_dataconf_frame import WorkFlowDataConfFrame
+from .workflow_dataconf_image import WorkFlowDataConfImage
