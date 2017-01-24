@@ -1,5 +1,5 @@
 
-class WorkFlowDataConf :
+class WorkFlowPre :
 
     def get_node_status(self):
         """
@@ -15,15 +15,12 @@ class WorkFlowDataConf :
         """
         return None
 
-
     def get_view_obj(self):
         """
         get column type info for view
         :return:
         """
         pass
-
-
 
     def set_view_obj(self, obj):
         """

@@ -1,6 +1,6 @@
-from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
+from master.workflow.preprocess.workflow_pre import WorkFlowPre
 
-class WorkFlowNetConfRNN(WorkFlowNetConf):
+class WorkFlowPrePredict(WorkFlowPre):
     """
 
     """

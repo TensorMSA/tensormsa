@@ -21,3 +21,12 @@ from .workflow_data_frame_source_s3 import WorkFlowDataFrameSourceS3
 from .workflow_data_frame_store import WorkFlowDataFrameStore
 from .workflow_dataconf_frame import WorkFlowDataConfFrame
 from .workflow_dataconf_image import WorkFlowDataConfImage
+from .workflow_pre_merge import WorkFlowPreMerge
+from .workflow_pre_predict import WorkFlowPrePredict
+from .workflow_netconf_autoencoder import WorkFlowNetConfAutoEncoder
+from .workflow_netconf_cnn import WorkFlowNetConfCnn
+from .workflow_netconf_gru import WorkFlowNetConfGru
+from .workflow_netconf_lstm import WorkFlowNetConfLstm
+from .workflow_netconf_predefined import WorkFlowNetConfPredefined
+from .workflow_netconf_rnn import WorkFlowNetConfRnn
+from .workflow_netconf_wdnn import WorkFlowNetConfWdnn

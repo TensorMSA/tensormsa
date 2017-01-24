@@ -21,6 +21,8 @@ from api import views as rest_view
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    # server info
     url(r'^api/v1/type/server/target/etl/(?P<type>.*)/',
         csrf_exempt(rest_view.ConfServerData.as_view())),
     url(r'^api/v1/type/server/target/master/(?P<type>.*)/',
@@ -28,21 +30,25 @@ urlpatterns = [
     url(r'^api/v1/type/server/target/cluster/(?P<type>.*)/',
         csrf_exempt(rest_view.ConfServerData.as_view())),
 
+    # net definition manager
     url(r'^api/v1/type/common/target/nninfo/(?P<nnid>.*)/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
     url(r'^api/v1/type/common/target/nninfo/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
+    # rule management
     url(r'^api/v1/type/rule/target/cate/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
     url(r'^api/v1/type/rule/target/cate/(?P<cate>.*)/subcate/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
+    # run management (cluster)
     url(r'^api/v1/type/train/nnid/(?P<nnid>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.ClusterSingleRequest.as_view())),
     url(r'^api/v1/type/cluster/target/service/(?P<nnid>.*)/',
         csrf_exempt(rest_view.ClusterTrainRequest.as_view())),
 
+    # workflow init
     url(r'^api/v1/type/wf/target/init/mode/easy/(?P<nnid>.*)/',
         csrf_exempt(rest_view.WorkFlowInitEasy.as_view())),
     url(r'^api/v1/type/wf/target/init/mode/custom/(?P<nnid>.*)/',
@@ -60,6 +66,7 @@ urlpatterns = [
     url(r'^api/v1/type/wf/target/menu/',
         csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
 
+    # data APIs
     url(r'^api/v1/type/wf/state/data/detail/localimg/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowDataImgSourceLocal.as_view())),
     url(r'^api/v1/type/wf/state/data/detail/localimg/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
@@ -101,8 +108,31 @@ urlpatterns = [
     url(r'^api/v1/type/wf/state/data/detail/s3/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowDataFrameStore.as_view())),
 
+    # data config APIs
     url(r'^api/v1/type/wf/state/dataconf/detail/frame/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowDataConfFrame.as_view())),
     url(r'^api/v1/type/wf/state/dataconf/detail/image/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowDataConfImage.as_view())),
+
+    # preprocess APIs
+    url(r'^api/v1/type/wf/state/pre/detail/predict/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowPrePredict.as_view())),
+    url(r'^api/v1/type/wf/state/pre/detail/merge/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowPreMerge.as_view())),
+
+    # net config APIs
+    url(r'^api/v1/type/wf/state/netconf/detail/autoencoder/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfAutoEncoder.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/cnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfCnn.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/gru/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfGru.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/lstm/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfLstm.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/predefined/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfPredefined.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/rnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfRnn.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/wdnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfWdnn.as_view())),
 ]
