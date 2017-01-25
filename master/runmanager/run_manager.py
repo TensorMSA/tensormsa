@@ -1,8 +1,6 @@
 from cluster.service import WorkFlowTrainTask
-from cluster.service import WorkFlowPredictTask
 
-
-class ClusterJobManager :
+class RunManager :
     """
     1. definition
         -manage job list
@@ -14,16 +12,25 @@ class ClusterJobManager :
         COMMON_JOB_LIST_INFO
         NN_VER_BARCHLIST_INFO
     """
+    def get_view_obj(self):
+        """
+        get view data for net config
+        :return:
+        """
+        pass
+
+    def set_view_obj(self, obj):
+        """
+        set net config data edited on view
+        :param obj:
+        :return:
+        """
+        pass
 
     def regist_train_request(self):
         task = WorkFlowTrainTask()
         task.delay()
 
-        return None
-
-    def regist_predict_request(self):
-        task = WorkFlowPredictTask()
-        task.run()
         return None
 
     def _find_proper_train_server(self):
@@ -63,5 +70,3 @@ class ClusterJobManager :
 
     def set_job_error(self, nn_id, wf_ver):
         return None
-
-

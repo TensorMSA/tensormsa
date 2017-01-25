@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from cluster.service.init_train import add, mul
 
 
-class ClusterTrainRequest(APIView):
+class RunManagerTrainRequest(APIView):
     """
     """
     def post(self, request, nnid):
