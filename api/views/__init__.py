@@ -38,3 +38,10 @@ from .runmanager_schedule import RunManagerSchedule
 from .resultmanager_default import ResultManagerDefault
 from .service_manager import ServiceManager
 from .service_manager_predict_request import ServiceManagerPredictRequest
+from .workflow_data_reuse import WorkFlowDataReuse
+from .workflow_data_text_source_file import WorkFlowDataTextSourceFile
+from .workflow_data_text_source_line import WorkFlowDataTextSourceLine
+from .workflow_data_text_source_tag import WorkFlowDataTextSourceTag
+from .workflow_data_text_source_pop import WorkFlowDataTextSourcePop
+from .workflow_data_text_pre import WorkFlowDataTextPre
+from .workflow_data_text_store import WorkFlowDataTextStore
