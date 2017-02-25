@@ -17,7 +17,7 @@ class NN_DEF_LIST_INFO(models.Model):
     last_updated_by = models.IntegerField(default=0)
 
 class NN_VER_WFLIST_INFO(models.Model):
-    nn_wf_ver_id = models.CharField(max_length=50, blank=False, primary_key=True)
+    nn_wf_ver_id = models.AutoField(primary_key=True)
     nn_def_list_info_nn_id = models.CharField(max_length=50, blank=True, default='')
     nn_wf_ver_info = models.CharField(max_length=100, blank=False)
     condition = models.CharField(max_length=50, blank=True, default='')
@@ -34,7 +34,7 @@ class NN_VER_BATCHLIST_INFO(models.Model):
     nn_batch_ver_info = models.CharField(max_length=50, blank=True, default='')
     active_flag = models.CharField(max_length=1, blank=False, default='Y')
     nn_wf_ver_id = models.ForeignKey(NN_VER_WFLIST_INFO, on_delete=models.CASCADE)
-    job_end_time = models.DateTimeField
+    job_end_time = models.DateTimeField()
     model_acc = models.IntegerField(default=0)
     train_progress = models.IntegerField(default=0)
     creation_date = models.DateTimeField(auto_now_add=True)

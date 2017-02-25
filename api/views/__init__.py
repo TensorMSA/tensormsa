@@ -45,3 +45,4 @@ from .workflow_data_text_source_tag import WorkFlowDataTextSourceTag
 from .workflow_data_text_source_pop import WorkFlowDataTextSourcePop
 from .workflow_data_text_pre import WorkFlowDataTextPre
 from .workflow_data_text_store import WorkFlowDataTextStore
+from .common_nninfo_version import CommonNNInfoVersion
