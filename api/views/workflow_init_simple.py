@@ -1,38 +1,36 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from master.workflow.common.workflow_state_menu import WorkFlowStateMenu
+from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
 
-
-class WorkFlowMenuManager(APIView) :
+class WorkFlowInitSimple(APIView) :
     """
 
     """
-    def post(self, request):
+    def post(self, request, nnid, wfver):
         """
         - desc : insert data
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = WorkFlowStateMenu().put_menu_info(input_data)
+            return_data = WorkFlowSimpleManager().create_workflow(nnid, wfver, input_data['type'])
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request):
+    def get(self, request, nnid, wfver):
         """
         - desc : get data
         """
         try:
             return_data = ""
-            WorkFlowStateMenu().get_menu_info()
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request):
+    def put(self, request, nnid, wfver):
         """
         - desc ; update data
         """
@@ -43,7 +41,7 @@ class WorkFlowMenuManager(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request):
+    def delete(self, request, nnid, wfver):
         """
         - desc : delete  data
         """

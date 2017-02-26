@@ -77,7 +77,7 @@ class BATCH_INFO_JOBCONFIG(models.Model):
     last_updated_by = models.IntegerField(default=0)
 
 class NN_WF_STATE_INFO(models.Model):
-    wf_state_id = models.AutoField(primary_key=True)
+    wf_state_id = models.CharField(max_length=50, blank=False, primary_key=True)
     nn_id = models.CharField(max_length=50, blank=False)
     nn_wf_ver_id = models.ForeignKey(NN_VER_WFLIST_INFO, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now_add=True)
@@ -118,10 +118,10 @@ class WF_TASK_MENU_RULE(models.Model):
 
 class WF_TASK_SUBMENU_RULE(models.Model):
     wf_task_menu_id = models.ForeignKey(WF_TASK_MENU_RULE,on_delete=models.CASCADE)
-    wf_task_submenu_id = models.CharField(max_length=10, blank=False, primary_key=True)
+    wf_task_submenu_id = models.CharField(max_length=50, blank=False, primary_key=True)
     wf_task_submenu_name = models.CharField(max_length=100, blank=True)
     wf_task_submenu_desc = models.CharField(max_length=200, blank=True)
-    wf_node_class_name = models.CharField(max_length=50)
+    wf_node_class_name = models.CharField(max_length=200)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)
@@ -132,12 +132,11 @@ class NN_WF_NODE_INFO(models.Model):
     nn_wf_node_name = models.CharField(max_length=50, blank= False)
     wf_state_id = models.ForeignKey(NN_WF_STATE_INFO, on_delete=models.CASCADE)
     wf_task_submenu_id = models.ForeignKey(WF_TASK_SUBMENU_RULE, on_delete=models.CASCADE)
-    wf_task_submenu_rule_wf_task_submenu_id = models.CharField(max_length=10)
     wf_node_status = models.IntegerField()
     node_config_data = JSONField()
     node_draw_x = models.IntegerField()
     node_draw_y = models.IntegerField()
-    task_fin_flag = models.BooleanField
+    task_fin_flag = models.BooleanField(default=False)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)

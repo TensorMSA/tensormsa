@@ -1,6 +1,6 @@
-from cluster.dataconfig.dataconf_node import DataConfNode
+from cluster.neuralnet.neuralnet_node import NeuralNetNode
 
-class DataConfNodeFrame(DataConfNode):
+class NeuralNetNodeRnn(NeuralNetNode):
     """
 
     """

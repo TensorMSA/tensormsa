@@ -43,6 +43,8 @@ urlpatterns = [
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
     # workflow init
+    url(r'^api/v1/type/wf/target/init/mode/simple/(?P<nnid>.*)/wfver/(?P<wfver>.*)/',
+        csrf_exempt(rest_view.WorkFlowInitSimple.as_view())),
     url(r'^api/v1/type/wf/target/init/mode/easy/(?P<nnid>.*)/',
         csrf_exempt(rest_view.WorkFlowInitEasy.as_view())),
     url(r'^api/v1/type/wf/target/init/mode/custom/(?P<nnid>.*)/',
@@ -55,8 +57,11 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowStateManager.as_view())),
     url(r'^api/v1/type/wf/target/node/nnid/(?P<nnid>.*)/wfver/(?P<wfver>.*)/',
         csrf_exempt(rest_view.WorkFlowNodeManager.as_view())),
+    url(r'^api/v1/type/wf/target/menu/(?P<menu>.*)/submenu/',
+        csrf_exempt(rest_view.WorkFlowSubMenuManager.as_view())),
     url(r'^api/v1/type/wf/target/menu/',
         csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
+
 
     # workflow - data APIs
     url(r'^api/v1/type/wf/state/imgdata/detail/localimg/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',

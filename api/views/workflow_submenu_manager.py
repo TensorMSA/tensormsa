@@ -4,23 +4,24 @@ from rest_framework.views import APIView
 from master.workflow.common.workflow_state_menu import WorkFlowStateMenu
 
 
-class WorkFlowMenuManager(APIView) :
+class WorkFlowSubMenuManager(APIView) :
     """
 
     """
-    def post(self, request):
+    def post(self, request, menu):
         """
         - desc : insert data
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = WorkFlowStateMenu().put_menu_info(input_data)
+            input_data['wf_task_menu_id'] = menu
+            return_data = WorkFlowStateMenu().put_submenu_info(input_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request):
+    def get(self, request, menu):
         """
         - desc : get data
         """
@@ -32,7 +33,7 @@ class WorkFlowMenuManager(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request):
+    def put(self, request, menu):
         """
         - desc ; update data
         """
@@ -43,7 +44,7 @@ class WorkFlowMenuManager(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request):
+    def delete(self, request, menu):
         """
         - desc : delete  data
         """
