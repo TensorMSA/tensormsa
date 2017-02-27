@@ -165,15 +165,15 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowTestConf.as_view())),
 
     # runmanager
-    url(r'^api/v1/type/runmanager/state/schedule/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/schedule/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerSchedule.as_view())),
-    url(r'^api/v1/type/runmanager/state/workflow/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/workflow/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerWorkFlow.as_view())),
-    url(r'^api/v1/type/runmanager/state/history/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/history/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerHistory.as_view())),
-    url(r'^api/v1/type/runmanager/state/train/nnid/{nnid}/ver/{ver}/node/(?P<node>.*)/',
+    url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
-    url(r'^api/v1/type/runmanager/state/train/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
 
     # summary
