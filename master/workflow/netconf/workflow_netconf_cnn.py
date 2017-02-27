@@ -1,4 +1,5 @@
 from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
+from common.utils import *
 
 class WorkFlowNetConfCNN(WorkFlowNetConf):
     """
@@ -17,4 +18,5 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         :param obj:
         :return:
         """
+        println("workflownetconfcnn.set_view_obj.....")
         return None

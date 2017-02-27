@@ -2,7 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.network.nn_common_manager import NNCommonManager
-from common.util import *
+
 class CommonNNInfoVersion(APIView):
     """
     """
