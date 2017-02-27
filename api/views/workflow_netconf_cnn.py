@@ -1,18 +1,20 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
 
 class WorkFlowNetConfCnn(APIView) :
     """
 
     """
-    def post(self, request, nnid):
+    def post(self, request, nnid, ver, node):
         """
         - desc : insert data
         """
+        print("aaaaaaccccc")
         try:
-            return_data = ""
+            input_data = json.loads(str(request.body, 'utf-8'))
+            return_data = WorkFlowNetConfCNN().set_view_obj(input_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
