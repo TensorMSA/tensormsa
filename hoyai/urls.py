@@ -147,7 +147,7 @@ urlpatterns = [
     # workflow - net config APIs
     url(r'^api/v1/type/wf/state/netconf/detail/autoencoder/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfAutoEncoder.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/cnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/cnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfCnn.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/gru/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfGru.as_view())),
@@ -165,15 +165,15 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowTestConf.as_view())),
 
     # runmanager
-    url(r'^api/v1/type/runmanager/state/schedule/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/schedule/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerSchedule.as_view())),
-    url(r'^api/v1/type/runmanager/state/workflow/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/workflow/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerWorkFlow.as_view())),
-    url(r'^api/v1/type/runmanager/state/history/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/history/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerHistory.as_view())),
-    url(r'^api/v1/type/runmanager/state/train/nnid/{nnid}/ver/{ver}/node/(?P<node>.*)/',
+    url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
-    url(r'^api/v1/type/runmanager/state/train/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
 
     # summary

@@ -1,0 +1,5 @@
+
+### Hoyai remoce
+.idea/*
+*.pyc
+*/migrations/
