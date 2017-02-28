@@ -11,7 +11,6 @@ class WorkFlowNetConfCnn(APIView) :
         """
         - desc : insert data
         """
-        print("aaaaaaccccc")
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
             return_data = WorkFlowNetConfCNN().set_view_obj(input_data)
