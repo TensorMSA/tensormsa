@@ -1,17 +1,17 @@
 from __future__ import absolute_import, unicode_literals
-from celery import Task
 import importlib
+from celery import shared_task
+
+@shared_task
+def single_run(nn_id, wf_ver, node_id) :
+    print ("[Train Task] Start Celery Job ")
+    result = WorkFlowSingleTask()._run_single_node(nn_id, wf_ver, node_id)
+    return result
 
 
-class WorkFlowSingleTask(Task):
+class WorkFlowSingleTask():
 
-    def run(self, source, *args, **kwargs):
-        self.source = source
-
-        self._run_single_node(source.nn_id , source.wf_ver)
-
-
-    def _run_single_node(self, obj):
+    def _run_single_node(self, nn_id, wf_ver, node_id):
         """
         run given single node directly and return result
         :param obj: nn_id, ver, node and etc

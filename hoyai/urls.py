@@ -172,7 +172,7 @@ urlpatterns = [
     url(r'^api/v1/type/runmanager/state/history/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerHistory.as_view())),
     url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
-        csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
+        csrf_exempt(rest_view.RunManagerSingleRequest.as_view())),
     url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
 
