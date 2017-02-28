@@ -13,9 +13,11 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 
 
-CELERY_BROKER_URL = 'amqp://guest:guest@436c0704b2a8//'
+#CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+#CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c:5672//52.79.201.93'
+CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c//'
 CELERY_ACCEPT_CONTENT = ['json']
-# CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
+CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
 CELERY_TASK_SERIALIZER = 'json'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
