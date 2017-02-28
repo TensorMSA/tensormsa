@@ -2,31 +2,41 @@ from __future__ import absolute_import, unicode_literals
 import importlib
 from celery import shared_task
 from master import models
+from common.utils import *
 
 @shared_task
-def train(nn_id, wf_ver) :
-    print ("[Train Task] Start Celery Job ")
-    result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver)
+def train(input_data) :
+    println ("[Train Task] Start Celery Job ")
+    nn_id = input_data["key"]["nn_id"]
+    wf_ver_id = input_data["key"]["wf_ver_id"]
+    node_id = input_data["key"]["node_id"]
+
+    result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver_id, node_id)
     return result
 
 class WorkFlowTrainTask():
     """
 
     """
-    def _exec_train(self, nn_id, wf_ver):
+    def _exec_train(self, nn_id, wf_ver_id, node_id):
         """
         start train with predefined workflow process
         :param nn_id:
         :param wf_ver:
         :return:
         """
+        println("WorkFlowTrainTask")
         self.nn_id = nn_id
-        self.wf_ver = wf_ver
-
+        println(nn_id)
+        self.wf_ver_id = wf_ver_id
+        println(wf_ver_id)
+        self.node_id = node_id
+        println(node_id)
         self._get_arranged_node_list()
+        println("_get_arranged_node_list end")
 
         # # get next node id to run
-        # _node_id = self._get_next_node(nn_id, wf_ver)
+        # _node_id = self._get_next_node(nn_id, wf_ver_id)
         # if(_node_id == None) :
         #     return
         # # get node info (class name & class run config info)
@@ -34,11 +44,11 @@ class WorkFlowTrainTask():
         # # run node
         # step_result = self._load_class(_cls).run(_cls_data)
         # # run next
-        # self._exec_train(nn_id, wf_ver)
+        # self._exec_train(nn_id, wf_ver_id)
 
 
 
-    def _get_next_node(self, nn_id, wf_ver):
+    def _get_next_node(self, nn_id, wf_ver_id):
         node_id = None
         return node_id
 
@@ -75,13 +85,16 @@ class WorkFlowTrainTask():
         return None
 
     def _get_arranged_node_list(self):
+        println("call get arranged node")
+        println(self.nn_id)
+        println(self.wf_ver_id)
         return_arr = []
-        query_set = models.NN_WF_NODE_RELATION.objects.filter(wf_state_id=self.nn_id + "_" + self.wf_ver)
+        query_set = models.NN_WF_NODE_RELATION.objects.filter(wf_state_id=self.nn_id + "_" + self.wf_ver_id)
         for data in query_set:
 
-            print(data.nn_wf_node_id_1)
-            print(data.nn_wf_node_id_2)
-            print(type(data))
+            println(data.nn_wf_node_id_1)
+            println(data.nn_wf_node_id_2)
+            println(type(data))
         return None
 
     def _run_next_node(self):
