@@ -122,6 +122,7 @@ class WF_TASK_SUBMENU_RULE(models.Model):
     wf_task_submenu_id = models.CharField(max_length=50, blank=False, primary_key=True)
     wf_task_submenu_name = models.CharField(max_length=100, blank=True)
     wf_task_submenu_desc = models.CharField(max_length=200, blank=True)
+    wf_node_class_path = models.CharField(max_length=200)
     wf_node_class_name = models.CharField(max_length=200)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)

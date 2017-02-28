@@ -6,6 +6,7 @@ class EvalNodeExtra(EvalNode):
     """
 
     def run(self, conf_data):
+        print("run EvalNodeExtra")
         pass
 
     def _init_node_parm(self):

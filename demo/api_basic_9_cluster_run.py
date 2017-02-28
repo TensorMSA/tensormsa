@@ -12,7 +12,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 # ./manage.py runserver [HOST]:8000
 
 # insert workflow info
-resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/nn00004/ver/2/')
+resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/nn00004/ver/1/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
