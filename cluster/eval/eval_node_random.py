@@ -1,6 +1,6 @@
 from cluster.eval.eval_node import EvalNode
 
-class EvalNodeDefault(EvalNode):
+class EvalNodeRandom(EvalNode):
     """
 
     """

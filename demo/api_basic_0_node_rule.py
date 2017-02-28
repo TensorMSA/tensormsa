@@ -167,3 +167,53 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/subm
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+
+##################################################
+# Test Menu
+##################################################
+
+# insert menu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/',
+                     json={
+                        "wf_task_menu_id": "eval",
+                        "wf_task_menu_name": "eval",
+                        "wf_task_menu_desc": "eval",
+                        "visible_flag": True
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/eval/submenu/',
+                     json={
+                        "wf_task_submenu_id": "eval_ten",
+                        "wf_task_submenu_name": "eval_ten",
+                        "wf_task_submenu_desc": "eval_ten",
+                        "wf_node_class_name" : "cluster.eval.eval_node.EvalNodeTenFold"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "eval_ran",
+                        "wf_task_submenu_name": "eval_ran",
+                        "wf_task_submenu_desc": "eval_ran",
+                        "wf_node_class_name" : "cluster.eval.eval_node.EvalNodeTenRandom"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "eval_extra",
+                        "wf_task_submenu_name": "eval_extra",
+                        "wf_task_submenu_desc": "eval_extra",
+                        "wf_node_class_name" : "cluster.eval.eval_node.EvalNodeTenExtra"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))

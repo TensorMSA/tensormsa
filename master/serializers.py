@@ -52,3 +52,12 @@ class WF_TASK_SUBMENU_RULE_Serializer(serializers.ModelSerializer):
         model = models.WF_TASK_SUBMENU_RULE
         fields = ('wf_task_submenu_id', 'wf_task_submenu_name', 'wf_task_submenu_desc',
                   'wf_node_class_name', 'wf_task_menu_id')
+
+
+class NN_WF_NODE_RELATION_Serializer(serializers.ModelSerializer):
+    """
+    Table : NN_WF_STATE_INFO
+    """
+    class Meta:
+        model = models.NN_WF_NODE_RELATION
+        fields = ('wf_state_id', 'nn_wf_node_id_1', 'nn_wf_node_id_2')
