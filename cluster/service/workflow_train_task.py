@@ -23,16 +23,18 @@ class WorkFlowTrainTask():
         self.nn_id = nn_id
         self.wf_ver = wf_ver
 
-        # get next node id to run
-        _node_id = self._get_next_node(nn_id, wf_ver)
-        if(_node_id == None) :
-            return
-        # get node info (class name & class run config info)
-        _cls, _cls_data = self._get_node_info(_node_id)
-        # run node
-        step_result = self._load_class(_cls).run(_cls_data)
-        # run next
-        self._exec_train(nn_id, wf_ver)
+        self._get_arranged_node_list()
+
+        # # get next node id to run
+        # _node_id = self._get_next_node(nn_id, wf_ver)
+        # if(_node_id == None) :
+        #     return
+        # # get node info (class name & class run config info)
+        # _cls, _cls_data = self._get_node_info(_node_id)
+        # # run node
+        # step_result = self._load_class(_cls).run(_cls_data)
+        # # run next
+        # self._exec_train(nn_id, wf_ver)
 
 
 
@@ -73,10 +75,13 @@ class WorkFlowTrainTask():
         return None
 
     def _get_arranged_node_list(self):
+        return_arr = []
+        query_set = models.NN_WF_NODE_RELATION.objects.filter(wf_state_id=self.nn_id + "_" + self.wf_ver)
+        for data in query_set:
 
-
-        # obj = models.NN_VER_WFLIST_INFO.objects.get(nn_id=self.nn_id,
-        #                                             nn_wf_ver_id=self.wf_ver)
+            print(data.nn_wf_node_id_1)
+            print(data.nn_wf_node_id_2)
+            print(type(data))
         return None
 
     def _run_next_node(self):

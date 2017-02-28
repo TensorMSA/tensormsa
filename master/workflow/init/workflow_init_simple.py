@@ -25,7 +25,10 @@ class WorkFlowSimpleManager :
         # create nodes fit to requested type (img, text, frame)
         if(type == 'image'):
             self._create_predefined_nodes_image(state_id)
-            self._create_predefined_relation_image(state_id)
+        elif(type == 'text'):
+            self._create_predefined_nodes_nlp(state_id)
+        else:
+            self._create_predefined_nodes_frame(state_id)
 
         return type
 
@@ -43,38 +46,23 @@ class WorkFlowSimpleManager :
         finally:
             return input_data['wf_state_id']
 
-    def _create_predefined_nodes_nlp(self, wf_state_id):
+    def __put_nn_wf_node_relation(self, input_data):
         """
 
-        :return:
-        """
-        pass
-
-    def _create_predefined_nodes_frame(self, wf_state_id):
-        """
-
-        :return:
-        """
-        pass
-
-
-    def _create_predefined_nodes_image(self, wf_state_id):
-        """
-
+        :param input_data:
         :return:
         """
         try:
-            # data node
-            self.__create_node_data_img(wf_state_id)
-            # net conf node
-            self.__create_node_nn_cnn(wf_state_id)
+            serializer = serializers.NN_WF_NODE_RELATION_Serializer(data=input_data)
+            if serializer.is_valid():
+                serializer.save()
         except Exception as e:
+            print(e)
             raise Exception(e)
         finally:
-            return True
+            return input_data['wf_state_id']
 
-
-    def __put_NN_WF_NODE_INFO(self, input_data):
+    def __put_nn_wf_node_info(self, input_data):
         """
 
         :param input_data:
@@ -90,64 +78,77 @@ class WorkFlowSimpleManager :
         finally:
             return input_data['wf_state_id']
 
-    def __create_node_data_img(self, wf_state_id):
+
+    def _create_predefined_nodes_image(self, wf_state_id):
         """
 
-        :return:
-        """
-        input_data = {}
-        input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_node'
-        input_data['nn_wf_node_name'] = 'data_node'
-        input_data['wf_state_id'] = str(wf_state_id)
-        input_data['wf_task_submenu_id'] = 'data_image'
-        input_data['wf_node_status'] = 0
-        input_data['node_config_data'] = {}
-        input_data['node_draw_x'] = 0
-        input_data['node_draw_y'] = 0
-        self.__put_NN_WF_NODE_INFO(input_data)
-
-
-    def __create_node_nn_cnn(self, wf_state_id):
-        """
-
-        :return:
-        """
-        input_data = {}
-        input_data['nn_wf_node_id'] = str(wf_state_id) + '_netconf_node'
-        input_data['nn_wf_node_name'] = 'netconf_node'
-        input_data['wf_state_id'] = str(wf_state_id)
-        input_data['wf_task_submenu_id'] = 'nf_cnn'
-        input_data['wf_node_status'] = 0
-        input_data['node_config_data'] = {}
-        input_data['node_draw_x'] = 0
-        input_data['node_draw_y'] = 0
-        self.__put_NN_WF_NODE_INFO(input_data)
-
-
-    def _create_predefined_relation_image(self, wf_state_id):
-        """
-
-        :param wf_state_id:
-        :return:
-        """
-        input_data = {}
-        input_data['wf_state_id'] = str(wf_state_id)
-        input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_data_node'
-        input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
-        self.__put_NN_WF_NODE_RELATION(input_data)
-
-    def __put_NN_WF_NODE_RELATION(self, input_data):
-        """
-
-        :param input_data:
         :return:
         """
         try:
-            serializer = serializers.NN_WF_NODE_RELATION_Serializer(data=input_data)
-            if serializer.is_valid():
-                serializer.save()
+            # data node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_node'
+            input_data['nn_wf_node_name'] = 'data_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'data_image'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # net conf node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_name'] = 'netconf_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'nf_cnn'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # net conf node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_eval_node'
+            input_data['nn_wf_node_name'] = 'eval_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'eval_extra'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_data_node'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
+            self.__put_nn_wf_node_relation(input_data)
+
         except Exception as e:
-            print(e)
             raise Exception(e)
         finally:
-            return input_data['wf_state_id']
+            return True
+
+    def _create_predefined_nodes_nlp(self, wf_state_id):
+        """
+
+        :return:
+        """
+        pass
+
+    def _create_predefined_nodes_frame(self, wf_state_id):
+        """
+
+        :return:
+        """
+        pass
+
