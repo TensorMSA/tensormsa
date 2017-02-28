@@ -1,16 +1,18 @@
 from __future__ import absolute_import, unicode_literals
-from celery import Task
 import importlib
+from celery import shared_task
+from master import models
 
+@shared_task
+def train(nn_id, wf_ver) :
+    print ("[Train Task] Start Celery Job ")
+    result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver)
+    return result
 
-class WorkFlowTrainTask(Task):
+class WorkFlowTrainTask():
+    """
 
-    def run(self, source, *args, **kwargs):
-        self.source = source
-
-        self._exec_train(source.nn_id , source.wf_ver)
-
-
+    """
     def _exec_train(self, nn_id, wf_ver):
         """
         start train with predefined workflow process
@@ -18,6 +20,9 @@ class WorkFlowTrainTask(Task):
         :param wf_ver:
         :return:
         """
+        self.nn_id = nn_id
+        self.wf_ver = wf_ver
+
         # get next node id to run
         _node_id = self._get_next_node(nn_id, wf_ver)
         if(_node_id == None) :
@@ -28,6 +33,7 @@ class WorkFlowTrainTask(Task):
         step_result = self._load_class(_cls).run(_cls_data)
         # run next
         self._exec_train(nn_id, wf_ver)
+
 
 
     def _get_next_node(self, nn_id, wf_ver):
@@ -67,6 +73,10 @@ class WorkFlowTrainTask(Task):
         return None
 
     def _get_arranged_node_list(self):
+
+
+        # obj = models.NN_VER_WFLIST_INFO.objects.get(nn_id=self.nn_id,
+        #                                             nn_wf_ver_id=self.wf_ver)
         return None
 
     def _run_next_node(self):
@@ -80,13 +90,5 @@ class WorkFlowTrainTask(Task):
 
     def _report_job_state(self):
         return None
-
-
-
-
-
-
-
-
 
 

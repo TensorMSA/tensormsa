@@ -25,6 +25,7 @@ class WorkFlowSimpleManager :
         # create nodes fit to requested type (img, text, frame)
         if(type == 'image'):
             self._create_predefined_nodes_image(state_id)
+            self._create_predefined_relation_image(state_id)
 
         return type
 
@@ -95,6 +96,7 @@ class WorkFlowSimpleManager :
         :return:
         """
         input_data = {}
+        input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_node'
         input_data['nn_wf_node_name'] = 'data_node'
         input_data['wf_state_id'] = str(wf_state_id)
         input_data['wf_task_submenu_id'] = 'data_image'
@@ -111,6 +113,7 @@ class WorkFlowSimpleManager :
         :return:
         """
         input_data = {}
+        input_data['nn_wf_node_id'] = str(wf_state_id) + '_netconf_node'
         input_data['nn_wf_node_name'] = 'netconf_node'
         input_data['wf_state_id'] = str(wf_state_id)
         input_data['wf_task_submenu_id'] = 'nf_cnn'
@@ -119,3 +122,32 @@ class WorkFlowSimpleManager :
         input_data['node_draw_x'] = 0
         input_data['node_draw_y'] = 0
         self.__put_NN_WF_NODE_INFO(input_data)
+
+
+    def _create_predefined_relation_image(self, wf_state_id):
+        """
+
+        :param wf_state_id:
+        :return:
+        """
+        input_data = {}
+        input_data['wf_state_id'] = str(wf_state_id)
+        input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_data_node'
+        input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
+        self.__put_NN_WF_NODE_RELATION(input_data)
+
+    def __put_NN_WF_NODE_RELATION(self, input_data):
+        """
+
+        :param input_data:
+        :return:
+        """
+        try:
+            serializer = serializers.NN_WF_NODE_RELATION_Serializer(data=input_data)
+            if serializer.is_valid():
+                serializer.save()
+        except Exception as e:
+            print(e)
+            raise Exception(e)
+        finally:
+            return input_data['wf_state_id']
