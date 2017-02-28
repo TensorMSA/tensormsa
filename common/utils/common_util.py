@@ -42,6 +42,7 @@ def println(printStr):
             sql = "INSERT INTO common_log_info( "
             valueStr = ""
 
+            # 일반적인 String 형태일 경우 출력을 해준다.
             try:
                 valS = printStr.split("+")
 
@@ -61,6 +62,7 @@ def println(printStr):
                 cur.execute(sql)
                 conn.commit()
             except Exception as e:
+                # 객체 형태일 경우 출력을 해준다.
                 sql += "attr1,creation_date,last_update_date, created_by, last_updated_by,log_id) "
                 sql += "VALUES ('" + str(printStr).replace("'","")+"',now(),now(),'" + gUserId + "','" + gUserId + "','" + str(rows[0][0]) + "')"
                 cur.execute(sql)
