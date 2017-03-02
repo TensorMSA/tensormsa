@@ -5,6 +5,7 @@ from master import models
 from django.core import serializers as serial
 from django.db import connection
 from common.utils import dictfetchall
+from common.utils import *
 
 @shared_task
 def train(nn_id, wf_ver) :
@@ -31,11 +32,14 @@ class WorkFlowTrainTask():
         if(len(node_list) == 0) :
             return None
 
-        print(node_list)
+        println(node_list)
         # execute nodes by sequece
         for node in node_list :
             _path, _cls = self._get_cluster_exec_class(node)
             obj = self._load_class(_path, _cls).run(node)
+            println(_path)
+            println(_cls)
+            println(obj)
 
         return {}
 
