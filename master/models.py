@@ -98,9 +98,12 @@ class NN_WF_EASY_MODE_RULE(models.Model):
     last_updated_by = models.IntegerField(default=0)
 
 class NN_WF_NODE_RELATION(models.Model):
+    class Meta:
+        unique_together = (('nn_wf_node_id_1', 'nn_wf_node_id_2'),)
+    nn_wf_node_id_1 = models.CharField(max_length=50, blank= False)
+    nn_wf_node_id_2 = models.CharField(max_length=50, blank= False)
+    wf_state_id = models.ForeignKey(NN_WF_STATE_INFO, on_delete=models.CASCADE)
     nn_wf_relation_id = models.AutoField(primary_key=True)
-    nn_wf_node_id_1 = models.IntegerField()
-    nn_wf_node_id_2 = models.IntegerField()
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)
@@ -121,6 +124,7 @@ class WF_TASK_SUBMENU_RULE(models.Model):
     wf_task_submenu_id = models.CharField(max_length=50, blank=False, primary_key=True)
     wf_task_submenu_name = models.CharField(max_length=100, blank=True)
     wf_task_submenu_desc = models.CharField(max_length=200, blank=True)
+    wf_node_class_path = models.CharField(max_length=200)
     wf_node_class_name = models.CharField(max_length=200)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)
@@ -128,7 +132,7 @@ class WF_TASK_SUBMENU_RULE(models.Model):
     last_updated_by = models.IntegerField(default=0)
 
 class NN_WF_NODE_INFO(models.Model):
-    nn_wf_node_id = models.AutoField(primary_key=True)
+    nn_wf_node_id = models.CharField(max_length=50, blank=False, primary_key=True)
     nn_wf_node_name = models.CharField(max_length=50, blank= False)
     wf_state_id = models.ForeignKey(NN_WF_STATE_INFO, on_delete=models.CASCADE)
     wf_task_submenu_id = models.ForeignKey(WF_TASK_SUBMENU_RULE, on_delete=models.CASCADE)

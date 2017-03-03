@@ -64,72 +64,22 @@ urlpatterns = [
 
 
     # workflow - data APIs
-    url(r'^api/v1/type/wf/state/imgdata/detail/localimg/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataImgSourceLocal.as_view())),
-    url(r'^api/v1/type/wf/state/imgdata/detail/localimg/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataImgPre.as_view())),
-    url(r'^api/v1/type/wf/state/imgdata/detail/localimg/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataImgStore.as_view())),
-    url(r'^api/v1/type/wf/state/imgdata/detail/s3img/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataImgSourceS3.as_view())),
-    url(r'^api/v1/type/wf/state/imgdata/detail/s3img/pre/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataImgPre.as_view())),
-    url(r'^api/v1/type/wf/state/imgdata/detail/s3img/store/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataImgStore.as_view())),
+    # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<format>.*) : default  3. (?P<prg>.*) : source, pre, store
+    url(r'^api/v1/type/wf/state/imgdata/src/(?P<src>.*)/format/(?P<format>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowDataImage.as_view())),
 
-    url(r'^api/v1/type/wf/state/framedata/detail/localcsv/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameSourceLocal.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/localcsv/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFramePre.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/localcsv/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameStore.as_view())),
+    # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<format>.*) : default  3. (?P<prg>.*) : source, pre, store
+    url(r'^api/v1/type/wf/state/framedata/src/(?P<src>.*)/format/(?P<format>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowDataFrame.as_view())),
 
-    url(r'^api/v1/type/wf/state/framedata/detail/rdb/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameSourceRdb.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/rdb/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFramePre.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/rdb/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameStore.as_view())),
+    # 1.(?P<src>.*) : local, s3, hbase, etc.. , 2.(?P<format>.*) : file, line, tag, raw, default  3. (?P<prg>.*) : source, pre, store
+    url(r'^api/v1/type/wf/state/textdata/src/(?P<src>.*)/format/(?P<format>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowDataText.as_view())),
 
-    url(r'^api/v1/type/wf/state/framedata/detail/hbase/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameSourceHbase.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/hbase/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFramePre.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/hbase/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameStore.as_view())),
-
-    url(r'^api/v1/type/wf/state/framedata/detail/s3/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameSourceS3.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/s3/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFramePre.as_view())),
-    url(r'^api/v1/type/wf/state/framedata/detail/s3/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataFrameStore.as_view())),
-
-    url(r'^api/v1/type/wf/state/textdata/detail/line/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextSourceLine.as_view())),
-    url(r'^api/v1/type/wf/state/textdata/detail/pop/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextPre.as_view())),
-    url(r'^api/v1/type/wf/state/textdata/detail/pop/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextStore.as_view())),
-
-    url(r'^api/v1/type/wf/state/textdata/detail/file/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextSourceFile.as_view())),
-    url(r'^api/v1/type/wf/state/textdata/detail/file/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextPre.as_view())),
-    url(r'^api/v1/type/wf/state/textdata/detail/file/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextStore.as_view())),
-
-    url(r'^api/v1/type/wf/state/textdata/detail/tag/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextSourceTag.as_view())),
-    url(r'^api/v1/type/wf/state/textdata/detail/tag/prg/pre/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextPre.as_view())),
-    url(r'^api/v1/type/wf/state/textdata/detail/tag/prg/store/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextStore.as_view())),
-
-    url(r'^api/v1/type/wf/state/textdata/detail/pop/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/textdata/detail/pop/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataTextSourcePop.as_view())),
 
-    url(r'^api/v1/type/wf/state/data/detail/reuse/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/data/detail/reuse/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataReuse.as_view())),
 
     # workflow - data config APIs
@@ -172,7 +122,7 @@ urlpatterns = [
     url(r'^api/v1/type/runmanager/state/history/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerHistory.as_view())),
     url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
-        csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
+        csrf_exempt(rest_view.RunManagerSingleRequest.as_view())),
     url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
 

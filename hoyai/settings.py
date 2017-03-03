@@ -12,13 +12,15 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 
+host = os.environ['HOSTNAME']
 
 #CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
 #CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c:5672//52.79.201.93'
-CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c//'
+CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@'+host+'//'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_IMPORTS=("cluster.service.workflow_train_task")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

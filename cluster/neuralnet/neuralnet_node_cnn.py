@@ -6,6 +6,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
     """
 
     def run(self, conf_data):
+        print("run NeuralNetNodeCnn")
         return None
 
     def _init_node_parm(self):

@@ -11,7 +11,29 @@ class WorkFlowNetConfCnn(APIView) :
         """
         - desc : insert data
         """
-        print("aaaaaaccccc")
+        try:
+            return_data = ""
+            return Response(json.dumps(return_data))
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
+            return Response(json.dumps(return_data))
+
+    def get(self, request, nnid, ver, node):
+        """
+        - desc : get data
+        """
+        try:
+            input_data = json.loads(str(request.body, 'utf-8'))
+            return_data = WorkFlowNetConfCNN().get_view_obj(input_data)
+            return Response(json.dumps(return_data))
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
+            return Response(json.dumps(return_data))
+
+    def put(self, request, nnid, ver, node):
+        """
+        - desc ; update data
+        """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
             return_data = WorkFlowNetConfCNN().set_view_obj(input_data)
@@ -20,29 +42,7 @@ class WorkFlowNetConfCnn(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, nnid):
-        """
-        - desc : get data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-    def put(self, request, nnid):
-        """
-        - desc ; update data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-    def delete(self, request, nnid):
+    def delete(self, request, nnid, ver, node):
         """
         - desc : delete  data
         """

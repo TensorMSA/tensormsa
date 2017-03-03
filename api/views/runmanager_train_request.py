@@ -1,8 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.service.init_train import add
-
+from cluster.service.workflow_train_task import train
 
 class RunManagerTrainRequest(APIView):
     """
@@ -12,7 +11,7 @@ class RunManagerTrainRequest(APIView):
         - desc : insert data
         """
         try:
-            result = add.delay(2,2)
+            result = train.delay(nnid, ver)
             return Response(json.dumps(result.get()))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

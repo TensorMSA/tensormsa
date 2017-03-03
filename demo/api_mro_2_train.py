@@ -1,7 +1,6 @@
 import requests
 import json, os
 from common.utils import *
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 # [TEST - Celery]
 # apt-get install rabbitmq-server
@@ -14,10 +13,20 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 println("S")
 
 nn_id = "nn00004"
-wf_ver_id = "5"
+
+# get workflow version info
+resp = requests.get('http://' + gUrl + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/')
+data = json.loads(resp.json())
+
+wf_ver_id = 0
+for i in data:
+    if i["pk"] > wf_ver_id:
+        wf_ver_id = i["pk"]
+
+wf_ver_id = str(wf_ver_id)
 
 # Run All Workflow
-resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
+resp = requests.post('http://' + gUrl + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
