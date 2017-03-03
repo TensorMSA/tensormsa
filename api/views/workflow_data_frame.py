@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
-class WorkFlowDataImgPre(APIView):
+class WorkFlowDataFrame(APIView):
     """
     """
-    def post(self, request, nnid):
+    def post(self, request, src, format, prg, nnid, ver, node):
         """
         - desc : insert cnn configuration data
         """
@@ -17,7 +17,7 @@ class WorkFlowDataImgPre(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, nnid):
+    def get(self, request, src, format, prg, nnid, ver, node):
         """
         - desc : get cnn configuration data
         """
@@ -28,7 +28,7 @@ class WorkFlowDataImgPre(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, nnid):
+    def put(self, request, src, format, prg, nnid, ver, node):
         """
         - desc ; update cnn configuration data
         """
@@ -39,7 +39,7 @@ class WorkFlowDataImgPre(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, nnid):
+    def delete(self, request, src, format, prg, nnid, ver, node):
         """
         - desc : delete cnn configuration data
         """
