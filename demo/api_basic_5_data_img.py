@@ -1,12 +1,9 @@
 import requests
-import json
-from common.utils import *
+import json, os
 
-println("S")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
-url = "{0}:{1}".format("localhost" , "8000")
-
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/detail/localimg/prg/source/nnid/nn00004/ver/1/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/nn00004/ver/1/node/datasrc/',
                      json={
                          "type": "local image",
                          "source_path": "/home/dev/",
@@ -16,5 +13,3 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/detail/loca
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
-
-println("E")

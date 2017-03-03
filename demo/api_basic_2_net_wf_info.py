@@ -19,7 +19,7 @@ print("evaluation result : {0}".format(data))
 # update workflow info
 resp = requests.put('http://' + url + '/api/v1/type/common/target/nninfo/nn00004/version/',
                      json={
-                         "nn_wf_ver_id": "2",
+                         "nn_wf_ver_id": "1",
                          "nn_def_list_info_nn_id": "",
                          "nn_wf_ver_info": "test version info",
                          "condition": "1",

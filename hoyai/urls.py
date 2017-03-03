@@ -62,22 +62,21 @@ urlpatterns = [
     url(r'^api/v1/type/wf/target/menu/',
         csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
 
-
     # workflow - data APIs
     # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<format>.*) : default  3. (?P<prg>.*) : source, pre, store
-    url(r'^api/v1/type/wf/state/imgdata/src/(?P<src>.*)/format/(?P<format>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+    url(r'^api/v1/type/wf/state/imgdata/src/(?P<src>.*)/form/(?P<form>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/'
+        r'(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataImage.as_view())),
 
     # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<format>.*) : default  3. (?P<prg>.*) : source, pre, store
-    url(r'^api/v1/type/wf/state/framedata/src/(?P<src>.*)/format/(?P<format>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+    url(r'^api/v1/type/wf/state/framedata/src/(?P<src>.*)/form/(?P<form>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/'
+        r'(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataFrame.as_view())),
 
     # 1.(?P<src>.*) : local, s3, hbase, etc.. , 2.(?P<format>.*) : file, line, tag, raw, default  3. (?P<prg>.*) : source, pre, store
-    url(r'^api/v1/type/wf/state/textdata/src/(?P<src>.*)/format/(?P<format>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+    url(r'^api/v1/type/wf/state/textdata/src/(?P<src>.*)/form/(?P<form>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/'
+        r'(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataText.as_view())),
-
-    url(r'^api/v1/type/wf/state/textdata/detail/pop/prg/source/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
-        csrf_exempt(rest_view.WorkFlowDataTextSourcePop.as_view())),
 
     url(r'^api/v1/type/wf/state/data/detail/reuse/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataReuse.as_view())),
