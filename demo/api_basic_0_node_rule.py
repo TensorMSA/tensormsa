@@ -177,6 +177,42 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/subm
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "word_to_vec",
+                        "wf_task_submenu_name": "word_to_vec",
+                        "wf_task_submenu_desc": "word_to_vec",
+                        "wf_node_class_path": "cluster.neuralnet.neuralnet_node_w2v",
+                        "wf_node_class_name": "NeuralNetNodeWord2Vec"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "doc_to_vec",
+                        "wf_task_submenu_name": "doc_to_vec",
+                        "wf_task_submenu_desc": "doc_to_vec",
+                        "wf_node_class_path": "cluster.neuralnet.neuralnet_node_d2v",
+                        "wf_node_class_name": "NeuralNetNodeDoc2Vec"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "seq_to_seq",
+                        "wf_task_submenu_name": "seq_to_seq",
+                        "wf_task_submenu_desc": "seq_to_seq",
+                        "wf_node_class_path": "cluster.neuralnet.neuralnet_node_seq2seq",
+                        "wf_node_class_name": "NeuralNetNodeSeq2Seq"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
 
 ##################################################
 # Test Menu
