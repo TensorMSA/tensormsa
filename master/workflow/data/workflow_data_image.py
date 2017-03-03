@@ -1,5 +1,6 @@
 from master.workflow.data.workflow_data import WorkFlowData
-from master import serializers
+from master import models
+from common.utils import *
 
 class WorkFlowDataImage(WorkFlowData) :
     """
@@ -22,12 +23,19 @@ class WorkFlowDataImage(WorkFlowData) :
         return None
 
 
-    def get_step_source(self):
+    def get_step_source(self, nnid, wfver):
         """
         getter for source step
         :return:obj(json) to make view
         """
-        return None
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=str(nnid) + "_" + str(wfver),
+                                                     nn_wf_node_name='data_node')
+            config_data = getattr(obj, 'node_config_data')
+
+        except Exception as e:
+            raise Exception(e)
+        return config_data
 
     def put_step_source(self, nnid, wfver, config_data):
         """
@@ -35,20 +43,20 @@ class WorkFlowDataImage(WorkFlowData) :
         :param obj: config data from view
         :return:boolean
         """
-        input_data ={}
-        input_data['wf_state_id'] = str(nnid) + "_" + str(wfver)
-        input_data['node_config_data'] = config_data
+
         try:
-            serializer = serializers.NN_WF_NODE_INFO_Serializer(data=input_data)
-            if serializer.is_valid():
-                serializer.save()
+            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=str(nnid) + "_" + str(wfver), nn_wf_node_name='data_node')
+            setattr(obj, 'node_config_data', config_data)
+            obj.save()
+            return config_data
+
         except Exception as e:
             raise Exception(e)
 
         #self._insert_preview_images()
         #self._set_preivew_paths()
         #self._set_lable_list()
-        return input_data['node_config_data']
+        return config_data
 
     def get_step_preprocess(self):
         """

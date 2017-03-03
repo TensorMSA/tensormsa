@@ -1,11 +1,20 @@
 import requests
 import json
+from common.utils import *
+
+println("S")
 
 url = "{0}:{1}".format("localhost" , "8000")
 
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/imgdata/detail/localimg/prg/source/nnid/nn00004/ver/1/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/detail/localimg/prg/source/nnid/nn00004/ver/1/',
                      json={
-                         "type": "local image"
+                         "type": "local image",
+                         "source_path": "/home/dev/",
+                         "preprocess": {"x_size": 100,
+                                        "y_size": 100},
+                         "store_path": "/home/dev/"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+println("E")

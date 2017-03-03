@@ -5,6 +5,7 @@ import numpy
 from PIL import Image, ImageFilter
 from cluster.data.data_node import DataNode
 from cluster.data.hdf5 import H5PYDataset
+#from master.workflow.data.workflow_data_image import WorkFlowDataImage
 
 class DataNodeImage(DataNode):
     """
@@ -13,8 +14,11 @@ class DataNodeImage(DataNode):
 
     def run(self, conf_data):
         TRAIN = 'cat_vs_dog.zip'
-        directory = './'
-        output_directory = './'
+        nnid = 'nn00004'
+        wfver = '1'
+        #config_data = WorkFlowDataImage().get_step_source(nnid,wfver)
+        directory = '/home/dev/'#config_data['source_path']
+        output_directory = '/home/dev/'#config_data['store_path']
         output_filename = 'dogs_vs_cats.hdf5'
 
         # Prepare output file
@@ -23,7 +27,7 @@ class DataNodeImage(DataNode):
         dtype = h5py.special_dtype(vlen=numpy.dtype('uint8'))
         hdf_features = h5file.create_dataset('image_features', (2,), dtype=dtype)
         hdf_shapes = h5file.create_dataset('image_features_shapes', (2, 3), dtype='int32')
-        hdf_labels = h5file.create_dataset('targets', (2, 1), dtype='uint8')
+        hdf_labels = h5file.create_dataset('targets', (2, ), dtype='S10')
 
         # Attach shape annotations and scales
         hdf_features.dims.create_scale(hdf_shapes, 'shapes')
@@ -38,8 +42,8 @@ class DataNodeImage(DataNode):
 
         # Add axis annotations
         hdf_features.dims[0].label = 'batch'
-        hdf_labels.dims[0].label = 'batch'
-        hdf_labels.dims[1].label = 'index'
+        #hdf_labels.dims[0].label = 'batch'
+        #hdf_labels.dims[1].label = 'index'
 
         # Convert
         i = 0
@@ -47,31 +51,30 @@ class DataNodeImage(DataNode):
             # Open the ZIP file
             filename = os.path.join(directory, split)
             zip_file = zipfile.ZipFile(filename, 'r')
-            image_names = zip_file.namelist()#[1:]  # Discard the directory name
-
+            image_names = zip_file.namelist()  # Discard the directory name
             # Shuffle the examples
             if split == TRAIN:
                 rng = numpy.random.RandomState(123522)
                 rng.shuffle(image_names)
             else:
                 image_names.sort(key=lambda fn: int(os.path.splitext(fn[6:])[0]))
-
             # Convert from JPEG to NumPy arrays
             #with progress_bar(filename, split_size) as bar:
             for image_name in image_names:
                 # Save image
-                image = numpy.array(Image.open(zip_file.open(image_name)))
-                image = image.transpose(2, 0, 1)
-                hdf_features[i] = image.flatten()
-                hdf_shapes[i] = image.shape
-                # Cats are 0, Dogs are 1
-                if split == TRAIN:
-                    hdf_labels[i] = 0 if 'cat' in image_name else 1
-                    print(i)
-                # Update progress
-                i += 1
+                if image_name.count('.') != 0:
+                    im = Image.open(zip_file.open(image_name))
+                    format_info = {'x_size':100,'y_size':100}#config_data['preprocess']
+                    image = numpy.array(self._resize_file_image(im, format_info))
+                    image = image.transpose(2, 0, 1)
+                    hdf_features[i] = image.flatten()
+                    hdf_shapes[i] = image.shape
+                    # Cats are 0, Dogs are 1
+                    if split == TRAIN:
+                        hdf_labels[i] = image_name.split('/')[0].encode('utf8')
+                    # Update progress
+                    i += 1
                 #bar.update(i if split == TRAIN else i - 25000)
-
         # Add the labels
         split_dict = {}
         sources = ['image_features', 'targets']
@@ -91,7 +94,7 @@ class DataNodeImage(DataNode):
     def _set_progress_state(self):
         return None
 
-    def resize_file_image(self, path, net_info, format_info, file_name, label):
+    def _resize_file_image(self, im, format_info):
         """
         load uploaded image and resize
         :param path:
@@ -99,13 +102,13 @@ class DataNodeImage(DataNode):
         """
         x_size = int(format_info['x_size'])
         y_size = int(format_info['y_size'])
-        dataframe = net_info['dir']
-        table = net_info['table']
+        #dataframe = net_info['dir']
+        #table = net_info['table']
 
-        im = Image.open(path).convert('L')
+        #im = Image.open(path).convert('L')
         width = float(im.size[0])
         height = float(im.size[1])
-        newImage = Image.new('L', (x_size, y_size), (255))
+        newImage = Image.new('RGB', (x_size, y_size), (255))
 
         if width > height:
             nheight = int(round((x_size / width * height), 0))
@@ -123,8 +126,8 @@ class DataNodeImage(DataNode):
         width, height = newImage.size
 
         # save preview on jango static folder
-        self.save_preview_image(newImage, dataframe, table, file_name, label)
-        return newImage.getdata(), width, height
+        #self.save_preview_image(newImage, dataframe, table, file_name, label)
+        return newImage
 
 a = DataNodeImage()
 a.run(1)
