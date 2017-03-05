@@ -10,18 +10,23 @@ class WorkFlowDataFrame(WorkFlowData) :
     """
 
 
-    def load_data(self, type, conn):
+    def get_preview_data(self):
         """
 
         :param type:
         :param conn:
         :return:
         """
-        self._load_local_frame()
-        self._load_s3_frame()
-        self._load_hbase_frame()
-        self._load_rdb_frame()
+        return None
 
+
+    def set_preview_data(self):
+        """
+
+        :param type:
+        :param conn:
+        :return:
+        """
         return None
 
 

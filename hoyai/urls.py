@@ -22,12 +22,8 @@ from api import views as rest_view
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    # server info
-    url(r'^api/v1/type/server/target/etl/(?P<type>.*)/',
-        csrf_exempt(rest_view.ConfServerData.as_view())),
-    url(r'^api/v1/type/server/target/master/(?P<type>.*)/',
-        csrf_exempt(rest_view.ConfServerData.as_view())),
-    url(r'^api/v1/type/server/target/cluster/(?P<type>.*)/',
+    # (?P<target>.*) : etl, master, cluster  , (?P<type>.*) : local, s3, rdb, etc
+    url(r'^api/v1/type/server/target/(?P<target>.*)/type/(?P<type>.*)/',
         csrf_exempt(rest_view.ConfServerData.as_view())),
 
     # net definition manager

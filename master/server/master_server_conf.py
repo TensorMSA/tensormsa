@@ -1,10 +1,16 @@
+from django.core.cache import cache
+from django.conf import settings
+import os
 
-
-class MasterServerConf :
+class MasterServerConf() :
     """
     1. desc : CRUD function for server table
     2. table : CONF_SERV_DATA_INFO
     """
+
+    def server_start_up(self):
+        self.mount_cache()
+
 
     def get_nas_conf(self):
         """
@@ -95,5 +101,10 @@ class MasterServerConf :
 
         :return:
         """
+        if(os.path.exists("/hoya_src_root") == False) :
+            os.mkdir("/hoya_src_root")
+        if(os.path.exists("/hoya_str_root") == False) :
+            os.mkdir("/hoya_str_root")
 
-        # cache.set("key", "value", "time")
+        cache.set("source_root", "/hoya_src_root")
+        cache.set("store_root", "/hoya_str_root")

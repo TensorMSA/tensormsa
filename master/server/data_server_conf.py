@@ -6,6 +6,9 @@ class DataServerConf :
     2. table : CONF_SERV_DATA_INFO
     """
 
+    def server_start_up(self):
+        self.mount_cache()
+
     def get_selected_object(self):
         """
 

@@ -11,7 +11,16 @@ class WorkFlowData :
         """
         return None
 
-    def load_data(self):
+    def get_preview_data(self):
+        """
+        extract data from target server
+        1. connect datastore (use common data manager)
+        2. return limited number of data from source
+        :return:
+        """
+        pass
+
+    def set_preview_data(self):
         """
         extract data from target server
         1. connect datastore (use common data manager)
