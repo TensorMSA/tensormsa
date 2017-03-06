@@ -1,6 +1,6 @@
 import psycopg2
 import os
-from master import models
+
 from django.core.cache import cache
 
 def get_source_path(nn_id, wf_ver, name) :
@@ -19,6 +19,7 @@ def get_store_path(nn_id, name) :
     :param name:
     :return:
     """
+    from master import models
     try:
         obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=str(nn_id))
         if(obj != None) :
