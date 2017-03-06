@@ -34,11 +34,11 @@ class WorkFlowDataText(APIView):
             return_data = {'result' : 'no type'}
 
             if(prg == 'source') :
-                return_data = WfDataText().get_step_source(nnid, ver, node)
+                return_data = WfDataText(nnid+"_"+ver+"_"+node).get_step_source()
             elif(prg == 'pre') :
-                return_data = WfDataText().get_step_preprocess(nnid, ver, node)
+                return_data = WfDataText(nnid+"_"+ver+"_"+node).get_step_preprocess()
             elif(prg == 'store') :
-                return_data = WfDataText().get_step_store(nnid, ver, node)
+                return_data = WfDataText(nnid+"_"+ver+"_"+node).get_step_store()
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

@@ -120,6 +120,15 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
 data = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(data))
 
+resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/datasrc/',
+                     json={
+                         "type": "local image",
+                         "source_path": "/home/dev/",
+                         "preprocess": {"x_size": 100,
+                                        "y_size": 100},
+                         "store_path": "/home/dev/"
+                     })
+
 println("E")
 
 
