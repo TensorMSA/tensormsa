@@ -4,6 +4,9 @@ class CodeRuleManager:
     """
 
     """
+    def server_start_up(self):
+        self.mount_cache()
+
     def get_code_name(self, column, code):
         """
         create function with cached data

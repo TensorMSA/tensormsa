@@ -6,6 +6,9 @@ class ClusterServerConf :
     2. table : CONF_SERV_CLUSTER_INFO
     """
 
+    def server_start_up(self):
+        self.mount_cache()
+
     def mount_cache(self):
         """
 

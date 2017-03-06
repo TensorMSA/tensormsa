@@ -1,4 +1,6 @@
 from master.workflow.data.workflow_data import WorkFlowData
+from master import models
+from common.utils import *
 
 class WorkFlowDataImage(WorkFlowData) :
     """
@@ -8,36 +10,55 @@ class WorkFlowDataImage(WorkFlowData) :
     NN_WF_NODE_INFO (NODE_CONFIG_DATA : Json Field) 
     """
 
-    def load_data(self, type, conn):
+    def get_preview_data(self):
         """
 
         :param type:
         :param conn:
         :return:
         """
-        self._load_local_img()
-        self._load_s3_img()
-
         return None
 
 
-    def get_step_source(self):
+    def set_preview_data(self):
+        """
+
+        :param type:
+        :param conn:
+        :return:
+        """
+        return None
+
+
+    def get_step_source(self, nnid, wfver):
         """
         getter for source step
         :return:obj(json) to make view
         """
-        return None
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=str(nnid) + "_" + str(wfver),
+                                                     nn_wf_node_name='data_node')
+            config_data = getattr(obj, 'node_config_data')
 
-    def put_step_source(self, obj):
+        except Exception as e:
+            raise Exception(e)
+        return config_data
+
+    def put_step_source(self, nnid, wfver, config_data):
         """
         putter for source step
         :param obj: config data from view
         :return:boolean
         """
-        self._insert_preview_images()
-        self._set_preivew_paths()
-        self._set_lable_list()
-        return None
+
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=str(nnid) + "_" + str(wfver), nn_wf_node_name='data_node')
+            setattr(obj, 'node_config_data', config_data)
+            obj.save()
+            return config_data
+
+        except Exception as e:
+            raise Exception(e)
 
     def get_step_preprocess(self):
         """
@@ -105,12 +126,4 @@ class WorkFlowDataImage(WorkFlowData) :
         :param lable_list:
         :return:
         """
-        return None
-
-    def _load_local_img(self, conn):
-
-        return None
-
-    def _load_s3_img(self, conn):
-
         return None

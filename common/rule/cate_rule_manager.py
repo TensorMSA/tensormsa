@@ -7,6 +7,9 @@ class CateRuleManager :
     COMMON_BIZ_SUBCATE_RULE
     """
 
+    def server_start_up(self):
+        self.mount_cache()
+
     def _get_all_cate_rule(self):
         """
 
