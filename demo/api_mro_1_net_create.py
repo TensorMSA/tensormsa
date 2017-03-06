@@ -71,12 +71,10 @@ print("insert workflow version node info evaluation result : {0}".format(data))
 
 node_id = nn_id+"_"+wf_ver_id+"_netconf_node"
 
-# insert workflow node conf info
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node_id+'/',
+# update workflow node conf info
+resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nodeid/'+node_id+'/',
                      json={
-                         "key" : {"nn_id": nn_id,
-                                 "wf_ver_id": wf_ver_id,
-                                 "node_id": node_id
+                         "key" : {"node_id": node_id
                                   }
                          ,"config": {"matrix": [4, 5],
                                  "learnrate": 0.01,

@@ -7,7 +7,7 @@ class WorkFlowNetConfCnn(APIView) :
     """
 
     """
-    def post(self, request, nnid, ver, node):
+    def post(self, request, nodeid):
         """
         - desc : insert data
         """
@@ -18,7 +18,7 @@ class WorkFlowNetConfCnn(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, nnid, ver, node):
+    def get(self, request, nodeid):
         """
         - desc : get data
         """
@@ -30,7 +30,7 @@ class WorkFlowNetConfCnn(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, nnid, ver, node):
+    def put(self, request, nodeid):
         """
         - desc ; update data
         """
@@ -42,7 +42,7 @@ class WorkFlowNetConfCnn(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, nnid, ver, node):
+    def delete(self, request, nodeid):
         """
         - desc : delete  data
         """
