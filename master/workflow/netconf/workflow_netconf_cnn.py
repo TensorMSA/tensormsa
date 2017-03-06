@@ -13,15 +13,12 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         get view data for net config
         :return:
         """
-        nn_id = input_data["key"]["nn_id"]
-        wf_ver_id = input_data["key"]["wf_ver_id"]
         node_id = input_data["key"]["node_id"]
-        state_id = nn_id + "_" + wf_ver_id
 
-        println("WorkFlowNetConfCNN get_view_obj nn_id="+nn_id+" wf_ver_id="+wf_ver_id+" node_id="+node_id+" state_id="+state_id)
+        println("WorkFlowNetConfCNN get_view_obj node_id="+node_id)
 
         try:
-            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id_id=state_id, nn_wf_node_id=node_id)
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             data_set = getattr(obj, "node_config_data")
             return data_set
         except Exception as e:
@@ -34,15 +31,12 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         :param obj:
         :return:
         """
-        nn_id = input_data["key"]["nn_id"]
-        wf_ver_id = input_data["key"]["wf_ver_id"]
         node_id = input_data["key"]["node_id"]
-        state_id = nn_id+"_"+wf_ver_id
 
-        println("WorkFlowNetConfCNN set_view_obj nn_id="+nn_id+" wf_ver_id="+wf_ver_id+" node_id="+node_id+" state_id="+state_id)
+        println("WorkFlowNetConfCNN set_view_obj node_id="+node_id)
 
         try:
-            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id_id=state_id, nn_wf_node_id=node_id)
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             setattr(obj, "node_config_data", input_data)
             obj.save()
             return input_data
