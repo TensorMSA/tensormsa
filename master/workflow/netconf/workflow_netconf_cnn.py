@@ -8,12 +8,12 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
     """
 
     """
-    def get_view_obj(self, input_data):
+    def get_view_obj(self, node_id):
         """
         get view data for net config
         :return:
         """
-        node_id = input_data["key"]["node_id"]
+        # node_id = input_data["key"]["node_id"]
 
         println("WorkFlowNetConfCNN get_view_obj node_id="+node_id)
 

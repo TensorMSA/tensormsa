@@ -24,7 +24,7 @@ class WorkFlowNetConfCnn(APIView) :
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = WorkFlowNetConfCNN().get_view_obj(input_data)
+            return_data = WorkFlowNetConfCNN().get_view_obj(nodeid)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
