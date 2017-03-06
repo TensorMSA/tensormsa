@@ -32,15 +32,10 @@ class WorkFlowTrainTask():
         if(len(node_list) == 0) :
             return None
 
-        println(node_list)
         # execute nodes by sequece
         for node in node_list :
             _path, _cls = self._get_cluster_exec_class(node)
             obj = self._load_class(_path, _cls).run(node)
-            println(_path)
-            println(_cls)
-            println(obj)
-
         return {}
 
     def _load_class(self, class_path, class_name):
@@ -53,7 +48,7 @@ class WorkFlowTrainTask():
 
         module = importlib.import_module(class_path)
         LoadClass = getattr(module, class_name)
-
+        print("Execute Node Name : {0} ".format(LoadClass))
         return LoadClass()
 
     def _get_arranged_node_list(self):
