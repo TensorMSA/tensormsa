@@ -7,6 +7,7 @@ from common.utils import *
 # service rabbitmq-server start
 # rabbitmqctl add_user tensormsa tensormsa
 # rabbitmqctl set_user_tags tensormsa administrator
+# rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 
