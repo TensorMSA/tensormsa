@@ -100,6 +100,17 @@ class WorkFlowDataText(WorkFlowData) :
             self.conf = self.get_step_source()
         return self.conf['source_parse_type']
 
+    def get_source_path(self):
+        """
+
+        :param nnid:
+        :param wfver:
+        :param node:
+        :return:
+        """
+        if ('conf' in self.__dict__):
+            self.conf = self.get_step_source()
+        return self.conf['source_path']
 
     def put_step_source(self, src, form, nnid, wfver, node, input_data):
         """

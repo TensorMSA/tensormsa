@@ -5,3 +5,4 @@ from .common_util import gUserId
 from .common_util import gConpg
 from .common_util import get_source_path
 from .common_util import get_store_path
+from .common_util import get_filepaths

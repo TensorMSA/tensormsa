@@ -29,6 +29,21 @@ def get_store_path(nn_id, name) :
     except Exception as e:
         raise Exception(e)
 
+def get_filepaths(directory):
+    """
+    utils return file paths under directory
+    :param directory:
+    :return:
+    """
+
+    import os
+    file_paths = []
+    for root, directories, files in os.walk(directory):
+        for filename in files:
+            filepath = os.path.join(root, filename)
+            file_paths.append(filepath)
+    return file_paths
+
 
 gLogFloag = "Y"
 gUserId = "-1"
