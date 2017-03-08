@@ -1,9 +1,9 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
+from master.workflow.netconf.workflow_netconf_w2v import WorkFlowNetConfW2V as Word2Vec
 
-class WorkFlowNetConfCnn(APIView) :
+class WorkFlowNetConfW2V(APIView) :
     """
 
     """
@@ -24,7 +24,7 @@ class WorkFlowNetConfCnn(APIView) :
         """
         try:
             nodeid = ''.join([nnid, '_', ver , '_', node])
-            return_data = WorkFlowNetConfCNN().get_view_obj(nodeid)
+            return_data = Word2Vec().get_view_obj(nodeid)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -36,9 +36,9 @@ class WorkFlowNetConfCnn(APIView) :
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
-            if(WorkFlowNetConfCNN().validation_check(input_data)) :
-                node_id = input_data["key"]["node_id"]
-                return_data = WorkFlowNetConfCNN().set_view_obj(node_id, input_data)
+            nodeid = ''.join([nnid, '_', ver, '_', node])
+            if(Word2Vec().validation_check(input_data)) :
+                return_data = Word2Vec().set_view_obj(nodeid, input_data)
             else :
                 return_data = {'message' : 'data validation error'}
             return Response(json.dumps(return_data))

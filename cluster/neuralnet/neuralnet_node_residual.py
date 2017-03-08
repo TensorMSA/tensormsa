@@ -8,7 +8,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
     def run(self, conf_data):
         return None
 
-    def _init_node_parm(self):
+    def _init_node_parm(self, node_id):
         return None
 
     def _set_progress_state(self):

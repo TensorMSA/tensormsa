@@ -3,7 +3,7 @@ from master.workflow.data.workflow_data_text import WorkFlowDataText
 from konlpy.tag import Kkma
 import konlpy, jpype
 from konlpy.tag import Mecab
-from common.utils import common_util
+from common import utils
 import h5py, os
 from cluster.data.hdf5 import H5PYDataset
 from time import gmtime, strftime
@@ -30,7 +30,7 @@ class DataNodeText(DataNode):
             h5file = h5py.File(output_path, mode = 'w')
 
             mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
-            fp_list = common_util.get_filepaths(self.data_src_path)
+            fp_list = utils.get_filepaths(self.data_src_path)
             for file_path in fp_list :
                 with open(file_path, 'r') as myfile:
                     data = myfile.read()
@@ -62,10 +62,26 @@ class DataNodeText(DataNode):
         return None
 
 
-    def load_data(self, parm = 'all'):
+    def load_train_data(self, node_id, parm = 'all'):
+        """
+        load train data
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        self._init_node_parm(node_id)
         return_data_arr = []
-        fp_list = common_util.get_filepaths(self.data_store_path)
+        fp_list = utils.get_filepaths(self.data_store_path)
         for file_path in fp_list:
             with h5py.File(file_path, mode='r') as myfile:
                 return_data_arr.append(myfile['/rawdata'][...])
         return return_data_arr
+
+    def load_test_data(self, node_id, parm = 'all'):
+        """
+        load test data
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        return []

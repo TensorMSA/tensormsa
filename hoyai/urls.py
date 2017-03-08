@@ -78,32 +78,34 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowDataReuse.as_view())),
 
     # workflow - data config APIs
-    url(r'^api/v1/type/wf/state/dataconf/detail/frame/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/dataconf/detail/frame/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataConfFrame.as_view())),
-    url(r'^api/v1/type/wf/state/dataconf/detail/image/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/dataconf/detail/image/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataConfImage.as_view())),
 
     # workflow - preprocess APIs
-    url(r'^api/v1/type/wf/state/pre/detail/predict/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/pre/detail/predict/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowPrePredict.as_view())),
-    url(r'^api/v1/type/wf/state/pre/detail/merge/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/pre/detail/merge/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowPreMerge.as_view())),
 
     # workflow - net config APIs
-    url(r'^api/v1/type/wf/state/netconf/detail/autoencoder/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/autoencoder/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfAutoEncoder.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/cnn/nodeid/(?P<nodeid>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/cnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfCnn.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/gru/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/gru/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfGru.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/lstm/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/lstm/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfLstm.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/predefined/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/predefined/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfPredefined.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/rnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/rnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfRnn.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/wdnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/netconf/detail/wdnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfWdnn.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/w2v/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfW2V.as_view())),
 
     # workflow - test APIs
     url(r'^api/v1/type/wf/state/test/nnid/{nnid}/ver/{ver}/',

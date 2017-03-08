@@ -88,7 +88,7 @@ class DataNodeImage(DataNode):
         return (output_path,)
         #return None
 
-    def _init_node_parm(self):
+    def _init_node_parm(self, node_id):
         return None
 
     def _set_progress_state(self):
@@ -129,7 +129,10 @@ class DataNodeImage(DataNode):
         #self.save_preview_image(newImage, dataframe, table, file_name, label)
         return newImage
 
-    def load_data(self, parm = 'all'):
+    def load_train_data(self, node_id, parm = 'all'):
+        return []
+
+    def load_test_data(self, node_id, parm='all'):
         return []
 
 # a = DataNodeImage()

@@ -10,11 +10,14 @@ class DataNodeFrame(DataNode):
     def run(self, conf_data):
         return None
 
-    def _init_node_parm(self):
+    def _init_node_parm(self, node_id):
         return None
 
     def _set_progress_state(self):
         return None
 
-    def load_data(self, parm = 'all'):
+    def load_train_data(self, node_id, parm = 'all'):
+        return []
+
+    def load_test_data(self, node_id, parm = 'all'):
         return []
