@@ -10,7 +10,9 @@ from time import gmtime, strftime
 
 class DataNodeText(DataNode):
     """
-
+            # kkma = Kkma()
+            # pos = kkma.pos(u'원칙이나 기체 설계와 엔진·레이더·항법장비 등')
+            # print(pos)
     """
 
     def run(self, conf_data):
@@ -20,7 +22,7 @@ class DataNodeText(DataNode):
         :return:
         """
         try:
-            self._init_node_parm(conf_data)
+            self._init_node_parm(conf_data['node_id'])
 
             file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
             output_path = os.path.join(self.data_store_path, file_name)
@@ -36,14 +38,6 @@ class DataNodeText(DataNode):
                     dt = h5py.special_dtype(vlen=str)
                     hdf_rawdata = h5file.create_dataset("rawdata", (len(pos),2), dtype=dt)
                     hdf_rawdata[...] = pos
-
-            temp = h5py.File(output_path, mode='r')
-            print(temp['/rawdata'])
-
-            # kkma = Kkma()
-            # pos = kkma.pos(u'원칙이나 기체 설계와 엔진·레이더·항법장비 등')
-            # print(pos)
-
             return pos
         except Exception as e:
             print("exception : {0}".format(e))
@@ -66,3 +60,12 @@ class DataNodeText(DataNode):
 
     def _set_progress_state(self):
         return None
+
+
+    def load_data(self, parm = 'all'):
+        return_data_arr = []
+        fp_list = common_util.get_filepaths(self.data_store_path)
+        for file_path in fp_list:
+            with h5py.File(file_path, mode='r') as myfile:
+                return_data_arr.append(myfile['/rawdata'][...])
+        return return_data_arr

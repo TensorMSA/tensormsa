@@ -129,5 +129,8 @@ class DataNodeImage(DataNode):
         #self.save_preview_image(newImage, dataframe, table, file_name, label)
         return newImage
 
-a = DataNodeImage()
-a.run(1)
+    def load_data(self, parm = 'all'):
+        return []
+
+# a = DataNodeImage()
+# a.run(1)

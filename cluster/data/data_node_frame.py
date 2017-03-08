@@ -15,3 +15,6 @@ class DataNodeFrame(DataNode):
 
     def _set_progress_state(self):
         return None
+
+    def load_data(self, parm = 'all'):
+        return []

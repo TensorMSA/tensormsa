@@ -13,3 +13,6 @@ class DataNode(WorkFlowCommonNode):
 
     def _set_progress_state(self):
         pass
+
+    def load_data(self, parm = 'all'):
+        pass

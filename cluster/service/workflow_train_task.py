@@ -32,11 +32,15 @@ class WorkFlowTrainTask():
         if(len(node_list) == 0) :
             return None
 
+        result_info = []
         # execute nodes by sequece
         for node in node_list :
             _path, _cls = self._get_cluster_exec_class(node)
-            obj = self._load_class(_path, _cls).run(node)
-        return {}
+            conf_data = {}
+            conf_data['node_id'] = node
+            conf_data['node_list'] = node_list
+            result_info.append(self._load_class(_path, _cls).run(conf_data))
+        return result_info
 
     def _load_class(self, class_path, class_name):
         """
