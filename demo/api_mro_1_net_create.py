@@ -11,6 +11,7 @@ nn_title = "MRO Image Classification"
 nn_desc = "MRO Image Classification"
 nn_wf_ver_info = "MRO Image Classification"
 
+
 #insert nn_info
 resp = requests.post('http://' + gUrl + '/api/v1/type/common/target/nninfo/',
                      json={
@@ -76,16 +77,13 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                      json={
                          "key" : {"node_id": node_id
                                   }
-                         ,"config": {"matrix": [4, 5],
-                                 "learnrate": 0.01,
-                                 "epoch": 2,
-                                 "x_shape":[0,0],
-                                 "y_shape":[0,0]
+                         ,"config": {"learnrate": 0.01,
+                                 "epoch": 50
                                  }
-                         ,"layer": {
+                         ,"layer1": {
                                  "type": "cnn",
                                  "active": "relu",
-                                 "cnnfilter": [2, 2],
+                                 "cnnfilter": [3, 3],
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
                                  "maxpoolstride": [1, 1],
@@ -94,13 +92,27 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "padding": "SAME",
                                  "droprate": ""
                                 }
-                         ,"drop": {
-                                 "active": "tanh",
-                                 "cnnfilter": [2, 2],
+                         ,"layer2": {
+                                 "type": "cnn",
+                                 "active": "relu",
+                                 "cnnfilter": [3, 3],
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
                                  "maxpoolstride": [1, 1],
                                  "node_in_out": [32, 64],
+                                 "regualizer": "",
+                                 "padding": "SAME",
+                                 "droprate": ""
+
+                                }
+                         ,"layer3": {
+                                 "type": "cnn",
+                                 "active": "relu",
+                                 "cnnfilter": [3, 3],
+                                 "cnnstride": [1, 1],
+                                 "maxpoolmatrix": [2, 2],
+                                 "maxpoolstride": [1, 1],
+                                 "node_in_out": [64, 128],
                                  "regualizer": "",
                                  "padding": "SAME",
                                  "droprate": "0.1"
