@@ -26,7 +26,7 @@ if [ "$type" = "1" ]; then
 
    python /home/dev/hoyai/manage.py makemigrations 
    python /home/dev/hoyai/manage.py migrate 
-   python /home/dev/hoyai/manage.py runserver $HOSTNAME:8888 &
+   python /home/dev/hoyai/manage.py runserver $HOSTNAME:8000 &
 fi
 if [ "$type" = "2" ]; then
   echo "Starting postgres"
