@@ -73,7 +73,7 @@ print("insert workflow version node info evaluation result : {0}".format(data))
 node_id = nn_id+"_"+wf_ver_id+"_netconf_node"
 
 # update workflow node conf info
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nodeid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
+resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
                      json={
                          "key" : {"node_id": node_id
                                   }
@@ -86,7 +86,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "cnnfilter": [3, 3],
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
-                                 "maxpoolstride": [1, 1],
+                                 "maxpoolstride": [2, 2],
                                  "node_in_out": [1, 32],
                                  "regualizer": "",
                                  "padding": "SAME",
@@ -98,7 +98,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "cnnfilter": [3, 3],
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
-                                 "maxpoolstride": [1, 1],
+                                 "maxpoolstride": [2, 2],
                                  "node_in_out": [32, 64],
                                  "regualizer": "",
                                  "padding": "SAME",
@@ -111,7 +111,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "cnnfilter": [3, 3],
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
-                                 "maxpoolstride": [1, 1],
+                                 "maxpoolstride": [2, 2],
                                  "node_in_out": [64, 128],
                                  "regualizer": "",
                                  "padding": "SAME",
