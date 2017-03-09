@@ -105,7 +105,7 @@ class MasterServerConf() :
             os.mkdir("/hoya_src_root")
         if(os.path.exists("/hoya_str_root") == False) :
             os.mkdir("/hoya_str_root")
-        if (os.path.exists("/hoya_str_root") == False):
+        if (os.path.exists("/hoya_model_root") == False):
             os.mkdir("/hoya_model_root")
 
         cache.set("source_root", "/hoya_src_root")

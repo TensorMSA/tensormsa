@@ -30,7 +30,6 @@ class WorkFlowNetConf :
             return data_set
         except Exception as e:
             raise Exception(e)
-        return None
 
     def set_view_obj(self, node_id, input_data):
         """

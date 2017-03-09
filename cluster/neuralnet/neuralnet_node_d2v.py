@@ -14,3 +14,15 @@ class NeuralNetNodeDoc2Vec(NeuralNetNode):
 
     def _set_progress_state(self):
         return None
+
+    def predict(self, node_id, parm = {}):
+        pass
+
+    def eval(self, node_id, parm={}):
+        """
+
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        pass
