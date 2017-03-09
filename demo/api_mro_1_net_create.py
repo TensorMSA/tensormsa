@@ -136,8 +136,8 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/
                      json={
                          "type": "local image",
                          "source_path": "/home/dev/",
-                         "preprocess": {"x_size": 100,
-                                        "y_size": 100},
+                         "preprocess": {"x_size": 32,
+                                        "y_size": 32},
                          "store_path": "/home/dev/"
                      })
 
