@@ -14,9 +14,10 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 # update preprocess
+# preprocess : kkma, twiter, mecab, nltk
 resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/pre/nnid/nn00004/ver/3/node/data_node/',
                      json={
-                         "preprocess":  "konlp",
+                         "preprocess":  "mecab",
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

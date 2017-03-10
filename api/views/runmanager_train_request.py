@@ -1,7 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.service.workflow_train_task import train
+from cluster.service.service_train_task import train
 
 class RunManagerTrainRequest(APIView):
     """

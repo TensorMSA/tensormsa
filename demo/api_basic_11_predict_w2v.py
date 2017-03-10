@@ -12,17 +12,17 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 
-println("S")
-
-nn_id = "nn00004"
-wf_ver_id = "1"
-
 # Run All Workflow
-resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
+resp = requests.post('http://' + url + '/api/v1/type/service/state/predict/type/w2v/nnid/nn00004/',
+                     json={
+                         "type": "sim",
+                         "val_1":["심판"],
+                         "val_2":["."]
+                     }
+                     )
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
-println("E")
 
 
 
