@@ -136,7 +136,8 @@ def random_batch(images_train, labels_train):
 
 def train(train_data_set, train_label_set, model, accuracy, netconf, X, Y):
     println("train start .....")
-    _train_cnt = 5
+    _train_cnt = netconf["config"]["epoch"]
+    println("_train_cnt="+str(_train_cnt))
     model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
     global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
     saver = tf.train.Saver()
