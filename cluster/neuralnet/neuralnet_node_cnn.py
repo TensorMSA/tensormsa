@@ -134,7 +134,7 @@ def random_batch(images_train, labels_train):
 
     return x_batch, y_batch
 
-def train(train_data_set, train_label_set, model, netconf, X, Y):
+def train(train_data_set, train_label_set, model, accuracy, netconf, X, Y):
     println("train start .....")
     _train_cnt = 5
     model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
@@ -177,7 +177,7 @@ def train(train_data_set, train_label_set, model, netconf, X, Y):
             # TensorFlow assigns the variables in feed_dict_train
             # to the placeholder variables and then runs the optimizer.
             # We also want to retrieve the global_step counter.
-            i_global, _ = sess.run([global_step, optimizer],
+            i_global, _ = sess.run([global_step, model],
                                       feed_dict=feed_dict_train)
 
             # Print status to screen every 100 iterations (and last).
@@ -229,7 +229,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         train_data_set, train_label_set = get_training_data(self, dataconf)
         netcheck, model, X, Y, train_op, accuracy = get_model(self, netconf, dataconf)
-        train(train_data_set, train_label_set, model, netconf, X, Y)
+        train(train_data_set, train_label_set, model, accuracy, netconf, X, Y)
         println("net_check=" + netcheck)
         println(model)
 
