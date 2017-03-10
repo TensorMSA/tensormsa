@@ -1,40 +1,31 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.service.service_single_task import WorkFlowSingleTask
-from cluster.service.service_single_task import single_run
-from common.utils import *
+from cluster.service.service_predict_w2v import PredictNetW2V
 
-class RunManagerSingleRequest(APIView):
+
+class ServiceManagerPredict(APIView):
     """
     """
-
-    def post(self, request, nnid, ver, node):
+    def post(self, request, type, nnid):
         """
-        - desc : insert data
-        """
-        try:
-            result = single_run.delay(nnid, ver, node)
-            return Response(json.dumps(result.get()))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-    def get(self, request, nnid, ver, node):
-        """
-        - desc : get data
+        - desc : insert cnn configuration data
         """
         try:
-            println("RunManager get...........................")
-            return_data = ""
+            input_data = json.loads(str(request.body, 'utf-8'))
+            if(type == 'w2v') :
+                return_data = PredictNetW2V().run(nnid, input_data)
+            else :
+                raise Exception ("Not defined type error")
+
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, nnid, ver, node):
+    def get(self, request, type, nnid):
         """
-        - desc ; update data
+        - desc : get cnn configuration data
         """
         try:
             return_data = ""
@@ -43,9 +34,20 @@ class RunManagerSingleRequest(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, nnid, ver, node):
+    def put(self, request, type, nnid):
         """
-        - desc : delete data
+        - desc ; update cnn configuration data
+        """
+        try:
+            return_data = ""
+            return Response(json.dumps(return_data))
+        except Exception as e:
+            return_data = {"status": "404", "result": str(e)}
+            return Response(json.dumps(return_data))
+
+    def delete(self, request, type, nnid):
+        """
+        - desc : delete cnn configuration data
         """
         try:
             return_data = ""

@@ -1,11 +1,8 @@
 from __future__ import absolute_import, unicode_literals
-import importlib
+
 from celery import shared_task
 from master import models
-from django.core import serializers as serial
-from django.db import connection
-from common.utils import dictfetchall
-from common.utils import *
+from cluster.common.common_node import WorkFlowCommonNode
 
 @shared_task
 def train(nn_id, wf_ver) :
@@ -13,7 +10,7 @@ def train(nn_id, wf_ver) :
     result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver)
     return result
 
-class WorkFlowTrainTask():
+class WorkFlowTrainTask(WorkFlowCommonNode):
     """
 
     """
@@ -32,24 +29,15 @@ class WorkFlowTrainTask():
         if(len(node_list) == 0) :
             return None
 
+        result_info = []
         # execute nodes by sequece
         for node in node_list :
-            _path, _cls = self._get_cluster_exec_class(node)
-            obj = self._load_class(_path, _cls).run(node)
-        return {}
-
-    def _load_class(self, class_path, class_name):
-        """
-        return class with name
-        :param module_name:
-        :param class_name:
-        :return: Class
-        """
-
-        module = importlib.import_module(class_path)
-        LoadClass = getattr(module, class_name)
-        print("Execute Node Name : {0} ".format(LoadClass))
-        return LoadClass()
+            _path, _cls = self.get_cluster_exec_class(node)
+            conf_data = {}
+            conf_data['node_id'] = node
+            conf_data['node_list'] = node_list
+            result_info.append(self.load_class(_path, _cls).run(conf_data))
+        return result_info
 
     def _get_arranged_node_list(self):
         """
@@ -59,7 +47,6 @@ class WorkFlowTrainTask():
         return_arr = []
         query_set = models.NN_WF_NODE_RELATION.objects.filter(wf_state_id=self.nn_id + "_" + self.wf_ver)
         for data in query_set:
-            print(data)
             if(len(return_arr) == 0) :
                 return_arr.append(data.nn_wf_node_id_1)
                 return_arr.append(data.nn_wf_node_id_2)
@@ -71,28 +58,6 @@ class WorkFlowTrainTask():
                     idx = return_arr.index(data.nn_wf_node_id_2)
                     return_arr.insert(idx, data.nn_wf_node_id_1)
         return return_arr
-
-    def _get_cluster_exec_class(self, node_id):
-        """
-        get execute class path
-        :param node_id:
-        :return:
-        """
-        # make query string (use raw query only when cate is too complicated)
-        query_list = []
-        query_list.append("SELECT wf_node_class_name, wf_node_class_path ")
-        query_list.append("FROM  master_NN_WF_NODE_INFO ND JOIN master_WF_TASK_SUBMENU_RULE SB   ")
-        query_list.append("      ON ND.wf_task_submenu_id_id =  SB.wf_task_submenu_id  ")
-        query_list.append("WHERE ND.nn_wf_node_id = %s")
-
-        # parm_list : set parm value as list
-        parm_list = []
-        parm_list.append(node_id)
-
-        with connection.cursor() as cursor:
-            cursor.execute(''.join(query_list), parm_list)
-            row = dictfetchall(cursor)
-        return row[0]['wf_node_class_path'], row[0]['wf_node_class_name']
 
     def _run_next_node(self):
         return None

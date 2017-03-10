@@ -30,14 +30,13 @@ class WorkFlowDataImage(WorkFlowData) :
         return None
 
 
-    def get_step_source(self, nnid, wfver):
+    def get_step_source(self, node_id):
         """
         getter for source step
         :return:obj(json) to make view
         """
         try:
-            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=str(nnid) + "_" + str(wfver),
-                                                     nn_wf_node_name='data_node')
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             config_data = getattr(obj, 'node_config_data')
 
         except Exception as e:

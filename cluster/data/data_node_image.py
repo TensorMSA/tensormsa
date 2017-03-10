@@ -5,7 +5,8 @@ import numpy
 from PIL import Image, ImageFilter
 from cluster.data.data_node import DataNode
 from cluster.data.hdf5 import H5PYDataset
-#from master.workflow.data.workflow_data_image import WorkFlowDataImage
+from master.workflow.data.workflow_data_image import WorkFlowDataImage
+from time import gmtime, strftime
 
 class DataNodeImage(DataNode):
     """
@@ -14,12 +15,11 @@ class DataNodeImage(DataNode):
 
     def run(self, conf_data):
         TRAIN = 'cat_vs_dog.zip'
-        nnid = 'nn00004'
-        wfver = '1'
-        #config_data = WorkFlowDataImage().get_step_source(nnid,wfver)
-        directory = '/home/dev/'#config_data['source_path']
-        output_directory = '/home/dev/'#config_data['store_path']
-        output_filename = 'dogs_vs_cats.hdf5'
+        node_id = conf_data['node_id']
+        config_data = WorkFlowDataImage().get_step_source(node_id)
+        directory = config_data['source_path']
+        output_directory = config_data['store_path']
+        output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
 
         # Prepare output file
         output_path = os.path.join(output_directory, output_filename)
@@ -88,7 +88,7 @@ class DataNodeImage(DataNode):
         return (output_path,)
         #return None
 
-    def _init_node_parm(self):
+    def _init_node_parm(self, node_id):
         return None
 
     def _set_progress_state(self):
@@ -129,5 +129,11 @@ class DataNodeImage(DataNode):
         #self.save_preview_image(newImage, dataframe, table, file_name, label)
         return newImage
 
-a = DataNodeImage()
-a.run(1)
+    def load_train_data(self, node_id, parm = 'all'):
+        return []
+
+    def load_test_data(self, node_id, parm='all'):
+        return []
+
+# a = DataNodeImage()
+# a.run(1)

@@ -27,7 +27,7 @@ from .runmanager_workflow import RunManagerWorkFlow
 from .runmanager_schedule import RunManagerSchedule
 from .resultmanager_default import ResultManagerDefault
 from .service_manager import ServiceManager
-from .service_manager_predict_request import ServiceManagerPredictRequest
+from .service_manager_predict import ServiceManagerPredict
 from .workflow_data_reuse import WorkFlowDataReuse
 from .common_nninfo_version import CommonNNInfoVersion
 from .workflow_init_simple import WorkFlowInitSimple
@@ -35,3 +35,4 @@ from .workflow_submenu_manager import WorkFlowSubMenuManager
 from .workflow_data_frame import WorkFlowDataFrame
 from .workflow_data_image import WorkFlowDataImage
 from .workflow_data_text import WorkFlowDataText
+from .workflow_netconf_w2v import WorkFlowNetConfW2V

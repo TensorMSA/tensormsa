@@ -1,35 +1,6 @@
 import psycopg2
 import os
 
-from django.core.cache import cache
-
-def get_source_path(nn_id, wf_ver, name) :
-    """
-    conbine parms and return source path (before data transformation)
-    :param nn_id:
-    :param wf_ver:
-    :param name:
-    :return:
-    """
-    return cache.get("source_root") + "/" + nn_id + "/" + wf_ver + "/" + name
-
-def get_store_path(nn_id, name) :
-    """
-    conbine parms and return store path (after data transformation, use on net train)
-    :param name:
-    :return:
-    """
-    from master import models
-    try:
-        obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=str(nn_id))
-        if(obj != None) :
-            return cache.get("store_root") + "/" + obj.biz_cate + "/" + obj.biz_sub_cate + "/" + name
-        else :
-            return ""
-    except Exception as e:
-        raise Exception(e)
-
-
 gLogFloag = "Y"
 gUserId = "-1"
 gUrl = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
