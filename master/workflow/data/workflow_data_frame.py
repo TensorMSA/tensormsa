@@ -1,4 +1,6 @@
 from master.workflow.data.workflow_data import WorkFlowData
+from master import models
+from common import utils
 
 
 class WorkFlowDataFrame(WorkFlowData) :
@@ -30,20 +32,33 @@ class WorkFlowDataFrame(WorkFlowData) :
         return None
 
 
-    def get_step_source(self):
+    def get_step_source(self, nnid, wfver):
         """
         getter for source step
         :return:obj(json) to make view
         """
-        return None
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
+            config_data = getattr(obj, 'node_config_data')
+            return config_data
+        except Exception as e:
+            raise Exception(e)
 
-    def put_step_source(self, obj):
+    def put_step_source(self, nnid, wfver, config_data):
         """
         putter for source step
         :param obj: config data from view
         :return:boolean
         """
-        return None
+
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=str(nnid) + "_" + str(wfver), nn_wf_node_name='data_node')
+            setattr(obj, 'node_config_data', config_data)
+            obj.save()
+            return config_data
+
+        except Exception as e:
+            raise Exception(e)
 
     def get_step_preprocess(self):
         """

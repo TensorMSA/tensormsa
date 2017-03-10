@@ -75,7 +75,9 @@ node_id = nn_id+"_"+wf_ver_id+"_netconf_node"
 # update workflow node conf info
 resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
                      json={
-                         "key" : {"node_id": node_id
+                         "key" : {"node_id": node_id,
+                                  "nn_id": nn_id,
+                                  "wf_ver_id": wf_ver_id
                                   }
                          ,"config": {"learnrate": 0.01,
                                  "epoch": 50
@@ -87,7 +89,8 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
                                  "maxpoolstride": [2, 2],
-                                 "node_in_out": [1, 32],
+                                 "node_in": 1,
+                                 "node_out": 32,
                                  "regualizer": "",
                                  "padding": "SAME",
                                  "droprate": ""
@@ -99,11 +102,11 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
                                  "maxpoolstride": [2, 2],
-                                 "node_in_out": [32, 64],
+                                 "node_in": 32,
+                                 "node_out": 64,
                                  "regualizer": "",
                                  "padding": "SAME",
                                  "droprate": ""
-
                                 }
                          ,"layer3": {
                                  "type": "cnn",
@@ -112,7 +115,8 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "cnnstride": [1, 1],
                                  "maxpoolmatrix": [2, 2],
                                  "maxpoolstride": [2, 2],
-                                 "node_in_out": [64, 128],
+                                 "node_in": 64,
+                                 "node_out": 128,
                                  "regualizer": "",
                                  "padding": "SAME",
                                  "droprate": "0.1"
@@ -123,7 +127,8 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "cnnstride": "",
                                  "maxpoolmatrix": "",
                                  "maxpoolstride": "",
-                                 "node_in_out": "",
+                                 "node_in": 128,
+                                 "node_out": 1024,
                                  "regualizer": "",
                                  "padding": "SAME",
                                  "droprate": ""

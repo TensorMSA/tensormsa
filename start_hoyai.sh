@@ -10,6 +10,7 @@ if [ "$#" -eq 0 ]; then
    echo "                  2 : start postgres"
    echo "                  3 : restart postgres"
    echo "                  4 : stop postgres"
+   echo "                  5 : stop django"
    exit 1
 fi
 
@@ -39,4 +40,10 @@ fi
 if [ "$type" = "4" ]; then
   echo "stop postgres"
   sudo -u postgres /usr/lib/postgresql/9.6/bin/pg_ctl stop -D /var/lib/postgresql/9.6/main
+fi
+if [ "$type" = "5" ]; then
+
+  echo "Stoping Django"
+
+  kill $(ps aux | grep 'manage.py'|grep -v grep| awk '{print $2}')
 fi

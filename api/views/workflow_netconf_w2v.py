@@ -2,6 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.netconf.workflow_netconf_w2v import WorkFlowNetConfW2V as Word2Vec
+from common.utils import *
 
 class WorkFlowNetConfW2V(APIView) :
     """
@@ -36,6 +37,7 @@ class WorkFlowNetConfW2V(APIView) :
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
+            input_data['model_path'] = get_model_path(nnid, ver, node)
             nodeid = ''.join([nnid, '_', ver, '_', node])
             if(Word2Vec().validation_check(input_data)) :
                 return_data = Word2Vec().set_view_obj(nodeid, input_data)
