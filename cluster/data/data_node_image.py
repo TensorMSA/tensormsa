@@ -44,6 +44,7 @@ class DataNodeImage(DataNode):
         hdf_features.dims[0].label = 'batch'
         #hdf_labels.dims[0].label = 'batch'
         #hdf_labels.dims[1].label = 'index'
+        labels = []
 
         # Convert
         i = 0
@@ -64,7 +65,7 @@ class DataNodeImage(DataNode):
                 # Save image
                 if image_name.count('.') != 0:
                     im = Image.open(zip_file.open(image_name))
-                    format_info = {'x_size':100,'y_size':100}#config_data['preprocess']
+                    format_info = config_data['preprocess']
                     image = numpy.array(self._resize_file_image(im, format_info))
                     image = image.transpose(2, 0, 1)
                     hdf_features[i] = image.flatten()
@@ -74,8 +75,16 @@ class DataNodeImage(DataNode):
                         hdf_labels[i] = image_name.split('/')[0].encode('utf8')
                     # Update progress
                     i += 1
+                else:
+                    try:
+                        labels.append(image_name.split('/')[0])
+                    except Exception as e:
+                        print("exception : {0}".format(e))
+                        raise Exception(e)
                 #bar.update(i if split == TRAIN else i - 25000)
         # Add the labels
+        config_data['labels'] = labels
+        WorkFlowDataImage().put_step_source(node_id, config_data)
         split_dict = {}
         sources = ['image_features', 'targets']
         split_dict['train'] = dict(zip(sources, [(0, 25000)] * 2))
