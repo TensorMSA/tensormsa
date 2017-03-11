@@ -1,3 +1,5 @@
+from common.utils import *
+from master import models
 
 class WorkFlowPre :
 
@@ -15,17 +17,35 @@ class WorkFlowPre :
         """
         return None
 
-    def get_view_obj(self):
+    def get_view_obj(self, node_id):
         """
-        get column type info for view
+        get view data for net config
         :return:
         """
-        pass
+        # node_id = input_data["key"]["node_id"]
 
-    def set_view_obj(self, obj):
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            data_set = getattr(obj, "node_config_data")
+            return data_set
+        except Exception as e:
+            raise Exception(e)
+
+    def set_view_obj(self, node_id, input_data):
         """
-        set column type info on db json filed
+        set net config data edited on view
         :param obj:
         :return:
         """
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            setattr(obj, "node_config_data", input_data)
+            obj.save()
+            return input_data
+        except Exception as e:
+            raise Exception(e)
+        return None
+
+    def validation_check(self, json_data):
         pass
+

@@ -36,3 +36,5 @@ from .workflow_data_frame import WorkFlowDataFrame
 from .workflow_data_image import WorkFlowDataImage
 from .workflow_data_text import WorkFlowDataText
 from .workflow_netconf_w2v import WorkFlowNetConfW2V
+from .workflow_pre_convert import WorkFlowPreConvert
+from .workflow_netconf_seq2seq import WorkFlowNetConfSeq2Seq

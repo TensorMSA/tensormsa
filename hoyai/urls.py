@@ -59,17 +59,17 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
 
     # workflow - data APIs
-    # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<format>.*) : default  3. (?P<prg>.*) : source, pre, store
+    # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<form>.*) : default  3. (?P<prg>.*) : source, pre, store
     url(r'^api/v1/type/wf/state/imgdata/src/(?P<src>.*)/form/(?P<form>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/'
         r'(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataImage.as_view())),
 
-    # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<format>.*) : default  3. (?P<prg>.*) : source, pre, store
+    # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<form>.*) : raw, zip  3. (?P<prg>.*) : source, pre, store
     url(r'^api/v1/type/wf/state/framedata/src/(?P<src>.*)/form/(?P<form>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/'
         r'(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataFrame.as_view())),
 
-    # 1.(?P<src>.*) : local, s3, hbase, etc.. , 2.(?P<format>.*) : file, line, tag, raw, default  3. (?P<prg>.*) : source, pre, store
+    # 1.(?P<src>.*) : local, s3, hbase, etc.. , 2.(?P<form>.*) : raw, zip  3. (?P<prg>.*) : source, pre, store
     url(r'^api/v1/type/wf/state/textdata/src/(?P<src>.*)/form/(?P<form>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/'
         r'(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataText.as_view())),
@@ -84,10 +84,13 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowDataConfImage.as_view())),
 
     # workflow - preprocess APIs
-    url(r'^api/v1/type/wf/state/pre/detail/predict/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+    url(r'^api/v1/type/wf/state/pre/detail/predict/type/(?P<type>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowPrePredict.as_view())),
-    url(r'^api/v1/type/wf/state/pre/detail/merge/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+    url(r'^api/v1/type/wf/state/pre/detail/merge/type/(?P<type>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowPreMerge.as_view())),
+    # convert data formats to feed network (ex) convert frame data to fit to feed rnn)
+    url(r'^api/v1/type/wf/state/pre/detail/convert/type/(?P<type>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowPreConvert.as_view())),
 
     # workflow - net config APIs
     url(r'^api/v1/type/wf/state/netconf/detail/autoencoder/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
@@ -106,6 +109,8 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfWdnn.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/w2v/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfW2V.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/seq2seq/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfSeq2Seq.as_view())),
 
     # workflow - test APIs
     url(r'^api/v1/type/wf/state/test/nnid/{nnid}/ver/{ver}/',
