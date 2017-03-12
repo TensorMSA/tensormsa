@@ -21,7 +21,7 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 # insert workflow info
-resp = requests.post('http://' + url + '/api/v1/type/wf/target/init/mode/simple/nn00004/wfver/3/',
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/init/mode/simple/nn00003/wfver/7/',
                      json={
                          "type": "word2vec"
                      })

@@ -13,3 +13,9 @@ class PreProcessNodePreNet(PreProcessNode):
 
     def _set_progress_state(self):
         pass
+
+    def load_train_data(self, node_id, parm = 'all'):
+        pass
+
+    def load_test_data(self, node_id, parm = 'all'):
+        pass

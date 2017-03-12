@@ -32,10 +32,15 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
         result_info = []
         # execute nodes by sequece
         for node in node_list :
+            _relation = self._get_node_relation(nn_id, wf_ver, node)
             _path, _cls = self.get_cluster_exec_class(node)
             conf_data = {}
             conf_data['node_id'] = node
             conf_data['node_list'] = node_list
+            conf_data['node_prev'] = _relation['prev']
+            conf_data['node_next'] = _relation['next']
+            conf_data['nn_id'] = nn_id
+            conf_data['wf_ver'] = wf_ver
             result_info.append(self.load_class(_path, _cls).run(conf_data))
         return result_info
 

@@ -17,6 +17,13 @@ class WorkFlowPre :
         """
         return None
 
+    def get_state_id(self, node_id):
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            return obj.wf_state_id_id
+        except Exception as e:
+            raise Exception(e)
+
     def get_view_obj(self, node_id):
         """
         get view data for net config

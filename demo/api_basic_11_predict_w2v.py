@@ -13,10 +13,10 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 # ./manage.py runserver [HOST]:8000
 
 # Run All Workflow
-resp = requests.post('http://' + url + '/api/v1/type/service/state/predict/type/w2v/nnid/nn00004/',
+resp = requests.post('http://' + url + '/api/v1/type/service/state/predict/type/w2v/nnid/nn00003/',
                      json={
                          "type": "sim",
-                         "val_1":["심판"],
+                         "val_1":["탄핵"],
                          "val_2":["."]
                      }
                      )
