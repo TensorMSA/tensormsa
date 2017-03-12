@@ -28,13 +28,21 @@ class DataNodeFrame(DataNode):
         data_sql_stmt = self.data_sql_stmt
 
         if object_type == "csv":
-            filepath_name = source_directory + "/" + "adult.data"
+            source_filepath_name = source_directory + "/" + "adult.data"
             try:
-                df_csv_read = pd.read_csv(tf.gfile.Open(filepath_name),
+                df_csv_read = pd.read_csv(tf.gfile.Open(source_filepath_name),
                      skipinitialspace=True,
                      engine="python")
             except Exception as e:
                 raise Exception(e)
+            #test convert to hdf5
+            try:
+                store_filepath_name = data_store_path + "/" + "adult.h5"
+                df_csv_read.to_hdf(store_filepath_name, 'df', format='table', mode='w')
+            except Exception as e:
+                raise Exception(e)
+
+
             print(df_csv_read)
 
 
