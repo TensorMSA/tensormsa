@@ -27,8 +27,10 @@ class WorkFlowSimpleManager :
             self._create_predefined_nodes_image(state_id)
         elif(type == 'word2vec'):
             self._create_predefined_nodes_word2vec(state_id)
-        else:
+        elif (type == 'frame'):
             self._create_predefined_nodes_frame(state_id)
+        else:
+            self._create_predefined_nodes_etc(state_id)
 
         return type
 
@@ -219,4 +221,10 @@ class WorkFlowSimpleManager :
             raise Exception(e)
         finally:
             return True
+    def _create_predefined_nodes_etc(self, wf_state_id):
+        """
+
+        :return:
+        """
+        pass
 
