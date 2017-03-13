@@ -127,7 +127,7 @@ def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
         check_prediction = tf.equal(tf.argmax(L1, 1), tf.argmax(Y, 1))
         accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
-        global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
+        # global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
         saver = tf.train.Saver()
 
         with tf.Session() as sess:
@@ -158,7 +158,7 @@ def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
                 sess.run(optimizer, feed_dict=feed_dict_train)
 
                 # Print status to screen every 100 iterations (and last).
-                if (i % 10 == 0) or (i == train_cnt - 1):
+                if (i % 1 == 0) or (i == train_cnt - 1):
                     # Calculate the accuracy on the training-batch.
                     batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
 
@@ -167,10 +167,11 @@ def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
                     println(msg.format(i, batch_acc))
 
                 # Save a checkpoint to disk every 1000 iterations (and last).
-                if (i % 100 == 0) or (i == train_cnt - 1):
+                if (i % 10 == 0) or (i == train_cnt - 1):
+                    println("Save model_path="+model_path + "check")
                     saver.save(sess,
-                               save_path=model_path + "check",
-                               global_step=global_step)
+                               save_path=model_path,
+                               global_step=i)
 
         println("Saved checkpoint.")
     except Exception as e:
@@ -208,10 +209,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
         x_size = 28  # MNIST 이미지의 가로 크기
         y_size = 28  # MNIST 이미지의 세로 크기
         color = 1
-        train_cnt = 200
+        train_cnt = 12
 
         X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, color], name='x')
         Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
+        println("1......")
         ################################################################
         train_data_set, train_label_set = get_training_data(self, dataconf)
         netcheck, model = get_model(self, netconf, X, num_classes)
