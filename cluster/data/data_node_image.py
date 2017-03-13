@@ -7,6 +7,8 @@ from cluster.data.data_node import DataNode
 from cluster.data.hdf5 import H5PYDataset
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
 from time import gmtime, strftime
+from common import utils
+from common.utils import *
 
 class DataNodeImage(DataNode):
     """
@@ -84,7 +86,7 @@ class DataNodeImage(DataNode):
                 #bar.update(i if split == TRAIN else i - 25000)
         # Add the labels
         config_data['labels'] = labels
-        WorkFlowDataImage().put_step_source(node_id, config_data)
+        WorkFlowDataImage().put_step_source(node_id.split('_')[0],node_id.split('_')[1], node_id.split('_')[2], config_data)
         split_dict = {}
         sources = ['image_features', 'targets']
         split_dict['train'] = dict(zip(sources, [(0, 25000)] * 2))
@@ -139,7 +141,15 @@ class DataNodeImage(DataNode):
         return newImage
 
     def load_train_data(self, node_id, parm = 'all'):
-        return []
+        config_data = WorkFlowDataImage().get_step_source(node_id)
+        output_directory = config_data['store_path']
+        fp_list = utils.get_filepaths(output_directory)
+        for file_path in fp_list:
+            h5file = h5py.File(file_path, mode='r')
+            img_data = h5file['image_features']
+            targets = h5file['targets']
+            labels = config_data['labels']
+        return img_data, targets, labels
 
     def load_test_data(self, node_id, parm='all'):
         return []
