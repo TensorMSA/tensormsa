@@ -217,12 +217,15 @@ class NeuralNetNodeCnn(NeuralNetNode):
         println("1......")
         ################################################################
         # train_data_set, train_label_set = get_training_data(self, dataconf)
-        # = DataNodeImage().load_train_data(node_id)
-        # netcheck, model = get_model(self, netconf, X, num_classes)
-        # if netcheck == "S":
-        #     train(train_data_set, train_label_set, model, X, Y, train_cnt, model_path)
-        # else:
-        #     println("net_check=" + netcheck)
+        node_id = str(conf_data["node_list"][0])
+        img_data, targets, labels = DataNodeImage().load_train_data(node_id)
+        println(targets)
+        println(labels)
+        netcheck, model = get_model(self, netconf, X, num_classes)
+        if netcheck == "S":
+            train(img_data, targets, model, X, Y, train_cnt, model_path)
+        else:
+            println("net_check=" + netcheck)
 
         return None
 

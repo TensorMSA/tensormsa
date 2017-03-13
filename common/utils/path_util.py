@@ -9,7 +9,21 @@ def get_source_path(nn_id, wf_ver, name) :
     :param name:
     :return:
     """
-    return ''.join([cache.get("source_root") , "/" , nn_id , "/" , wf_ver , "/" , name])
+    path = ''.join([cache.get("source_root"), "/", nn_id, "/", wf_ver, "/", name])
+    set_filepaths(path)
+    return path
+
+def get_datastore_path(nn_id, wf_ver, name) :
+    """
+    conbine parms and return source path (before data transformation)
+    :param nn_id:
+    :param wf_ver:
+    :param name:
+    :return:
+    """
+    path = ''.join([cache.get("store_root"), "/", nn_id, "/", wf_ver, "/", name])
+    set_filepaths(path)
+    return path
 
 def get_store_path(nn_id, name) :
     """
