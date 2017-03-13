@@ -91,8 +91,8 @@ class WorkFlowSimpleManager :
         try:
             # data node
             input_data = {}
-            input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_node'
-            input_data['nn_wf_node_name'] = 'data_node'
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_name'] = 'datasrc'
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['wf_task_submenu_id'] = 'data_image'
             input_data['wf_node_status'] = 0
