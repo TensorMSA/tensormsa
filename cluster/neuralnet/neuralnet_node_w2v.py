@@ -21,8 +21,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             input_data = dyna_cls.load_train_data(data_node_name, parm = 'all')
 
             # train
-            #model = word2vec.Word2Vec(input_data, size=100, window=5, min_count=5, workers=4)
-            model = word2vec.Word2Vec()
+            model = word2vec.Word2Vec(size=self.vector_size , window=self.window_size, min_count=5, workers=4)
             if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
                 model = word2vec.Word2Vec.load(''.join([self.md_store_path, '/model.bin']))
             model.build_vocab(input_data)
@@ -37,7 +36,8 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
     def _init_node_parm(self, node_id):
         wf_conf = WorkFlowNetConfW2V(node_id)
         self.md_store_path = wf_conf.get_model_store_path()
-
+        self.window_size = wf_conf.get_window_size()
+        self.vector_size = wf_conf.get_vector_size()
 
     def _set_progress_state(self):
         return None
@@ -66,9 +66,10 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             model = word2vec.Word2Vec.load(''.join([self.md_store_path, '/model.bin']))
             if(parm['type'] == 'vector') :
                 for key in parm['val_1'] :
-                    return_val.append(model[key])
+                    if key in model :
+                        return_val.append(model[key])
             elif(parm['type'] == 'sim') :
-                return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=1))
+                return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=5))
             else :
                 raise Exception ("Not available type : {0}".format(parm['type']))
             return return_val
