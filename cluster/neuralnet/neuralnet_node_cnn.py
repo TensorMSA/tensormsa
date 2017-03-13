@@ -5,6 +5,7 @@ import tensorflow as tf
 import time
 import numpy as np
 from datetime import timedelta
+from cluster.data.data_node_image import DataNodeImage
 ########################################################################
 def get_training_data(self, dataconf):
     println(dataconf)
@@ -215,12 +216,13 @@ class NeuralNetNodeCnn(NeuralNetNode):
         Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
         println("1......")
         ################################################################
-        train_data_set, train_label_set = get_training_data(self, dataconf)
-        netcheck, model = get_model(self, netconf, X, num_classes)
-        if netcheck == "S":
-            train(train_data_set, train_label_set, model, X, Y, train_cnt, model_path)
-        else:
-            println("net_check=" + netcheck)
+        # train_data_set, train_label_set = get_training_data(self, dataconf)
+        # = DataNodeImage().load_train_data(node_id)
+        # netcheck, model = get_model(self, netconf, X, num_classes)
+        # if netcheck == "S":
+        #     train(train_data_set, train_label_set, model, X, Y, train_cnt, model_path)
+        # else:
+        #     println("net_check=" + netcheck)
 
         return None
 
