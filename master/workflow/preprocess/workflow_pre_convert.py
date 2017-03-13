@@ -1,9 +1,10 @@
 from master.workflow.preprocess.workflow_pre import WorkFlowPre
 
-class WorkFlowPreMerge(WorkFlowPre):
+class WorkFlowPreConvert(WorkFlowPre):
     """
 
     """
+
     def __init__(self, key = None):
         """
         init key variable
@@ -16,8 +17,6 @@ class WorkFlowPreMerge(WorkFlowPre):
         error_msg = ""
         if('batchsize' not in json_data) :
             error_msg = ''.join([error_msg, 'batchsize (int) not defined'])
-        if('merge_rule' not in json_data) :
-            error_msg = ''.join([error_msg, 'merge_rule (dict) not defined'])
         if('type' not in json_data) :
             error_msg = ''.join([error_msg, 'type (str) not defined'])
 
@@ -31,11 +30,6 @@ class WorkFlowPreMerge(WorkFlowPre):
             self.conf = self.get_view_obj(self.key)
         return self.conf['batchsize']
 
-    def get_merge_rule(self):
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['merge_rule']
-
     def get_type(self):
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
@@ -44,5 +38,4 @@ class WorkFlowPreMerge(WorkFlowPre):
     def get_state_code(self):
         if('state_id' not in self.__dict__) :
             self.state_id = self.get_state_id(self.key)
-        return self.state_id
-
+            return self.state_id

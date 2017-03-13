@@ -1,10 +1,9 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from master.workflow.preprocess.workflow_pre_merge import WorkFlowPreMerge as WFPreMerge
+from master.workflow.preprocess.workflow_pre_convert import WorkFlowPreConvert as WFpreConvert
 
-
-class WorkFlowPreMerge(APIView) :
+class WorkFlowPreConvert(APIView) :
     """
 
     """
@@ -16,8 +15,8 @@ class WorkFlowPreMerge(APIView) :
             input_data = json.loads(str(request.body, 'utf-8'))
             nodeid = ''.join([nnid, '_', ver, '_', node])
             input_data['type'] = type
-            if (WFPreMerge().validation_check(input_data)):
-                return_data = WFPreMerge().set_view_obj(nodeid, input_data)
+            if (WFpreConvert().validation_check(input_data)):
+                return_data = WFpreConvert().set_view_obj(nodeid, input_data)
             else :
                 return_data = {'message' : 'data validation error'}
             return Response(json.dumps(return_data))

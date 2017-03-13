@@ -94,7 +94,17 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/s
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
-
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_convert",
+                        "wf_task_submenu_name": "pre_convert",
+                        "wf_task_submenu_desc": "pre_convert",
+                        "wf_node_class_path": "cluster.preprocess.preprocess_node_convert",
+                        "wf_node_class_name": "PreProcessNodeConvert"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
 
 
 ##################################################

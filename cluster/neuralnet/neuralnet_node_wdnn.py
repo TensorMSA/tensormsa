@@ -6,6 +6,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
     """
 
     def run(self, conf_data):
+        print("NeuralNetNodeWdnn called")
         return None
 
     def _init_node_parm(self, node_id):

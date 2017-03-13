@@ -1,6 +1,7 @@
 import importlib
 from django.db import connection
 from common.utils import *
+from master import models
 
 class WorkFlowCommonNode :
     """
@@ -74,3 +75,25 @@ class WorkFlowCommonNode :
         LoadClass = getattr(module, class_name)
         print("Execute Node Name : {0} ".format(LoadClass))
         return LoadClass()
+
+    def _get_node_relation(self, nn_id, wf_ver, node_id):
+        """
+        get node relations connected with selected node_id
+        :return:
+        """
+        return_obj = {}
+        prev_arr = []
+        next_arr = []
+
+        query_set = models.NN_WF_NODE_RELATION.objects.filter(wf_state_id=nn_id + "_" + wf_ver)
+
+        for data in query_set:
+            if(node_id == data.nn_wf_node_id_2) :
+                prev_arr.append(data.nn_wf_node_id_1)
+            if (node_id == data.nn_wf_node_id_1):
+                next_arr.append(data.nn_wf_node_id_2)
+
+        return_obj['prev'] = prev_arr
+        return_obj['next'] = next_arr
+
+        return return_obj

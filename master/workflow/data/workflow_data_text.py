@@ -1,6 +1,7 @@
 from master.workflow.data.workflow_data import WorkFlowData
 from common import utils
 from master import models
+import os
 
 class WorkFlowDataText(WorkFlowData) :
     """
@@ -59,7 +60,6 @@ class WorkFlowDataText(WorkFlowData) :
         :param node:
         :return:
         """
-        print(self.__dict__)
         if('conf' not in self.__dict__) :
             self.conf = self.get_step_source()
         return self.conf['source_sql']
@@ -119,15 +119,20 @@ class WorkFlowDataText(WorkFlowData) :
         :return:boolean
         """
         try:
+            source_path = utils.get_source_path(nnid, wfver, input_data['source_path'])
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(wfver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
             config_data['source_type'] = src
             config_data['source_parse_type'] = form
             config_data['source_server'] = input_data['source_server']
             config_data['source_sql'] = input_data['source_sql']
-            config_data['source_path'] = utils.get_source_path(nnid, wfver, input_data['source_path'])
+            config_data['source_path'] = source_path
             setattr(obj, 'node_config_data', config_data)
             obj.save()
+
+            if (os.path.exists(source_path) == False):
+                os.makedirs(source_path, exist_ok=True)
+
             return input_data['source_path']
 
         except Exception as e:
@@ -186,11 +191,16 @@ class WorkFlowDataText(WorkFlowData) :
         :return:boolean
         """
         try:
+            store_path = utils.get_store_path(nnid, input_data['store_path'])
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(wfver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
             config_data['store_path'] = utils.get_store_path(nnid, input_data['store_path'])
             setattr(obj, 'node_config_data', config_data)
             obj.save()
+
+            if (os.path.exists(store_path) == False):
+                os.makedirs(store_path, exist_ok=True)
+
             return input_data['store_path']
 
         except Exception as e:

@@ -1,23 +1,23 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from master.workflow.preprocess.workflow_pre_merge import WorkFlowPreMerge as WFPreMerge
+from master.workflow.netconf.workflow_netconf_seq2seq import WorkFlowNetConfSeq2Seq as Seq2Seq
+from common.utils import *
 
-
-class WorkFlowPreMerge(APIView) :
+class WorkFlowNetConfSeq2Seq(APIView) :
     """
 
     """
-    def post(self, request, nnid, ver, node, type):
+    def post(self, request, nnid, ver, node):
         """
         - desc : insert data
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
+            input_data['model_path'] = get_model_path(nnid, ver, node)
             nodeid = ''.join([nnid, '_', ver, '_', node])
-            input_data['type'] = type
-            if (WFPreMerge().validation_check(input_data)):
-                return_data = WFPreMerge().set_view_obj(nodeid, input_data)
+            if(Seq2Seq().validation_check(input_data)) :
+                return_data = Seq2Seq().set_view_obj(nodeid, input_data)
             else :
                 return_data = {'message' : 'data validation error'}
             return Response(json.dumps(return_data))
@@ -25,29 +25,36 @@ class WorkFlowPreMerge(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, nnid, ver, node, type):
+    def get(self, request, nnid, ver, node):
         """
         - desc : get data
         """
         try:
-            return_data = ""
+            nodeid = ''.join([nnid, '_', ver , '_', node])
+            return_data = Seq2Seq().get_view_obj(nodeid)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, nnid, ver, node, type):
+    def put(self, request, nnid, ver, node):
         """
         - desc ; update data
         """
         try:
-            return_data = ""
+            input_data = json.loads(str(request.body, 'utf-8'))
+            input_data['model_path'] = get_model_path(nnid, ver, node)
+            nodeid = ''.join([nnid, '_', ver, '_', node])
+            if(Seq2Seq().validation_check(input_data)) :
+                return_data = Seq2Seq().set_view_obj(nodeid, input_data)
+            else :
+                return_data = {'message' : 'data validation error'}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def delete(self, request, nnid, ver, node, type):
+    def delete(self, request, nnid, ver, node):
         """
         - desc : delete  data
         """
