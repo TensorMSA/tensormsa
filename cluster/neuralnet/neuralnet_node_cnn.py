@@ -22,22 +22,11 @@ def get_training_data(self, dataconf):
 
     return train_data_set, train_label_set
 ########################################################################
-def get_model(self, netconf, dataconf, train_data_set, train_label_set):
+def get_model(self, netconf, X, num_classes):
     net_check = "S"
     stopper = 1
-    x_size = dataconf["preprocess"]["x_size"]
-    y_size = dataconf["preprocess"]["y_size"]
-
-    num_classes = 10
-    x_size = 28  # MNIST 이미지의 가로 크기
-    y_size = 28  # MNIST 이미지의 세로 크기
-    color = 1
-
-    X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, color], name='x')
-    Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
-    # ################################################################
+    L1 = X
     try:
-        L1 = X
         while True:
             try:
                 layer = netconf["layer" + str(stopper)]
@@ -111,7 +100,7 @@ def get_model(self, netconf, dataconf, train_data_set, train_label_set):
         println(e)
         L1 = e
 
-    return net_check, L1, X, Y
+    return net_check, L1
 ########################################################################
 # Train
 def random_batch(images_train, labels_train):
@@ -129,7 +118,7 @@ def random_batch(images_train, labels_train):
 
     return x_batch, y_batch
 ########################################################################
-def train(train_data_set, train_label_set, L1, X, Y, netconf):
+def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
 
     try:
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=L1, labels=Y))
@@ -138,9 +127,6 @@ def train(train_data_set, train_label_set, L1, X, Y, netconf):
         check_prediction = tf.equal(tf.argmax(L1, 1), tf.argmax(Y, 1))
         accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
-        _train_cnt = int(netconf["config"]["epoch"])
-
-        model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
         global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
         saver = tf.train.Saver()
 
@@ -161,26 +147,27 @@ def train(train_data_set, train_label_set, L1, X, Y, netconf):
                 sess.run(tf.initialize_all_variables())
 
             ################################################################
-            println("Train Optimize Call:"+ str(_train_cnt))
+            println("Train Optimize Call:"+ str(train_cnt))
 
             start_time = time.time()
 
-            for i in range(_train_cnt):
+            for i in range(train_cnt):
                 x_batch, y_true_batch = random_batch(train_data_set, train_label_set)
                 feed_dict_train = {X: x_batch,Y: y_true_batch}
-                i_global, _ = sess.run([global_step, optimizer],feed_dict=feed_dict_train)
+                # i_global, _ = sess.run([global_step, optimizer],feed_dict=feed_dict_train)
+                sess.run(optimizer, feed_dict=feed_dict_train)
+
                 # Print status to screen every 100 iterations (and last).
-                if (i_global % 100 == 0) or (i == _train_cnt - 1):
+                if (i % 10 == 0) or (i == train_cnt - 1):
                     # Calculate the accuracy on the training-batch.
-                    batch_acc = sess.run(accuracy,
-                                            feed_dict=feed_dict_train)
+                    batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
 
                     # Print status.
                     msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
-                    println(msg.format(i_global, batch_acc))
+                    println(msg.format(i, batch_acc))
 
                 # Save a checkpoint to disk every 1000 iterations (and last).
-                if (i_global % 1000 == 0) or (i == _train_cnt - 1):
+                if (i % 100 == 0) or (i == train_cnt - 1):
                     saver.save(sess,
                                save_path=model_path + "check",
                                global_step=global_step)
@@ -200,13 +187,9 @@ def train(train_data_set, train_label_set, L1, X, Y, netconf):
 
     # Print the time-usage.
     println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
-
-
-
 ########################################################################
 class NeuralNetNodeCnn(NeuralNetNode):
     """
-
     """
     def run(self, conf_data):
         println("run NeuralNetNodeCnn")
@@ -215,11 +198,27 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # search nn_node_info
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
+        model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
 
+        x_size = dataconf["preprocess"]["x_size"]
+        y_size = dataconf["preprocess"]["y_size"]
+        train_cnt = int(netconf["config"]["epoch"])
+
+        num_classes = 10
+        x_size = 28  # MNIST 이미지의 가로 크기
+        y_size = 28  # MNIST 이미지의 세로 크기
+        color = 1
+        train_cnt = 200
+
+        X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, color], name='x')
+        Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
+        ################################################################
         train_data_set, train_label_set = get_training_data(self, dataconf)
-        netcheck, model, X, Y = get_model(self, netconf, dataconf, train_data_set, train_label_set)
-        train(train_data_set, train_label_set, model, X, Y, netconf)
-        println("net_check=" + netcheck)
+        netcheck, model = get_model(self, netconf, X, num_classes)
+        if netcheck == "S":
+            train(train_data_set, train_label_set, model, X, Y, train_cnt, model_path)
+        else:
+            println("net_check=" + netcheck)
 
         return None
 
