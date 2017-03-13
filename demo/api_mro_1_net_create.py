@@ -80,7 +80,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                   "wf_ver_id": wf_ver_id
                                   }
                          ,"config": {"learnrate": 0.01,
-                                 "epoch": 50
+                                 "epoch": 3
                                  }
                          ,"layer1": {
                                  "type": "cnn",
