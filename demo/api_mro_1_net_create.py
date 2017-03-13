@@ -140,10 +140,10 @@ data = json.loads(resp.json())
 resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/datasrc/',
                      json={
                          "type": "local image",
-                         "source_path": "/home/dev/",
-                         "preprocess": {"x_size": 32,
-                                        "y_size": 32},
-                         "store_path": "/home/dev/"
+                         "source_path": "/hoya_src_root/"+nn_id+"/"+wf_ver_id+"/datasrc",
+                         "preprocess": {"x_size": 100,
+                                        "y_size": 100},
+                         "store_path": "/hoya_str_root/"+nn_id+"/"+wf_ver_id+"/datasrc"
                      })
 
 println("E")
