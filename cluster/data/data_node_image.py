@@ -16,11 +16,15 @@ class DataNodeImage(DataNode):
     """
 
     def run(self, conf_data):
+        # println("tttttttttttttttttttttttttttttttttttttt")
+        # println(conf_data)
         TRAIN = 'cat_vs_dog.zip'
         node_id = conf_data['node_id']
         config_data = WorkFlowDataImage().get_step_source(node_id)
-        directory = config_data['source_path']
-        output_directory = config_data['store_path']
+        # directory = config_data['source_path']
+        directory = get_source_path(node_id.split('_')[0],node_id.split('_')[1], node_id.split('_')[2])
+        # output_directory = config_data['store_path']
+        output_directory = get_datastore_path(node_id.split('_')[0], node_id.split('_')[1], node_id.split('_')[2])
         output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
 
         # Prepare output file
@@ -141,6 +145,8 @@ class DataNodeImage(DataNode):
         return newImage
 
     def load_train_data(self, node_id, parm = 'all'):
+        # println("load_train_data =")
+        # println(node_id)
         config_data = WorkFlowDataImage().get_step_source(node_id)
         output_directory = config_data['store_path']
         fp_list = utils.get_filepaths(output_directory)
