@@ -1,2 +1,2 @@
-from .workflow_train_task import WorkFlowTrainTask
-from .workflow_predict_task import WorkFlowPredictTask
+from .service_train_task import WorkFlowTrainTask
+from .service_predict_w2v import NeuralNetNodeWord2Vec

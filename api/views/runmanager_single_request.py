@@ -1,8 +1,8 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.service.workflow_single_task import WorkFlowSingleTask
-from cluster.service.workflow_single_task import single_run
+from cluster.service.service_single_task import WorkFlowSingleTask
+from cluster.service.service_single_task import single_run
 from common.utils import *
 
 class RunManagerSingleRequest(APIView):
