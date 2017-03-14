@@ -35,3 +35,4 @@ from .workflow_submenu_manager import WorkFlowSubMenuManager
 from .workflow_data_frame import WorkFlowDataFrame
 from .workflow_data_image import WorkFlowDataImage
 from .workflow_data_text import WorkFlowDataText
+from .file_upload_view import FileUploadView
