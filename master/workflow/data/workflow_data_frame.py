@@ -115,6 +115,7 @@ class WorkFlowDataFrame(WorkFlowData) :
 
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(wfver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
+            config_data['type'] = input_data['type']
             config_data['source_type'] = src
             config_data['source_parse_type'] = form
             config_data['source_server'] = input_data['source_server']

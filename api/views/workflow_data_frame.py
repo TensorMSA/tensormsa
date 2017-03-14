@@ -10,6 +10,7 @@ class WorkFlowDataFrame(APIView):
     def post(self, request, src, form, prg, nnid, ver, node):
         """
         - desc : insert cnn configuration data
+          completed
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
