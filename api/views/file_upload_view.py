@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.files.storage import FileSystemStorage
 from common.utils import *
-from requests_toolbelt import MultipartEncoder
-import requests
+# from requests_toolbelt import MultipartEncoder
+# import requests
 
 from rest_framework.parsers import FileUploadParser,MultiPartParser
 # from rest_framework import status
