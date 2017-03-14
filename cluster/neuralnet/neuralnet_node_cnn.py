@@ -128,7 +128,6 @@ def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
         check_prediction = tf.equal(tf.argmax(L1, 1), tf.argmax(Y, 1))
         accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
-        # global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
         saver = tf.train.Saver()
 
         with tf.Session() as sess:
@@ -155,7 +154,6 @@ def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
             for i in range(train_cnt):
                 x_batch, y_true_batch = random_batch(train_data_set, train_label_set)
                 feed_dict_train = {X: x_batch,Y: y_true_batch}
-                # i_global, _ = sess.run([global_step, optimizer],feed_dict=feed_dict_train)
                 sess.run(optimizer, feed_dict=feed_dict_train)
 
                 # Print status to screen every 100 iterations (and last).
@@ -214,13 +212,14 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, color], name='x')
         Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
-        println("1......")
+
         ################################################################
-        # train_data_set, train_label_set = get_training_data(self, dataconf)
+        img_data, targets = get_training_data(self, dataconf)
         node_id = str(conf_data["node_list"][0])
-        img_data, targets, labels = DataNodeImage().load_train_data(node_id)
-        println(targets)
-        println(labels)
+        # img_data, targets, labels = DataNodeImage().load_train_data(node_id)
+        # println(img_data)
+        # println(targets)
+        # println(labels)
         netcheck, model = get_model(self, netconf, X, num_classes)
         if netcheck == "S":
             train(img_data, targets, model, X, Y, train_cnt, model_path)
