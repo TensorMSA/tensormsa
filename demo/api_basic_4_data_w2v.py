@@ -9,6 +9,7 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local
                          "source_server": "local",
                          "source_sql": "all",
                          "source_path": "test",
+                         "max_sentence_len" : 50
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

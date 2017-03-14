@@ -97,3 +97,4 @@ class WorkFlowCommonNode :
         return_obj['next'] = next_arr
 
         return return_obj
+

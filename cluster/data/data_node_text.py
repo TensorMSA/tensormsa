@@ -3,9 +3,10 @@ from master.workflow.data.workflow_data_text import WorkFlowDataText
 from konlpy.tag import Kkma
 from konlpy.tag import Mecab
 from common import utils
-import os
+import os,h5py
 from time import gmtime, strftime
 from shutil import copyfile
+import numpy as np
 
 class DataNodeText(DataNode):
     """
@@ -20,13 +21,21 @@ class DataNodeText(DataNode):
         """
         try:
             self._init_node_parm(conf_data['node_id'])
-            os.makedirs(self.data_store_path, exist_ok=True)
             fp_list = utils.get_filepaths(self.data_src_path)
-            for file_path in fp_list:
+            buffer_list = []
+
+            if (self.data_preprocess_type == 'mecab'):
+                buffer_list = self._mecab_parse()
+            elif (self.data_preprocess_type == 'kkma'):
+                buffer_list = self._kkma_parse()
+
+            if(len(buffer_list) > 0 ) :
                 file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
                 output_path = os.path.join(self.data_store_path, file_name)
-                copyfile(file_path, output_path)
-                os.remove(file_path)
+                h5file = h5py.File(output_path, 'w', chunk=True)
+                dt = h5py.special_dtype(vlen=str)
+                dataset_rawdata = np.array(buffer_list, dtype=object)
+                h5file.create_dataset("rawdata", data =dataset_rawdata , dtype=dt)
         except Exception as e:
             print("exception : {0}".format(e))
             raise Exception(e)
@@ -34,17 +43,19 @@ class DataNodeText(DataNode):
 
     def _init_node_parm(self, key):
         """
-
+        init parms by using master classes (handling params)
         :return:
         """
         wf_conf = WorkFlowDataText(key)
         self.data_sql_stmt = wf_conf.get_sql_stmt()
         self.data_src_path = wf_conf.get_source_path()
         self.data_src_type = wf_conf.get_src_type()
+        self.data_store_path = wf_conf.get_step_store()
         self.data_server_type = wf_conf.get_src_server()
         self.data_parse_type = wf_conf.get_parse_type()
+        self.sent_max_len = wf_conf.get_max_sent_len()
         self.data_preprocess_type = wf_conf.get_step_preprocess()
-        self.data_store_path = wf_conf.get_step_store()
+
 
     def _set_progress_state(self):
         return None
@@ -57,14 +68,18 @@ class DataNodeText(DataNode):
         :param parm:
         :return:
         """
+        self._init_node_parm(node_id)
+        fp_list = utils.get_filepaths(self.data_store_path)
+        return_arr = []
         try :
-            self._init_node_parm(node_id)
-            if (self.data_preprocess_type == 'mecab'):
-                return self._mecab_parse()
-            elif(self.data_preprocess_type == 'kkma'):
-                return self._kkma_parse()
+            for file_path in fp_list:
+                self._init_node_parm(node_id)
+                h5file = h5py.File(file_path, mode='r')
+                return_arr.append(h5file)
+            return return_arr
         except Exception as e :
             raise Exception (e)
+
 
     def load_test_data(self, node_id, parm = 'all'):
         """
@@ -82,12 +97,13 @@ class DataNodeText(DataNode):
         :return:
         """
         mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
-        fp_list = utils.get_filepaths(self.data_store_path)
+        fp_list = utils.get_filepaths(self.data_src_path)
         return_arr = []
         for file_path in fp_list:
             with open(file_path, 'r') as myfile:
                 data = myfile.read()
                 return_arr = return_arr + self._flat(mecab.pos(data))
+                os.remove(file_path)
         return return_arr
 
     def _kkma_parse(self):
@@ -98,11 +114,12 @@ class DataNodeText(DataNode):
         """
         kkma = Kkma()
         return_arr = []
-        fp_list = utils.get_filepaths(self.data_store_path)
+        fp_list = utils.get_filepaths(self.data_src_path)
         for file_path in fp_list:
             with open(file_path, 'r') as myfile:
                 data = myfile.read()
                 return_arr = return_arr + self._flat(kkma.pos(data))
+                os.remove(file_path)
         return return_arr
 
     def _twitter_parse(self, h5file):
@@ -124,6 +141,11 @@ class DataNodeText(DataNode):
         for word, tag in pos :
             line_list.append("{0}/{1}".format(word, tag))
             if(tag == 'SF') :
+                if(len(line_list) > self.sent_max_len - 1) :
+                    line_list = line_list[0:self.sent_max_len-1]
+                else :
+                    pad_len = (self.sent_max_len - (len(line_list)-1))
+                    line_list = line_list + ['#'] * pad_len
                 line_list.append('\n')
                 doc_list.append(line_list)
                 line_list = []

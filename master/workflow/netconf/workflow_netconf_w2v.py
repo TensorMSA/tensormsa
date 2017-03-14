@@ -53,4 +53,4 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['model_path']
+        return self.conf['vector_size']

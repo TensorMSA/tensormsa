@@ -20,12 +20,23 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             dyna_cls = self.load_class(cls_path, cls_name)
             input_data = dyna_cls.load_train_data(data_node_name, parm = 'all')
 
-            # train
+            # load model for train
+            update_flag = False
             model = word2vec.Word2Vec(size=self.vector_size , window=self.window_size, min_count=5, workers=4)
             if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
                 model = word2vec.Word2Vec.load(''.join([self.md_store_path, '/model.bin']))
-            model.build_vocab(input_data)
-            model.train(input_data)
+                update_flag = True
+
+            # train vocab and model
+            for data in input_data :
+                rawdata = data['rawdata']
+                for i in range(0, rawdata.len(), 100):
+                    if(update_flag == False) :
+                        model.build_vocab(rawdata[i:i+100].tolist(), update=False)
+                        update_flag = True
+                    else :
+                        model.build_vocab(rawdata[i:i + 100].tolist(), update=True)
+                    model.train(rawdata[i:i+100].tolist())
             os.makedirs(self.md_store_path, exist_ok=True)
             model.save(''.join([self.md_store_path, '/model.bin']))
 

@@ -32,6 +32,8 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
             error_msg = ''.join([error_msg, 'word_embed_type (str) (w2v, onehot)not defined'])
         if('word_embed_id' not in json_data):
             error_msg = ''.join([error_msg, 'word_embed_id (str) (net id) not defined'])
+        if('cell_size' not in json_data):
+            error_msg = ''.join([error_msg, 'cell_size (int) not defined'])
         if(error_msg == "") :
             return True
         else :
@@ -126,3 +128,13 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
         return self.conf['word_embed_id']
+
+    def get_cell_size(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['cell_size']

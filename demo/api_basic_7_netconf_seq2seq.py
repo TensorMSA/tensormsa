@@ -12,6 +12,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/seq2
                          "encoder_depth" : 10,
                          "decoder_depth" : 10,
                          "cell_type" : "lstm",   #vanila, lstm, gru
+                         "cell_size" : 128,
                          "drop_out" : 0.5,
                          "word_embed_type" : "w2v",   #w2v, onehot
                          "word_embed_id" : "nn00003"

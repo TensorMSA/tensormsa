@@ -39,7 +39,6 @@ class WorkFlowDataText(WorkFlowData) :
         """
         return None
 
-
     def get_step_source(self):
         """
         getter for source step
@@ -127,6 +126,7 @@ class WorkFlowDataText(WorkFlowData) :
             config_data['source_server'] = input_data['source_server']
             config_data['source_sql'] = input_data['source_sql']
             config_data['source_path'] = source_path
+            config_data['max_sentence_len'] = input_data['max_sentence_len']
             setattr(obj, 'node_config_data', config_data)
             obj.save()
 
@@ -137,7 +137,6 @@ class WorkFlowDataText(WorkFlowData) :
 
         except Exception as e:
             raise Exception(e)
-
 
     def get_step_preprocess(self):
         """
@@ -170,7 +169,6 @@ class WorkFlowDataText(WorkFlowData) :
         except Exception as e:
             raise Exception(e)
 
-
     def get_step_store(self):
         """
         getter for store
@@ -182,7 +180,6 @@ class WorkFlowDataText(WorkFlowData) :
             return self.conf['store_path']
         except Exception as e:
             raise Exception(e)
-
 
     def put_step_store(self, src, form, nnid, wfver, node, input_data):
         """
@@ -203,5 +200,17 @@ class WorkFlowDataText(WorkFlowData) :
 
             return input_data['store_path']
 
+        except Exception as e:
+            raise Exception(e)
+
+    def get_max_sent_len(self):
+        """
+        getter for store
+        :return:obj(json) to make view
+        """
+        try:
+            if ('conf' in self.__dict__):
+                self.conf = self.get_step_source()
+            return self.conf['max_sentence_len']
         except Exception as e:
             raise Exception(e)
