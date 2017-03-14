@@ -46,6 +46,13 @@ class WorkFlowNetConf :
             raise Exception(e)
         return None
 
+    def get_state_id(self, node_id):
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            return obj.wf_state_id
+        except Exception as e:
+            raise Exception(e)
+
     def validation_check(self, json_data):
         pass
 

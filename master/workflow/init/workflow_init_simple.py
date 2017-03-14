@@ -91,8 +91,8 @@ class WorkFlowSimpleManager :
         try:
             # data node
             input_data = {}
-            input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_node'
-            input_data['nn_wf_node_name'] = 'data_node'
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_name'] = 'datasrc'
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['wf_task_submenu_id'] = 'data_image'
             input_data['wf_node_status'] = 0
@@ -127,7 +127,7 @@ class WorkFlowSimpleManager :
 
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_data_node'
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_datasrc'
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
             self.__put_nn_wf_node_relation(input_data)
 
@@ -255,7 +255,7 @@ class WorkFlowSimpleManager :
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_encode_node'
             input_data['nn_wf_node_name'] = 'data_encode_node'
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['wf_task_submenu_id'] = 'data_frame'
+            input_data['wf_task_submenu_id'] = 'data_text'
             input_data['wf_node_status'] = 0
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
@@ -267,7 +267,7 @@ class WorkFlowSimpleManager :
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_decode_node'
             input_data['nn_wf_node_name'] = 'data_decode_node'
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['wf_task_submenu_id'] = 'data_frame'
+            input_data['wf_task_submenu_id'] = 'data_text'
             input_data['wf_node_status'] = 0
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
@@ -280,18 +280,6 @@ class WorkFlowSimpleManager :
             input_data['nn_wf_node_name'] = 'text_merge_node'
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['wf_task_submenu_id'] = 'pre_merge'
-            input_data['wf_node_status'] = 0
-            input_data['node_config_data'] = {}
-            input_data['node_draw_x'] = 0
-            input_data['node_draw_y'] = 0
-            self.__put_nn_wf_node_info(input_data)
-
-            # preprocess convert data for feed network
-            input_data = {}
-            input_data['nn_wf_node_id'] = str(wf_state_id) + '_text_convert_node'
-            input_data['nn_wf_node_name'] = 'text_convert_node'
-            input_data['wf_state_id'] = str(wf_state_id)
-            input_data['wf_task_submenu_id'] = 'pre_convert'
             input_data['wf_node_status'] = 0
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
@@ -337,12 +325,6 @@ class WorkFlowSimpleManager :
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_text_merge_node'
-            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_text_convert_node'
-            self.__put_nn_wf_node_relation(input_data)
-
-            input_data = {}
-            input_data['wf_state_id'] = str(wf_state_id)
-            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_text_convert_node'
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
             self.__put_nn_wf_node_relation(input_data)
 

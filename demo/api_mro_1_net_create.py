@@ -80,7 +80,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                   "wf_ver_id": wf_ver_id
                                   }
                          ,"config": {"learnrate": 0.01,
-                                 "epoch": 50
+                                 "epoch": 3
                                  }
                          ,"layer1": {
                                  "type": "cnn",
@@ -137,13 +137,16 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
 data = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(data))
 
+node_id = nn_id+"_"+wf_ver_id+"_datasrc"
+
 resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/datasrc/',
                      json={
+                         "node_id": node_id,
                          "type": "local image",
-                         "source_path": "/home/dev/",
-                         "preprocess": {"x_size": 32,
-                                        "y_size": 32},
-                         "store_path": "/home/dev/"
+                         "source_path": "/hoya_src_root/"+nn_id+"/"+wf_ver_id+"/datasrc",
+                         "preprocess": {"x_size": 100,
+                                        "y_size": 100},
+                         "store_path": "/hoya_str_root/"+nn_id+"/"+wf_ver_id+"/datasrc"
                      })
 
 println("E")

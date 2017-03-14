@@ -14,6 +14,7 @@ class WorkFlowPreConvert(APIView) :
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
             nodeid = ''.join([nnid, '_', ver, '_', node])
+            input_data['type'] = type
             if (WFpreConvert().validation_check(input_data)):
                 return_data = WFpreConvert().set_view_obj(nodeid, input_data)
             else :

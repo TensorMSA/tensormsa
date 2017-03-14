@@ -60,7 +60,6 @@ class WorkFlowDataText(WorkFlowData) :
         :param node:
         :return:
         """
-        print(self.__dict__)
         if('conf' not in self.__dict__) :
             self.conf = self.get_step_source()
         return self.conf['source_sql']
