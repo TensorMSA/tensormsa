@@ -33,9 +33,13 @@ class DataNodeText(DataNode):
                 file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
                 output_path = os.path.join(self.data_store_path, file_name)
                 h5file = h5py.File(output_path, 'w', chunk=True)
-                dt = h5py.special_dtype(vlen=str)
-                dataset_rawdata = np.array(buffer_list, dtype=object)
-                h5file.create_dataset("rawdata", data =dataset_rawdata , dtype=dt)
+                dt_vlen = h5py.special_dtype(vlen=str)
+                dt_arr = np.dtype((dt_vlen, (self.sent_max_len, )))
+                h5raw = h5file.create_dataset('rawdata', (len(buffer_list),), dtype=dt_arr)
+                for i in range(len(buffer_list)):
+                    h5raw[i] = np.array(buffer_list[i], dtype=object)
+                h5file.flush()
+                h5file.close()
         except Exception as e:
             print("exception : {0}".format(e))
             raise Exception(e)
@@ -144,7 +148,7 @@ class DataNodeText(DataNode):
                 if(len(line_list) > self.sent_max_len - 1) :
                     line_list = line_list[0:self.sent_max_len-1]
                 else :
-                    pad_len = (self.sent_max_len - (len(line_list)-1))
+                    pad_len = (self.sent_max_len - (len(line_list)+1))
                     line_list = line_list + ['#'] * pad_len
                 line_list.append('\n')
                 doc_list.append(line_list)
