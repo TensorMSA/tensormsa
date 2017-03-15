@@ -16,12 +16,16 @@ class DataNodeImage(DataNode):
     """
 
     def run(self, conf_data):
+        println("run img data node")
         try:
             TRAIN = 'cat_vs_dog.zip'
             node_id = conf_data['node_id']
             config_data = WorkFlowDataImage().get_step_source(node_id)
-            # directory = config_data['source_path']
-            directory = get_source_path(node_id.split('_')[0],node_id.split('_')[1], node_id.split('_')[2])
+            # directory = config_data
+            nn_id = node_id.split('_')[0]
+            ver = node_id.split('_')[1]
+            node = node_id.split('_')[2]
+            directory = get_source_path(nn_id, ver, node)
             # output_directory = config_data['store_path']
             output_directory = get_datastore_path(node_id.split('_')[0], node_id.split('_')[1], node_id.split('_')[2])
             output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
@@ -49,7 +53,7 @@ class DataNodeImage(DataNode):
             hdf_features.dims[0].label = 'batch'
             #hdf_labels.dims[0].label = 'batch'
             #hdf_labels.dims[1].label = 'index'
-            labels = []
+            labels = config_data['labels']
 
             # Convert
             i = 0
@@ -82,7 +86,8 @@ class DataNodeImage(DataNode):
                         i += 1
                     else:
                         try:
-                            labels.append(image_name.split('/')[0])
+                            if labels.count(image_name.split('/')[0]) == 0:
+                                labels.append(image_name.split('/')[0])
                         except Exception as e:
                             print("exception : {0}".format(e))
                             raise Exception(e)
