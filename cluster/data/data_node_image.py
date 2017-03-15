@@ -106,7 +106,8 @@ class DataNodeImage(DataNode):
 
             return (output_path,)
         except Exception as e:
-            raise Exception(e)
+            println(e)
+            # raise Exception(e)
 
     def _init_node_parm(self, node_id):
         return None
