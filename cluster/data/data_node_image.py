@@ -156,12 +156,14 @@ class DataNodeImage(DataNode):
         config_data = WorkFlowDataImage().get_step_source(node_id)
         output_directory = config_data['store_path']
         fp_list = utils.get_filepaths(output_directory)
+        return_arr = []
         for file_path in fp_list:
             h5file = h5py.File(file_path, mode='r')
-            img_data = h5file['image_features']
-            targets = h5file['targets']
-            labels = config_data['labels']
-        return img_data, targets, labels
+            return_arr.append(h5file)
+            #img_data = h5file['image_features']
+            #targets = h5file['targets']
+            #labels = config_data['labels']
+        return return_arr#img_data, targets, labels
 
     def load_test_data(self, node_id, parm='all'):
         return []
