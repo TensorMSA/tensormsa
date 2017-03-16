@@ -15,7 +15,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 println("S")
 
 nn_id = "nn00004"
-wf_ver_id = "5"
+wf_ver_id = "2"
 
 # Run All Workflow
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')

@@ -1,0 +1,3 @@
+
+class NeuralCommonMonitor():
+    pass

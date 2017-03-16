@@ -18,10 +18,14 @@ class DataNodeFrame(DataNode):
     """
 
     def run(self, conf_data):
+        """
+        Run Data Node
+        :param data_path:
+        :return:dataframe
+        """
+
         self._init_node_parm(conf_data['node_id'])
-        #TRAIN = 'cat_vs_dog.zip'
         node_id = conf_data['node_id']
-        #config_data = WorkFlowDataFrame().get_step_source(node_id)
         source_directory = self.data_src_path
         data_source_type = self.data_src_type
         data_store_path = self.data_store_path
@@ -31,133 +35,122 @@ class DataNodeFrame(DataNode):
         data_sql_stmt = self.data_sql_stmt
 
         if object_type == "csv":
-            source_filepath_name = source_directory + "/" + "adult.data"
+            #source_filepath_name = source_directory + "/" + "adult.data"
             try:
                 df_csv_read = self.load_csv_by_pandas(source_directory)
                 self.make_column_types(df_csv_read, conf_data)
-                #df_csv_read = pd.read_csv(tf.gfile.Open(source_filepath_name),
-                #     skipinitialspace=True,
-                #     engine="python")
-                #filtered_df = df_csv_read[(df_csv_read.fnlwgt==121772)]
-                #print(filtered_df)
-
-                #dtype
-                #for i,v in df_csv_read.dtypes.iteritems():
-                #    print(i,v)
-
-
             except Exception as e:
                 raise Exception(e)
-            #test convert to hdf5
             try:
-                #store_filepath_name = data_store_path + "/" + "adult.h5"
-                #df_csv_read.to_hdf(store_filepath_name, 'df', format='fixed', mode='w')
-                #hdf = pd.HDFStore(store_filepath_name)
-                #hdf.put('d1', df_csv_read, format='table', data_columns=True)
-                #hdf.close()
                 self.create_hdf5(data_store_path, df_csv_read)
             except Exception as e:
                 raise Exception(e)
 
-            try:
-                filename = data_store_path + "/" + "adult.h5"
-                #type4 partial read
-                store = pd.HDFStore(filename)
-                nrows = store.get_storer('table1').nrows
-                chunksize = 100
-
-                for i in range(nrows // chunksize + 1):
-                    chunk = store.select('table1',
-                                         start=i * chunksize,
-                                         stop=(i + 1) * chunksize)
-                    #print(chunk)
-                    # work on the chunk
-                store.close()
-
-                #type 3 read_hdf
-           #     hdf_load = pd.read_hdf(filename, 'table1')
-             #   print(type(hdf_load))
-
-                #type2 read pandas
-
-                #hdf_load = pd.HDFStore(filename, mode='r')
-
-            #    print(type(hdf_load))
-
-                #type 1 h5py
-                #f = h5py.File(filename, 'r')
-                #data = f['table1'][...]
-                #print(type(data))
-
-            except Exception as e:
-                raise Exception(e)
-
-
-
-
-
-            #print(df_csv_read)
-
+            # try:
+            #     # filename = data_store_path + "/" + "adult.h5"
+            #     #
+            #     # #type4 partial read
+            #     # store = pd.HDFStore(filename)
+            #     # nrows = store.get_storer('table1').nrows
+            #     # chunksize = 100
+            #     #
+            #     # for i in range(nrows // chunksize + 1):
+            #     #     chunk = store.select('table1',
+            #     #                          start=i * chunksize,
+            #     #                          stop=(i + 1) * chunksize)
+            #     # store.close()
+            # except Exception as e:
+            #     raise Exception(e)
         return None
-        #return None
 
     def create_hdf5(self, data_path, dataframe):
+        """
+        Create hdf5
+        :param data_path:
+        :return:dataframe
+        """
         store_filepath_name = data_path + "/" + "adult.h5"
-        # df_csv_read.to_hdf(store_filepath_name, 'df', format='fixed', mode='w')
+        # 파일이 있으면 지우기
+        try:
+            os.remove(store_filepath_name)
+        except OSError:
+            pass
+
         hdf = pd.HDFStore(store_filepath_name)
         hdf.put('table1', dataframe, format='table', data_columns=True, encoding='UTF-8')
         hdf.close()
 
     def load_hdf5(data_path, dataframe):
+        """
+        Load_hdf5
+        :param data_path:
+        :return:data_path
+        """
         store_filepath_name = data_path + "/" + "adult.h5"
-        # df_csv_read.to_hdf(store_filepath_name, 'df', format='fixed', mode='w')
         hdf = pd.HDFStore(store_filepath_name)
         hdf.put('table1', dataframe, format='table', data_columns=True)
         hdf.close()
 
     def load_csv_by_pandas(self, data_path):
+        """
+        read csv
+        :param data_path:
+        :return:data_path
+        """
         source_filepath_name = data_path + "/" + "adult.data"
         df_csv_read = pd.read_csv(tf.gfile.Open(source_filepath_name),
                                   skipinitialspace=True,
                                   engine="python")
         return df_csv_read
-        # filtered_df = df_csv_read[(df_csv_read.fnlwgt==121772)]
-        # print(filtered_df)
-    def make_column_types (self, df, conf_data):
-        try:
-            data_conf = dict()
-            data_conf_col_type = dict()
-            data_conf_label = dict()
-            for i, v in df.dtypes.iteritems():
-                #label
-                column_dtypes = dict()
-                col_type = ''
-                if (str(v) == "int64"): #maybe need float
-                    col_type =  'CONTINUOUS'
-                else:
-                    col_type = 'CATEGORICAL'
-                column_dtypes['column_type'] = col_type
-                data_conf_col_type[i] = column_dtypes
-               # print(data_conf_col_type)
-            data_conf['cell_feature'] = data_conf_col_type
-            #data_conf_label["label"] ="LABEL"
-            #data_conf["label"] = data_conf_label
 
-            data_conf_json_str = json.dumps(data_conf)
-            data_conf_json = json.loads(data_conf_json_str)
-            print(data_conf_json)
-            #'nn00004_2_data_node'
+    def make_column_types (self, df, conf_data):
+        """
+        csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
+        :param df:
+        :param conf_data:
+        """
+        try:
             node_id = conf_data['node_id'].split("_")
             nnid = node_id[0]
             ver = node_id[1]
-            node = "dataconf_node"#node_id[2] + "_" + node_id[3]
-            #DATACONF_FRAME_CALL
-            wf_data_conf().put_step_source(nnid, ver, node, data_conf_json)
+            node = "dataconf_node"  # node_id[2] + "_" + node_id[3]
+            nn_wf_node_id = nnid+"_"+ver+"_"+node
+            wf_data_config = wf_data_conf(nn_wf_node_id)
 
+            try:
+                check = wf_data_config.data_conf
+            except KeyError:
+                #TODO : set_default_dataconf_from_csv parameter shoud modify It is many
+                self.set_default_dataconf_from_csv(wf_data_config, df, nnid, ver, node)
         except Exception as e:
             raise Exception(e)
 
-
+    def set_default_dataconf_from_csv(self,wf_data_config, df, nnid, ver, node):
+        """
+        csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
+        :param wf_data_config, df, nnid, ver, node:
+        :param conf_data:
+        """
+        #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
+        data_conf = dict()
+        data_conf_col_type = dict()
+        #data_conf_label = dict()
+        for i, v in df.dtypes.iteritems():
+            # label
+            column_dtypes = dict()
+            col_type = ''
+            if (str(v) == "int64"):  # maybe need float
+                col_type = 'CONTINUOUS'
+            else:
+                col_type = 'CATEGORICAL'
+            column_dtypes['column_type'] = col_type
+            data_conf_col_type[i] = column_dtypes
+        data_conf['cell_feature'] = data_conf_col_type
+        data_conf_json_str = json.dumps(data_conf)
+        data_conf_json = json.loads(data_conf_json_str)
+        print(data_conf_json)
+        # DATACONF_FRAME_CALL
+        wf_data_config.put_step_source(nnid, ver, node, data_conf_json)
 
     def _set_progress_state(self):
         return None
@@ -173,12 +166,12 @@ class DataNodeFrame(DataNode):
         Init parameter from workflow_data_frame
         :return:
         """
-        wf_df_conf = WorkFlowDataFrame(key)
-        self.type = wf_df_conf.object_type
-        self.data_sql_stmt = wf_df_conf.sql_stmt
-        self.data_src_path = wf_df_conf.source_path
-        self.data_src_type = wf_df_conf.src_type
-        self.data_server_type = wf_df_conf.src_server
-        self.data_preprocess_type = wf_df_conf.step_preprocess
-        self.data_store_path = wf_df_conf.step_store
+        wf_data_frame = WorkFlowDataFrame(key)
+        self.type = wf_data_frame.object_type
+        self.data_sql_stmt = wf_data_frame.sql_stmt
+        self.data_src_path = wf_data_frame.source_path
+        self.data_src_type = wf_data_frame.src_type
+        self.data_server_type = wf_data_frame.src_server
+        self.data_preprocess_type = wf_data_frame.step_preprocess
+        self.data_store_path = wf_data_frame.step_store
 
