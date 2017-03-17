@@ -9,12 +9,32 @@ def get_source_path(nn_id, wf_ver, name) :
     :param name:
     :return:
     """
+
     #path = ''.join([cache.get("source_root"), "/", nn_id, "/", wf_ver, "/", name])
     path = ''.join(["/hoya_src_root", "/", nn_id, "/", wf_ver, "/", name])
     set_filepaths(path)
     return path
 
 def get_store_path(nn_id, wf_ver, name) :
+
+    path = ''.join([cache.get("source_root"), "/", str(nn_id), "/", str(wf_ver), "/", str(name)])
+    set_filepaths(path)
+    return path
+
+def get_datastore_path(nn_id, wf_ver, name) :
+    """
+    conbine parms and return source path (before data transformation)
+    :param nn_id:
+    :param wf_ver:
+    :param name:
+    :return:
+    """
+    path = ''.join([cache.get("store_root"), "/", str(nn_id), "/", str(wf_ver), "/", str(name)])
+    set_filepaths(path)
+    return path
+
+def get_store_path(nn_id, wf_ver, name) :
+
     """
     conbine parms and return store path (after data transformation, use on net train)
     :param name:
@@ -24,8 +44,12 @@ def get_store_path(nn_id, wf_ver, name) :
     try:
         obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=str(nn_id))
         if(obj != None) :
+
             #return ''.join([cache.get("store_root") , "/" , nn_id , "/" , wf_ver , "/" , name])
             return ''.join(["/hoya_str_root", "/", nn_id, "/", wf_ver, "/", name])
+
+            #return ''.join([cache.get("store_root") , "/" , str(obj.biz_cate) , "/" , str(obj.biz_sub_cate) , "/" , str(name)])
+
         else :
             return ""
     except Exception as e:
@@ -37,8 +61,12 @@ def get_model_path(nn_id, wf_ver, name) :
     :param name:
     :return:
     """
+
     #path = ''.join([cache.get("model_root") , "/" , nn_id , "/" , wf_ver , "/" , name])
     path = ''.join(["/hoya_model_root", "/", nn_id, "/", wf_ver, "/", name])
+
+    #path = ''.join([cache.get("model_root") , "/" , str(nn_id) , "/" , str(wf_ver) , "/" , str(name)])
+
     set_filepaths(path)
     return path
 

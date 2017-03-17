@@ -6,22 +6,46 @@ import time
 import numpy as np
 from datetime import timedelta
 from cluster.data.data_node_image import DataNodeImage
+import os
 ########################################################################
-def get_training_data(self, dataconf):
-    println(dataconf)
-    train_data_set = None
-    train_label_set = None
-    println("Start Down OK....")
-    from tensorflow.contrib.learn.python.learn.datasets.mnist import read_data_sets
-    tf.set_random_seed(0)
+# nm_classes = label cnt or max label cnt
+def one_hot_encoded(num_classes):
+    one = np.zeros((num_classes, num_classes))
 
-    mnist = read_data_sets("data", one_hot=True, reshape=False, validation_size=0)
+    for i in range(num_classes):
+        for j in range(num_classes):
+            if i == j:
+                one[i][j] = 1
+    return one
+########################################################################
+def model_file_delete(model_path, save_name):
+    existcnt = 10
+    filelist = os.listdir(model_path)
+    print(filelist)
+    flist = []
+    for i in filelist:
+        i = i.replace(save_name + "-", "")
+        dotidx = i.find(".")
+        if dotidx > -1:
+            i = i[:dotidx]
+            try:
+                flist.append(int(i))
+            except:
+                None
+    flist.sort()
 
-    train_data_set = mnist.test.images
-    train_label_set = mnist.test.labels
-    println("End Down OK....")
+    j = len(flist) - 1
+    for i in range(len(flist)):
+        if i > existcnt * 3:
+            fname = save_name + "-" + str(flist[j])
 
-    return train_data_set, train_label_set
+            for file in filelist:
+                print(fname, file)
+                fidx = file.find(fname)
+                if fidx > -1:
+                    if os.path.isfile(model_path + "/" + file):
+                        os.remove(model_path + "/" + file)
+        j -= 1
 ########################################################################
 def get_model(self, netconf, X, num_classes):
     net_check = "S"
@@ -103,82 +127,69 @@ def get_model(self, netconf, X, num_classes):
 
     return net_check, L1
 ########################################################################
-# Train
-def random_batch(images_train, labels_train):
-    # Number of images in the training-set.
-    num_images = len(images_train)
+def train(input_data, L1, X, Y, netconf, dataconf):
+    x_size = dataconf["preprocess"]["x_size"]
+    y_size = dataconf["preprocess"]["y_size"]
+    channel = dataconf["preprocess"]["channel"]
+    labelsDict = dataconf["labels"]
 
-    # Create a random index.
-    idx = np.random.choice(num_images,
-                           size=1000,
-                           replace=False)
+    num_classes = netconf["config"]["num_classes"]
+    batchsize = netconf["config"]["batch_size"]
+    learnrate = netconf["config"]["learnrate"]
 
-    # Use the random index to select random images and labels.
-    x_batch = images_train[idx, :, :, :]
-    y_batch = labels_train[idx, :]
-
-    return x_batch, y_batch
-########################################################################
-def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
+    start_time = time.time()
+    global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
 
     try:
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=L1, labels=Y))
-        optimizer = tf.train.AdamOptimizer(0.001).minimize(cost)
+        # optimizer = tf.train.AdamOptimizer(learnrate).minimize(cost)
+        optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
 
         check_prediction = tf.equal(tf.argmax(L1, 1), tf.argmax(Y, 1))
         accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
+        ################################################################ Label
+        # println("Label Dict //////////////////////////////////////////////////")
+        labelsDictHot = one_hot_encoded(num_classes)
+        # println(labelsDict)
+        # println(labelsDictHot)
+        ################################################################ Image Label
+        for data in input_data:
+            # println("File //////////////////////////////////////////////////////")
+            # println(data)
+            labels_data = data['targets']
+            img_data = data['image_features']
 
-        saver = tf.train.Saver()
+            for i in range(0, img_data.len(), batchsize):
+                label_data_batch = labels_data[i:i + batchsize]
+                img_data_batch = img_data[i:i + batchsize]
 
-        with tf.Session() as sess:
-            try:
-                println("Trying to restore last checkpoint SavePath : " + model_path)
-                # Use TensorFlow to find the latest checkpoint - if any.
-                last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
-                println("Try and load the data in the checkpoint: : " + str(last_chk_path))
-                # Try and load the data in the checkpoint.
-                saver.restore(sess, save_path=last_chk_path)
-                # If we get to this point, the checkpoint was successfully loaded.
-                println("Restored checkpoint from:"+ last_chk_path)
-            except:
-                # If the above failed for some reason, simply
-                # initialize all the variables for the TensorFlow graph.
-                println("None to restore checkpoint. Initializing variables instead.")
-                sess.run(tf.initialize_all_variables())
+                y_batch = np.zeros((len(label_data_batch), num_classes))
+                r = 0
+                for j in label_data_batch:
+                    j = j.decode('UTF-8')
+                    k = labelsDict.index(j)
+                    y_batch[r] = labelsDictHot[k]
+                    r += 1
 
-            ################################################################
-            println("Train Optimize Call:"+ str(train_cnt))
+                x_batch = np.zeros((len(img_data_batch), len(img_data_batch[0])))
+                r = 0
+                for j in img_data_batch:
+                    j = j.tolist()
+                    x_batch[r] = j
+                    r += 1
 
-            start_time = time.time()
+                x_batch = np.reshape(x_batch, (-1, x_size, y_size, channel))
+                # println("Image Label ////////////////////////////////////////////////")
+                # println(label_data_batch)
+                # println(y_batch)
+                # println("Image /////////////////////////////////////////////////")
+                # println(x_batch)
+                train_run(x_batch, y_batch, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
 
-            for i in range(train_cnt):
-                x_batch, y_true_batch = random_batch(train_data_set, train_label_set)
-                feed_dict_train = {X: x_batch,Y: y_true_batch}
-                sess.run(optimizer, feed_dict=feed_dict_train)
-
-                # Print status to screen every 100 iterations (and last).
-                if (i % 1 == 0) or (i == train_cnt - 1):
-                    # Calculate the accuracy on the training-batch.
-                    batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
-
-                    # Print status.
-                    msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
-                    println(msg.format(i, batch_acc))
-
-                # Save a checkpoint to disk every 1000 iterations (and last).
-                if (i % 10 == 0) or (i == train_cnt - 1):
-                    println("Save model_path="+model_path + "check")
-                    saver.save(sess,
-                               save_path=model_path,
-                               global_step=i)
-
-        println("Saved checkpoint.")
     except Exception as e:
         net_check = "Error[400] .............................................."
         println(net_check)
         println(e)
-        L1 = e
-
     # Ending time.
     end_time = time.time()
 
@@ -187,6 +198,48 @@ def train(train_data_set, train_label_set, L1, X, Y, train_cnt, model_path):
 
     # Print the time-usage.
     println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
+########################################################################
+def train_run(x_batch, y_batch, netconf, dataconf, X, Y, optimizer, accuracy, global_step):
+    save_name = "model"
+    train_cnt = netconf["config"]["traincnt"]
+    # println(netconf["key"]["nn_id"])
+    # println(netconf["key"]["wf_ver_id"])
+    model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
+    # println(model_path)
+    saver = tf.train.Saver()
+    with tf.Session() as sess:
+        try:
+            last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
+            saver.restore(sess, save_path=last_chk_path)
+            println("Restored checkpoint from:" + last_chk_path)
+        except:
+            println("None to restore checkpoint. Initializing variables instead.")
+            sess.run(tf.initialize_all_variables())
+
+        for i in range(train_cnt):
+            feed_dict_train = {X: x_batch, Y: y_batch}
+            # sess.run(optimizer, feed_dict=feed_dict_train)
+            i_global, _ = sess.run([global_step, optimizer],
+                                      feed_dict=feed_dict_train)
+
+            # Print status to screen every 10 iterations (and last).
+            if (i_global % 10 == 0) or (i == train_cnt - 1):
+                # Calculate the accuracy on the training-batch.
+                batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
+
+                # Print status.
+                msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
+                println(msg.format(i_global, batch_acc))
+
+            # Save a checkpoint to disk every 100 iterations (and last).
+            if (i_global % 100 == 0) or (i == train_cnt - 1):
+                println("Save model_path=" + model_path)
+                saver.save(sess,
+                           save_path=model_path+"/"+save_name,
+                           global_step=global_step)
+
+    model_file_delete(model_path, save_name)
+    println("Saved checkpoint.")
 ########################################################################
 class NeuralNetNodeCnn(NeuralNetNode):
     """
@@ -198,34 +251,26 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # search nn_node_info
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
-        model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
 
-        x_size = dataconf["preprocess"]["x_size"]
-        y_size = dataconf["preprocess"]["y_size"]
-        train_cnt = int(netconf["config"]["epoch"])
-
-        num_classes = 10
-        x_size = 28  # MNIST 이미지의 가로 크기
-        y_size = 28  # MNIST 이미지의 세로 크기
-        color = 1
-        train_cnt = 12
-
-        X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, color], name='x')
-        Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
+        x_size  = dataconf["preprocess"]["x_size"]
+        y_size  = dataconf["preprocess"]["y_size"]
+        channel = dataconf["preprocess"]["channel"]
+        num_classes = netconf["config"]["num_classes"]
 
         ################################################################
-        img_data, targets = get_training_data(self, dataconf)
+        X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, channel], name='x')
+        Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
+        ################################################################
         node_id = str(conf_data["node_list"][0])
-        # img_data, targets, labels = DataNodeImage().load_train_data(node_id)
-        # println(img_data)
-        # println(targets)
-        # println(labels)
+        input_data = DataNodeImage().load_train_data(node_id)
+
         netcheck, model = get_model(self, netconf, X, num_classes)
         if netcheck == "S":
-            train(img_data, targets, model, X, Y, train_cnt, model_path)
+            train(input_data, model, X, Y, netconf, dataconf)
         else:
             println("net_check=" + netcheck)
 
+        println("train end......")
         return None
 
     def _init_node_parm(self, node_id):

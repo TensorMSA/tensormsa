@@ -6,6 +6,17 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
     """
 
     """
+    def __init__(self, key = None):
+        """
+        init key variable
+        :param key:
+        :return:
+        """
+        if (key is not None):
+            self.key = key
+            self.conf = self.get_step_source(key)
+
+    #data_conf
     def get_view_obj(self):
         """
         get column type info for view
@@ -52,18 +63,6 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
         """
         return None
 
-    def get_step_source(self, nnid):
-        """
-        getter for source step
-        :return:obj(json) to make view
-        """
-        try:
-            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
-            config_data = getattr(obj, 'node_config_data')
-            return config_data
-        except Exception as e:
-            raise Exception(e)
-
     def put_step_source(self,nnid, ver, node, input_data):
         """
         putter for source step
@@ -76,8 +75,8 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
 
             config_data = input_data
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(ver) + "_" + str(node))
-            #config_data = getattr(obj, 'node_config_data')
-            #config_data['source_type'] = src
+            config_data = getattr(obj, 'node_config_data')
+            config_data['data_conf'] = input_data
             #config_data['source_parse_type'] = form
             #config_data['source_server'] = input_data['source_server']
             #config_data['source_sql'] = input_data['source_sql']

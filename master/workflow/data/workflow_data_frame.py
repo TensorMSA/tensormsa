@@ -20,7 +20,9 @@ class WorkFlowDataFrame(WorkFlowData) :
         :param key:
         :return:
         """
+        #이게 진짜 필요한지 상속 받아야 하는지 나중에 판단
         self.key = key
+        self.conf = self.get_step_source(key)
 
 
     @property
@@ -28,49 +30,54 @@ class WorkFlowDataFrame(WorkFlowData) :
         """
         getter for object type
         """
-        return self.get_step_source(self.key)['type']
+        return self.conf['type']
+        #return self.get_step_source(self.key)['type']
 
     @property
     def sql_stmt(self):
         """
         getter for sql_statement
         """
-        return self.get_step_source(self.key)['source_sql']
+        #return self.get_step_source(self.key)['source_sql']
+        return self.conf['source_sql']
 
     @property
     def source_path(self):
         """
         getter for source_path
         """
-        return self.get_step_source(self.key)['source_path']
+        #return self.get_step_source(self.key)['source_path']
+        return self.conf['source_path']
 
     @property
     def src_type(self):
         """
         getter for source type
         """
-        return self.get_step_source(self.key)['source_type']
+        #return self.get_step_source(self.key)['source_type']
+        return self.conf['source_type']
 
     @property
     def src_server(self):
         """
         getter for source_server
         """
-        return self.get_step_source(self.key)['source_server']
+        return self.conf['source_server']
 
     @property
     def step_preprocess(self):
         """
         getter for preprocess
         """
-        return self.get_step_source(self.key)['preprocess']
+        return self.conf['preprocess']
 
     @property
+    #TODO : 파라미터명이 이상함
     def step_store(self):
         """
         getter for store
         """
-        return self.get_step_source(self.key)['store_path']
+        return self.conf['store_path']
 
     def get_preview_data(self):
         """
