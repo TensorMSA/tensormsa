@@ -21,18 +21,6 @@ def get_store_path(nn_id, wf_ver, name) :
     set_filepaths(path)
     return path
 
-def get_datastore_path(nn_id, wf_ver, name) :
-    """
-    conbine parms and return source path (before data transformation)
-    :param nn_id:
-    :param wf_ver:
-    :param name:
-    :return:
-    """
-    path = ''.join([cache.get("store_root"), "/", str(nn_id), "/", str(wf_ver), "/", str(name)])
-    set_filepaths(path)
-    return path
-
 def get_store_path(nn_id, wf_ver, name) :
 
     """
