@@ -1,11 +1,13 @@
+from cluster.neuralnet.neuralnet_node_cnn import NeuralNetNodeCnn
 from cluster.service.service_predict import PredictNet
+from common.utils import *
 
 class PredictNetCnn(PredictNet):
     """
 
     """
 
-    def run(self, nn_id, parm={}):
+    def run(self, nn_id, parm):
         """
         run predict service
         1. get node id
@@ -14,8 +16,8 @@ class PredictNetCnn(PredictNet):
         :param parm:
         :return:
         """
-        if(self._valid_check(parm)) :
-            return None
+        # if(self._valid_check(parm)) :
+        return NeuralNetNodeCnn().predict(self._find_netconf_node_id(nn_id), parm)
 
     def _valid_check(self, parm):
         return True

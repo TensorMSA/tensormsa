@@ -2,7 +2,8 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from cluster.service.service_predict_w2v import PredictNetW2V
-
+from cluster.service.service_predict_cnn import PredictNetCnn
+from common.utils import *
 
 class ServiceManagerPredict(APIView):
     """
@@ -12,9 +13,11 @@ class ServiceManagerPredict(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
             if(type == 'w2v') :
+                input_data = json.loads(str(request.body, 'utf-8'))
                 return_data = PredictNetW2V().run(nnid, input_data)
+            elif(type == "cnn"):
+                return_data = PredictNetCnn().run(nnid, request.FILES)
             else :
                 raise Exception ("Not defined type error")
 
