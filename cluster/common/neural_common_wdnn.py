@@ -4,7 +4,7 @@ import json
 import tempfile
 from django.conf import settings
 from sklearn.preprocessing import LabelEncoder
-
+import numpy as np
 
 
 flags = tf.app.flags
@@ -186,15 +186,17 @@ class NeuralCommonWdnn():
             deep_columns = [realTensor for key, realTensor in featureColumnContinuous.items()]
 
             deep_columns.extend([embedTensor for key, embedTensor in featureDeepEmbedding.items()])
-
+            #wide_columns = []
             if model_type == "wdnn":
 
                 m = tf.contrib.learn.DNNLinearCombinedClassifier(
                     model_dir=model_dir,
                     linear_feature_columns=wide_columns,
                     dnn_feature_columns=deep_columns,
-                    n_classes=2,  # 0.11 bug
+                    #n_classes=2,  # 0.11 bug
                     dnn_hidden_units=hidden_layers_value)
+
+
             elif model_type == "wide":
 
                 m = tf.contrib.learn.LinearClassifier(model_dir=model_dir,
@@ -380,6 +382,18 @@ class NeuralCommonWdnn():
     #     finally:
     #         return return_data
 
+    def df_validation(self, df, dataconf):
+        print("age df_validation start ")
+
+        for df_value in df["age"].values:
+            if(np.issubdtype(df_value, int) == False):
+                print("age integer faild " + str(df_value))
+            #if(isinstance(df_value, int) == False ):
+            #    print("age integer faild " + str(df_value))
+
+
+
+
     def input_fn(self, df, nnid, dataconf ):
         """Wide & Deep Network input tensor maker
             V1.0    16.11.04    Initial
@@ -387,6 +401,11 @@ class NeuralCommonWdnn():
                 :param df, nnid
                 :return: tensor sparse, constraint """
         try:
+            self.df_validation(df, dataconf)
+
+            # remove NaN elements
+            df = df.dropna(how='any', axis=0)
+            #df_test = df_test.dropna(how='any', axis=0)
 
             ##Make List for Continuous, Categorical Columns
             CONTINUOUS_COLUMNS = []
@@ -447,6 +466,9 @@ class NeuralCommonWdnn():
             if len(CATEGORICAL_COLUMNS) > 0:
 
                 feature_cols.update(categorical_cols)
+
+            #test용도
+            #feature_cols = categorical_cols
 
             #Get label distinct list from postgres 16.12.04
             #json_string = WdnnCommonManager.get_all_info_json_by_nnid(self, nnid=nnid)

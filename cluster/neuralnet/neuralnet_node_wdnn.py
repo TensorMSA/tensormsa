@@ -33,7 +33,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             # make wide & deep model
             wdnn = NeuralCommonWdnn()
-            wdnn_model = wdnn.wdnn_build('wdnn', conf_data['node_id'],str(self.hidden_layers),str(self.activation_function),data_conf_info, str(self.model_path))
+            wdnn_model = wdnn.wdnn_build('wdnn', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
 
 
             #read hdf5
@@ -45,7 +45,15 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 print("Error Message : {0}".format(e))
                 raise Exception(e)
 
+            #feature, label = wdnn.input_fn( df, conf_data['node_id'],data_conf_info)
+
             wdnn_model.fit(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=100)
+
+            results = wdnn_model.evaluate(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=1)
+            for key in sorted(results):
+                print("%s: %s" % (key, results[key]))
+
+            #m.fit(input_fn=lambda: input_fn(df_train), steps=train_steps)
 
 
 
