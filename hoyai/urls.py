@@ -138,6 +138,6 @@ urlpatterns = [
     # service
     url(r'^api/v1/type/wf/target/init/mode/history/(?P<nnid>.*)/ver/(?P<ver>.*)/batch//(?P<bver>.*)/',
         csrf_exempt(rest_view.ServiceManager.as_view())),
-    url(r'^api/v1/type/service/state/predict/type/(?P<type>.*)/nnid/(?P<nnid>.*)/',
+    url(r'^api/v1/type/service/state/predict/type/(?P<type>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.ServiceManagerPredict.as_view())),
 ]

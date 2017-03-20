@@ -8,7 +8,7 @@ from common.utils import *
 class ServiceManagerPredict(APIView):
     """
     """
-    def post(self, request, type, nnid):
+    def post(self, request, type, nnid, ver):
         """
         - desc : insert cnn configuration data
         """
@@ -17,7 +17,7 @@ class ServiceManagerPredict(APIView):
                 input_data = json.loads(str(request.body, 'utf-8'))
                 return_data = PredictNetW2V().run(nnid, input_data)
             elif(type == "cnn"):
-                return_data = PredictNetCnn().run(nnid, request.FILES)
+                return_data = PredictNetCnn().run(nnid, ver, request.FILES)
             else :
                 raise Exception ("Not defined type error")
 

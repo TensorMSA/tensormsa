@@ -7,6 +7,7 @@ import numpy as np
 from datetime import timedelta
 from cluster.data.data_node_image import DataNodeImage
 import os
+import operator
 ########################################################################
 # nm_classes = label cnt or max label cnt
 def one_hot_encoded(num_classes):
@@ -310,7 +311,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def predict(self, node_id, parm):
+    def predict(self, conf_data, ver, filelist):
         """
         predict service method
         1. type (vector) : return vector
@@ -320,30 +321,46 @@ class NeuralNetNodeCnn(NeuralNetNode):
         :return:
         """
         println("run NeuralNetNodeCnn Predict")
-        println(parm)
+        println(conf_data)
+        # search nn_node_info
+        dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
+        netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
+        x_size = dataconf["preprocess"]["x_size"]
+        y_size = dataconf["preprocess"]["y_size"]
+        channel = dataconf["preprocess"]["channel"]
 
+        println(filelist)
+
+        filelist = sorted(filelist.items(), key=operator.itemgetter(0))
+        println(filelist)
+        println(type(filelist))
         try :
             # println(parm.items())
-            self._init_node_parm(node_id)
-            println(node_id)
-            return_val = []
-            # if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == False):
-            #     raise Exception ("No pretrained model exist")
             #
-            # if('val_1' in parm):
-            #     parm['val_1'] = self._pos_raw_data(parm['val_1'])
-            # if ('val_2' in parm):
-            #     parm['val_2'] = self._pos_raw_data(parm['val_2'])
             #
-            # model = word2vec.Word2Vec.load(''.join([self.md_store_path, '/model.bin']))
-            # if(parm['type'] == 'vector') :
-            #     for key in parm['val_1'] :
-            #         if key in model :
-            #             return_val.append(model[key])
-            # elif(parm['type'] == 'sim') :
-            #     return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=5))
-            # else :
-            #     raise Exception ("Not available type : {0}".format(parm['type']))
-            # return return_val
+
+
+            for file in filelist:
+                println(file)
+                println(type(file))
+                println(file[0])
+                println(file[1])
+                println(type(file[1]))
+                value = file[1]
+                # fp = open("/hoya_str_root/nn00004/30/datasrc/" + value.name, 'wb')
+
+                for chunk in value.chunks():
+                    decoded_image = tf.image.decode_jpeg(chunk, channels=channel)
+                    resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
+                    # image = np.array(resized_image)
+                    # resized_image = tf.cast(resized_image, tf.uint8)
+                    # println(resized_image)
+                    # image = sess.run(decoded_image)
+                    # if _view_Image:
+                    #     plot_image(image, None)
+                    # fp.write(chunk)
+                # fp.close()
+
+            println("predict end........")
         except Exception as e :
             raise Exception (e)
