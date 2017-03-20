@@ -3,7 +3,8 @@ from master.workflow.netconf.workflow_netconf_wdnn import WorkFlowNetConfWdnn
 from master.workflow.data.workflow_data_frame import WorkFlowDataFrame
 import pandas as pd
 import os
-
+from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame
+from cluster.common.neural_common_wdnn import NeuralCommonWdnn
 
 class NeuralNetNodeWdnn(NeuralNetNode):
     """
@@ -26,13 +27,45 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
 
             filename = data_store_path + "/" + "adult.h5"
+            filenames = [files for root, dirs, files in os.walk(data_store_path)]
+            h5_filename = data_store_path + "/" +str(filenames[0][0])
+            data_conf_info = WorkflowDataConfFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "dataconf_node").data_conf
 
-            for root, dirs, files in os.walk(data_store_path):
-                for file in files:
-                    print(file)
+            # make wide & deep model
+            wdnn = NeuralCommonWdnn()
+            wdnn_model = wdnn.wdnn_build('wdnn', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
 
 
-            print(filename)
+            #read hdf5
+            try:
+                #TODO file이 여러개면 어떻하지?
+                df = self.read_hdf5(h5_filename)
+
+            except Exception as e:
+                print("Error Message : {0}".format(e))
+                raise Exception(e)
+
+            #feature, label = wdnn.input_fn( df, conf_data['node_id'],data_conf_info)
+
+            wdnn_model.fit(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=100)
+
+            results = wdnn_model.evaluate(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=1)
+            for key in sorted(results):
+                print("%s: %s" % (key, results[key]))
+
+            #m.fit(input_fn=lambda: input_fn(df_train), steps=train_steps)
+
+
+
+            #for root, dirs, files in os.walk(data_store_path):
+            #    for file in files:
+            #        print(file)
+
+            # make wide & deep model
+            #wdnn_model = WdnnCommonManager.wdnn_build(self, nnid = nnid)
+
+
+            #print(filename)
 
 
             #self.model_path = wf_net_conf.model_path
@@ -91,7 +124,8 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
 
         return None
-    def read_hdf5(self,filename):
+
+    def read_hdf5_chunk(self,filename):
 
         # type4 partial read
         store = pd.HDFStore(filename)
@@ -104,6 +138,25 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                                  stop=(i + 1) * chunksize)
         store.close()
         return chunk
+
+    def read_hdf5(self,filename):
+
+        store = pd.HDFStore(filename)
+        #df = store.get_storer('table1')
+        df = store.select('table1')
+        store.close()
+        return df
+
+    def load_hdf5(data_path, dataframe):
+        """
+        Load_hdf5
+        :param data_path:
+        :return:data_path
+        """
+        store_filepath_name = data_path + "/" + "adult.h5"
+        hdf = pd.HDFStore(store_filepath_name)
+        hdf.put('table1', dataframe, format='table', data_columns=True)
+        hdf.close()
 
     def _init_node_parm(self, node_id):
         return None

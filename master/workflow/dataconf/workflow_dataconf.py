@@ -18,6 +18,7 @@ class WorkFlowDataConf :
         getter for source step
         :return:obj(json) to make view
         """
+        #TODO : NNID는 안씀
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
             config_data = getattr(obj, 'node_config_data')

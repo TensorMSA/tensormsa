@@ -35,7 +35,8 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                      json={
                          "key" : {"node_id": node_id,
                                   "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id
+                                  "wf_ver_id": wf_ver_id,
+                                  "modelname": "model"
                                   }
                          ,"config": {"learnrate": 0.001,
                                  "traincnt": 2,

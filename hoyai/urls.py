@@ -110,6 +110,8 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfWdnn.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/w2v/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfW2V.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/d2v/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfD2V.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/seq2seq/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfSeq2Seq.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/renet/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
@@ -138,6 +140,6 @@ urlpatterns = [
     # service
     url(r'^api/v1/type/wf/target/init/mode/history/(?P<nnid>.*)/ver/(?P<ver>.*)/batch//(?P<bver>.*)/',
         csrf_exempt(rest_view.ServiceManager.as_view())),
-    url(r'^api/v1/type/service/state/predict/type/(?P<type>.*)/nnid/(?P<nnid>.*)/',
+    url(r'^api/v1/type/service/state/predict/type/(?P<type>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.ServiceManagerPredict.as_view())),
 ]

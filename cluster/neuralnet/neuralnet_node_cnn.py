@@ -7,6 +7,7 @@ import numpy as np
 from datetime import timedelta
 from cluster.data.data_node_image import DataNodeImage
 import os
+import operator
 ########################################################################
 # nm_classes = label cnt or max label cnt
 def one_hot_encoded(num_classes):
@@ -47,10 +48,20 @@ def model_file_delete(model_path, save_name):
                         os.remove(model_path + "/" + file)
         j -= 1
 ########################################################################
-def get_model(self, netconf, X, num_classes):
+def get_model(self, netconf, dataconf):
+    x_size = dataconf["preprocess"]["x_size"]
+    y_size = dataconf["preprocess"]["y_size"]
+    channel = dataconf["preprocess"]["channel"]
+    num_classes = netconf["config"]["num_classes"]
+    learnrate = netconf["config"]["learnrate"]
+    global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
+    ################################################################
+    X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, channel], name='x')
+    Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
+    ################################################################
     net_check = "S"
     stopper = 1
-    L1 = X
+    model = X
     try:
         while True:
             try:
@@ -58,8 +69,8 @@ def get_model(self, netconf, X, num_classes):
             except Exception as e:
                 if stopper == 1:
                     net_check = "Error[100] .............................................."
-                    L1 = "layer is None."
-                    return net_check, L1
+                    model = "layer is None."
+                    return net_check, model
                 break
             println(layer)
 
@@ -71,14 +82,14 @@ def get_model(self, netconf, X, num_classes):
                 else:
                     activitaion = tf.nn.relu
 
-                L1 = tf.contrib.layers.conv2d(inputs=L1
+                model = tf.contrib.layers.conv2d(inputs=model
                                               , num_outputs=int(layer["node_out"])
                                               , kernel_size=[int((layer["cnnfilter"][0])), int((layer["cnnfilter"][1]))]
                                               , activation_fn=activitaion
                                               , weights_initializer=tf.contrib.layers.xavier_initializer_conv2d()
                                               , padding=str((layer["padding"])))
 
-                L1 = tf.contrib.layers.max_pool2d(inputs=L1
+                model = tf.contrib.layers.max_pool2d(inputs=model
                                                   , kernel_size=[int((layer["maxpoolmatrix"][0])),
                                                                  int((layer["maxpoolmatrix"][1]))]
                                                   , stride=[int((layer["maxpoolstride"][0])),
@@ -91,11 +102,11 @@ def get_model(self, netconf, X, num_classes):
                     droprate = 0.0
 
                 if droprate > 0.0:
-                    L1 = tf.nn.dropout(L1, droprate)
+                    model = tf.nn.dropout(model, droprate)
             except Exception as e:
                 net_check = "Error[200] .............................................."
-                L1 = e
-                return net_check, L1
+                model = e
+                return net_check, model
 
             stopper += 1
             if (stopper >= 1000):
@@ -104,30 +115,36 @@ def get_model(self, netconf, X, num_classes):
         fclayer = netconf["out"]
 
         # 1. softmax
-        reout = int(L1.shape[1])*int(L1.shape[2])*int(L1.shape[3])
-        L1 = tf.reshape(L1, [-1, reout])
+        reout = int(model.shape[1])*int(model.shape[2])*int(model.shape[3])
+        model = tf.reshape(model, [-1, reout])
         W1 = tf.Variable(tf.truncated_normal([reout, fclayer["node_out"]], stddev=0.1))
-        L1 = tf.nn.relu(tf.matmul(L1, W1))
+        model = tf.nn.relu(tf.matmul(model, W1))
         W5 = tf.Variable(tf.truncated_normal([fclayer["node_out"], num_classes], stddev=0.1))
-        L1 = tf.matmul(L1, W5)
+        model = tf.matmul(model, W5)
 
         #     # # 2. tf.contrib.layers.fully_connected
-        #     L1 = tf.contrib.layers.flatten(L1)
-        #     L1 = tf.contrib.layers.fully_connected(L1, fclayer["node_out"],
+        #     model = tf.contrib.layers.flatten(model)
+        #     model = tf.contrib.layers.fully_connected(model, fclayer["node_out"],
         #                                            normalizer_fn=tf.contrib.layers.batch_norm)
-        #     L1 = tf.contrib.layers.fully_connected(L1, num_classes)
+        #     model = tf.contrib.layers.fully_connected(model, num_classes)
 
-        println(L1)
+        println(model)
+
+        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
+        optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
+
+        check_prediction = tf.equal(tf.argmax(model, 1), tf.argmax(Y, 1))
+        accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
     except Exception as e:
         net_check = "Error[300] .............................................."
         println(net_check)
         println(e)
-        L1 = e
+        model = e
 
-    return net_check, L1
+    return net_check, X, Y, optimizer, accuracy, global_step
 ########################################################################
-def train(input_data, L1, X, Y, netconf, dataconf):
+def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step):
     x_size = dataconf["preprocess"]["x_size"]
     y_size = dataconf["preprocess"]["y_size"]
     channel = dataconf["preprocess"]["channel"]
@@ -135,18 +152,11 @@ def train(input_data, L1, X, Y, netconf, dataconf):
 
     num_classes = netconf["config"]["num_classes"]
     batchsize = netconf["config"]["batch_size"]
-    learnrate = netconf["config"]["learnrate"]
 
     start_time = time.time()
-    global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
 
     try:
-        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=L1, labels=Y))
-        # optimizer = tf.train.AdamOptimizer(learnrate).minimize(cost)
-        optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
 
-        check_prediction = tf.equal(tf.argmax(L1, 1), tf.argmax(Y, 1))
-        accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
         ################################################################ Label
         # println("Label Dict //////////////////////////////////////////////////")
         labelsDictHot = one_hot_encoded(num_classes)
@@ -184,7 +194,7 @@ def train(input_data, L1, X, Y, netconf, dataconf):
                 # println(y_batch)
                 # println("Image /////////////////////////////////////////////////")
                 # println(x_batch)
-                train_run(x_batch, y_batch, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
+                train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
 
     except Exception as e:
         net_check = "Error[400] .............................................."
@@ -199,8 +209,8 @@ def train(input_data, L1, X, Y, netconf, dataconf):
     # Print the time-usage.
     println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
 ########################################################################
-def train_run(x_batch, y_batch, netconf, dataconf, X, Y, optimizer, accuracy, global_step):
-    save_name = "model"
+def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step):
+    modelname = netconf["key"]["modelname"]
     train_cnt = netconf["config"]["traincnt"]
     # println(netconf["key"]["nn_id"])
     # println(netconf["key"]["wf_ver_id"])
@@ -235,12 +245,44 @@ def train_run(x_batch, y_batch, netconf, dataconf, X, Y, optimizer, accuracy, gl
             if (i_global % 100 == 0) or (i == train_cnt - 1):
                 println("Save model_path=" + model_path)
                 saver.save(sess,
-                           save_path=model_path+"/"+save_name,
+                           save_path=model_path+"/"+modelname,
                            global_step=global_step)
 
-    model_file_delete(model_path, save_name)
+    model_file_delete(model_path, modelname)
     println("Saved checkpoint.")
 ########################################################################
+def predict_cnn(_fileName, fileType, netconf):
+    modelname = netconf["key"]["modelname"]
+    model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
+    save_path = model_path + "/" + modelname
+    x, y_true, global_step, optimizer, accuracy, y_pred_cls = get_network_variable()
+
+    saver = tf.train.Saver()
+    with tf.Session() as sess:
+        try:
+            last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=save_path)
+            saver.restore(sess, save_path=last_chk_path)
+            # If we get to this point, the checkpoint was successfully loaded.
+            print("Restored checkpoint from:", last_chk_path)
+        except:
+            raise "Model Not Pound"
+
+        images_test, msg = cifar10.get_binary_images(sess, _fileName, fileType)
+        cls_test = [0]
+        labels_test = dataset.one_hot_encoded(class_numbers=cls_test, num_classes=cifar10.num_classes)
+
+        cls_true_name = cifar10.predict_cls_one(images=images_test
+                                           , labels=labels_test
+                                           , x=x
+                                           , y_true=y_true
+                                           , session=sess
+                                           , y_pred_cls=y_pred_cls
+                                           , msg=msg)
+
+        print("Predict Class Name>>>>>", cls_true_name)
+
+        return cls_true_name
+
 class NeuralNetNodeCnn(NeuralNetNode):
     """
     """
@@ -252,25 +294,15 @@ class NeuralNetNodeCnn(NeuralNetNode):
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
 
-        x_size  = dataconf["preprocess"]["x_size"]
-        y_size  = dataconf["preprocess"]["y_size"]
-        channel = dataconf["preprocess"]["channel"]
-        num_classes = netconf["config"]["num_classes"]
-
-        ################################################################
-        X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, channel], name='x')
-        Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
-        ################################################################
-        node_id = str(conf_data["node_list"][0])
-        input_data = DataNodeImage().load_train_data(node_id)
-
-        netcheck, model = get_model(self, netconf, X, num_classes)
-        if netcheck == "S":
-            train(input_data, model, X, Y, netconf, dataconf)
+        net_check, X, Y, optimizer, accuracy, global_step = get_model(self, netconf, dataconf)
+        if net_check == "S":
+            input_data = DataNodeImage().load_train_data(str(conf_data["node_list"][0]))
+            train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
         else:
-            println("net_check=" + netcheck)
+            println("net_check=" + net_check)
 
         println("train end......")
+
         return None
 
     def _init_node_parm(self, node_id):
@@ -279,3 +311,56 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
+    def predict(self, conf_data, ver, filelist):
+        """
+        predict service method
+        1. type (vector) : return vector
+        2. type (sim) : positive list & negative list
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        println("run NeuralNetNodeCnn Predict")
+        println(conf_data)
+        # search nn_node_info
+        dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
+        netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
+        x_size = dataconf["preprocess"]["x_size"]
+        y_size = dataconf["preprocess"]["y_size"]
+        channel = dataconf["preprocess"]["channel"]
+
+        println(filelist)
+
+        filelist = sorted(filelist.items(), key=operator.itemgetter(0))
+        println(filelist)
+        println(type(filelist))
+        try :
+            # println(parm.items())
+            #
+            #
+
+
+            for file in filelist:
+                println(file)
+                println(type(file))
+                println(file[0])
+                println(file[1])
+                println(type(file[1]))
+                value = file[1]
+                # fp = open("/hoya_str_root/nn00004/30/datasrc/" + value.name, 'wb')
+
+                for chunk in value.chunks():
+                    decoded_image = tf.image.decode_jpeg(chunk, channels=channel)
+                    resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
+                    # image = np.array(resized_image)
+                    # resized_image = tf.cast(resized_image, tf.uint8)
+                    # println(resized_image)
+                    # image = sess.run(decoded_image)
+                    # if _view_Image:
+                    #     plot_image(image, None)
+                    # fp.write(chunk)
+                # fp.close()
+
+            println("predict end........")
+        except Exception as e :
+            raise Exception (e)
