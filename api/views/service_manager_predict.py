@@ -1,6 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from cluster.service.service_predict_d2v import PredictNetD2V
 from cluster.service.service_predict_w2v import PredictNetW2V
 from cluster.service.service_predict_cnn import PredictNetCnn
 from common.utils import *
@@ -16,6 +17,9 @@ class ServiceManagerPredict(APIView):
             if(type == 'w2v') :
                 input_data = json.loads(str(request.body, 'utf-8'))
                 return_data = PredictNetW2V().run(nnid, input_data)
+            elif(type == "d2v"):
+                input_data = json.loads(str(request.body, 'utf-8'))
+                return_data = PredictNetD2V().run(nnid, input_data)
             elif(type == "cnn"):
                 return_data = PredictNetCnn().run(nnid, ver, request.FILES)
             else :
