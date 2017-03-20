@@ -39,4 +39,4 @@ from .file_upload_view import FileUploadView
 from .workflow_netconf_w2v import WorkFlowNetConfW2V
 from .workflow_pre_convert import WorkFlowPreConvert
 from .workflow_netconf_seq2seq import WorkFlowNetConfSeq2Seq
-
+from .workflow_netconf_renet import WorkFlowNetConfRenet

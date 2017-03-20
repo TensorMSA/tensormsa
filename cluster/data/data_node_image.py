@@ -16,7 +16,6 @@ class DataNodeImage(DataNode):
     """
 
     def run(self, conf_data):
-        println("run img data node")
         try:
             TRAIN = 'cat_vs_dog.zip'
             node_id = conf_data['node_id']
@@ -27,7 +26,7 @@ class DataNodeImage(DataNode):
             node = node_id.split('_')[2]
             directory = get_source_path(nn_id, ver, node)
             # output_directory = config_data['store_path']
-            output_directory = get_datastore_path(node_id.split('_')[0], node_id.split('_')[1], node_id.split('_')[2])
+            output_directory = get_store_path(node_id.split('_')[0], node_id.split('_')[1], node_id.split('_')[2])
             output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
 
             # Prepare output file
@@ -107,7 +106,7 @@ class DataNodeImage(DataNode):
             return (output_path,)
         except Exception as e:
             println(e)
-            # raise Exception(e)
+            raise Exception(e)
 
     def _init_node_parm(self, node_id):
         return None
