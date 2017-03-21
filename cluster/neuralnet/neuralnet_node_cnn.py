@@ -72,7 +72,7 @@ def get_model(self, netconf, dataconf):
                     model = "layer is None."
                     return net_check, model
                 break
-            println(layer)
+            # println(layer)
 
             try:
                 if str(layer["active"]) == 'relu':
@@ -128,7 +128,7 @@ def get_model(self, netconf, dataconf):
         #                                            normalizer_fn=tf.contrib.layers.batch_norm)
         #     model = tf.contrib.layers.fully_connected(model, num_classes)
 
-        println(model)
+        # println(model)
 
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
@@ -311,19 +311,19 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf)
 
-        println(filelist)
+        # println(filelist)
 
         filelist = sorted(filelist.items(), key=operator.itemgetter(0))
         println(filelist)
 
-        labelsDictHot = one_hot_encoded(num_classes)
+        labels = dataconf["labels"]
+        # labelsDictHot = one_hot_encoded(num_classes)
         with tf.Session() as sess:
             try:
                 last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
                 saverss = tf.train.Saver()
                 saverss.restore(sess, save_path=last_chk_path)
                 println("Restored checkpoint from:" + last_chk_path)
-
 
                 for file in filelist:
                     value = file[1]
@@ -335,32 +335,17 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         image = sess.run(resized_image)
                         image = image.reshape([-1, x_size, y_size, channel])
 
-                        println(image)
-                        println(y_pred_cls.shape)
+                        # println(image)
 
                         logits = sess.run(y_pred_cls, feed_dict={X: image})
-                        println(logits)
-                        # pred = tf.nn.softmax(logits)
-                        # print(pred)
 
-                        # feed_dict = {X: images[i:j, :],
-                        #              y_true: labels[i:j, :]}
-                        # # print("i"+str(i)+" j="+str(j))
-                        # # Calculate the predicted class using TensorFlow.
-                        # cls_pred[i:j] = session.run(y_pred_cls, feed_dict=feed_dict)
-                        # cls_pred = y_pred_cls.eval(feed_dict={X: image})
-                        # println(cls_pred)
-
-                        # feed_dict = {X: image,Y: labels[i:j, :]}
-                        # # print("i"+str(i)+" j="+str(j))
-                        # # Calculate the predicted class using TensorFlow.
-                        # cls_pred[i:j] = session.run(y_pred_cls, feed_dict=feed_dict)
-
+                        cls_name = labels[logits[0]]
+                        println(cls_name)
 
                 # println(images)
                 println("predict end........")
             except Exception as e:
-                # println("None to restore checkpoint. Initializing variables instead.")
+                println("None to restore checkpoint. Initializing variables instead.")
                 println(e)
 
 
