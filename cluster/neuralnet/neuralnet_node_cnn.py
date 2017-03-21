@@ -293,11 +293,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         """
         println("run NeuralNetNodeCnn Predict")
         println(conf_data)
-        # try:
-        #     saverss = tf.train.Saver()
-        # except Exception as e:
-        #     println(e)
-        # println("en?????")
+
         # search nn_node_info
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
@@ -338,17 +334,16 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         # println(image)
 
                         logits = sess.run(y_pred_cls, feed_dict={X: image})
-
+                        println(logits)
                         cls_name = labels[logits[0]]
                         println(cls_name)
 
                 # println(images)
-                println("predict end........")
             except Exception as e:
                 println("None to restore checkpoint. Initializing variables instead.")
                 println(e)
 
 
-
+        println("run predict end........")
 
 

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from cluster.service.service_predict_d2v import PredictNetD2V
 from cluster.service.service_predict_w2v import PredictNetW2V
 from cluster.service.service_predict_cnn import PredictNetCnn
-from cluster.service.service_predict_renet import PredictNetRenet
+# from cluster.service.service_predict_renet import PredictNetRenet
 from cluster.service.service_predict_wdnn import PredictNetWdnn
 
 from common.utils import *
@@ -17,15 +17,15 @@ class ServiceManagerPredict(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            if(type == 'w2v') :
-                input_data = json.loads(str(request.body, 'utf-8'))
-                return_data = PredictNetW2V().run(nnid, input_data)
-            elif(type == "cnn"):
-                return_data = PredictNetCnn().run(nnid, ver, request.FILES)
-            elif(type == "renet"):
-                return_data = PredictNetRenet().run(nnid, ver, request.FILES)
-            elif(type == "wdnn"):
-                return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
+            # if(type == 'w2v') :
+            #     input_data = json.loads(str(request.body, 'utf-8'))
+            #     return_data = PredictNetW2V().run(nnid, input_data)
+            # elif(type == "cnn"):
+            #     return_data = PredictNetCnn().run(nnid, ver, request.FILES)
+            # # elif(type == "renet"):
+            # #     return_data = PredictNetRenet().run(nnid, ver, request.FILES)
+            # elif(type == "wdnn"):
+            #     return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
 
             if(ver == 'active') :
                 if(type == 'w2v') :
