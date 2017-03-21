@@ -118,7 +118,7 @@ class WorkFlowDataText(WorkFlowData) :
         :return:boolean
         """
         try:
-            source_path = utils.get_source_path(nnid, wfver, input_data['source_path'])
+            source_path = utils.get_source_path(nnid, wfver, node)
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(wfver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
             config_data['source_type'] = src
@@ -133,7 +133,7 @@ class WorkFlowDataText(WorkFlowData) :
             if (os.path.exists(source_path) == False):
                 os.makedirs(source_path, exist_ok=True)
 
-            return input_data['source_path']
+            return config_data['source_path']
 
         except Exception as e:
             raise Exception(e)
@@ -188,10 +188,10 @@ class WorkFlowDataText(WorkFlowData) :
         :return:boolean
         """
         try:
-            store_path = utils.get_store_path(nnid, input_data['store_path'])
+            store_path = utils.get_store_path(nnid, wfver, node)
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(wfver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
-            config_data['store_path'] = utils.get_store_path(nnid, input_data['store_path'])
+            config_data['store_path'] = utils.get_store_path(nnid, wfver, node)
             setattr(obj, 'node_config_data', config_data)
             obj.save()
 

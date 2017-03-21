@@ -166,7 +166,7 @@ class WorkFlowDataFrame(WorkFlowData) :
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(wfver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
-            config_data['store_path'] = utils.get_store_path(nnid, input_data['store_path'])
+            config_data['store_path'] = utils.get_store_path(nnid, wfver, input_data['store_path'])
             setattr(obj, 'node_config_data', config_data)
             obj.save()
             return input_data['store_path']

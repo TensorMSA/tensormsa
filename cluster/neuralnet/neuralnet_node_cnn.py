@@ -132,8 +132,8 @@ def get_model(self, netconf, dataconf):
 
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
-
-        check_prediction = tf.equal(tf.argmax(model, 1), tf.argmax(Y, 1))
+        y_pred_cls = tf.argmax(model, 1)
+        check_prediction = tf.equal(y_pred_cls, tf.argmax(Y, 1))
         accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
     except Exception as e:
@@ -142,7 +142,7 @@ def get_model(self, netconf, dataconf):
         println(e)
         model = e
 
-    return net_check, X, Y, optimizer, accuracy, global_step
+    return net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step
 ########################################################################
 def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step):
     x_size = dataconf["preprocess"]["x_size"]
@@ -215,11 +215,13 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
     # println(netconf["key"]["nn_id"])
     # println(netconf["key"]["wf_ver_id"])
     model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
+    save_path = model_path + "/" + modelname
     # println(model_path)
-    saver = tf.train.Saver()
+
     with tf.Session() as sess:
         try:
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
+            saver = tf.train.Saver()
             saver.restore(sess, save_path=last_chk_path)
             println("Restored checkpoint from:" + last_chk_path)
         except:
@@ -245,43 +247,11 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
             if (i_global % 100 == 0) or (i == train_cnt - 1):
                 println("Save model_path=" + model_path)
                 saver.save(sess,
-                           save_path=model_path+"/"+modelname,
+                           save_path=save_path,
                            global_step=global_step)
 
     model_file_delete(model_path, modelname)
     println("Saved checkpoint.")
-########################################################################
-def predict_cnn(_fileName, fileType, netconf):
-    modelname = netconf["key"]["modelname"]
-    model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
-    save_path = model_path + "/" + modelname
-    x, y_true, global_step, optimizer, accuracy, y_pred_cls = get_network_variable()
-
-    saver = tf.train.Saver()
-    with tf.Session() as sess:
-        try:
-            last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=save_path)
-            saver.restore(sess, save_path=last_chk_path)
-            # If we get to this point, the checkpoint was successfully loaded.
-            print("Restored checkpoint from:", last_chk_path)
-        except:
-            raise "Model Not Pound"
-
-        images_test, msg = cifar10.get_binary_images(sess, _fileName, fileType)
-        cls_test = [0]
-        labels_test = dataset.one_hot_encoded(class_numbers=cls_test, num_classes=cifar10.num_classes)
-
-        cls_true_name = cifar10.predict_cls_one(images=images_test
-                                           , labels=labels_test
-                                           , x=x
-                                           , y_true=y_true
-                                           , session=sess
-                                           , y_pred_cls=y_pred_cls
-                                           , msg=msg)
-
-        print("Predict Class Name>>>>>", cls_true_name)
-
-        return cls_true_name
 
 class NeuralNetNodeCnn(NeuralNetNode):
     """
@@ -294,7 +264,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
 
-        net_check, X, Y, optimizer, accuracy, global_step = get_model(self, netconf, dataconf)
+        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf)
+
         if net_check == "S":
             input_data = DataNodeImage().load_train_data(str(conf_data["node_list"][0]))
             train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
@@ -322,45 +293,77 @@ class NeuralNetNodeCnn(NeuralNetNode):
         """
         println("run NeuralNetNodeCnn Predict")
         println(conf_data)
+        # try:
+        #     saverss = tf.train.Saver()
+        # except Exception as e:
+        #     println(e)
+        # println("en?????")
         # search nn_node_info
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
         x_size = dataconf["preprocess"]["x_size"]
         y_size = dataconf["preprocess"]["y_size"]
         channel = dataconf["preprocess"]["channel"]
+        modelname = netconf["key"]["modelname"]
+        num_classes = netconf["config"]["num_classes"]
+        model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
+        save_path = model_path + "/" + modelname
+
+        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf)
 
         println(filelist)
 
         filelist = sorted(filelist.items(), key=operator.itemgetter(0))
         println(filelist)
-        println(type(filelist))
-        try :
-            # println(parm.items())
-            #
-            #
+
+        labelsDictHot = one_hot_encoded(num_classes)
+        with tf.Session() as sess:
+            try:
+                last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
+                saverss = tf.train.Saver()
+                saverss.restore(sess, save_path=last_chk_path)
+                println("Restored checkpoint from:" + last_chk_path)
 
 
-            for file in filelist:
-                println(file)
-                println(type(file))
-                println(file[0])
-                println(file[1])
-                println(type(file[1]))
-                value = file[1]
-                # fp = open("/hoya_str_root/nn00004/30/datasrc/" + value.name, 'wb')
+                for file in filelist:
+                    value = file[1]
+                    for chunk in value.chunks():
+                        decoded_image = tf.image.decode_jpeg(chunk, channels=channel)
+                        resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
+                        resized_image = tf.cast(resized_image, tf.uint8)
 
-                for chunk in value.chunks():
-                    decoded_image = tf.image.decode_jpeg(chunk, channels=channel)
-                    resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
-                    # image = np.array(resized_image)
-                    # resized_image = tf.cast(resized_image, tf.uint8)
-                    # println(resized_image)
-                    # image = sess.run(decoded_image)
-                    # if _view_Image:
-                    #     plot_image(image, None)
-                    # fp.write(chunk)
-                # fp.close()
+                        image = sess.run(resized_image)
+                        image = image.reshape([-1, x_size, y_size, channel])
 
-            println("predict end........")
-        except Exception as e :
-            raise Exception (e)
+                        println(image)
+                        println(y_pred_cls.shape)
+
+                        logits = sess.run(y_pred_cls, feed_dict={X: image})
+                        println(logits)
+                        # pred = tf.nn.softmax(logits)
+                        # print(pred)
+
+                        # feed_dict = {X: images[i:j, :],
+                        #              y_true: labels[i:j, :]}
+                        # # print("i"+str(i)+" j="+str(j))
+                        # # Calculate the predicted class using TensorFlow.
+                        # cls_pred[i:j] = session.run(y_pred_cls, feed_dict=feed_dict)
+                        # cls_pred = y_pred_cls.eval(feed_dict={X: image})
+                        # println(cls_pred)
+
+                        # feed_dict = {X: image,Y: labels[i:j, :]}
+                        # # print("i"+str(i)+" j="+str(j))
+                        # # Calculate the predicted class using TensorFlow.
+                        # cls_pred[i:j] = session.run(y_pred_cls, feed_dict=feed_dict)
+
+
+                # println(images)
+                println("predict end........")
+            except Exception as e:
+                # println("None to restore checkpoint. Initializing variables instead.")
+                println(e)
+
+
+
+
+

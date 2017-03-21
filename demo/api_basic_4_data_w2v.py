@@ -8,7 +8,6 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local
                      json={
                          "source_server": "local",
                          "source_sql": "all",
-                         "source_path": "test",
                          "max_sentence_len" : 50
                      })
 data = json.loads(resp.json())
@@ -24,10 +23,7 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 # update store_path
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/store/nnid/nn00003/ver/7/node/data_node/',
-                     json={
-                         "store_path": "test"
-                     })
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/store/nnid/nn00003/ver/7/node/data_node/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
