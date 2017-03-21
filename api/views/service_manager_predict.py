@@ -26,6 +26,7 @@ class ServiceManagerPredict(APIView):
                 return_data = PredictNetRenet().run(nnid, ver, request.FILES)
             elif(type == "wdnn"):
                 return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
+
             if(ver == 'active') :
                 if(type == 'w2v') :
                     input_data = json.loads(str(request.body, 'utf-8'))
