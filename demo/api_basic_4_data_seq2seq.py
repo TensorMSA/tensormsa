@@ -8,7 +8,6 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local
                      json={
                          "source_server": "local",
                          "source_sql": "all",
-                         "source_path": "encode",
                          "max_sentence_len": 50
                      })
 data = json.loads(resp.json())
@@ -24,10 +23,7 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 # update store_path
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/store/nnid/nn00004/ver/5/node/data_encode_node/',
-                     json={
-                         "store_path": "encode"
-                     })
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/store/nnid/nn00004/ver/5/node/data_encode_node/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
@@ -43,7 +39,6 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local
                      json={
                          "source_server": "local",
                          "source_sql": "all",
-                         "source_path": "decode",
                          "max_sentence_len": 50
                      })
 data = json.loads(resp.json())
@@ -59,10 +54,7 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 # update store_path
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/store/nnid/nn00004/ver/5/node/data_decode_node/',
-                     json={
-                         "store_path": "decode"
-                     })
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/store/nnid/nn00004/ver/5/node/data_decode_node/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 

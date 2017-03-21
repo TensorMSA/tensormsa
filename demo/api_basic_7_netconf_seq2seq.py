@@ -9,10 +9,10 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/seq2
                          "model_path" : "test",
                          "encoder_len" : 50,
                          "decoder_len" : 50,
-                         "encoder_depth" : 10,
-                         "decoder_depth" : 10,
+                         "encoder_depth" : 2,
+                         "decoder_depth" : 2,
                          "cell_type" : "lstm",   #vanila, lstm, gru
-                         "cell_size" : 128,
+                         "cell_size" : 50,
                          "drop_out" : 0.5,
                          "word_embed_type" : "w2v",   #w2v, onehot
                          "word_embed_id" : "nn00003"

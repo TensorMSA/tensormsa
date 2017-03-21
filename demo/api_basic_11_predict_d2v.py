@@ -9,7 +9,7 @@ nn_id = "nn00006"
 wf_ver_id = "107"
 
 # Run All Workflow
-resp = requests.post('http://' + url + '/api/v1/type/service/state/predict/type/d2v/nnid/' + nn_id + '/ver/' + wf_ver_id + '/',
+resp = requests.post('http://' + url + '/api/v1/type/service/state/predict/type/d2v/nnid/' + nn_id + '/ver/' + wf_ver_id + '/ver/active/',
                      json={
                          "type": "sim",
                          "val_1":["철강"],
