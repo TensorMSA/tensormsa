@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from cluster.service.service_predict_d2v import PredictNetD2V
 from cluster.service.service_predict_w2v import PredictNetW2V
 from cluster.service.service_predict_cnn import PredictNetCnn
+from cluster.service.service_predict_wdnn import PredictNetWdnn
 from common.utils import *
 
 class ServiceManagerPredict(APIView):
@@ -22,6 +23,8 @@ class ServiceManagerPredict(APIView):
                 return_data = PredictNetD2V().run(nnid, input_data)
             elif(type == "cnn"):
                 return_data = PredictNetCnn().run(nnid, ver, request.FILES)
+            elif(type == "wdnn"):
+                return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
             else :
                 raise Exception ("Not defined type error")
 
