@@ -12,8 +12,11 @@ class WorkFlowDataText(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = {'result' : 'no type'}
+            if(len(request.body) > 1):
+                input_data = json.loads(str(request.body, 'utf-8'))
+                return_data = {'result' : 'no type'}
+            else :
+                input_data = {}
 
             if(prg == 'source') :
                 return_data = WfDataText().put_step_source(src, form, nnid, ver, node, input_data)
