@@ -97,6 +97,7 @@ class DataNodeFrame(DataNode):
         :param data_path:
         :return:data_path
         """
+        #TODO : readcsv는 util로는 필요 없는가?
         source_filepath_name = data_path + "/" + "adult.data"
         df_csv_read = pd.read_csv(tf.gfile.Open(source_filepath_name),
                                   skipinitialspace=True,
