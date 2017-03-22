@@ -86,7 +86,10 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                     else : return_val.append(0)
             elif (parm['type'] == 'vec2word'):
                 for key in parm['val_1']:
-                    return_val = return_val + [(str(model.similar_by_vector(key)[0][0]))]
+                    for guess in model.similar_by_vector(key) :
+                        if guess[0] not in ['\n', '#', './SF'] and guess[1] > 0:
+                            return_val = return_val + [guess[0]]
+                            break
             else :
                 raise Exception ("Not available type : {0}".format(parm['type']))
             return return_val
