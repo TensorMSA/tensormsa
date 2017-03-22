@@ -82,10 +82,11 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                 return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=5))
             elif(parm['type'] == 'dict') :
                 for key in parm['val_1'] :
-                    if key in model :
-                        return_val.append(model.wv.vocab[key].index)
+                    if key in model : return_val.append(model.wv.vocab[key].index)
                     else : return_val.append(0)
-
+            elif (parm['type'] == 'vec2word'):
+                for key in parm['val_1']:
+                    return_val = return_val + [(str(model.similar_by_vector(key)[0][0]))]
             else :
                 raise Exception ("Not available type : {0}".format(parm['type']))
             return return_val

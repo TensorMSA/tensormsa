@@ -10,7 +10,7 @@ import collections
 import argparse
 import time
 import os
-
+from konlpy.tag import Mecab
 
 class NeuralNetNodeSeq2Seq(NeuralNetNode):
     """
@@ -29,7 +29,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             encode_data, decode_data = dyna_cls.load_train_data(data_node_name, parm='all')
 
             # prepare net conf
-            self._set_net_model()
+            self._set_train_model()
 
             for encode, decode  in zip(encode_data, decode_data):
                 encode_raw = encode['rawdata']
@@ -79,8 +79,19 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def predict(self, node_id, parm = {}):
-        pass
+    def predict(self, node_id, parm = {"input_data" : {}}):
+        """
+
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        # set init params
+        self._init_node_parm(node_id)
+        # prepare net conf
+        self._set_predict_model()
+        # predict network
+        return self._run_predict(parm['input_data'])
 
     def eval(self, node_id, parm={}):
         """
@@ -123,7 +134,23 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
 
-    def _set_net_model(self):
+    def _get_vec2word(self, input_data):
+        """
+        change word to vector
+        :param input_data:
+        :return:
+        """
+        if(self.word_embed_type == 'w2v'):
+            return_arr = []
+            for data in input_data :
+                parm =  {"type" : "vec2word", "val_1" : {}, "val_2" : []}
+                parm['val_1'] = data
+                return_arr.append(PredictNetW2V().run(self.word_embed_id, parm))
+            return return_arr
+        else :
+            raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
+
+    def _set_train_model(self):
         """
         set tensorflow seq2seq model for train and predict
         :return:
@@ -190,5 +217,75 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 print("[{0}] train_loss : {1}".format(epoch, train_loss))
             saver.save(sess, self.md_store_path)
             sess.close()
+        except Exception as e :
+            raise Exception(e)
+
+
+
+    def _set_predict_model(self):
+        """
+        set tensorflow seq2seq model for train and predict
+        :return:
+        """
+        encoder_seq_length = 1
+        try :
+            # Construct RNN model
+            unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
+            self.cell = tf.contrib.rnn.MultiRNNCell([unitcell] * self.encoder_num_layers)
+            self.input_data = tf.placeholder(tf.float32, [self.batch_size, encoder_seq_length, self.vocab_size])
+            self.istate = self.cell.zero_state(self.batch_size, tf.float32)
+
+            # Weigths
+            with tf.variable_scope('rnnlm'):
+                softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
+                softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
+                inputs = tf.split(self.input_data, encoder_seq_length, 1)
+                inputs = [tf.squeeze(_input, [1]) for _input in inputs]
+
+            self.outputs, self.last_state = tf.contrib.legacy_seq2seq.rnn_decoder(inputs, self.istate, self.cell
+                                                                        , loop_function=None, scope='rnnlm')
+
+            self.output = tf.reshape(tf.concat(self.outputs, 1), [-1, self.cell_size])
+            self.logits = tf.nn.xw_plus_b(self.output, softmax_w, softmax_b)
+            self.probs = tf.nn.softmax(self.logits)
+
+        except Exception as e :
+            raise Exception (e)
+
+    def _run_predict(self, x_input):
+        """
+
+        :return:
+        """
+        try :
+            # create session
+            sess = tf.Session()
+            sess.run(tf.initialize_all_variables())
+            saver = tf.train.Saver(tf.all_variables())
+
+            #restore model
+            if(os.path.exists(self.md_store_path) == True):
+                saver.restore(sess, self.md_store_path)
+            else :
+                raise Exception ("error : no pretrained model exist")
+
+            mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
+            state = sess.run(self.cell.zero_state(1,tf.float32))
+            last_word = ""
+            output = []
+
+            for word_tuple in mecab.pos(x_input):
+                word = ''.join([word_tuple[0], "/" , word_tuple[1]])
+                state = sess.run(self.last_state, feed_dict={self.input_data: self._word_embed_data(np.array([[word]])), self.istate: state})
+                last_word = word
+
+            word = last_word
+            for num in range(self.decoder_seq_length):
+                [probsval, state] = sess.run([self.probs, self.last_state]
+                                             , feed_dict={self.input_data: self._word_embed_data(np.array([[word]])), self.istate: state})
+
+                output = output + self._get_vec2word(np.array([[probsval[0]]]))
+            sess.close()
+            return output
         except Exception as e :
             raise Exception(e)

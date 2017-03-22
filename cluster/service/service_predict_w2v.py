@@ -20,5 +20,15 @@ class PredictNetW2V(PredictNet):
             return NeuralNetNodeWord2Vec().predict(self._find_netconf_node_id(nn_id), parm)
 
     def _valid_check(self, parm):
-        return True
+        error_msg = ""
+        if ('type' not in parm):
+            error_msg = ''.join([error_msg, 'type (vector, sim, train) not defined'])
+        if ('val_1' not in parm):
+            error_msg = ''.join([error_msg, 'val_1 not defined'])
+        if ('val_2' not in parm):
+            error_msg = ''.join([error_msg, 'val_2 not defined'])
+        if(error_msg == "") :
+            return True
+        else :
+            raise Exception(error_msg)
 
