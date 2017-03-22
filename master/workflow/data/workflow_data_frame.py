@@ -21,8 +21,9 @@ class WorkFlowDataFrame(WorkFlowData) :
         :return:
         """
         #이게 진짜 필요한지 상속 받아야 하는지 나중에 판단
-        self.key = key
-        self.conf = self.get_step_source(key)
+        if (key is not None):
+            self.key = key
+            self.conf = self.get_step_source(key)
 
 
     @property

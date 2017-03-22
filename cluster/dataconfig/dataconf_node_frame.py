@@ -3,6 +3,12 @@ from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFra
 
 class DataConfNodeFrame(DataConfNode):
     """
+        Data Columns을 설정 하고 Validation Check가 필요함
+        그러나 매번 Training을 할때는 필요 없음
+
+        Validation check
+            Category는 몇개냐
+            Continuous에 문자값이 있으면 안됨
 
     """
 

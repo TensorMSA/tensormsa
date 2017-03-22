@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from cluster.service.service_single_task import WorkFlowSingleTask
 from cluster.service.service_single_task import single_run
 from common.utils import *
+import traceback
 
 class RunManagerSingleRequest(APIView):
     """
@@ -14,9 +15,12 @@ class RunManagerSingleRequest(APIView):
         - desc : insert data
         """
         try:
-            result = single_run.delay(nnid, ver, node)
-            return Response(json.dumps(result.get()))
+            #result = single_run.delay(nnid, ver, node)
+
+            result = single_run(nnid, ver, node)
+            return Response(json.dumps(result))
         except Exception as e:
+            traceback.print_exc()
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 

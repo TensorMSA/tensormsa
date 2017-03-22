@@ -48,20 +48,24 @@ class WorkFlowCommonNode :
         :return:
         """
         # make query string (use raw query only when cate is too complicated)
-        query_list = []
-        query_list.append("SELECT wf_node_class_name, wf_node_class_path ")
-        query_list.append("FROM  master_NN_WF_NODE_INFO ND JOIN master_WF_TASK_SUBMENU_RULE SB   ")
-        query_list.append("      ON ND.wf_task_submenu_id_id =  SB.wf_task_submenu_id  ")
-        query_list.append("WHERE ND.nn_wf_node_id = %s")
+        try:
+            query_list = []
+            query_list.append("SELECT wf_node_class_name, wf_node_class_path ")
+            query_list.append("FROM  master_NN_WF_NODE_INFO ND JOIN master_WF_TASK_SUBMENU_RULE SB   ")
+            query_list.append("      ON ND.wf_task_submenu_id_id =  SB.wf_task_submenu_id  ")
+            query_list.append("WHERE ND.nn_wf_node_id = %s")
 
-        # parm_list : set parm value as list
-        parm_list = []
-        parm_list.append(node_id)
+            # parm_list : set parm value as list
+            parm_list = []
+            parm_list.append(node_id)
 
-        with connection.cursor() as cursor:
-            cursor.execute(''.join(query_list), parm_list)
-            row = dictfetchall(cursor)
-        return row[0]['wf_node_class_path'], row[0]['wf_node_class_name']
+            with connection.cursor() as cursor:
+                cursor.execute(''.join(query_list), parm_list)
+                row = dictfetchall(cursor)
+            return row[0]['wf_node_class_path'], row[0]['wf_node_class_name']
+        except Exception as e:
+            raise Exception(e)
+
 
     def load_class(self, class_path, class_name):
         """

@@ -4,7 +4,9 @@ from master import models
 
 class WorkflowDataConfFrame(WorkFlowDataConf):
     """
-
+    Data Columns의 속성을 정의 해주는 Class
+    # properties
+        data_conf
     """
     def __init__(self, key = None):
         """
