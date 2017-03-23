@@ -19,7 +19,7 @@ from .workflow_netconf_predefined import WorkFlowNetConfPredefined
 from .workflow_netconf_rnn import WorkFlowNetConfRnn
 from .workflow_netconf_wdnn import WorkFlowNetConfWdnn
 from .service_manager import ServiceManager
-from .workflow_test_conf import WorkFlowTestConf
+from .workflow_eval_conf import WorkFlowEvalConf
 from .runmanager_train_request import RunManagerTrainRequest
 from .runmanager_single_request import RunManagerSingleRequest
 from .runmanager_history import RunManagerHistory
