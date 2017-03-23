@@ -39,9 +39,10 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                   "modelname": "model"
                                   }
                          ,"config": {"learnrate": 0.001,
-                                 "traincnt": 2,
-                                 "batch_size":20,
-                                 "num_classes":3000
+                                 "traincnt": 1,
+                                 "batch_size":1000,
+                                 "num_classes":5,
+                                 "predictcnt": 4
                                  }
                          ,"layer1": {
                                  "type": "cnn",
@@ -69,19 +70,19 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "padding": "SAME",
                                  "droprate": ""
                                 }
-                         ,"layer3": {
-                                 "type": "cnn",
-                                 "active": "relu",
-                                 "cnnfilter": [3, 3],
-                                 "cnnstride": [1, 1],
-                                 "maxpoolmatrix": [2, 2],
-                                 "maxpoolstride": [2, 2],
-                                 "node_in": 64,
-                                 "node_out": 128,
-                                 "regualizer": "",
-                                 "padding": "SAME",
-                                 "droprate": "0.1"
-                                }
+                         # ,"layer3": {
+                         #         "type": "cnn",
+                         #         "active": "relu",
+                         #         "cnnfilter": [3, 3],
+                         #         "cnnstride": [1, 1],
+                         #         "maxpoolmatrix": [2, 2],
+                         #         "maxpoolstride": [2, 2],
+                         #         "node_in": 64,
+                         #         "node_out": 128,
+                         #         "regualizer": "",
+                         #         "padding": "SAME",
+                         #         "droprate": "0.1"
+                         #        }
                           ,"out": {
                                  "active": "softmax",
                                  "cnnfilter": "",

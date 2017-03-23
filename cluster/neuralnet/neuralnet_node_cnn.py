@@ -8,6 +8,7 @@ from datetime import timedelta
 from cluster.data.data_node_image import DataNodeImage
 import os
 import operator
+import json
 ########################################################################
 # nm_classes = label cnt or max label cnt
 def one_hot_encoded(num_classes):
@@ -165,7 +166,7 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
         ################################################################ Image Label
         for data in input_data:
             # println("File //////////////////////////////////////////////////////")
-            # println(data)
+            println(data)
             labels_data = data['targets']
             img_data = data['image_features']
 
@@ -249,8 +250,8 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
                 saver.save(sess,
                            save_path=save_path,
                            global_step=global_step)
+                model_file_delete(model_path, modelname)
 
-    model_file_delete(model_path, modelname)
     println("Saved checkpoint.")
 
 class NeuralNetNodeCnn(NeuralNetNode):
@@ -302,17 +303,19 @@ class NeuralNetNodeCnn(NeuralNetNode):
         channel = dataconf["preprocess"]["channel"]
         modelname = netconf["key"]["modelname"]
         num_classes = netconf["config"]["num_classes"]
+        pred_cnt = netconf["config"]["predictcnt"]
         model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
-        save_path = model_path + "/" + modelname
 
         net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf)
 
         # println(filelist)
 
         filelist = sorted(filelist.items(), key=operator.itemgetter(0))
-        println(filelist)
-
+        # println(filelist)
+        data = {}
+        data_sub = {}
         labels = dataconf["labels"]
+        println(labels)
         # labelsDictHot = one_hot_encoded(num_classes)
         with tf.Session() as sess:
             try:
@@ -322,7 +325,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 println("Restored checkpoint from:" + last_chk_path)
 
                 for file in filelist:
+                    # println(file)
                     value = file[1]
+                    filename = file[1].name
                     for chunk in value.chunks():
                         decoded_image = tf.image.decode_jpeg(chunk, channels=channel)
                         resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
@@ -333,17 +338,37 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                         # println(image)
 
-                        logits = sess.run(y_pred_cls, feed_dict={X: image})
-                        println(logits)
-                        cls_name = labels[logits[0]]
-                        println(cls_name)
+                        logits, y_pred_true = sess.run([model, y_pred_cls], feed_dict={X: image})
+                        # println(logits)
+                        # println(y_pred_true)
+                        cls_name = labels[y_pred_true[0]]
+                        # println(cls_name)
+
+                        one = np.zeros((len(labels), 2))
+
+                        for i in range(len(labels)):
+                            one[i][0] = i
+                            one[i][1] = logits[0][i]
+
+                        onesort = sorted(one, key=operator.itemgetter(1,0), reverse=True)
+                        # println(onesort)
+                        # println("filename="+filename)
+                        for i in range(pred_cnt):
+                            key = str(i)+"key"
+                            val = str(i)+"val"
+                            data_sub[key] = labels[int(onesort[i][0])]
+                            data_sub[val] = onesort[i][1]
+                        data[filename] = data_sub
+
+                    # println(json.dumps(data), sort_keys=True, indent=4)
 
                 # println(images)
             except Exception as e:
                 println("None to restore checkpoint. Initializing variables instead.")
                 println(e)
 
-
         println("run predict end........")
+
+        return data
 
 

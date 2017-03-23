@@ -15,9 +15,17 @@ typeStr = "cnn"
 nn_id = "nn00004"
 
 files = {
-            'files000001': open('/hoya_src_root/dataTest/car/1car.jpg','rb')
-           ,'files000002': open('/hoya_src_root/dataTest/car/2car.jpg','rb')
-           ,'files000003': open('/hoya_src_root/dataTest/airplane/1air.jpg','rb')
+           #
+    'files000001': open('/hoya_src_root/dataTest/car/1car.jpg','rb')
+    ,'files000002': open('/hoya_src_root/dataTest/car/3car.jpg','rb')
+    ,'files000003': open('/hoya_src_root/dataTest/airplane/1air.jpg','rb')
+,'files000004': open('/hoya_src_root/dataTest/airplane/86_pic1.jpg','rb')
+,'files000005': open('/hoya_src_root/dataTest/airplane/1014879013-2.jpg','rb')
+,'files000006': open('/hoya_src_root/dataTest/airplane/744395362_9a3a25ad84.jpg','rb')
+           # ,
+    # 'files000002': open('/hoya_src_root/dataTest/car/2car.jpg','rb')
+           # ,
+    # 'files000001': open('/hoya_src_root/dataTest/airplane/1air.jpg','rb')
         }
 
 # get workflow version info
@@ -44,14 +52,13 @@ resp = requests.post(restURL,
                      json={
                          "key" : {"node_id": node_id,
                                   "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id,
-                                  "modelname": "model"
+                                  "wf_ver_id": wf_ver_id
                                   }
                      }
                      )
 
-# data = json.loads(resp.json())
-# print("evaluation result : {0}".format(data))
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
 
 println("E")
 
