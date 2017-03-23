@@ -49,7 +49,7 @@ def model_file_delete(model_path, save_name):
                         os.remove(model_path + "/" + file)
         j -= 1
 ########################################################################
-def get_model(self, netconf, dataconf):
+def get_model(self, netconf, dataconf, type):
     x_size = dataconf["preprocess"]["x_size"]
     y_size = dataconf["preprocess"]["y_size"]
     channel = dataconf["preprocess"]["channel"]
@@ -102,7 +102,7 @@ def get_model(self, netconf, dataconf):
                 else:
                     droprate = 0.0
 
-                if droprate > 0.0:
+                if droprate > 0.0 and type == "T":
                     model = tf.nn.dropout(model, droprate)
             except Exception as e:
                 net_check = "Error[200] .............................................."
@@ -129,7 +129,7 @@ def get_model(self, netconf, dataconf):
         #                                            normalizer_fn=tf.contrib.layers.batch_norm)
         #     model = tf.contrib.layers.fully_connected(model, num_classes)
 
-        # println(model)
+        println(model)
 
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
@@ -265,7 +265,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
 
-        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf)
+        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf, "T")
 
         if net_check == "S":
             input_data = DataNodeImage().load_train_data(str(conf_data["node_list"][0]))
@@ -306,7 +306,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         pred_cnt = netconf["config"]["predictcnt"]
         model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
 
-        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf)
+        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf, "P")
 
         # println(filelist)
 
@@ -351,8 +351,10 @@ class NeuralNetNodeCnn(NeuralNetNode):
                             one[i][1] = logits[0][i]
 
                         onesort = sorted(one, key=operator.itemgetter(1,0), reverse=True)
-                        # println(onesort)
-                        # println("filename="+filename)
+
+                        println("filename=" + filename+ " predict=" + labels[int(onesort[0][0])])
+                        println(onesort)
+
                         for i in range(pred_cnt):
                             key = str(i)+"key"
                             val = str(i)+"val"
