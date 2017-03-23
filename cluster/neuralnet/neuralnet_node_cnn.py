@@ -259,7 +259,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf, "T")
 
         if net_check == "S":
-            input_data = DataNodeImage().load_train_data(str(conf_data["node_list"][0]))
+            input_data = DataNodeImage().load_data(str(conf_data["node_list"][0]))
             train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
         else:
             println("net_check=" + net_check)

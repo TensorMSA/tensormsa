@@ -65,7 +65,7 @@ class DataNodeText(DataNode):
         return None
 
 
-    def load_train_data(self, node_id, parm = 'all'):
+    def load_data(self, node_id, parm = 'all'):
         """
         load train data
         :param node_id:
@@ -83,16 +83,6 @@ class DataNodeText(DataNode):
             return return_arr
         except Exception as e :
             raise Exception (e)
-
-
-    def load_test_data(self, node_id, parm = 'all'):
-        """
-        load test data
-        :param node_id:
-        :param parm:
-        :return:
-        """
-        return []
 
     def _mecab_parse(self):
         """

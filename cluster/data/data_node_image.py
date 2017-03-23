@@ -149,7 +149,7 @@ class DataNodeImage(DataNode):
         #self.save_preview_image(newImage, dataframe, table, file_name, label)
         return newImage
 
-    def load_train_data(self, node_id, parm = 'all'):
+    def load_data(self, node_id, parm = 'all'):
         # println("load_train_data =")
         # println(node_id)
         config_data = WorkFlowDataImage().get_step_source(node_id)
@@ -163,9 +163,3 @@ class DataNodeImage(DataNode):
             #targets = h5file['targets']
             #labels = config_data['labels']
         return return_arr#img_data, targets, labels
-
-    def load_test_data(self, node_id, parm='all'):
-        return []
-
-# a = DataNodeImage()
-# a.run(1)

@@ -76,8 +76,8 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/s
                         "wf_task_submenu_id": "pre_merge",
                         "wf_task_submenu_name": "pre_merge",
                         "wf_task_submenu_desc": "pre_merge",
-                        "wf_node_class_path": "cluster.preprocess.preprocess_node_merge",
-                        "wf_node_class_name": "PreProcessNodeMerge"
+                        "wf_node_class_path": "cluster.preprocess.pre_node_merge_text2seq",
+                        "wf_node_class_name": "PreNodeMergeText2Seq"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -89,7 +89,7 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/s
                         "wf_task_submenu_name": "pre_prenet",
                         "wf_task_submenu_desc": "pre_prenet",
                         "wf_node_class_path": "cluster.preprocess.preprocess_node_prenet",
-                        "wf_node_class_name": "PreProcessNodePreNet"
+                        "wf_node_class_name": "PreNodePreNet"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -97,16 +97,96 @@ print("evaluation result : {0}".format(data))
 # insert submenu info
 resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
                      json={
-                        "wf_task_submenu_id": "pre_convert",
-                        "wf_task_submenu_name": "pre_convert",
-                        "wf_task_submenu_desc": "pre_convert",
-                        "wf_node_class_path": "cluster.preprocess.preprocess_node_convert",
-                        "wf_node_class_name": "PreProcessNodeConvert"
+                        "wf_task_submenu_id": "pre_feed_fr2cnn",
+                        "wf_task_submenu_name": "pre_feed_fr2cnn",
+                        "wf_task_submenu_desc": "pre_feed_fr2cnn",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_fr2cnn",
+                        "wf_node_class_name": "PreNodeFeedFr2Cnn"
+                     })
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_fr2seq",
+                        "wf_task_submenu_name": "pre_feed_fr2seq",
+                        "wf_task_submenu_desc": "pre_feed_fr2seq",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_fr2seq",
+                        "wf_node_class_name": "PreNodeFeedFr2Seq"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_fr2wdnn",
+                        "wf_task_submenu_name": "pre_feed_fr2wdnn",
+                        "wf_task_submenu_desc": "pre_feed_fr2wdnn",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_fr2wdnn",
+                        "wf_node_class_name": "PreNodeFeedFr2Wdnn"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
 
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_img2cnn",
+                        "wf_task_submenu_name": "pre_feed_img2cnn",
+                        "wf_task_submenu_desc": "pre_feed_img2cnn",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_img2cnn",
+                        "wf_node_class_name": "PreNodeFeedImg2Cnn"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_img2renet",
+                        "wf_task_submenu_name": "pre_feed_img2renet",
+                        "wf_task_submenu_desc": "pre_feed_img2renet",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_img2renet",
+                        "wf_node_class_name": "PreNodeFeedImg2Renet"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_text2dv",
+                        "wf_task_submenu_name": "pre_feed_text2dv",
+                        "wf_task_submenu_desc": "pre_feed_text2dv",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_text2dv",
+                        "wf_node_class_name": "PreNodeFeedText2Dv"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_text2seq",
+                        "wf_task_submenu_name": "pre_feed_text2seq",
+                        "wf_task_submenu_desc": "pre_feed_text2seq",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_text2seq",
+                        "wf_node_class_name": "PreNodeFeedText2Seq"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_text2seq",
+                        "wf_task_submenu_name": "pre_feed_text2seq",
+                        "wf_task_submenu_desc": "pre_feed_text2seq",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_text2wv",
+                        "wf_node_class_name": "PreNodeFeedText2Wv"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
 ##################################################
 # DataConfig Menu
 ##################################################

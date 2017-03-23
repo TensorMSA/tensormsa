@@ -26,7 +26,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             data_node_name = self.find_prev_node(conf_data['node_id'], conf_data['node_list'])
             cls_path, cls_name = self.get_cluster_exec_class(data_node_name)
             dyna_cls = self.load_class(cls_path, cls_name)
-            encode_data, decode_data = dyna_cls.load_train_data(data_node_name, parm='all')
+            encode_data, decode_data = dyna_cls.load_data(data_node_name, parm='all')
 
             # prepare net conf
             self._set_train_model()
