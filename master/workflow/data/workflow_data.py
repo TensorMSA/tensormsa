@@ -44,10 +44,26 @@ class WorkFlowData :
         """
         pass
 
+    def check_step_source(self, obj):
+        """
+        check step_source process fit to requirement
+        :param obj: config data from view
+        :return:boolean
+        """
+        pass
+
     def get_step_preprocess(self):
         """
         getter for preprocess
         :return:obj(json) to make view
+        """
+        pass
+
+    def check_step_preprocess(self, obj):
+        """
+        check step_source process fit to requirement
+        :param obj: config data from view
+        :return:boolean
         """
         pass
 
@@ -63,6 +79,14 @@ class WorkFlowData :
         """
         getter for store
         :return:obj(json) to make view
+        """
+        pass
+
+    def check_step_store(self, obj):
+        """
+        check step_source process fit to requirement
+        :param obj: config data from view
+        :return:boolean
         """
         pass
 

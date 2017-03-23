@@ -2,7 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.data.workflow_data_text import WorkFlowDataText as WfDataText
-
+from common.utils import *
 
 class WorkFlowDataText(APIView):
     """
@@ -12,6 +12,8 @@ class WorkFlowDataText(APIView):
         - desc : insert cnn configuration data
         """
         try:
+            save_upload_file(request, nnid, ver, node)
+
             if(len(request.body) > 1):
                 input_data = json.loads(str(request.body, 'utf-8'))
                 return_data = {'result' : 'no type'}
