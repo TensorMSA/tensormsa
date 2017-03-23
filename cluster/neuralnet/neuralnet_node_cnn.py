@@ -9,6 +9,7 @@ from cluster.data.data_node_image import DataNodeImage
 import os
 import operator
 import json
+import datetime
 ########################################################################
 # nm_classes = label cnt or max label cnt
 def one_hot_encoded(num_classes):
@@ -23,31 +24,21 @@ def one_hot_encoded(num_classes):
 def model_file_delete(model_path, save_name):
     existcnt = 10
     filelist = os.listdir(model_path)
-    print(filelist)
+
     flist = []
-    for i in filelist:
-        i = i.replace(save_name + "-", "")
-        dotidx = i.find(".")
-        if dotidx > -1:
-            i = i[:dotidx]
-            try:
-                flist.append(int(i))
-            except:
-                None
-    flist.sort()
+    i = 0
+    for filename in filelist:
+        filetime = datetime.datetime.fromtimestamp(os.path.getctime(model_path + '/' +filename)).strftime('%Y%m%d%H%M%S')
+        tmp = [filename, filetime]
+        if filename.find(save_name) > -1:
+            flist.append(tmp)
+        i += 1
+        flistsort = sorted(flist, key=operator.itemgetter(1), reverse=True)
+    # print(flistsort)
 
-    j = len(flist) - 1
-    for i in range(len(flist)):
+    for i in range(len(flistsort)):
         if i > existcnt * 3:
-            fname = save_name + "-" + str(flist[j])
-
-            for file in filelist:
-                print(fname, file)
-                fidx = file.find(fname)
-                if fidx > -1:
-                    if os.path.isfile(model_path + "/" + file):
-                        os.remove(model_path + "/" + file)
-        j -= 1
+            os.remove(model_path + "/" + flistsort[i][0])
 ########################################################################
 def get_model(self, netconf, dataconf, type):
     x_size = dataconf["preprocess"]["x_size"]
