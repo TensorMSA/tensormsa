@@ -13,7 +13,7 @@ class WorkFlowEvalConf(APIView) :
         - desc : insert data
         """
         try:
-            return_data = EvalNodeExtra().run()
+            return_data = ""
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

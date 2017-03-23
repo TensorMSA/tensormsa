@@ -26,7 +26,7 @@ class DataNodeImage(DataNode):
             node = node_id.split('_')[2]
             directory = get_source_path(nn_id, ver, node)
             # output_directory = config_data['store_path']
-            output_directory = get_store_path(node_id.split('_')[0], node_id.split('_')[1], node_id.split('_')[2])
+            output_directory = get_store_path(nn_id, ver, node)
             output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
 
             # Prepare output file
@@ -93,7 +93,7 @@ class DataNodeImage(DataNode):
                     #bar.update(i if split == TRAIN else i - 25000)
             # Add the labels
             config_data['labels'] = labels
-            WorkFlowDataImage().put_step_source(node_id.split('_')[0],node_id.split('_')[1], node_id.split('_')[2], config_data)
+            WorkFlowDataImage().put_step_source(nn_id, ver, node, config_data)
             split_dict = {}
             sources = ['image_features', 'targets']
             split_dict['train'] = dict(zip(sources, [(0, 25000)] * 2))

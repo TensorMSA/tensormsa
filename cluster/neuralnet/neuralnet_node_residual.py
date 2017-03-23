@@ -10,6 +10,10 @@ import keras
 from master.workflow.netconf.workflow_netconf_renet import WorkFlowNetConfReNet
 from cluster.neuralnet import resnet
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
+from cluster.common.common_node import WorkFlowCommonNode
+import operator
+from PIL import Image
+from cluster.data.data_node_image import DataNodeImage
 
 class NeuralNetNodeReNet(NeuralNetNode):
     """
@@ -80,7 +84,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
                         j = j.tolist()
                         rawdata_conv[r] = j
                         r += 1
-                    rawdata_conv = np.reshape(rawdata_conv, (-1, 32, 32, 3))
+                    rawdata_conv = np.reshape(rawdata_conv, (-1, img_rows, img_cols, img_channels))
                     y_train = targets_conv[i:i + batch_size]
 
                     # Convert class vectors to binary class matrices.
@@ -137,7 +141,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
             os.makedirs(self.md_store_path, exist_ok=True)
             keras.models.save_model(model,''.join([self.md_store_path, '/model.bin']))
-            #model.save(''.join([self.md_store_path, '/model.bin']))
         except Exception as e:
             raise Exception(e)
         return None
@@ -149,8 +152,67 @@ class NeuralNetNodeReNet(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def predict(self, node_id, parm = {}):
-        pass
+    def predict(self, node_id, parm):
+        try:
+            # init parms
+            self._init_node_parm(node_id)
+
+            if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
+                    netconfig = WorkFlowNetConfReNet().get_view_obj(node_id)
+                    batch_size = netconfig['batch_size']
+                    #nb_classes = netconfig['nb_classes']
+                    #nb_epoch = netconfig['nb_epoch']
+                    #data_augmentation = (netconfig['data_augmentation'] == 'True')
+                    model = keras.models.load_model(''.join([self.md_store_path, '/model.bin']))
+                    filelist = sorted(parm.items(), key=operator.itemgetter(0))
+                    data = {}
+                    data_sub = {}
+                    pred_cnt = netconfig['pred_cnt']
+                    for file in filelist:
+                        value = file[1]
+                        filename = file[1].name
+                        data_node_name = WorkFlowCommonNode()._get_node_relation(node_id.split('_')[0],node_id.split('_')[1],node_id)['prev'][0]
+                        data_config = WorkFlowDataImage().get_step_source(data_node_name)
+                        labels = data_config['labels']
+                        preprocess = data_config['preprocess']
+
+                        # input image dimensions
+                        x_size, y_size = preprocess['x_size'], preprocess['y_size']
+                        # The CIFAR10 images are RGB.
+                        channel = preprocess['channel']
+
+                        im = Image.open(value)
+                        image = np.array(DataNodeImage()._resize_file_image(im, preprocess))
+                        image = image.transpose(2, 0, 1)
+                        image = image.flatten()
+                        rawdata_conv = np.zeros((image.size, image[0].size))
+                        r = 0
+                        for j in image:
+                            j = j.tolist()
+                            rawdata_conv[r] = j
+                            r += 1
+                        rawdata_conv = np.reshape(rawdata_conv, (-1, x_size, y_size, channel))
+                        image = rawdata_conv.astype('float32')
+                        mean_image = np.mean(image, axis=0)
+                        image -= mean_image
+                        image /= 128.
+                        return_value = model.predict(image, batch_size, 0)
+                        one = np.zeros((len(labels), 2))
+                        for i in range(len(labels)):
+                            one[i][0] = i
+                            one[i][1] = return_value[0][i]
+                        onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
+                        for i in range(pred_cnt):
+                            key = str(i) + "key"
+                            val = str(i) + "val"
+                            data_sub[key] = labels[int(onesort[i][0])]
+                            data_sub[val] = onesort[i][1]
+                        data[filename] = data_sub
+                    return data
+            else:
+                raise Exception('No Model')
+        except Exception as e:
+            raise Exception(e)
 
     def eval(self, node_id, parm={}):
         """

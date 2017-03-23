@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from cluster.service.service_predict_d2v import PredictNetD2V
 from cluster.service.service_predict_w2v import PredictNetW2V
 from cluster.service.service_predict_cnn import PredictNetCnn
-#from cluster.service.service_predict_renet import PredictNetRenet
+from cluster.service.service_predict_renet import PredictNetRenet
 from cluster.service.service_predict_wdnn import PredictNetWdnn
 from cluster.service.service_predict_seq2seq import PredictNetSeq2Seq
 from common.utils import *
@@ -63,9 +63,7 @@ class ServiceManagerPredict(APIView):
                     # TO-DO : need predict function for specific  version
                     raise Exception("on developing now !")
                 elif (type == "renet"):
-                    #return_data = PredictNetRenet().run(nnid, ver, request.FILES)
-                    # TO-DO : need to create PredictNetRenet class first
-                    raise Exception("on developing now !")
+                    return_data = PredictNetRenet().run(nnid, ver, request.FILES)
                 else:
                     raise Exception("Not defined type error")
 

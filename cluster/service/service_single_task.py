@@ -4,15 +4,15 @@ from celery import shared_task
 from cluster.common.common_node import WorkFlowCommonNode
 
 @shared_task
-def single_run(nn_id, wf_ver, node_id) :
+def single_run(nn_id, wf_ver, node) :
     print ("[Train Task] Start Celery Job ")
-    result = WorkFlowSingleTask()._run_single_node(nn_id, wf_ver, node_id)
+    result = WorkFlowSingleTask()._run_single_node(nn_id, wf_ver, node)
     return result
 
 
 class WorkFlowSingleTask(WorkFlowCommonNode):
 
-    def _run_single_node(self, nn_id, wf_ver, node_id):
+    def _run_single_node(self, nn_id, wf_ver, node):
         """
         run given single node directly and return result
         :param obj: nn_id, ver, node and etc
@@ -21,9 +21,7 @@ class WorkFlowSingleTask(WorkFlowCommonNode):
         try:
             self.nn_id = nn_id
             self.wf_ver = wf_ver
-
-
-
+            node_id = nn_id + '_' + wf_ver + '_' + node
             result_info = []
             # execute nodes by sequece
             # 밑져야 본전이니 전화 후는 그 들고 있자.

@@ -118,7 +118,7 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfRenet.as_view())),
 
     # workflow - test APIs
-    url(r'^api/v1/type/wf/state/eval/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/wf/state/eval/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.WorkFlowEvalConf.as_view())),
 
     # runmanager
@@ -128,7 +128,7 @@ urlpatterns = [
         csrf_exempt(rest_view.RunManagerWorkFlow.as_view())),
     url(r'^api/v1/type/runmanager/state/history/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerHistory.as_view())),
-    url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+    url(r'^api/v1/type/runmanager/state/single/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.RunManagerSingleRequest.as_view())),
     url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
