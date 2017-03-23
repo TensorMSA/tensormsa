@@ -21,12 +21,6 @@ def get_store_path(nn_id, wf_ver, name) :
     set_filepaths(path)
     return path
 
-def get_eval_path(nn_id, wf_ver, name) :
-
-    path = ''.join(["/hoya_eval_root", "/", str(nn_id), "/", str(wf_ver), "/", str(name)])
-    set_filepaths(path)
-    return path
-
 def get_model_path(nn_id, wf_ver, name) :
     """
     get model save path

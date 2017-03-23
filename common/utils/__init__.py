@@ -7,4 +7,3 @@ from .path_util import get_source_path
 from .path_util import get_store_path
 from .path_util import get_filepaths
 from .path_util import get_model_path
-from .path_util import get_eval_path
