@@ -8,7 +8,6 @@ class NeuralNetNodeDoc2Vec(NeuralNetNode):
     """
 
     """
-
     def run(self, conf_data):
         try :
             # init parms for doc2vec node
@@ -27,19 +26,21 @@ class NeuralNetNodeDoc2Vec(NeuralNetNode):
                 model = doc2vec.Doc2Vec.load(''.join([self.md_store_path, '/model.bin']))
                 update_flag = True
 
+            train_data = []
             # train vocab and model
             for data in input_data :
                 rawdata = data['rawdata']
-                for i in range(0, rawdata.len(), 100):
-                    if(update_flag == False) :
-                        model.build_vocab(rawdata[i:i+100].tolist(), update=False)
-                        update_flag = True
-                    else :
-                        model.build_vocab(rawdata[i:i + 100].tolist(), update=True)
-                    model.train(rawdata[i:i+100].tolist())
+                for i in range(0, rawdata.len()):
+                    # DocToVec Needed Tag per Line
+                    train_data.append(doc2vec.TaggedDocument(rawdata[i:i + 100].tolist()[0], [i]))
+                if (update_flag == False) :
+                    model.build_vocab(train_data, update=False)
+                    update_flag = True
+                else :
+                    model.build_vocab(train_data, update=True)
+                model.train(train_data)
             os.makedirs(self.md_store_path, exist_ok=True)
             model.save(''.join([self.md_store_path, '/model.bin']))
-
             return len(model.raw_vocab)
         except Exception as e:
             raise Exception(e)
