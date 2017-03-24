@@ -87,22 +87,33 @@ class WorkFlowCommonNode :
         """
         return_obj = {}
         prev_arr = []
+        prev_grp = []
         prev_type = []
         next_arr = []
+        next_grp = []
+        next_type = []
 
         query_set = models.NN_WF_NODE_RELATION.objects.filter(wf_state_id=nn_id + "_" + wf_ver)
 
         for data in query_set:
             if(node_id == data.nn_wf_node_id_2) :
                 prev_arr.append(data.nn_wf_node_id_1)
-                submenu = models.NN_WF_NODE_INFO.objects.filter(nn_wf_node_id=data.nn_wf_node_id_1)[0].wf_task_submenu_id_id
-                menu = models.WF_TASK_SUBMENU_RULE.objects.filter(wf_task_submenu_id=submenu)[0].wf_task_menu_id_id
-                prev_type.append(menu)
+                submenu1 = models.NN_WF_NODE_INFO.objects.filter(nn_wf_node_id=data.nn_wf_node_id_1)[0].wf_task_submenu_id_id
+                menu1 = models.WF_TASK_SUBMENU_RULE.objects.filter(wf_task_submenu_id=submenu1)[0].wf_task_menu_id_id
+                prev_type.append(submenu1)
+                prev_grp.append(menu1)
             if (node_id == data.nn_wf_node_id_1):
                 next_arr.append(data.nn_wf_node_id_2)
+                submenu2 = models.NN_WF_NODE_INFO.objects.filter(nn_wf_node_id=data.nn_wf_node_id_2)[0].wf_task_submenu_id_id
+                menu2 = models.WF_TASK_SUBMENU_RULE.objects.filter(wf_task_submenu_id=submenu2)[0].wf_task_menu_id_id
+                next_type.append(submenu2)
+                next_grp.append(menu2)
 
         return_obj['prev'] = prev_arr
+        return_obj['prev_grp'] = prev_grp
         return_obj['prev_type'] = prev_type
         return_obj['next'] = next_arr
+        return_obj['next_grp'] = next_grp
+        return_obj['next_type'] = next_type
 
         return return_obj
