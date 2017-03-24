@@ -6,17 +6,6 @@ class PreNodeFeedFr2Cnn(PreNodeFeed):
 
     """
 
-    def run(self, conf_data):
+    def _convert_data_format(self, obj, index):
         pass
 
-    def _init_node_parm(self):
-        pass
-
-    def _set_progress_state(self):
-        pass
-
-    def next(self):
-        pass
-
-    def __getitem__(self, key):
-        pass
