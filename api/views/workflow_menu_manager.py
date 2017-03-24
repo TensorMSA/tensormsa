@@ -13,8 +13,7 @@ class WorkFlowMenuManager(APIView) :
         - desc : insert data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = WorkFlowStateMenu().put_menu_info(input_data)
+            return_data = WorkFlowStateMenu().put_menu_info(request.data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

@@ -12,20 +12,15 @@ class WorkFlowDataText(APIView):
         - desc : insert cnn configuration data
         """
         try:
+            # save uploaded file
             save_upload_file(request, nnid, ver, node)
 
-            if(len(request.body) > 1):
-                input_data = json.loads(str(request.body, 'utf-8'))
-                return_data = {'result' : 'no type'}
-            else :
-                input_data = {}
-
             if(prg == 'source') :
-                return_data = WfDataText().put_step_source(src, form, nnid, ver, node, input_data)
+                return_data = WfDataText().put_step_source(src, form, nnid, ver, node, request.data)
             elif(prg == 'pre') :
-                return_data = WfDataText().put_step_preprocess(src, form, nnid, ver, node, input_data)
+                return_data = WfDataText().put_step_preprocess(src, form, nnid, ver, node, request.data)
             elif(prg == 'store') :
-                return_data = WfDataText().put_step_store(src, form, nnid, ver, node, input_data)
+                return_data = WfDataText().put_step_store(src, form, nnid, ver, node, request.data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

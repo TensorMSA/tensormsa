@@ -17,31 +17,19 @@ class ServiceManagerPredict(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            # if(type == 'w2v') :
-            #     input_data = json.loads(str(request.body, 'utf-8'))
-            #     return_data = PredictNetW2V().run(nnid, input_data)
-            # elif(type == "cnn"):
-            #     return_data = PredictNetCnn().run(nnid, ver, request.FILES)
-            # # elif(type == "renet"):
-            # #     return_data = PredictNetRenet().run(nnid, ver, request.FILES)
-            # elif(type == "wdnn"):
-            #     return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
 
             if(ver == 'active') :
                 if(type == 'w2v') :
-                    input_data = json.loads(str(request.body, 'utf-8'))
-                    return_data = PredictNetW2V().run(nnid, input_data)
+                    return_data = PredictNetW2V().run(nnid, request.data)
                 elif(type == "d2v"):
-                    input_data = json.loads(str(request.body, 'utf-8'))
-                    return_data = PredictNetD2V().run(nnid, input_data)
+                    return_data = PredictNetD2V().run(nnid, request.data)
                 elif(type == "cnn"):
                     # TO-DO : need predict function for active taged version
                     raise Exception("on developing now !")
                 elif (type == "wdnn"):
                     raise Exception("on developing now !")
                 elif(type == "seq2seq"):
-                    input_data = json.loads(str(request.body, 'utf-8'))
-                    return_data = PredictNetSeq2Seq().run(nnid, input_data)
+                    return_data = PredictNetSeq2Seq().run(nnid, request.data)
                 elif (type == "renet"):
                     #return_data = PredictNetRenet().run(nnid, ver, request.FILES)
                     # TO-DO : need to create PredictNetRenet class first

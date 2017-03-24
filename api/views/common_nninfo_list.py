@@ -11,8 +11,7 @@ class CommonNNInfoList(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = NNCommonManager().insert_nn_info(input_data)
+            return_data = NNCommonManager().insert_nn_info(request.data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -23,8 +22,7 @@ class CommonNNInfoList(APIView):
         - desc : get cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = NNCommonManager().get_nn_info(input_data)
+            return_data = NNCommonManager().get_nn_info(request.data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -35,8 +33,7 @@ class CommonNNInfoList(APIView):
         - desc ; update cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = NNCommonManager().update_nn_info(input_data)
+            return_data = NNCommonManager().update_nn_info(request.data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -47,8 +44,7 @@ class CommonNNInfoList(APIView):
         - desc : delete cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = NNCommonManager().delete_nn_info(input_data)
+            return_data = NNCommonManager().delete_nn_info(request.data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

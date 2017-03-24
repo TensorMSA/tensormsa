@@ -35,7 +35,7 @@ class WorkFlowNetConfRenet(APIView) :
         - desc ; update data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
+            input_data = request.data
             if(WorkFlowNetConfReNet().validation_check(input_data)) :
                 node_id = ''.join([nnid, '_', ver , '_', node])
                 return_data = WorkFlowNetConfReNet().set_view_obj(node_id, input_data)

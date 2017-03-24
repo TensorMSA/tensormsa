@@ -14,12 +14,8 @@ class WorkFlowDataConfFrame(APIView):
           completed
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-
-            return_data = data_conf_frm().put_step_source( nnid, ver, node, input_data )
-
-
-            return Response(json.dumps(input_data))
+            data_conf_frm().put_step_source( nnid, ver, node, request.data )
+            return Response(json.dumps(request.data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))

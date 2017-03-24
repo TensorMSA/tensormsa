@@ -12,8 +12,7 @@ class WorkFlowInitSimple(APIView) :
         - desc : insert data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            return_data = WorkFlowSimpleManager().create_workflow(nnid, wfver, input_data['type'])
+            return_data = WorkFlowSimpleManager().create_workflow(nnid, wfver, request.data['type'])
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

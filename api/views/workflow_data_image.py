@@ -12,9 +12,8 @@ class WorkFlowDataImage(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
             if (src == 'local' and prg == 'source'):
-                return_data = data_img().put_step_source(nnid, ver, node, input_data)
+                return_data = data_img().put_step_source(nnid, ver, node, request.data)
             else :
                 return_data = {'result' : 'no type'}
             return Response(json.dumps(return_data))
@@ -38,9 +37,8 @@ class WorkFlowDataImage(APIView):
         - desc ; update cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
             if(src == 'local' and prg == 'source') :
-                return_data = data_img().put_step_source(nnid, ver, node, input_data)
+                return_data = data_img().put_step_source(nnid, ver, node, request.data)
             else :
                 return_data = {'result' : 'no type'}
             return Response(json.dumps(return_data))

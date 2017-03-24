@@ -11,12 +11,11 @@ class WorkFlowPreFeeder(APIView) :
         - desc : insert data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
             nodeid = ''.join([nnid, '_', ver, '_', node])
             if(src == 'frame' and net == 'seq2seq') :
-                WorkflowFeedFr2Seq().set_view_obj(nodeid , input_data)
+                return_data = WorkflowFeedFr2Seq().set_view_obj(nodeid , request.data)
             else :
-                return_data = {'message' : 'none exist type'}
+                raise Exception("not supported converting type")
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
