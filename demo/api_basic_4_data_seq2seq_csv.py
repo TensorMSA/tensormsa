@@ -1,39 +1,35 @@
 import requests
 import json, os
-from .api_basic_0_util import get_all_files
+from demo.api_basic_0_util import get_all_files
 
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
-train_files =  get_all_files('/home/dev/train/')
-eval_files =  get_all_files('/home/dev/eval/')
+train_files =  get_all_files('/home/dev/csv/')
 
-# update source_info
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_encode_node/',
-                     files = train_files,
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/source/nnid/nn00004/ver/8/node/data_csv_node/',
+                     files = train_files)
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/source/nnid/nn00004/ver/8/node/data_csv_node/',
                      json={
+                         "type": "csv",
                          "source_server": "local",
                          "source_sql": "all",
-                         "max_sentence_len": 50
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
-
-# update preprocess
-# preprocess : kkma, twiter, mecab, nltk
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/pre/nnid/nn00004/ver/5/node/data_encode_node/',
-                     json={
-                         "preprocess":  "mecab",
-                     })
+#
+#update preprocess
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/pre/nnid/nn00004/ver/8/node/data_csv_node/',
+                      json={
+                          "preprocess":  "null",
+                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+#
+ # update store_path
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/store/nnid/nn00004/ver/8/node/data_csv_node/',)
 
-# update store_path
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/store/nnid/nn00004/ver/5/node/data_encode_node/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
-
-# check properties are updated well
-resp = requests.get('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_encode_node/')
-data = json.loads(resp.json())
-print("evaluation result : {0}".format(data))
-

@@ -1,6 +1,6 @@
 import requests
 import json, os
-from .api_basic_0_util import get_all_files
+from demo.api_basic_0_util import get_all_files
 
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
@@ -9,7 +9,12 @@ eval_files =  get_all_files('/home/dev/eval/')
 
 # update source_info
 resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_encode_node/',
-                     files = train_files,
+                     files = train_files,)
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# update source_info
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_encode_node/',
                      json={
                          "source_server": "local",
                          "source_sql": "all",
@@ -38,10 +43,14 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 
+# update source_info
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_decode_node/',
+                     files = train_files,)
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
 
 # update source_info
 resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_decode_node/',
-                     files = train_files,
                      json={
                          "source_server": "local",
                          "source_sql": "all",
