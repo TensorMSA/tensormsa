@@ -271,7 +271,7 @@ class WorkFlowDataText(WorkFlowData) :
             if (os.path.exists(store_path) == False):
                 os.makedirs(store_path, exist_ok=True)
 
-            return input_data['store_path']
+            return config_data['store_path']
 
         except Exception as e:
             raise Exception(e)

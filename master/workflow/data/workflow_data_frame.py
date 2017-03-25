@@ -170,7 +170,7 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['store_path'] = utils.get_store_path(nnid, wfver, node)
             setattr(obj, 'node_config_data', config_data)
             obj.save()
-            return input_data['store_path']
+            return config_data['store_path']
 
         except Exception as e:
             raise Exception(e)
