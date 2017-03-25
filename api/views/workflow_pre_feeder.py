@@ -37,7 +37,11 @@ class WorkFlowPreFeeder(APIView) :
         - desc ; update data
         """
         try:
-            return_data = ""
+            nodeid = ''.join([nnid, '_', ver, '_', node])
+            if(src == 'frame' and net == 'seq2seq') :
+                return_data = WorkflowFeedFr2Seq().set_view_obj(nodeid , request.data)
+            else :
+                raise Exception("not supported converting type")
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

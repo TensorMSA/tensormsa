@@ -117,3 +117,42 @@ class WorkFlowCommonNode :
         return_obj['next_type'] = next_type
 
         return return_obj
+
+    def _get_forward_node_with_type(self, node_id, type):
+        """
+        get node relations connected with selected node_id
+        :return:
+        """
+        try :
+            return_list = []
+            node_list = []
+            node_list.append(node_id)
+
+            while(len(node_list) > 0) :
+                # make query string (use raw query only when cate is too complicated)
+                query_list = []
+                query_list.append("SELECT NI.NN_WF_NODE_ID, SR.WF_TASK_MENU_ID_ID  ")
+                query_list.append("FROM MASTER_NN_WF_NODE_RELATION WR JOIN MASTER_NN_WF_NODE_INFO NI    ")
+                query_list.append("     ON WR.NN_WF_NODE_ID_2 = NI.NN_WF_NODE_ID    ")
+                query_list.append("     AND WR.NN_WF_NODE_ID_1 = %s    ")
+                query_list.append("     JOIN MASTER_WF_TASK_SUBMENU_RULE SR  ")
+                query_list.append("     ON SR.WF_TASK_SUBMENU_ID = NI.WF_TASK_SUBMENU_ID_ID    ")
+
+                # parm_list : set parm value as list
+                parm_list = []
+                parm_list.append(node_list[0])
+
+                with connection.cursor() as cursor:
+                    cursor.execute(''.join(query_list), parm_list)
+                    row = dictfetchall(cursor)
+                    del node_list[0]
+
+                for i in range(len(row)) :
+                    node_list.append(row[i]['nn_wf_node_id'])
+                    if (row[i]['wf_task_menu_id_id'] == type):
+                        return_list.append(row[i]['nn_wf_node_id'])
+
+
+            return return_list
+        except Exception as e :
+            raise Exception (e)

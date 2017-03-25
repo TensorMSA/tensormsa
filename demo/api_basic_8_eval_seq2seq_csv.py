@@ -11,18 +11,17 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/loca
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/source/nnid/nn00004/ver/8/node/evaldata/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/source/nnid/nn00004/ver/8/node/evaldata/',
                      json={
                          "type": "csv",
                          "source_server": "local",
                          "source_sql": "all",
-                         "source_path": "test",
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 #
 #update preprocess
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/pre/nnid/nn00004/ver/8/node/evaldata/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/pre/nnid/nn00004/ver/8/node/evaldata/',
                       json={
                           "preprocess":  "null",
                       })
@@ -30,14 +29,14 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 #
  # update store_path
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/store/nnid/nn00004/ver/8/node/evaldata/',)
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/store/nnid/nn00004/ver/8/node/evaldata/',)
 
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 
 # merge data sets to one
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src/frame/net/seq2seq/nnid/nn00004/ver/8/node/feed_fr2seq_test/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src/frame/net/seq2seq/nnid/nn00004/ver/8/node/feed_fr2seq_test/',
                      json={
                          "encode_column" : "a",
                          "decode_column" : "b"

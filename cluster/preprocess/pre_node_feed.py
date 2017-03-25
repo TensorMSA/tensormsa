@@ -5,32 +5,27 @@ class PreNodeFeed(PreProcessNode):
     """
 
     """
-    def __init__(self):
+    def run(self, conf_data):
         self.pointer = 0
-        self.rel = self._get_node_relation()
+        self.rel = self._get_node_relation(conf_data['nn_id'], conf_data['wf_ver'], conf_data['node_id'])
         data_node_name = ""
         netconf_node_name = ""
 
-
-        for count in range(0 , len(self.rel['prev_grp'])) :
-            if 'data' != self.rel['prev_grp'][count] :
+        for count in range(0, len(self.rel['prev_grp'])):
+            if 'data' == self.rel['prev_grp'][count]:
                 data_node_name = self.rel['prev'][count]
-        if len(data_node_name) == 0 :
-            raise Exception ("data node must be needed to use feed node")
+        if len(data_node_name) == 0:
+            raise Exception("data node must be needed to use feed node")
 
-        for count in range(0 , len(self.rel['prev_grp'])) :
-            if 'netconf' != self.rel['next_grp'][count] :
+        for count in range(0, len(self.rel['prev_grp'])):
+            if 'netconf' == self.rel['next_grp'][count]:
                 netconf_node_name = self.rel['next'][count]
-        if len(data_node_name) == 0 :
-            raise Exception ("netconf node must be needed to use feed node")
-
+        if len(data_node_name) == 0:
+            raise Exception("netconf node must be needed to use feed node")
 
         cls_path, cls_name = self.get_cluster_exec_class(netconf_node_name)
         dyna_cls = self.load_class(cls_path, cls_name)
         self.input_data = dyna_cls.load_data(data_node_name, parm='all')
-
-    def run(self, conf_data):
-        pass
 
     def _init_node_parm(self):
         pass
