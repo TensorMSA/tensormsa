@@ -2,6 +2,7 @@ from cluster.data.data_node import DataNode
 from master.workflow.data.workflow_data_text import WorkFlowDataText
 from konlpy.tag import Kkma
 from konlpy.tag import Mecab
+from konlpy.tag import Twitter
 from common import utils
 import os,h5py
 from time import gmtime, strftime
@@ -9,9 +10,16 @@ from shutil import copyfile
 import numpy as np
 
 class DataNodeText(DataNode):
-    """
 
-    """
+    def get_tag_package(self, type):
+        buffer_list = []
+        if (type == 'mecab'):
+            buffer_list = self._mecab_parse()
+        elif (type == 'kkma'):
+            buffer_list = self._kkma_parse()
+        elif (type == 'twitter'):
+            buffer_list = self._twitter_parse()
+        return buffer_list
 
     def run(self, conf_data):
         """
@@ -21,13 +29,7 @@ class DataNodeText(DataNode):
         """
         try:
             self._init_node_parm(conf_data['node_id'])
-            fp_list = utils.get_filepaths(self.data_src_path)
-            buffer_list = []
-
-            if (self.data_preprocess_type == 'mecab'):
-                buffer_list = self._mecab_parse()
-            elif (self.data_preprocess_type == 'kkma'):
-                buffer_list = self._kkma_parse()
+            buffer_list = self.get_tag_package(self.data_preprocess_type)
 
             if(len(buffer_list) > 0 ) :
                 file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
@@ -40,10 +42,10 @@ class DataNodeText(DataNode):
                     h5raw[i] = np.array(buffer_list[i], dtype=object)
                 h5file.flush()
                 h5file.close()
+
         except Exception as e:
             print("exception : {0}".format(e))
             raise Exception(e)
-
 
     def _init_node_parm(self, key):
         """
@@ -60,10 +62,8 @@ class DataNodeText(DataNode):
         self.sent_max_len = wf_conf.get_max_sent_len()
         self.data_preprocess_type = wf_conf.get_step_preprocess()
 
-
     def _set_progress_state(self):
         return None
-
 
     def load_data(self, node_id, parm = 'all'):
         """
@@ -116,12 +116,23 @@ class DataNodeText(DataNode):
                 os.remove(file_path)
         return return_arr
 
-    def _twitter_parse(self, h5file):
+    def _twitter_parse(self):
         """
 
         :param h5file:
         :return:
         """
+        twitter = Twitter(jvmpath=None)
+        return_arr = []
+        fp_list = utils.get_filepaths(self.data_src_path)
+        for file_path in fp_list:
+            with open(file_path, 'r') as myfile:
+                data = myfile.read()
+                return_arr = return_arr + self._flat(twitter.pos(data))
+                os.remove(file_path)
+        return return_arr
+
+    def _default_parse(self):
         pass
 
     def _flat(self, pos):
@@ -134,7 +145,8 @@ class DataNodeText(DataNode):
         line_list = []
         for word, tag in pos :
             line_list.append("{0}/{1}".format(word, tag))
-            if(tag == 'SF') :
+            #Add POS Tagging for divide (kkma and twitter)
+            if(tag == 'SF' or tag == 'Punctuation') :
                 if(len(line_list) > self.sent_max_len - 1) :
                     line_list = line_list[0:self.sent_max_len-1]
                 else :
