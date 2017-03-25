@@ -3,8 +3,8 @@ import json, os
 
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
-nn_id = "nn00005"
-wf_ver_id = "57"
+nn_id = "nn00003"
+wf_ver_id = "7"
 
 # update source_info
 # set netconf_node in NN_WF_NODE_INFO

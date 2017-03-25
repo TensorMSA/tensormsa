@@ -332,7 +332,7 @@ data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 # insert submenu info
-resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/eval/submenu/',
                      json={
                         "wf_task_submenu_id": "eval_ran",
                         "wf_task_submenu_name": "eval_ran",
@@ -345,7 +345,7 @@ print("evaluation result : {0}".format(data))
 
 
 # insert submenu info
-resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/eval/submenu/',
                      json={
                         "wf_task_submenu_id": "eval_extra",
                         "wf_task_submenu_name": "eval_extra",
