@@ -4,7 +4,7 @@
    - Tensor Micro Service Architecture is a project started to make TensorFlow more accessable from Java legacy systems
    with out modifying too much source codes.
    - We know there are AI platforms like Azure ML,Nvidia digits, AWS ML and etc, but our goal is little bit diffrent form theirs.
-   - We saw many cases that models works perfect on lab environment don't works properly on real field or start to get worse by the time goes. that where our project started. 
+   - We saw many models that work perfect on lab environment but don't works properly on real field or accuracy start to drop by the time goes. That's why we started this project. 
    - Our project's goal is real time upgrading AI system from data collet,train,eval to prediction service, for that purpose we seperate action definition process and running processs. 
    - Our system gathers data from specified web page, RDB or Hadoop and train, eval automatically. If the train reault is better than before our system chages prediction service model to new one. 
    - More focus on enterprise support (continuous training, neural network management, history management, user managemetn and etc)
