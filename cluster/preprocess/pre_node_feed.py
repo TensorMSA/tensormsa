@@ -8,6 +8,7 @@ class PreNodeFeed(PreProcessNode):
     def run(self, conf_data):
         self.pointer = 0
         self.rel = self._get_node_relation(conf_data['nn_id'], conf_data['wf_ver'], conf_data['node_id'])
+        self.cls_pool = conf_data['cls_pool']
         data_node_name = ""
         netconf_node_name = ""
 
@@ -23,11 +24,10 @@ class PreNodeFeed(PreProcessNode):
         if len(data_node_name) == 0:
             raise Exception("netconf node must be needed to use feed node")
 
-        cls_path, cls_name = self.get_cluster_exec_class(netconf_node_name)
-        dyna_cls = self.load_class(cls_path, cls_name)
-        self.input_data = dyna_cls.load_data(data_node_name, parm='all')
+        self._init_node_parm(conf_data['node_id'])
+        self.input_paths = self.cls_pool[data_node_name].load_data(data_node_name, parm='all')
 
-    def _init_node_parm(self):
+    def _init_node_parm(self, node_id):
         pass
 
     def _set_progress_state(self):
@@ -38,7 +38,7 @@ class PreNodeFeed(PreProcessNode):
         check if hdf5 file pointer has next
         :return:
         """
-        if(len(self.input_data) > self.pointer) :
+        if(len(self.input_paths) > self.pointer) :
             return True
         else :
             return False
@@ -51,16 +51,24 @@ class PreNodeFeed(PreProcessNode):
         if(self.has_next()) :
             self.pointer = self.pointer + 1
 
+    def len(self):
+        """
+
+        :return:
+        """
+        return len(self.input_paths)
+
     def __getitem__(self, key):
         """
 
         :param key:
         :return:
         """
-        return self._convert_data_format(self.input_data[self.pointer], key)
+        return self._convert_data_format(self.input_paths[self.pointer], key)
 
     def _convert_data_format(self, obj, index):
         pass
+
 
 
 

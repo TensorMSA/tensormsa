@@ -24,3 +24,23 @@ class WorkflowFeedFr2Seq(WorkFlowPre):
             return True
         else :
             raise Exception(error_msg)
+
+    def get_encode_column(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['encode_column']
+
+    def get_decode_column(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['decode_column']

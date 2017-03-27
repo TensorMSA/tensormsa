@@ -45,7 +45,7 @@ print("evaluation result : {0}".format(data))
 
 # update source_info
 resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_decode_node/',
-                     files = train_files,)
+                     files = eval_files,)
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 

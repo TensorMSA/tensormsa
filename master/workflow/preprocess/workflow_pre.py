@@ -32,7 +32,6 @@ class WorkFlowPre :
         # node_id = input_data["key"]["node_id"]
 
         try:
-            self.validation_check()
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             data_set = getattr(obj, "node_config_data")
             return data_set
@@ -46,6 +45,7 @@ class WorkFlowPre :
         :return:
         """
         try:
+            self.validation_check(input_data)
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             setattr(obj, "node_config_data", input_data)
             obj.save()

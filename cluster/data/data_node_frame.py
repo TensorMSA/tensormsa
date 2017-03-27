@@ -37,22 +37,6 @@ class DataNodeFrame(DataNode):
                     os.remove(file_path)
             except Exception as e:
                 raise Exception(e)
-
-            # try:
-            #     # filename = data_store_path + "/" + "adult.h5"
-            #     #
-            #     # #type4 partial read
-            #     # store = pd.HDFStore(filename)
-            #     # nrows = store.get_storer('table1').nrows
-            #     # chunksize = 100
-            #     #
-            #     # for i in range(nrows // chunksize + 1):
-            #     #     chunk = store.select('table1',
-            #     #                          start=i * chunksize,
-            #     #                          stop=(i + 1) * chunksize)
-            #     # store.close()
-            # except Exception as e:
-            #     raise Exception(e)
         return None
 
     def create_hdf5(self, data_path, dataframe):
@@ -74,17 +58,10 @@ class DataNodeFrame(DataNode):
         :param parm:
         :return:
         """
-        self._init_node_parm(node_id)
-        fp_list = utils.get_filepaths(self.data_store_path)
-        return_arr = []
-        try :
-            for file_path in fp_list:
-                self._init_node_parm(node_id)
-                h5file = h5py.File(file_path, mode='r')
-                return_arr.append(h5file)
-            return return_arr
-        except Exception as e :
-            raise Exception (e)
+        try:
+            return utils.get_filepaths(self.data_store_path)
+        except Exception as e:
+            raise Exception(e)
 
     def load_csv_by_pandas(self, data_path):
         """
