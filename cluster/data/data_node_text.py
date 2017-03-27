@@ -49,6 +49,8 @@ class DataNodeText(DataNode):
             buffer_list = self._kkma_parse(str_buf)
         elif (type == 'twitter'):
             buffer_list = self._twitter_parse(str_buf)
+        else :
+            buffer_list = str_buf
         return buffer_list
 
     def _load_local_files(self, file_path):
