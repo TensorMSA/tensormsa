@@ -10,7 +10,7 @@ try:
     resp = requests.post('http://' + url + '/api/v1/type/wf/state/netconf/detail/wdnn/nnid/nn00004/ver/2/node/netconf_node/',
                         json={
                             "model_path": "test",
-                            "hidden_layers": [50,20],
+                            "hidden_layers": [100,50],
                             "activation_function": "Relu"
                         })
     data = json.loads(resp.json())

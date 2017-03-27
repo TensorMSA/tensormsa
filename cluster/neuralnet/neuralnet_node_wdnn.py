@@ -47,7 +47,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             #feature, label = wdnn.input_fn( df, conf_data['node_id'],data_conf_info)
 
-            wdnn_model.fit(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=100)
+            wdnn_model.fit(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=200)
 
             results = wdnn_model.evaluate(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=1)
             for key in sorted(results):

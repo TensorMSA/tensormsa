@@ -234,11 +234,12 @@ class DataNodeFrame(DataNode):
         data_conf = dict()
         data_conf_col_type = dict()
         #data_conf_label = dict()
+        numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
         for i, v in df.dtypes.iteritems():
             # label
             column_dtypes = dict()
             col_type = ''
-            if (str(v) == "int64"):  # maybe need float
+            if (str(v) in numerics):  # maybe need float
                 col_type = 'CONTINUOUS'
             else:
                 col_type = 'CATEGORICAL'

@@ -11,7 +11,7 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/state/dataconf/detail/fr
                          , "Transformations":
                                {"age_buckets": {"boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65], "column_name": "age"}}
                          , "cross_cell": {"col3": ["age_buckets", "education", "occupation"]
-                               ,"col2": ["native_country", "occupation"]
+                             ,"col2": ["native_country", "occupation"]
                                ,"col1": ["occupation", "education"]}
                          , "cell_feature":
                                {"hours_per_week": {"column_type": "CONTINUOUS"}
