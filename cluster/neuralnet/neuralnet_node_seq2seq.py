@@ -34,7 +34,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             while(train_data_set.has_next()) :
                 for i in range(0, train_data_set.len(), self.batch_size):
                     data_set = train_data_set[i:i + self.batch_size]
-                    decode_batch = self._word_embed_data(data_set[1])
+                    decode_batch = self._get_dict_id(data_set[1])
                     encode_batch = self._word_embed_data(data_set[0])
                     self._run_train(encode_batch, decode_batch)
                 train_data_set.next()
@@ -67,10 +67,10 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 self.vocab_size = 100
 
             self.grad_clip = 5.
-            self.learning_rate = 0.01
-            self.decay_rate = 0.01
-            self.num_epochs = 10
-            self.batch_size = 1
+            self.learning_rate = wf_conf.get_learn_rate()
+            self.decay_rate = wf_conf.get_learn_rate()
+            self.num_epochs = wf_conf.get_iter_size()
+            self.batch_size = wf_conf.get_batch_size()
             self.num_batches = 1
 
         except Exception as e :
@@ -205,7 +205,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             sess.run(tf.initialize_all_variables())
             saver = tf.train.Saver(tf.all_variables())
             if(len(get_filepaths(self.md_store_path)) > 0):
-                saver.restore(sess, self.md_store_path)
+                saver.restore(sess, ''.join([self.md_store_path , '/']))
             for epoch in range(self.num_epochs):
                 # Learning rate scheduling
                 sess.run(tf.assign(self.lr, self.learning_rate * (self.decay_rate ** epoch)))
@@ -215,7 +215,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                                                              self.targets: ybatch,
                                                              self.istate: state})
                 print("[{0}] train_loss : {1}".format(epoch, train_loss))
-            saver.save(sess, self.md_store_path)
+            saver.save(sess, ''.join([self.md_store_path , '/']))
             sess.close()
         except Exception as e :
             raise Exception(e)
@@ -265,7 +265,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             #restore model
             if (len(get_filepaths(self.md_store_path)) > 0):
-                saver.restore(sess, self.md_store_path)
+                saver.restore(sess, ''.join([self.md_store_path , '/']))
             else :
                 raise Exception ("error : no pretrained model exist")
 

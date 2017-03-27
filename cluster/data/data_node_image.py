@@ -128,3 +128,38 @@ class DataNodeImage(DataNode):
             h5file = h5py.File(file_path, mode='r')
             return_arr.append(h5file)
         return return_arr
+
+    def _resize_file_image(self, im, format_info):
+        """
+        load uploaded image and resize
+        :param path:
+        :return:
+        """
+        x_size = int(format_info['x_size'])
+        y_size = int(format_info['y_size'])
+        # dataframe = net_info['dir']
+        # table = net_info['table']
+
+        # im = Image.open(path).convert('L')
+        width = float(im.size[0])
+        height = float(im.size[1])
+        newImage = Image.new('RGB', (x_size, y_size), (255))
+
+        if width > height:
+            nheight = int(round((x_size / width * height), 0))
+            img = im.resize((x_size, nheight), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+            wtop = int(round(((y_size - nheight) / 2), 0))
+            newImage.paste(img, (4, wtop))
+        else:
+            nwidth = int(round((x_size / height * width), 0))
+            if (nwidth == 0):
+                nwidth = 1
+            img = im.resize((nwidth, y_size), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+            wleft = int(round(((y_size - nwidth) / 2), 0))
+            newImage.paste(img, (wleft, 4))
+        width, height = newImage.size
+
+        # save preview on jango static folder
+        # self.save_preview_image(newImage, dataframe, table, file_name, label)
+
+        return newImage

@@ -1,4 +1,5 @@
 from django.core import serializers as serial
+from django.db.models import Max
 from master import models
 from master import serializers
 from django.db import connection
@@ -156,3 +157,13 @@ class NNCommonManager :
         except Exception as e:
             raise Exception(e)
 
+    def get_nn_max_ver(selfself, nn_id):
+        try:
+            query_set = models.NN_VER_WFLIST_INFO.objects.filter(nn_id=nn_id).aggregate(Max('nn_wf_ver_id'))
+            return_value = query_set['nn_wf_ver_id__max']
+            if query_set['nn_wf_ver_id__max'] == None:
+                return_value = 0
+            return return_value
+
+        except Exception as e:
+            raise Exception(e)

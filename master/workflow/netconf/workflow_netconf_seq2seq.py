@@ -34,6 +34,14 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
             error_msg = ''.join([error_msg, 'word_embed_id (str) (net id) not defined'])
         if('cell_size' not in json_data):
             error_msg = ''.join([error_msg, 'cell_size (int) not defined'])
+        if ('batch_size' not in json_data):
+            error_msg = ''.join([error_msg, 'batch_size (int) not defined'])
+        if ('iter' not in json_data):
+            error_msg = ''.join([error_msg, 'iter (int) not defined'])
+        if ('early_stop' not in json_data):
+            error_msg = ''.join([error_msg, 'eary_stop (int) not defined'])
+        if ('learning_rate' not in json_data):
+            error_msg = ''.join([error_msg, 'learning_rate (int) not defined'])
         if(error_msg == "") :
             return True
         else :
@@ -138,3 +146,43 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
         return self.conf['cell_size']
+
+    def get_batch_size(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['batch_size']
+
+    def get_iter_size(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['iter']
+
+    def get_early_stop_stand(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['early_stop']
+
+    def get_learn_rate(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['learning_rate']

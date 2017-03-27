@@ -12,7 +12,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/d2v/
                      json={
                         "model_path" : "test",
                         "window_size" : 5,
-                        "vector_size" : 100
+                        "vector_size" : 100,
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

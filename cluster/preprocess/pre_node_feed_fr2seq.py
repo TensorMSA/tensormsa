@@ -17,6 +17,8 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             wf_conf = WorkflowFeedFr2Seq(node_id)
             self.encode_col = wf_conf.get_encode_column()
             self.decode_col = wf_conf.get_decode_column()
+            self.sent_max_len = wf_conf.get_sent_max_len()
+            self.preprocess_type = wf_conf.get_preprocess_type()
         except Exception as e:
             raise Exception(e)
 
@@ -27,10 +29,31 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
         :param index:
         :return:
         """
-        store = pd.HDFStore(file_path)
-        chunk = store.select('table1',
-                           start=index.start,
-                           stop=index.stop)
-        store.close()
-        return chunk[self.encode_col], chunk[self.decode_col]
+        try :
+            store = pd.HDFStore(file_path)
+            chunk = store.select('table1',
+                               start=index.start,
+                               stop=index.stop)
+            encode = self._preprocess(chunk[self.encode_col])
+            decode = self._preprocess(chunk[self.decode_col])
 
+            return encode, decode
+        except Exception as e :
+            raise Exception (e)
+        finally:
+            store.close()
+
+    def _preprocess(self, input_data):
+        """
+
+        :param input_data:
+        :return:
+        """
+        if(self.preprocess_type == 'mecab') :
+            return self._mecab_parse(input_data)
+        elif (self.preprocess_type == 'kkma'):
+            return self._mecab_parse(input_data)
+        elif (self.preprocess_type == 'twitter'):
+            return self._mecab_parse(input_data)
+        else :
+            return input_data

@@ -2,6 +2,11 @@ import importlib
 from django.db import connection
 from common.utils import *
 from master import models
+from konlpy.tag import Kkma
+from konlpy.tag import Mecab
+from konlpy.tag import Twitter
+from common import utils
+import os,h5py
 
 class WorkFlowCommonNode :
     """
@@ -194,3 +199,66 @@ class WorkFlowCommonNode :
             return return_list
         except Exception as e:
             raise Exception(e)
+
+    def _mecab_parse(self, str_arr):
+        """
+
+        :param h5file:
+        :return:
+        """
+        mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
+        return_arr = []
+        for data in str_arr:
+            return_arr = return_arr + self._flat(mecab.pos(data))
+        return return_arr
+
+    def _kkma_parse(self, str_arr):
+        """
+
+        :param h5file:
+        :return:
+        """
+        kkma = Kkma()
+        return_arr = []
+        for data in str_arr:
+            return_arr = return_arr + self._flat(kkma.pos(data))
+        return return_arr
+
+    def _twitter_parse(self, str_arr):
+        """
+
+        :param h5file:
+        :return:
+        """
+        twitter = Twitter(jvmpath=None)
+        return_arr = []
+        for data in str_arr:
+            return_arr = return_arr + self._flat(twitter.pos(data))
+        return return_arr
+
+    def _default_parse(self):
+        pass
+
+    def _flat(self, pos):
+        """
+        flat corpus for gensim
+        :param pos:
+        :return:
+        """
+        doc_list = []
+        line_list = []
+        count = 0
+        for word, tag in pos :
+            count = count + 1
+            line_list.append("{0}/{1}".format(word, tag))
+            #Add POS Tagging for divide (kkma and twitter)
+            if(tag == 'SF' or tag == 'Punctuation' or len(pos) == count) :
+                if(len(line_list) > self.sent_max_len - 1) :
+                    line_list = line_list[0:self.sent_max_len-1]
+                else :
+                    pad_len = (self.sent_max_len - (len(line_list)+1))
+                    line_list = line_list + ['#'] * pad_len
+                line_list.append('SF')
+                doc_list.append(line_list)
+                line_list = []
+        return doc_list

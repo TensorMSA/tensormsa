@@ -43,7 +43,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             data_augmentation = (netconfig['data_augmentation']=='True')
 
             # The data, shuffled and split between train and test sets:
-            #(x_train, y_train), (X_test, y_test) = cifar10.load_data()
+            (x_train, y_train), (X_test, y_test) = cifar10.load_data()
             # get prev node for load data
             data_node_name = self.find_prev_node(conf_data['node_id'], conf_data['node_list'])
             cls_path, cls_name = self.get_cluster_exec_class(data_node_name)

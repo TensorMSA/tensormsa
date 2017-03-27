@@ -16,6 +16,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local
                          "type": "csv",
                          "source_server": "local",
                          "source_sql": "all",
+
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -23,7 +24,7 @@ print("evaluation result : {0}".format(data))
 #update preprocess
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/pre/nnid/nn00004/ver/8/node/evaldata/',
                       json={
-                          "preprocess":  "null",
+                          "preprocess":  "mecab",
                       })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -39,7 +40,9 @@ print("evaluation result : {0}".format(data))
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src/frame/net/seq2seq/nnid/nn00004/ver/8/node/feed_fr2seq_test/',
                      json={
                          "encode_column" : "a",
-                         "decode_column" : "b"
+                         "decode_column" : "b",
+                         "max_sentence_len": 50,
+                         "preprocess": "mecab",
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

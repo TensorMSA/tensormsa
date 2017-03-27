@@ -13,7 +13,10 @@ class CommonNNInfoVersion(APIView):
         try:
             input_data = request.data
             input_data['nn_id'] = nnid
-            return_data = NNCommonManager().insert_nn_wf_info(input_data)
+            nnManager = NNCommonManager()
+            nn_wf_ver_id = nnManager.get_nn_max_ver(nnid) + 1
+            input_data['nn_wf_ver_id'] = nn_wf_ver_id
+            return_data = nnManager.insert_nn_wf_info(input_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
