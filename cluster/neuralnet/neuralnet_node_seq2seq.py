@@ -205,7 +205,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             sess.run(tf.initialize_all_variables())
             saver = tf.train.Saver(tf.all_variables())
             if(len(get_filepaths(self.md_store_path)) > 0):
-                saver.restore(sess, self.md_store_path)
+                saver.restore(sess, ''.join([self.md_store_path , '/']))
             for epoch in range(self.num_epochs):
                 # Learning rate scheduling
                 sess.run(tf.assign(self.lr, self.learning_rate * (self.decay_rate ** epoch)))
@@ -215,7 +215,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                                                              self.targets: ybatch,
                                                              self.istate: state})
                 print("[{0}] train_loss : {1}".format(epoch, train_loss))
-            saver.save(sess, self.md_store_path)
+            saver.save(sess, ''.join([self.md_store_path , '/']))
             sess.close()
         except Exception as e :
             raise Exception(e)
@@ -265,7 +265,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             #restore model
             if (len(get_filepaths(self.md_store_path)) > 0):
-                saver.restore(sess, self.md_store_path)
+                saver.restore(sess, ''.join([self.md_store_path , '/']))
             else :
                 raise Exception ("error : no pretrained model exist")
 
