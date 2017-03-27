@@ -15,13 +15,17 @@ class PreNodeFeed(PreProcessNode):
         for count in range(0, len(self.rel['prev_grp'])):
             if 'data' == self.rel['prev_grp'][count]:
                 data_node_name = self.rel['prev'][count]
+            if 'pre_merge' == self.rel['prev_type'][count]:
+                data_node_name = self.rel['prev'][count]
         if len(data_node_name) == 0:
             raise Exception("data node must be needed to use feed node")
 
-        for count in range(0, len(self.rel['prev_grp'])):
+        for count in range(0, len(self.rel['next_grp'])):
             if 'netconf' == self.rel['next_grp'][count]:
                 netconf_node_name = self.rel['next'][count]
-        if len(data_node_name) == 0:
+            if 'eval' == self.rel['next_grp'][count]:
+                netconf_node_name = self.rel['next'][count]
+        if len(netconf_node_name) == 0:
             raise Exception("netconf node must be needed to use feed node")
 
         self._init_node_parm(conf_data['node_id'])

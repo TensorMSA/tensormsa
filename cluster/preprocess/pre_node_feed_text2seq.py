@@ -5,6 +5,16 @@ class PreNodeFeedText2Seq(PreNodeFeed):
     """
 
     """
+    def __getitem__(self, key):
+        """
+
+        :param key:
+        :return:
+        """
+        encode = self._convert_data_format(self.input_paths[0][self.pointer], key)
+        decode = self._convert_data_format(self.input_paths[1][self.pointer], key)
+        return encode, decode
+
     def _convert_data_format(self, file_path, index):
         """
         just pass hdf5 file chunk
@@ -13,11 +23,10 @@ class PreNodeFeedText2Seq(PreNodeFeed):
         :return:
         """
         try:
-            encode = h5py.File(file_path[0], mode='r')['rawdata']
-            decode = h5py.File(file_path[1], mode='r')['rawdata']
-            return encode[index.start : index.stop], decode[index.start : index.stop]
+            h5file = h5py.File(file_path, mode='r')
+            rawfile = h5file['rawdata']
+            return rawfile[index.start : index.stop]
         except Exception as e:
             raise Exception(e)
         finally:
-            encode.close()
-            decode.close()
+            h5file.close()

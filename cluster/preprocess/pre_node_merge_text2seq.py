@@ -43,6 +43,7 @@ class PreNodeMergeText2Seq(PreProcessNode):
         merge two data node into one for seq2seq anal
         :return:
         """
+        file_lists = []
         encode_data = []
         encode_node_list = self.merge_rule['encode_node']
         if (len(encode_node_list) > 0):
@@ -50,6 +51,8 @@ class PreNodeMergeText2Seq(PreProcessNode):
                 cls_path, cls_name = self.get_cluster_exec_class(str(self.state_code) + "_" + node_name)
                 dyna_cls = self.load_class(cls_path, cls_name)
                 encode_data = encode_data + dyna_cls.load_data(self.state_code + "_" + node_name, parm='all')
+        file_lists.append(encode_data)
+
         decode_data = []
         decode_node_list = self.merge_rule['decode_node']
         if (len(decode_node_list) > 0):
@@ -57,5 +60,6 @@ class PreNodeMergeText2Seq(PreProcessNode):
                 cls_path, cls_name = self.get_cluster_exec_class(self.state_code + "_" + node_name)
                 dyna_cls = self.load_class(cls_path, cls_name)
                 decode_data = decode_data + dyna_cls.load_data(self.state_code + "_" + node_name, parm='all')
+        file_lists.append(decode_data)
 
-        return [encode_data, decode_data]
+        return file_lists
