@@ -17,7 +17,9 @@ class NN_DEF_LIST_INFO(models.Model):
     last_updated_by = models.IntegerField(default=0)
 
 class NN_VER_WFLIST_INFO(models.Model):
-    nn_wf_ver_id = models.AutoField(primary_key=True)
+    class Meta:
+        unique_together = (('nn_id', 'nn_wf_ver_id'),)
+    nn_wf_ver_id = models.IntegerField()
     nn_def_list_info_nn_id = models.CharField(max_length=50, blank=True, default='')
     nn_wf_ver_info = models.CharField(max_length=100, blank=False)
     condition = models.CharField(max_length=50, blank=True, default='')

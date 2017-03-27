@@ -23,8 +23,10 @@ class WorkFlowSimpleManager :
         state_id = self._create_workflow_state(input_data)
 
         # create nodes fit to requested type (img, text, frame)
-        if(type == 'image'):
-            self._create_predefined_nodes_image(state_id)
+        if(type == 'cnn'):
+            self._create_predefined_nodes_cnn(state_id)
+        elif(type == 'renet'):
+            self._create_predefined_nodes_renet(state_id)
         elif(type == 'word2vec'):
             self._create_predefined_nodes_word2vec(state_id)
         elif(type == 'doc2vec'):
@@ -85,7 +87,7 @@ class WorkFlowSimpleManager :
             return input_data['wf_state_id']
 
 
-    def _create_predefined_nodes_image(self, wf_state_id):
+    def _create_predefined_nodes_cnn(self, wf_state_id):
         """
 
         :return:
@@ -109,6 +111,65 @@ class WorkFlowSimpleManager :
             input_data['nn_wf_node_name'] = 'netconf_node'
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['wf_task_submenu_id'] = 'nf_cnn'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # net conf node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_eval_node'
+            input_data['nn_wf_node_name'] = 'eval_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'eval_extra'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
+            self.__put_nn_wf_node_relation(input_data)
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
+
+    def _create_predefined_nodes_renet(self, wf_state_id):
+        """
+
+        :return:
+        """
+        try:
+            # data node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_name'] = 'datasrc'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'data_image'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # net conf node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_name'] = 'netconf_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'nf_renet'
             input_data['wf_node_status'] = 0
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
