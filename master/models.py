@@ -19,7 +19,7 @@ class NN_DEF_LIST_INFO(models.Model):
 class NN_VER_WFLIST_INFO(models.Model):
     class Meta:
         unique_together = (('nn_id', 'nn_wf_ver_id'),)
-    nn_wf_ver_id = models.IntegerField()
+    nn_wf_ver_id = models.IntegerField(primary_key=True)
     nn_def_list_info_nn_id = models.CharField(max_length=50, blank=True, default='')
     nn_wf_ver_info = models.CharField(max_length=100, blank=False)
     condition = models.CharField(max_length=50, blank=True, default='')
