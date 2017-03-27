@@ -67,10 +67,10 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 self.vocab_size = 100
 
             self.grad_clip = 5.
-            self.learning_rate = 0.01
-            self.decay_rate = 0.01
-            self.num_epochs = 10
-            self.batch_size = 1
+            self.learning_rate = wf_conf.get_learn_rate()
+            self.decay_rate = wf_conf.get_learn_rate()
+            self.num_epochs = wf_conf.get_iter_size()
+            self.batch_size = wf_conf.get_batch_size()
             self.num_batches = 1
 
         except Exception as e :

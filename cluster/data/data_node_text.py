@@ -105,14 +105,6 @@ class DataNodeText(DataNode):
         :return:
         """
         self._init_node_parm(node_id)
-        fp_list = utils.get_filepaths(self.data_store_path)
-        return_arr = []
-        try :
-            for file_path in fp_list:
-                self._init_node_parm(node_id)
-                h5file = h5py.File(file_path, mode='r')
-                return_arr.append(h5file)
-            return return_arr
-        except Exception as e :
-            raise Exception (e)
+        return utils.get_filepaths(self.data_store_path)
+
 

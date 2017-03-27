@@ -179,9 +179,9 @@ print("evaluation result : {0}".format(data))
 # insert submenu info
 resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
                      json={
-                        "wf_task_submenu_id": "pre_feed_text2seq",
-                        "wf_task_submenu_name": "pre_feed_text2seq",
-                        "wf_task_submenu_desc": "pre_feed_text2seq",
+                        "wf_task_submenu_id": "pre_feed_text2wv",
+                        "wf_task_submenu_name": "pre_feed_text2wv",
+                        "wf_task_submenu_desc": "pre_feed_text2wv",
                         "wf_node_class_path": "cluster.preprocess.pre_node_feed_text2wv",
                         "wf_node_class_name": "PreNodeFeedText2Wv"
                      })

@@ -49,13 +49,13 @@ class PreNodeMergeText2Seq(PreProcessNode):
             for node_name in encode_node_list:
                 cls_path, cls_name = self.get_cluster_exec_class(str(self.state_code) + "_" + node_name)
                 dyna_cls = self.load_class(cls_path, cls_name)
-                encode_data = encode_data + dyna_cls.load_train_data(self.state_code + "_" + node_name, parm='all')
+                encode_data = encode_data + dyna_cls.load_data(self.state_code + "_" + node_name, parm='all')
         decode_data = []
         decode_node_list = self.merge_rule['decode_node']
         if (len(decode_node_list) > 0):
             for node_name in decode_node_list:
                 cls_path, cls_name = self.get_cluster_exec_class(self.state_code + "_" + node_name)
                 dyna_cls = self.load_class(cls_path, cls_name)
-                decode_data = decode_data + dyna_cls.load_train_data(self.state_code + "_" + node_name, parm='all')
+                decode_data = decode_data + dyna_cls.load_data(self.state_code + "_" + node_name, parm='all')
 
-        return encode_data, decode_data
+        return [encode_data, decode_data]

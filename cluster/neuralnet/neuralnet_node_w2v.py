@@ -13,12 +13,11 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
         try :
             # init parms for word2vec node
             self._init_node_parm(conf_data['node_id'])
+            self.cls_pool = conf_data['cls_pool']
 
             # get prev node for load data
-            data_node_name = self.find_prev_node(conf_data['node_id'], conf_data['node_list'])
-            cls_path, cls_name = self.get_cluster_exec_class(data_node_name)
-            dyna_cls = self.load_class(cls_path, cls_name)
-            input_data = dyna_cls.load_data(data_node_name, parm = 'all')
+            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+            train_data_set = self.cls_pool[data_node_name[0]]
 
             # load model for train
             update_flag = False
@@ -28,18 +27,19 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                 update_flag = True
 
             # train vocab and model
-            for data in input_data :
-                rawdata = data['rawdata']
-                for i in range(0, rawdata.len(), 100):
-                    if(update_flag == False) :
-                        model.build_vocab(rawdata[i:i+100].tolist(), update=False)
-                        update_flag = True
-                    else :
-                        model.build_vocab(rawdata[i:i + 100].tolist(), update=True)
-                    model.train(rawdata[i:i+100].tolist())
-            os.makedirs(self.md_store_path, exist_ok=True)
-            model.save(''.join([self.md_store_path, '/model.bin']))
-
+            while(train_data_set.has_next()) :
+                for x in range(0, self.iter_size) :
+                    for i in range(0, train_data_set.len(), self.batch_size):
+                        data_set = train_data_set[i:i + self.batch_size]
+                        if (update_flag == False):
+                            model.build_vocab(data_set.tolist(), update=False)
+                            update_flag = True
+                        else:
+                            model.build_vocab(data_set.tolist(), update=True)
+                        model.train(data_set.tolist())
+                        os.makedirs(self.md_store_path, exist_ok=True)
+                        model.save(''.join([self.md_store_path, '/model.bin']))
+                train_data_set.next()
             return len(model.raw_vocab)
         except Exception as e:
             raise Exception(e)
@@ -49,6 +49,8 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
         self.md_store_path = wf_conf.get_model_store_path()
         self.window_size = wf_conf.get_window_size()
         self.vector_size = wf_conf.get_vector_size()
+        self.batch_size = wf_conf.get_batch_size()
+        self.iter_size = wf_conf.get_iter_size()
 
     def _set_progress_state(self):
         return None

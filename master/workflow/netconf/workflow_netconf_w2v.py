@@ -20,6 +20,10 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
             error_msg = ''.join([error_msg, 'window_size (int) not defined'])
         if ('vector_size' not in json_data):
             error_msg = ''.join([error_msg, 'vector_size (int) not defined'])
+        if ('batch_size' not in json_data):
+            error_msg = ''.join([error_msg, 'batch_size (int) not defined'])
+        if ('iter' not in json_data):
+            error_msg = ''.join([error_msg, 'iter (int) not defined'])
         if (error_msg == ""):
             return True
         else:
@@ -54,3 +58,23 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
         return self.conf['vector_size']
+
+    def get_batch_size(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['batch_size']
+
+    def get_iter_size(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['iter']
