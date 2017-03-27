@@ -12,15 +12,18 @@ import h5py as h5
 import json
 from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame as wf_data_conf
 from common import utils
+import csv
 
 class DataNodeFrame(DataNode):
     """
 
     """
 
+
     def run(self, conf_data):
         """
         Run Data Node
+        한번에 HDF5랑  TFRECORD를 만든다.
         :param data_path:
         :return:dataframe
         """
@@ -28,7 +31,8 @@ class DataNodeFrame(DataNode):
         self._init_node_parm(conf_data['node_id'])
 
         if(self.data_src_type == 'local' and self.type == "csv") :
-            self.src_local_handler(conf_data)
+            #self.src_local_handler(conf_data)
+            self.src_local_handler(conf_data, tfrecode_flag=True)
         if (self.data_src_type == 'rdb'):
             raise Exception ("on development now")
         if (self.data_src_type == 's3'):
@@ -38,7 +42,7 @@ class DataNodeFrame(DataNode):
 
 
 
-    def src_local_handler(self, conf_data):
+    def src_local_handler(self, conf_data, tfrecode_flag = False):
         """
 
         :param conf_data:
@@ -46,14 +50,25 @@ class DataNodeFrame(DataNode):
         """
         try:
             fp_list = utils.get_filepaths(self.data_src_path)
-            for file_path in fp_list:
-                df_csv_read = self.load_csv_by_pandas(file_path)
-                self.make_column_types(df_csv_read, conf_data['node_id'])
-                #df_csv_read = self.preprocess_data(df_csv_read)
-                self.create_hdf5(self.data_store_path, df_csv_read)
-                os.remove(file_path)
+
+            try:
+                for file_path in fp_list:
+                    df_csv_read = self.load_csv_by_pandas(file_path)
+                    self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'])
+                    self.create_hdf5(self.data_store_path, df_csv_read)
+                    #os.remove(file_path)
+
+                #make tfrecord for multi Threading
+                    if tfrecode_flag == True:
+                        skip_header = False
+                        self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read)
+            except Exception as e:
+                raise Exception(e)
+            return None
         except Exception as e:
             raise Exception(e)
+
+
 
     def preprocess_data(self, input_data):
         """
@@ -65,6 +80,68 @@ class DataNodeFrame(DataNode):
             for key in input_data.keys() :
                 input_data[key] = self._mecab_parse(input_data[key])
             return input_data
+
+    def save_tfrecord(self, csv_data_file, store_path, skip_header, df_csv_read):
+        #_, ext = os.path.basename(csv_data_file)
+        filename = os.path.basename(csv_data_file)
+        output_file = store_path +"/"+ filename + ".tfrecords"
+        self.create_tfrecords_file( output_file, skip_header, df_csv_read)
+
+    def create_tfrecords_file(self, output_file, skip_header, df_csv_read):
+        """
+        Creates a TFRecords file for the given input data and
+        example transofmration function
+        """
+        writer = tf.python_io.TFRecordWriter(output_file)
+        print("Creating TFRecords file at", output_file, "...")
+
+        CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS  = self.make_continuous_category_list(self.data_conf["cell_feature"])
+
+        csv_dataframe = df_csv_read
+        for _, row in csv_dataframe.iterrows():
+            x = self.create_example_pandas(row, CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS )
+            writer.write(x.SerializeToString())
+        writer.close()
+        print("Wrote to", output_file)
+
+    def make_continuous_category_list(self,cell_feature ):
+        """
+        Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list
+
+        """
+        CONTINUOUS_COLUMNS = list()
+        CATEGORICAL_COLUMNS = list()
+        for type_columne, type_value in cell_feature.items():
+            if type_value["column_type"] == 'CONTINUOUS':
+                CONTINUOUS_COLUMNS.append(type_columne)
+            else:
+                CATEGORICAL_COLUMNS.append(type_columne)
+        return CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS
+
+    def create_example_pandas(self, row, CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS):
+        """
+        Make TFRecord Extend row (Example)
+        TFRecord를 만들기 위한 Example을 만든다.
+
+        """
+        try:
+            example = tf.train.Example()
+
+            for col, value in row.items():
+                #print(col)
+                #print(value)
+                if col in CATEGORICAL_COLUMNS:
+                    example.features.feature[col].bytes_list.value.extend([str.encode(value)])
+                elif col in CONTINUOUS_COLUMNS:
+                    example.features.feature[col].int64_list.value.extend([int(value)])
+
+                if col == "income_bracket":
+                    example.features.feature['label'].int64_list.value.extend([int(">50K" in value)])
+
+            return example
+        except Exception as e:
+            raise Exception(e)
+
 
     def create_hdf5(self, data_path, dataframe):
         """
@@ -108,15 +185,46 @@ class DataNodeFrame(DataNode):
         :param conf_data:
         """
         try:
+            data_conf=self.set_dataconf_for_checktype(df, node_id )
+            #self.data_conf = self.set_dataconf_for_checktype(df, node_id )
             dataconf_nodes = self._get_forward_node_with_type(node_id, 'dataconf')
             if(len(dataconf_nodes) > 0 ) :
                 wf_data_conf_node = wf_data_conf(dataconf_nodes[0])
                 if ('conf' not in wf_data_conf_node.__dict__):
-                    self.set_default_dataconf_from_csv(wf_data_conf_node, df, node_id)
+                    self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, self.data_conf)
+            return data_conf
         except Exception as e:
             raise Exception(e)
 
-    def set_default_dataconf_from_csv(self,wf_data_config, df, node_id):
+    def set_default_dataconf_from_csv(self,wf_data_config, node_id, data_conf):
+        """
+        csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
+        :param wf_data_config, df, nnid, ver, node:
+        :param conf_data:
+        tfrecord 때문에 항상 타입을 체크하고 필요할때만 저장
+        """
+        # #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
+        # data_conf = dict()
+        # data_conf_col_type = dict()
+        # #data_conf_label = dict()
+        # for i, v in df.dtypes.iteritems():
+        #     # label
+        #     column_dtypes = dict()
+        #     col_type = ''
+        #     if (str(v) == "int64"):  # maybe need float
+        #         col_type = 'CONTINUOUS'
+        #     else:
+        #         col_type = 'CATEGORICAL'
+        #     column_dtypes['column_type'] = col_type
+        #     data_conf_col_type[i] = column_dtypes
+        # data_conf['cell_feature'] = data_conf_col_type
+        # data_conf_json_str = json.dumps(data_conf)
+        # data_conf_json = json.loads(data_conf_json_str)
+
+        # DATACONF_FRAME_CALL
+        wf_data_config.put_step_source(node_id, data_conf)
+
+    def set_dataconf_for_checktype(self, df, node_id):
         """
         csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
         :param wf_data_config, df, nnid, ver, node:
@@ -126,11 +234,12 @@ class DataNodeFrame(DataNode):
         data_conf = dict()
         data_conf_col_type = dict()
         #data_conf_label = dict()
+        numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
         for i, v in df.dtypes.iteritems():
             # label
             column_dtypes = dict()
             col_type = ''
-            if (str(v) == "int64"):  # maybe need float
+            if (str(v) in numerics):  # maybe need float
                 col_type = 'CONTINUOUS'
             else:
                 col_type = 'CATEGORICAL'
@@ -141,7 +250,8 @@ class DataNodeFrame(DataNode):
         data_conf_json = json.loads(data_conf_json_str)
 
         # DATACONF_FRAME_CALL
-        wf_data_config.put_step_source(node_id, data_conf_json)
+        #wf_data_config.put_step_source(node_id, data_conf_json)
+        return data_conf_json
 
     def _set_progress_state(self):
         return None

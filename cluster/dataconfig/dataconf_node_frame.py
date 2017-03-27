@@ -5,6 +5,8 @@ from master.workflow.data.workflow_data_frame import WorkFlowDataFrame
 import numpy as np
 import tensorflow as tf
 import pandas as pd
+import csv
+import os
 
 class DataConfNodeFrame(DataConfNode):
     """
@@ -25,9 +27,6 @@ class DataConfNodeFrame(DataConfNode):
             data_store_path = WorkFlowDataFrame(conf_data['nn_id'] + "_" + conf_data['wf_ver'] + "_" + "data_node").source_path
             data_conf = self.data_conf
             self.validate_data(data_store_path,data_conf )
-
-
-
 
             return None
         except Exception as e:
@@ -93,4 +92,7 @@ class DataConfNodeFrame(DataConfNode):
                                   skipinitialspace=True,
                                   engine="python")
         return df_csv_read
+
+    ## TFRecord
+
 
