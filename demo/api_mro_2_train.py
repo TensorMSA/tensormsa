@@ -28,19 +28,19 @@ wf_ver_id = str(wf_ver_id)
 
 # get workflow version info
 
-node_id = nn_id+"_"+wf_ver_id+"_netconf_node"
+node = "netconf_node"
 
 # update workflow node conf info
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
+resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "key" : {"node_id": node_id,
+                         "key" : {"node": node,
                                   "nn_id": nn_id,
                                   "wf_ver_id": wf_ver_id,
                                   "modelname": "model"
                                   }
                          ,"config": {"learnrate": 0.001,
-                                 "traincnt": 10,
-                                 "batch_size":1000,
+                                 "traincnt": 1,
+                                 "batch_size":10000,
                                  "num_classes":5,
                                  "predictcnt": 4
                                  }
@@ -99,18 +99,19 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
 data = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(data))
 
-node_id = nn_id+"_"+wf_ver_id+"_datasrc"
+node = "datasrc"
 
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/datasrc/',
+resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "node_id": node_id,
-                         "type": "local image",
-                         "labels":[],
-                         "source_path": "/hoya_src_root/"+nn_id+"/"+wf_ver_id+"/datasrc",
-                         "preprocess": {"x_size": 100,
-                                        "y_size": 100,
-                                        "channel":3},
-                         "store_path": "/hoya_str_root/"+nn_id+"/"+wf_ver_id+"/datasrc"
+                            "key" : {"node": node,
+                                  "nn_id": nn_id,
+                                  "wf_ver_id": wf_ver_id
+                                  }
+                         ,"preprocess": {"x_size": 32,
+                                        "y_size": 32,
+                                        "channel":3}
+                         ,"labels":[]
+
                      })
 
 # Run All Workflow

@@ -30,7 +30,9 @@ class PredictNet(WorkFlowCommonNode):
         query_list.append("     AND WV.NN_ID_ID = %s    ")
         query_list.append("     JOIN MASTER_NN_WF_NODE_INFO NI    ")
         query_list.append("     ON WS.WF_STATE_ID = NI.WF_STATE_ID_ID    ")
-        query_list.append("     AND NI.NN_WF_NODE_NAME = 'netconf_node'")
+        query_list.append("     JOIN MASTER_WF_TASK_SUBMENU_RULE SR  ")
+        query_list.append("     ON SR.WF_TASK_SUBMENU_ID = NI.WF_TASK_SUBMENU_ID_ID    ")
+        query_list.append("     AND SR.WF_TASK_MENU_ID_ID = 'netconf'")
 
         # parm_list : set parm value as list
         parm_list = []
@@ -39,4 +41,7 @@ class PredictNet(WorkFlowCommonNode):
         with connection.cursor() as cursor:
             cursor.execute(''.join(query_list), parm_list)
             row = dictfetchall(cursor)
-        return row[0]['nn_wf_node_id']
+        if(len(row) > 0):
+            return row[0]['nn_wf_node_id']
+        else :
+            raise Exception ("No Active version Exist for predict service !")

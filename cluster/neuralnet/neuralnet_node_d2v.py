@@ -8,7 +8,6 @@ class NeuralNetNodeDoc2Vec(NeuralNetNode):
     """
 
     """
-
     def run(self, conf_data):
         try :
             # init parms for doc2vec node
@@ -18,7 +17,7 @@ class NeuralNetNodeDoc2Vec(NeuralNetNode):
             data_node_name = self.find_prev_node(conf_data['node_id'], conf_data['node_list'])
             cls_path, cls_name = self.get_cluster_exec_class(data_node_name)
             dyna_cls = self.load_class(cls_path, cls_name)
-            input_data = dyna_cls.load_train_data(data_node_name, parm = 'all')
+            input_data = dyna_cls.load_data(data_node_name, parm = 'all')
 
             # load model for train
             update_flag = False
@@ -27,19 +26,21 @@ class NeuralNetNodeDoc2Vec(NeuralNetNode):
                 model = doc2vec.Doc2Vec.load(''.join([self.md_store_path, '/model.bin']))
                 update_flag = True
 
+            train_data = []
             # train vocab and model
             for data in input_data :
                 rawdata = data['rawdata']
-                for i in range(0, rawdata.len(), 100):
-                    if(update_flag == False) :
-                        model.build_vocab(rawdata[i:i+100].tolist(), update=False)
-                        update_flag = True
-                    else :
-                        model.build_vocab(rawdata[i:i + 100].tolist(), update=True)
-                    model.train(rawdata[i:i+100].tolist())
+                for i in range(0, rawdata.len()):
+                    # DocToVec Needed Tag per Line
+                    train_data.append(doc2vec.TaggedDocument(rawdata[i:i + 100].tolist()[0], [i]))
+                if (update_flag == False) :
+                    model.build_vocab(train_data, update=False)
+                    update_flag = True
+                else :
+                    model.build_vocab(train_data, update=True)
+                model.train(train_data)
             os.makedirs(self.md_store_path, exist_ok=True)
             model.save(''.join([self.md_store_path, '/model.bin']))
-
             return len(model.raw_vocab)
         except Exception as e:
             raise Exception(e)

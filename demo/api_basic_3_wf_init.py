@@ -59,3 +59,13 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/init/mode/simple/
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+
+# insert workflow info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/init/mode/simple/nn00004/wfver/8/',
+                     json={
+                         "type": "seq2seq_csv"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+

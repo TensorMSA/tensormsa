@@ -1,7 +1,7 @@
-from cluster.preprocess.preprocess_node import PreProcessNode
+from cluster.preprocess.pre_node import PreProcessNode
 from master.workflow.preprocess.workflow_pre_merge import WorkFlowPreMerge as WFPreMerge
 
-class PreProcessNodeMerge(PreProcessNode):
+class PreNodeMergeText2Seq(PreProcessNode):
     """
 
     """
@@ -24,7 +24,7 @@ class PreProcessNodeMerge(PreProcessNode):
     def _set_progress_state(self):
         pass
 
-    def load_train_data(self, node_id, parm = 'all'):
+    def load_data(self, node_id, parm = 'all'):
         """
         load train data
         :param node_id:
@@ -37,15 +37,6 @@ class PreProcessNodeMerge(PreProcessNode):
             return self._merge_seq2seq_type()
         else :
             raise Exception ("merge node error: not defined type {0}".format(self.merge_type))
-
-    def load_test_data(self, node_id, parm = 'all'):
-        """
-        load test data
-        :param node_id:
-        :param parm:
-        :return:
-        """
-        return []
 
     def _merge_seq2seq_type(self):
         """

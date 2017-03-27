@@ -90,8 +90,8 @@ urlpatterns = [
     url(r'^api/v1/type/wf/state/pre/detail/merge/type/(?P<type>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowPreMerge.as_view())),
     # convert data formats to feed network (ex) convert frame data to fit to feed rnn)
-    url(r'^api/v1/type/wf/state/pre/detail/convert/type/(?P<type>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
-        csrf_exempt(rest_view.WorkFlowPreConvert.as_view())),
+    url(r'^api/v1/type/wf/state/pre/detail/feed/src/(?P<src>.*)/net/(?P<net>.*)/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowPreFeeder.as_view())),
 
     # workflow - net config APIs
     url(r'^api/v1/type/wf/state/netconf/detail/autoencoder/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',

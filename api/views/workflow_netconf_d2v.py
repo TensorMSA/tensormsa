@@ -13,7 +13,7 @@ class WorkFlowNetConfD2V(APIView) :
         - desc : insert data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
+            input_data = request.data
             input_data['model_path'] = get_model_path(nnid, ver, node)
             nodeid = ''.join([nnid, '_', ver, '_', node])
             if(Doc2Vec().validation_check(input_data)) :
@@ -42,7 +42,7 @@ class WorkFlowNetConfD2V(APIView) :
         - desc ; update data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
+            input_data = request.data
             input_data['model_path'] = get_model_path(nnid, ver, node)
             nodeid = ''.join([nnid, '_', ver, '_', node])
             if(Doc2Vec().validation_check(input_data)) :

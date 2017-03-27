@@ -2,10 +2,17 @@ import json, os
 from common.utils import *
 
 def save_upload_file(request, nnid, ver, dir):
+    """
+    save files upload via http
+    :param request:
+    :param nnid:
+    :param ver:
+    :param dir:
+    :return:
+    """
 
-
-    if len(request.FILES.keys()) > 0:
-
+    file_cnt = len(request.FILES.keys())
+    if file_cnt > 0:
         for key, requestSingleFile in request.FILES.items():
 
             file = requestSingleFile
@@ -18,7 +25,8 @@ def save_upload_file(request, nnid, ver, dir):
             for chunk in file.chunks():
                 fp.write(chunk)
             fp.close()
+        return file_cnt
     else:
-        raise Exception("no file data exist")
+        return 0
 
 

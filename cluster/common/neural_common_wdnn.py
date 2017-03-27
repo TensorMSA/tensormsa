@@ -120,20 +120,9 @@ class NeuralCommonWdnn():
 
             label_object  = dataconf
 
-            #Check Train or Predict
-            #if(train):
-                #model_dir = settings.HDFS_MODEL_ROOT + "/"+nnid + "/"+tempfile.mkdtemp().split("/")[2]
-            #    model_dir = settings.HDFS_MODEL_ROOT + "/" + nnid
-            #else:
-            #    if(model_dir != "No"):
-            #        model_dir = model_dir
-
-            #label_cnt = len(list(label_object))
-
-            # continuous, categorical and embeddingforCategorical(deep) list
-            #featureColumnCategorical = {}
-            featureColumnContinuous = {}
             featureDeepEmbedding={}
+            featureTransfomation = {}
+
             j_feature = data_conf_json["cell_feature"]
 
 
@@ -152,17 +141,42 @@ class NeuralCommonWdnn():
             featureColumnContinuous = {cn:tf.contrib.layers.real_valued_column(cn)
                                     for cn, c_value in j_feature.items() if c_value["column_type"] == "CONTINUOUS"}
 
+            #Transformations
+            if data_conf_json.get('Transformations'):
+                featureTransfomation = {key:tf.contrib.layers.bucketized_column(featureColumnContinuous[values['column_name']],values['boundaries']) for key, values in data_conf_json['Transformations'].items()}
+
             #make wide columns
             #Todo shoud be check is it right? wide colummns is featureColumnCategorical
             wide_columns= [sparseTensor for key, sparseTensor in featureColumnCategorical.items()]
+            wide_columns.extend([transTensor for key, transTensor in featureTransfomation.items()])
 
-            #Cross cell make
+            # , "cross_cell": {"col2": ["native_country", "occupation"]
+            #               , "col1": ["occupation", "education"]}
+            # #ross cell make
+            cross_list = list()
             if data_conf_json.get('cross_cell'):
-                cross_column_list = [[featureColumnCategorical[entry_cross] for entry_cross in cross_col] for
-                                     key, cross_col in data_conf_json["cross_cell"].items()]
+                for key, cross_col_list in data_conf_json["cross_cell"].items():
+                    cross_list_item = list()
+                    for cross_col in cross_col_list:
+                        if featureColumnCategorical.get(cross_col):
+                            cross_list_item.extend([featureColumnCategorical[cross_col]])
+                        elif featureColumnContinuous.get(cross_col):
+                            cross_list_item.extend([featureColumnContinuous[cross_col]])
+                        elif featureTransfomation.get(cross_col):
+                            cross_list_item.extend([featureTransfomation[cross_col]])
+                    cross_list.append(cross_list_item)
                 wide_columns.extend(
-                    [tf.contrib.layers.crossed_column(cross_col, hash_bucket_size=int(1e4)) for cross_col in
-                     cross_column_list])
+                         [tf.contrib.layers.crossed_column(cross_col, hash_bucket_size=int(1e4)) for cross_col in cross_list])
+
+                    # Cross cell make
+            # if data_conf_json.get('cross_cell'):
+            #     cross_column_list2 = [[featureColumnCategorical[entry_cross] for entry_cross in cross_col] for
+            #                          key, cross_col in data_conf_json["cross_cell"].items()]
+            #     wide_columns.extend(
+            #         [tf.contrib.layers.crossed_column(cross_col, hash_bucket_size=int(1e4)) for cross_col in
+            #          cross_column_list2])
+
+
                 #print("pass")
             #j_cross = data_conf_json["cross_cell"]
 
@@ -172,15 +186,12 @@ class NeuralCommonWdnn():
 
             # complete wide colums
 
-            #wide_columns.extend([tf.contrib.layers.crossed_column(cross_col,hash_bucket_size=int(1e4)) for key, cross_col in j_cross.items()])
-
-
-
-            if data_conf_json.get('Transformations'):
-                #transfomation_col = [ featureColumnContinuous[values['column_name']]  for jc, values in  data_conf_json['Transformations'].items()]
-                #trans_boundaries = [ values['boundaries']  for jc, values in  data_conf_json['Transformations'].items()]
-                wide_columns.extend([tf.contrib.layers.bucketized_column(featureColumnContinuous[values['column_name']],values['boundaries'])
-                                     for key, values in data_conf_json['Transformations'].items()])
+            #
+            # if data_conf_json.get('Transformations'):
+            #     #transfomation_col = [ featureColumnContinuous[values['column_name']]  for jc, values in  data_conf_json['Transformations'].items()]
+            #     #trans_boundaries = [ values['boundaries']  for jc, values in  data_conf_json['Transformations'].items()]
+            #     wide_columns.extend([tf.contrib.layers.bucketized_column(featureColumnContinuous[values['column_name']],values['boundaries'])
+            #                          for key, values in data_conf_json['Transformations'].items()])
 
             #make deep Columns
             deep_columns = [realTensor for key, realTensor in featureColumnContinuous.items()]

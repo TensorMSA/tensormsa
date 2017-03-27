@@ -9,6 +9,7 @@ import tensorflow as tf
 import collections
 import argparse
 import time
+from common.utils import *
 import os
 from konlpy.tag import Mecab
 
@@ -21,23 +22,22 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         try :
             # init parms for word2vec node
             self._init_node_parm(conf_data['node_id'])
+            self.cls_pool = conf_data['cls_pool']
 
             # get prev node for load data
-            data_node_name = self.find_prev_node(conf_data['node_id'], conf_data['node_list'])
-            cls_path, cls_name = self.get_cluster_exec_class(data_node_name)
-            dyna_cls = self.load_class(cls_path, cls_name)
-            encode_data, decode_data = dyna_cls.load_train_data(data_node_name, parm='all')
+            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+            train_data_set = self.cls_pool[data_node_name[0]]
 
             # prepare net conf
             self._set_train_model()
 
-            for encode, decode  in zip(encode_data, decode_data):
-                encode_raw = encode['rawdata']
-                decode_raw = decode['rawdata']
-                for i in range(0, encode_raw.len(), self.batch_size):
-                    encode_batch = self._word_embed_data(encode_raw[i:i + self.batch_size])
-                    decode_batch = self._get_dict_id(decode_raw[i:i + self.batch_size])
+            while(train_data_set.has_next()) :
+                for i in range(0, train_data_set.len(), self.batch_size):
+                    data_set = train_data_set[i:i + self.batch_size]
+                    decode_batch = self._word_embed_data(data_set[1])
+                    encode_batch = self._word_embed_data(data_set[0])
                     self._run_train(encode_batch, decode_batch)
+                train_data_set.next()
 
         except Exception as e :
             raise Exception (e)
@@ -204,7 +204,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             sess = tf.Session()
             sess.run(tf.initialize_all_variables())
             saver = tf.train.Saver(tf.all_variables())
-            if(os.path.exists(self.md_store_path) == True):
+            if(len(get_filepaths(self.md_store_path)) > 0):
                 saver.restore(sess, self.md_store_path)
             for epoch in range(self.num_epochs):
                 # Learning rate scheduling
@@ -264,7 +264,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             saver = tf.train.Saver(tf.all_variables())
 
             #restore model
-            if(os.path.exists(self.md_store_path) == True):
+            if (len(get_filepaths(self.md_store_path)) > 0):
                 saver.restore(sess, self.md_store_path)
             else :
                 raise Exception ("error : no pretrained model exist")

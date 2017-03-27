@@ -10,6 +10,17 @@ import os
 import operator
 import json
 import datetime
+import matplotlib.pyplot as plt
+########################################################################
+def plot_image(image, cls_true):
+    # Create figure with sub-plots.
+    fig, axes = plt.subplots(1, 1)
+
+    if cls_true != None:
+        axes.set_xlabel(cls_true)
+    axes.imshow(image)
+
+    plt.show()
 ########################################################################
 # nm_classes = label cnt or max label cnt
 def one_hot_encoded(num_classes):
@@ -120,8 +131,6 @@ def get_model(self, netconf, dataconf, type):
         #                                            normalizer_fn=tf.contrib.layers.batch_norm)
         #     model = tf.contrib.layers.fully_connected(model, num_classes)
 
-        println(model)
-
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
         optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
         y_pred_cls = tf.argmax(model, 1)
@@ -206,7 +215,8 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
     train_cnt = netconf["config"]["traincnt"]
     # println(netconf["key"]["nn_id"])
     # println(netconf["key"]["wf_ver_id"])
-    model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
+    # println(netconf["key"]["node"])
+    model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], netconf["key"]["node"])
     save_path = model_path + "/" + modelname
     # println(model_path)
 
@@ -250,16 +260,17 @@ class NeuralNetNodeCnn(NeuralNetNode):
     """
     def run(self, conf_data):
         println("run NeuralNetNodeCnn")
-        println(conf_data)
+        # println(conf_data)
         ################################################################
         # search nn_node_info
         dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
         netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
 
         net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf, "T")
-
+        println(model)
         if net_check == "S":
-            input_data = DataNodeImage().load_train_data(str(conf_data["node_list"][0]))
+            input_data = DataNodeImage().load_data(str(conf_data["node_list"][0]))
+            println("get Input Data end .....")
             train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
         else:
             println("net_check=" + net_check)
@@ -295,7 +306,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         modelname = netconf["key"]["modelname"]
         num_classes = netconf["config"]["num_classes"]
         pred_cnt = netconf["config"]["predictcnt"]
-        model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], "cnnmodel")
+        model_path = get_model_path(netconf["key"]["nn_id"], netconf["key"]["wf_ver_id"], netconf["key"]["node"])
 
         net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf, "P")
 
@@ -334,6 +345,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         # println(y_pred_true)
                         cls_name = labels[y_pred_true[0]]
                         # println(cls_name)
+
 
                         one = np.zeros((len(labels), 2))
 

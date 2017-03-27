@@ -50,7 +50,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             dyna_cls = self.load_class(cls_path, cls_name)
             data_config = WorkFlowDataImage().get_step_source(data_node_name)
             labels = data_config['labels']
-            input_data = dyna_cls.load_train_data(data_node_name, parm='all')
+            input_data = dyna_cls.load_data(data_node_name, parm='all')
             preprocess = data_config['preprocess']
 
             # input image dimensions

@@ -37,7 +37,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         if(error_msg == "") :
             return True
         else :
-            return error_msg
+            raise Exception (error_msg)
 
     def get_model_store_path(self):
         """

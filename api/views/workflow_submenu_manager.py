@@ -13,7 +13,7 @@ class WorkFlowSubMenuManager(APIView) :
         - desc : insert data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
+            input_data = request.data
             input_data['wf_task_menu_id'] = menu
             return_data = WorkFlowStateMenu().put_submenu_info(input_data)
             return Response(json.dumps(return_data))

@@ -2,7 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.data.workflow_data_image import WorkFlowDataImage as data_img
-
+from common.utils import *
 
 class WorkFlowDataImage(APIView):
     """
@@ -12,12 +12,9 @@ class WorkFlowDataImage(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            if (src == 'local' and prg == 'source'):
-                return_data = data_img().put_step_source(nnid, ver, node, input_data)
-            else :
-                return_data = {'result' : 'no type'}
-            return Response(json.dumps(return_data))
+            # save uploaded file on source folder
+            file_cnt = save_upload_file(request, nnid, ver, node)
+            return Response(json.dumps(["{0} file upload success".format(file_cnt)]))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
@@ -38,9 +35,8 @@ class WorkFlowDataImage(APIView):
         - desc ; update cnn configuration data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
-            if(src == 'local' and prg == 'source') :
-                return_data = data_img().put_step_source(nnid, ver, node, input_data)
+            if(prg == 'source') :
+                return_data = data_img().put_step_source(nnid, ver, node, request.data)
             else :
                 return_data = {'result' : 'no type'}
             return Response(json.dumps(return_data))

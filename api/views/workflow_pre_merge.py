@@ -13,7 +13,7 @@ class WorkFlowPreMerge(APIView) :
         - desc : insert data
         """
         try:
-            input_data = json.loads(str(request.body, 'utf-8'))
+            input_data = request.data
             nodeid = ''.join([nnid, '_', ver, '_', node])
             input_data['type'] = type
             if (WFPreMerge().validation_check(input_data)):

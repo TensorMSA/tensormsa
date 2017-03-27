@@ -24,7 +24,7 @@ class WorkFlowPreMerge(WorkFlowPre):
         if(error_msg == "") :
             return True
         else :
-            return error_msg
+            raise Exception(error_msg)
 
     def get_batchsize(self):
         if('conf' not in self.__dict__) :

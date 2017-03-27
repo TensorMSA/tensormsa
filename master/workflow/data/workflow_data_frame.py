@@ -128,7 +128,7 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['source_parse_type'] = form
             config_data['source_server'] = input_data['source_server']
             config_data['source_sql'] = input_data['source_sql']
-            config_data['source_path'] = utils.get_source_path(nnid, wfver, input_data['source_path'])
+            config_data['source_path'] = utils.get_source_path(nnid, wfver, node)
             setattr(obj, 'node_config_data', config_data)
             obj.save()
 
@@ -167,10 +167,10 @@ class WorkFlowDataFrame(WorkFlowData) :
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(wfver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
-            config_data['store_path'] = utils.get_store_path(nnid, wfver, input_data['store_path'])
+            config_data['store_path'] = utils.get_store_path(nnid, wfver, node)
             setattr(obj, 'node_config_data', config_data)
             obj.save()
-            return input_data['store_path']
+            return config_data['store_path']
 
         except Exception as e:
             raise Exception(e)

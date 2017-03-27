@@ -21,28 +21,33 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
         :param wf_ver:
         :return:
         """
-        self.nn_id = nn_id
-        self.wf_ver = wf_ver
+        try :
+            self.nn_id = nn_id
+            self.wf_ver = wf_ver
 
-        # get node sequece list
-        node_list = self._get_arranged_node_list()
-        if(len(node_list) == 0) :
-            return None
+            # get node sequece list
+            node_list = self._get_arranged_node_list()
+            if(len(node_list) == 0) :
+                return None
 
-        result_info = []
-        # execute nodes by sequece
-        for node in node_list :
-            _relation = self._get_node_relation(nn_id, wf_ver, node)
-            _path, _cls = self.get_cluster_exec_class(node)
-            conf_data = {}
-            conf_data['node_id'] = node
-            conf_data['node_list'] = node_list
-            conf_data['node_prev'] = _relation['prev']
-            conf_data['node_next'] = _relation['next']
-            conf_data['nn_id'] = nn_id
-            conf_data['wf_ver'] = wf_ver
-            result_info.append(self.load_class(_path, _cls).run(conf_data))
-        return result_info
+            cls_list = self._get_cached_class_pool(node_list)
+
+            # execute nodes by sequece
+            result_info = []
+            for node in node_list :
+                _relation = self._get_node_relation(nn_id, wf_ver, node)
+                conf_data = {}
+                conf_data['node_id'] = node
+                conf_data['node_list'] = node_list
+                conf_data['node_prev'] = _relation['prev']
+                conf_data['node_next'] = _relation['next']
+                conf_data['nn_id'] = nn_id
+                conf_data['wf_ver'] = wf_ver
+                conf_data['cls_pool'] = cls_list
+                result_info.append(cls_list[node].run(conf_data))
+            return result_info
+        except Exception as e :
+            raise Exception (e)
 
     def _get_arranged_node_list(self):
         """
@@ -63,6 +68,21 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                     idx = return_arr.index(data.nn_wf_node_id_2)
                     return_arr.insert(idx, data.nn_wf_node_id_1)
         return return_arr
+
+    def _get_cached_class_pool(self, node_name_list):
+        """
+
+        :param node_name_list:
+        :return:
+        """
+        try :
+            class_list = {}
+            for node in node_name_list :
+                _path, _cls = self.get_cluster_exec_class(node)
+                class_list[node] = self.load_class(_path, _cls)
+            return class_list
+        except Exception as e :
+            raise Exception (e)
 
     def _run_next_node(self):
         return None

@@ -48,35 +48,38 @@ class DataConfNodeFrame(DataConfNode):
         self.data_conf = wf_data_conf.data_conf
 
     def validate_data(self, path, configuration):
+        try:
 
-        df_csv_read = self.load_csv_by_pandas(path)
-        result_valid_info = dict()
+            df_csv_read = self.load_csv_by_pandas(path)
+            result_valid_info = dict()
 
-        #Distinct 값
-
-
-        #Check Continous에 문자가 있는지.
-        data_conf_json = configuration
-        j_feature = data_conf_json["cell_feature"]
-
-        df_numberic = df_csv_read._get_numeric_data().columns.values
-        conf_numberic = list()
-        numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
-        for cn, c_value in j_feature.items():
-            if c_value["column_type"] == "CONTINUOUS":
-                conf_numberic.append(cn)
-
-        compare_list_conf = list(set(conf_numberic) - set(df_numberic))
-        compare_list_df = list(set(conf_numberic) - set(df_numberic))
-
-        result_valid_info["Check Continous"] = str(compare_list_conf) + " " + str(compare_list_df)
-
-        data_conf_json
-        result_valid_info["DNN Mapping"] = "None"
-        print(compare_list_conf + " " + compare_list_df)
+            #Distinct 값
 
 
-        return result_valid_info
+            #Check Continous에 문자가 있는지.
+            data_conf_json = configuration
+            j_feature = data_conf_json["cell_feature"]
+
+            df_numberic = df_csv_read._get_numeric_data().columns.values
+            conf_numberic = list()
+            numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+            for cn, c_value in j_feature.items():
+                if c_value["column_type"] == "CONTINUOUS":
+                    conf_numberic.append(cn)
+
+            compare_list_conf = list(set(conf_numberic) - set(df_numberic))
+            compare_list_df = list(set(conf_numberic) - set(df_numberic))
+
+            result_valid_info["Check Continous"] = str(compare_list_conf) + " " + str(compare_list_df)
+
+            data_conf_json
+            result_valid_info["DNN Mapping"] = "None"
+            #print(compare_list_conf + " " + compare_list_df)
+
+
+            return result_valid_info
+        except Exception as e:
+            raise Exception(e)
 
     def load_csv_by_pandas(self, data_path):
         """
