@@ -27,17 +27,44 @@ class DataNodeFrame(DataNode):
         self.cls_list = conf_data['cls_pool']
         self._init_node_parm(conf_data['node_id'])
 
-        if self.type == "csv":
+        if(self.data_src_type == 'local' and self.type == "csv") :
+            self.src_local_handler(conf_data)
+        if (self.data_src_type == 'rdb'):
+            raise Exception ("on development now")
+        if (self.data_src_type == 's3'):
+            raise Exception("on development now")
+        if (self.data_src_type == 'hbase'):
+            raise Exception("on development now")
+
+
+
+    def src_local_handler(self, conf_data):
+        """
+
+        :param conf_data:
+        :return:
+        """
+        try:
             fp_list = utils.get_filepaths(self.data_src_path)
-            try:
-                for file_path in fp_list:
-                    df_csv_read = self.load_csv_by_pandas(file_path)
-                    self.make_column_types(df_csv_read, conf_data['node_id'])
-                    self.create_hdf5(self.data_store_path, df_csv_read)
-                    os.remove(file_path)
-            except Exception as e:
-                raise Exception(e)
-        return None
+            for file_path in fp_list:
+                df_csv_read = self.load_csv_by_pandas(file_path)
+                self.make_column_types(df_csv_read, conf_data['node_id'])
+                #df_csv_read = self.preprocess_data(df_csv_read)
+                self.create_hdf5(self.data_store_path, df_csv_read)
+                os.remove(file_path)
+        except Exception as e:
+            raise Exception(e)
+
+    def preprocess_data(self, input_data):
+        """
+
+        :param input_data:
+        :return:
+        """
+        if(self.data_preprocess_type == 'mecab'):
+            for key in input_data.keys() :
+                input_data[key] = self._mecab_parse(input_data[key])
+            return input_data
 
     def create_hdf5(self, data_path, dataframe):
         """
@@ -139,6 +166,7 @@ class DataNodeFrame(DataNode):
             self.data_server_type = wf_data_frame.src_server
             self.data_preprocess_type = wf_data_frame.step_preprocess
             self.data_store_path = wf_data_frame.step_store
+            self.sent_max_len = wf_data_frame.max_sentence_len
         except Exception as e :
             raise Exception ("WorkFlowDataFrame parms are not set ")
 

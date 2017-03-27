@@ -1,8 +1,6 @@
 from cluster.data.data_node import DataNode
 from master.workflow.data.workflow_data_text import WorkFlowDataText
-from konlpy.tag import Kkma
-from konlpy.tag import Mecab
-from konlpy.tag import Twitter
+
 from common import utils
 import os,h5py
 from time import gmtime, strftime
@@ -11,15 +9,6 @@ import numpy as np
 
 class DataNodeText(DataNode):
 
-    def get_tag_package(self, type):
-        buffer_list = []
-        if (type == 'mecab'):
-            buffer_list = self._mecab_parse()
-        elif (type == 'kkma'):
-            buffer_list = self._kkma_parse()
-        elif (type == 'twitter'):
-            buffer_list = self._twitter_parse()
-        return buffer_list
 
     def run(self, conf_data):
         """
@@ -27,25 +16,66 @@ class DataNodeText(DataNode):
         :param conf_data:
         :return:
         """
+        self._init_node_parm(conf_data['node_id'])
+        if(self.data_src_type == 'local') :
+            self.src_local_handler(conf_data)
+        if (self.data_src_type == 'rdb'):
+            raise Exception ("on development now")
+        if (self.data_src_type == 's3'):
+            raise Exception("on development now")
+        if (self.data_src_type == 'hbase'):
+            raise Exception("on development now")
+
+    def src_local_handler(self, conf_data):
+        """
+
+        :param conf_data:
+        :return:
+        """
         try:
-            self._init_node_parm(conf_data['node_id'])
-            buffer_list = self.get_tag_package(self.data_preprocess_type)
-
-            if(len(buffer_list) > 0 ) :
-                file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-                output_path = os.path.join(self.data_store_path, file_name)
-                h5file = h5py.File(output_path, 'w', chunk=True)
-                dt_vlen = h5py.special_dtype(vlen=str)
-                dt_arr = np.dtype((dt_vlen, (self.sent_max_len, )))
-                h5raw = h5file.create_dataset('rawdata', (len(buffer_list),), dtype=dt_arr)
-                for i in range(len(buffer_list)):
-                    h5raw[i] = np.array(buffer_list[i], dtype=object)
-                h5file.flush()
-                h5file.close()
-
+            fp_list = utils.get_filepaths(self.data_src_path)
+            for file_path in fp_list :
+                str_buf = self._load_local_files(file_path)
+                conv_buf = self.get_tag_package(self.data_preprocess_type, str_buf)
+                self._save_hdf5(conv_buf)
         except Exception as e:
-            print("exception : {0}".format(e))
             raise Exception(e)
+
+    def get_tag_package(self, type, str_buf):
+        buffer_list = []
+        if (type == 'mecab'):
+            buffer_list = self._mecab_parse(str_buf)
+        elif (type == 'kkma'):
+            buffer_list = self._kkma_parse(str_buf)
+        elif (type == 'twitter'):
+            buffer_list = self._twitter_parse(str_buf)
+        return buffer_list
+
+    def _load_local_files(self, file_path):
+        """
+
+        :return:
+        """
+
+        with open(file_path, 'r') as myfile:
+            os.remove(file_path)
+            return myfile.read()
+
+    def _save_hdf5(self, buffer_list):
+        """
+        :param buffer_list:
+        :return:
+        """
+        file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
+        output_path = os.path.join(self.data_store_path, file_name)
+        h5file = h5py.File(output_path, 'w', chunk=True)
+        dt_vlen = h5py.special_dtype(vlen=str)
+        dt_arr = np.dtype((dt_vlen, (self.sent_max_len,)))
+        h5raw = h5file.create_dataset('rawdata', (len(buffer_list),), dtype=dt_arr)
+        for i in range(len(buffer_list)):
+            h5raw[i] = np.array(buffer_list[i], dtype=object)
+        h5file.flush()
+        h5file.close()
 
     def _init_node_parm(self, key):
         """
@@ -84,75 +114,3 @@ class DataNodeText(DataNode):
         except Exception as e :
             raise Exception (e)
 
-    def _mecab_parse(self):
-        """
-
-        :param h5file:
-        :return:
-        """
-        mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
-        fp_list = utils.get_filepaths(self.data_src_path)
-        return_arr = []
-        for file_path in fp_list:
-            with open(file_path, 'r') as myfile:
-                data = myfile.read()
-                return_arr = return_arr + self._flat(mecab.pos(data))
-                os.remove(file_path)
-        return return_arr
-
-    def _kkma_parse(self):
-        """
-
-        :param h5file:
-        :return:
-        """
-        kkma = Kkma()
-        return_arr = []
-        fp_list = utils.get_filepaths(self.data_src_path)
-        for file_path in fp_list:
-            with open(file_path, 'r') as myfile:
-                data = myfile.read()
-                return_arr = return_arr + self._flat(kkma.pos(data))
-                os.remove(file_path)
-        return return_arr
-
-    def _twitter_parse(self):
-        """
-
-        :param h5file:
-        :return:
-        """
-        twitter = Twitter(jvmpath=None)
-        return_arr = []
-        fp_list = utils.get_filepaths(self.data_src_path)
-        for file_path in fp_list:
-            with open(file_path, 'r') as myfile:
-                data = myfile.read()
-                return_arr = return_arr + self._flat(twitter.pos(data))
-                os.remove(file_path)
-        return return_arr
-
-    def _default_parse(self):
-        pass
-
-    def _flat(self, pos):
-        """
-        flat corpus for gensim
-        :param pos:
-        :return:
-        """
-        doc_list = []
-        line_list = []
-        for word, tag in pos :
-            line_list.append("{0}/{1}".format(word, tag))
-            #Add POS Tagging for divide (kkma and twitter)
-            if(tag == 'SF' or tag == 'Punctuation') :
-                if(len(line_list) > self.sent_max_len - 1) :
-                    line_list = line_list[0:self.sent_max_len-1]
-                else :
-                    pad_len = (self.sent_max_len - (len(line_list)+1))
-                    line_list = line_list + ['#'] * pad_len
-                line_list.append('\n')
-                doc_list.append(line_list)
-                line_list = []
-        return doc_list

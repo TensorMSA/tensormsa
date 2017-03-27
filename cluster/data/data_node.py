@@ -16,3 +16,4 @@ class DataNode(WorkFlowCommonNode):
 
     def load_data(self, node_id, parm = 'all'):
         pass
+

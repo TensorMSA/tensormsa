@@ -16,6 +16,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local
                          "type": "csv",
                          "source_server": "local",
                          "source_sql": "all",
+                         "max_sentence_len": 50
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -23,7 +24,7 @@ print("evaluation result : {0}".format(data))
 #update preprocess
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local/form/raw/prg/pre/nnid/nn00004/ver/8/node/data_csv_node/',
                       json={
-                          "preprocess":  "null",
+                          "preprocess":  "mecab",
                       })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

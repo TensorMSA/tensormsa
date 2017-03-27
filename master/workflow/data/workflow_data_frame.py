@@ -80,6 +80,17 @@ class WorkFlowDataFrame(WorkFlowData) :
         """
         return self.conf['store_path']
 
+    @property
+    def max_sentence_len(self):
+        """
+
+        :return:
+        """
+        if 'max_sentence_len' in self.conf :
+            return self.conf['max_sentence_len']
+        else :
+            return 0
+
     def get_preview_data(self):
         """
 
@@ -129,6 +140,7 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['source_server'] = input_data['source_server']
             config_data['source_sql'] = input_data['source_sql']
             config_data['source_path'] = utils.get_source_path(nnid, wfver, node)
+            config_data['max_sentence_len'] = input_data.get('max_sentence_len' , 0)
             setattr(obj, 'node_config_data', config_data)
             obj.save()
 

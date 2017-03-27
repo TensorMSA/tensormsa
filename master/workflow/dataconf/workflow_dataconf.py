@@ -65,3 +65,6 @@ class WorkFlowDataConf :
         :return:
         """
         pass
+
+    def validation_check(self, json_data):
+        pass

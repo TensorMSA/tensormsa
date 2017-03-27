@@ -34,7 +34,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             while(train_data_set.has_next()) :
                 for i in range(0, train_data_set.len(), self.batch_size):
                     data_set = train_data_set[i:i + self.batch_size]
-                    decode_batch = self._word_embed_data(data_set[1])
+                    decode_batch = self._get_dict_id(data_set[1])
                     encode_batch = self._word_embed_data(data_set[0])
                     self._run_train(encode_batch, decode_batch)
                 train_data_set.next()
