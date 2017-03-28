@@ -39,6 +39,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                         model.train(data_set.tolist())
                         os.makedirs(self.md_store_path, exist_ok=True)
                         model.save(''.join([self.md_store_path, '/model.bin']))
+                        print(len(model.raw_vocab))
                 train_data_set.next()
             return len(model.raw_vocab)
         except Exception as e:

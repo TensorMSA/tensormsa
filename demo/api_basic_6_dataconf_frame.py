@@ -5,7 +5,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 
 
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00004/ver/2/node/dataconf_node/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
                      json={"label":
                                {"income_bracket": "LABEL"}
                          , "Transformations":

@@ -7,7 +7,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 #WorkFlowNetConfWdnn
 # update source_info
 try:
-    resp = requests.post('http://' + url + '/api/v1/type/wf/state/netconf/detail/wdnn/nnid/nn00004/ver/2/node/netconf_node/',
+    resp = requests.post('http://' + url + '/api/v1/type/wf/state/netconf/detail/wdnn/nnid/nn00001/ver/1/node/netconf_node/',
                         json={
                             "model_path": "test",
                             "hidden_layers": [100,50],
