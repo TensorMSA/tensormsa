@@ -154,9 +154,6 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['multi_node_flag'] = input_data['multi_node_flag']
             setattr(obj, 'node_config_data', config_data)
             obj.save()
-
-            setattr(obj, 'node_config_data', config_data)
-            obj.save()
             return config_data
 
         except Exception as e:

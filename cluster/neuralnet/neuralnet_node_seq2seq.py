@@ -32,8 +32,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self._set_train_model()
 
             while(train_data_set.has_next()) :
-                for i in range(0, train_data_set.len(), self.batch_size):
-                    data_set = train_data_set[i:i + self.batch_size]
+                for i in range(0, train_data_set.len(), self.num_batches):
+                    data_set = train_data_set[i:i + self.num_batches]
                     decode_batch = self._get_dict_id(data_set[1])
                     encode_batch = self._word_embed_data(data_set[0])
                     self._run_train(encode_batch, decode_batch)
@@ -66,12 +66,19 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                     #w2v_conf = WorkFlowNetConfW2V(self.word_embed_id)
                     #self.vocab_size = w2v_conf.get_vector_size()
                     self.word_vector_size = 100
-                self.vocab_size = self._get_vocab_size()
+
+                if(wf_conf.get_vocab_size() != None and wf_conf.get_vocab_size() == self._get_vocab_size()) :
+                    self.vocab_size = wf_conf.get_vocab_size()
+                else :
+                    del_filepaths(self.md_store_path)
+                    wf_conf.set_vocab_size(self._get_vocab_size())
+                    self.vocab_size = self._get_vocab_size()
+
                 self.grad_clip = 5.
                 self.learning_rate = wf_conf.get_learn_rate()
                 self.decay_rate = wf_conf.get_learn_rate()
                 self.num_epochs = wf_conf.get_iter_size()
-                self.batch_size = wf_conf.get_batch_size()
+                self.batch_size = 1
                 self.num_batches = 1
             except Exception as e :
                 raise Exception ("seq2seq netconf parms not set")
@@ -252,8 +259,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             # Weigths
             with tf.variable_scope('rnnlm'):
-                softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.word_vector_size])
-                softmax_b = tf.get_variable("softmax_b", [self.word_vector_size])
+                softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
+                softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
                 inputs = tf.split(self.input_data, encoder_seq_length, 1)
                 inputs = [tf.squeeze(_input, [1]) for _input in inputs]
 

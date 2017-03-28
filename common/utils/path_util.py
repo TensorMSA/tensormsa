@@ -53,6 +53,18 @@ def get_filepaths(directory, file_type = "*"):
 
     return file_paths
 
+def del_filepaths(directory, file_type = "*"):
+    """
+    utils return file paths under directory
+    Modify filtering file type
+    :param directory:
+    :return:
+    """
+    import os
+    file_list = get_filepaths(directory, file_type)
+    for file_path in file_list :
+        os.remove(file_path)
+
 def set_filepaths(path):
     if not os.path.exists(path):
         os.makedirs(path)

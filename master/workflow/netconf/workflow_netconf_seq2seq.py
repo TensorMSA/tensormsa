@@ -1,4 +1,5 @@
 from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
+from master import models
 
 class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
     """
@@ -55,7 +56,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['model_path']
+        return self.conf.get('model_path')
 
     def get_encoder_len(self):
         """
@@ -65,7 +66,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['encoder_len']
+        return self.conf.get('encoder_len')
 
     def get_decoder_len(self):
         """
@@ -75,7 +76,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['decoder_len']
+        return self.conf.get('decoder_len')
 
     def get_encoder_depth(self):
         """
@@ -85,7 +86,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['encoder_depth']
+        return self.conf.get('encoder_depth')
 
     def get_decoder_depth(self):
         """
@@ -95,7 +96,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['decoder_depth']
+        return self.conf.get('decoder_depth')
 
     def get_cell_type(self):
         """
@@ -105,7 +106,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['cell_type']
+        return self.conf.get('cell_type')
 
     def get_drop_out(self):
         """
@@ -115,7 +116,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['drop_out']
+        return self.conf.get('drop_out')
 
     def get_word_embed_type(self):
         """
@@ -125,7 +126,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['word_embed_type']
+        return self.conf.get('word_embed_type')
 
     def get_word_embed_id(self):
         """
@@ -135,7 +136,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['word_embed_id']
+        return self.conf.get('word_embed_id')
 
     def get_cell_size(self):
         """
@@ -145,7 +146,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['cell_size']
+        return self.conf.get('cell_size')
 
     def get_batch_size(self):
         """
@@ -155,7 +156,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['batch_size']
+        return self.conf.get('batch_size')
 
     def get_iter_size(self):
         """
@@ -175,7 +176,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
-        return self.conf['early_stop']
+        return self.conf.get('early_stop')
 
     def get_learn_rate(self):
         """
@@ -185,4 +186,25 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
-        return self.conf['learning_rate']
+        return self.conf.get('learning_rate')
+
+    def get_vocab_size(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('vocab_size')
+
+    def set_vocab_size(self, data):
+        """
+
+        :param node_id:
+        :return:
+        """
+        obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
+        config_data = getattr(obj, 'node_config_data')
+        config_data['vocab_size'] = data
+        obj.save()
