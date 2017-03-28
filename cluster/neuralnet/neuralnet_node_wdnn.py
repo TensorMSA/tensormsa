@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame
 from cluster.common.neural_common_wdnn import NeuralCommonWdnn
+from common import utils
 
 class NeuralNetNodeWdnn(NeuralNetNode):
     """
@@ -20,15 +21,21 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         """
         try:
             self._init_node_parm(conf_data['node_id'])
+
+            self.cls_pool = conf_data['cls_pool'] # Data feeder
+            # get prev node for load data
+            #data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+            #train_data_set = self.cls_pool[data_node_name[0]]
+            # prepare net conf
+            #self._set_train_model()
+
+
             print("model_path : " + str(self.model_path))
             print("hidden_layers : " + str(self.hidden_layers))
             print("activation_function : " + str(self.activation_function))
 
             data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
 
-            filename = data_store_path + "/" + "adult.h5"
-            filenames = [files for root, dirs, files in os.walk(data_store_path)]
-            h5_filename = data_store_path + "/" +str(filenames[0][0])
             data_conf_info = WorkflowDataConfFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "dataconf_node").data_conf
 
             # make wide & deep model
@@ -39,7 +46,14 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #read hdf5
             try:
                 #TODO file이 여러개면 어떻하지?
-                df = self.read_hdf5(h5_filename)
+                #filename = data_store_path + "/" + "adult.h5"
+                #filenames = [files for root, dirs, files in os.walk(data_store_path)]
+                #h5_filename = data_store_path + "/" + str(filenames[0][0])
+                file_path = list()
+                for file_path in utils.get_filepaths(data_store_path, "tfrecords"):
+                    file_path.append(file_path)
+
+                df = self.read_hdf5(file_path[0])
 
             except Exception as e:
                 print("Error Message : {0}".format(e))

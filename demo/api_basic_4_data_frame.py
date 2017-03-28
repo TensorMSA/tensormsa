@@ -17,6 +17,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/framedata/src/local
                          "source_server": "local",
                          "source_sql": "all",
                          "source_path": "test",
+                         "multi_node_flag": True
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

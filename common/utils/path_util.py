@@ -32,9 +32,10 @@ def get_model_path(nn_id, wf_ver, name) :
     set_filepaths(path)
     return path
 
-def get_filepaths(directory):
+def get_filepaths(directory, file_type = "*"):
     """
     utils return file paths under directory
+    Modify filtering file type
     :param directory:
     :return:
     """
@@ -42,8 +43,14 @@ def get_filepaths(directory):
     file_paths = []
     for root, directories, files in os.walk(directory):
         for filename in files:
-            filepath = os.path.join(root, filename)
-            file_paths.append(filepath)
+            if file_type == '*':
+                filepath = os.path.join(root, filename)
+                file_paths.append(filepath)
+            else:
+                if os.path.splitext(filename)[1].lower() == '.' + file_type:
+                    filepath = os.path.join(root, filename)
+                    file_paths.append(filepath)
+
     return file_paths
 
 def set_filepaths(path):

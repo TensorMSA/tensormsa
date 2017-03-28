@@ -44,12 +44,14 @@ class DataNodeFrame(DataNode):
 
     def src_local_handler(self, conf_data, tfrecode_flag = False):
         """
-
         :param conf_data:
         :return:
         """
         try:
+
             fp_list = utils.get_filepaths(self.data_src_path)
+
+            _multi_node_flag = self.multi_node_flag
 
             try:
                 for file_path in fp_list:
@@ -59,7 +61,7 @@ class DataNodeFrame(DataNode):
                     #os.remove(file_path)
 
                 #make tfrecord for multi Threading
-                    if tfrecode_flag == True:
+                    if _multi_node_flag == True:
                         skip_header = False
                         self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read)
             except Exception as e:
@@ -67,6 +69,10 @@ class DataNodeFrame(DataNode):
             return None
         except Exception as e:
             raise Exception(e)
+
+    def multi_load_data(self, node_id, parm = 'all'):
+        pass
+
 
 
 
@@ -83,7 +89,8 @@ class DataNodeFrame(DataNode):
 
     def save_tfrecord(self, csv_data_file, store_path, skip_header, df_csv_read):
         #_, ext = os.path.basename(csv_data_file)
-        filename = os.path.basename(csv_data_file)
+        #filename = os.path.basename(csv_data_file)
+        filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
         output_file = store_path +"/"+ filename + ".tfrecords"
         self.create_tfrecords_file( output_file, skip_header, df_csv_read)
 
@@ -135,8 +142,8 @@ class DataNodeFrame(DataNode):
                 elif col in CONTINUOUS_COLUMNS:
                     example.features.feature[col].int64_list.value.extend([int(value)])
 
-                if col == "income_bracket":
-                    example.features.feature['label'].int64_list.value.extend([int(">50K" in value)])
+                #if col == "income_bracket":
+                #    example.features.feature['label'].int64_list.value.extend([int(">50K" in value)])
 
             return example
         except Exception as e:
@@ -149,7 +156,7 @@ class DataNodeFrame(DataNode):
         :param data_path:
         :return:dataframe
         """
-        file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
+        file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".h5"
         output_path = os.path.join(data_path, file_name)
         hdf = pd.HDFStore(output_path)
         hdf.put('table1', dataframe, format='table', data_columns=True, encoding='UTF-8')
@@ -271,6 +278,7 @@ class DataNodeFrame(DataNode):
             self.data_preprocess_type = wf_data_frame.step_preprocess
             self.data_store_path = wf_data_frame.step_store
             self.sent_max_len = wf_data_frame.max_sentence_len
+            self.multi_node_flag = wf_data_frame.multi_node_flag
         except Exception as e :
             raise Exception ("WorkFlowDataFrame parms are not set ")
 

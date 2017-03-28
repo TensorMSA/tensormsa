@@ -90,6 +90,16 @@ class WorkFlowDataFrame(WorkFlowData) :
             return self.conf['max_sentence_len']
         else :
             return 0
+    @property
+    def multi_node_flag(self):
+        """
+
+        :return:
+        """
+        if 'multi_node_flag' in self.conf :
+            return self.conf['multi_node_flag']
+        else :
+            return 0
 
     def get_preview_data(self):
         """
@@ -141,6 +151,7 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['source_sql'] = input_data['source_sql']
             config_data['source_path'] = utils.get_source_path(nnid, wfver, node)
             config_data['max_sentence_len'] = input_data.get('max_sentence_len' , 0)
+            config_data['multi_node_flag'] = input_data['multi_node_flag']
             setattr(obj, 'node_config_data', config_data)
             obj.save()
 
