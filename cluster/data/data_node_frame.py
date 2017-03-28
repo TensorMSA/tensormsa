@@ -256,12 +256,6 @@ class DataNodeFrame(DataNode):
     def _set_progress_state(self):
         return None
 
-    def load_train_data(self, node_id, parm = 'all'):
-        return []
-
-    def load_test_data(self, node_id, parm = 'all'):
-        return []
-
     def _init_node_parm(self, key):
         """
         Init parameter from workflow_data_frame

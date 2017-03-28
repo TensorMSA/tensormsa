@@ -64,8 +64,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             if(self.word_embed_type == 'w2v') :
                 #w2v_conf = WorkFlowNetConfW2V(self.word_embed_id)
                 #self.vocab_size = w2v_conf.get_vector_size()
-                self.vocab_size = 100
-
+                self.word_vector_size = 100
+            self.vocab_size = self._get_vocab_size()
             self.grad_clip = 5.
             self.learning_rate = wf_conf.get_learn_rate()
             self.decay_rate = wf_conf.get_learn_rate()
@@ -150,6 +150,18 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
 
+    def _get_vocab_size(self):
+        """
+        change word to vector
+        :param input_data:
+        :return:
+        """
+        if(self.word_embed_type == 'w2v'):
+            parm =  {"type" : "vocablen", "val_1" : {}, "val_2" : []}
+            return PredictNetW2V().run(self.word_embed_id, parm)
+        else :
+            raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
+
     def _set_train_model(self):
         """
         set tensorflow seq2seq model for train and predict
@@ -159,7 +171,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             # Construct RNN model
             unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
             cell = tf.contrib.rnn.MultiRNNCell([unitcell] * self.encoder_num_layers)
-            self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.vocab_size])
+            self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
             self.targets = tf.placeholder(tf.int32, [self.batch_size, self.encoder_seq_length])
             self.istate = cell.zero_state(self.batch_size, tf.float32)
 
@@ -232,13 +244,13 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             # Construct RNN model
             unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
             self.cell = tf.contrib.rnn.MultiRNNCell([unitcell] * self.encoder_num_layers)
-            self.input_data = tf.placeholder(tf.float32, [self.batch_size, encoder_seq_length, self.vocab_size])
+            self.input_data = tf.placeholder(tf.float32, [self.batch_size, encoder_seq_length, self.word_vector_size])
             self.istate = self.cell.zero_state(self.batch_size, tf.float32)
 
             # Weigths
             with tf.variable_scope('rnnlm'):
-                softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
-                softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
+                softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.word_vector_size])
+                softmax_b = tf.get_variable("softmax_b", [self.word_vector_size])
                 inputs = tf.split(self.input_data, encoder_seq_length, 1)
                 inputs = [tf.squeeze(_input, [1]) for _input in inputs]
 
