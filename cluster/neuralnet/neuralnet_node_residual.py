@@ -24,6 +24,12 @@ class NeuralNetNodeReNet(NeuralNetNode):
         try:
             # init parms
             self._init_node_parm(conf_data['node_id'])
+            self.cls_pool = conf_data['cls_pool']
+
+            # get prev node for load data
+            feed_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+            train_data_set = self.cls_pool[feed_node_name[0]]
+            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'data')
 
             """
             Adapted from keras example cifar10_cnn.py
@@ -43,14 +49,10 @@ class NeuralNetNodeReNet(NeuralNetNode):
             data_augmentation = (netconfig['data_augmentation']=='True')
 
             # The data, shuffled and split between train and test sets:
-            (x_train, y_train), (X_test, y_test) = cifar10.load_data()
-            # get prev node for load data
-            data_node_name = self.find_prev_node(conf_data['node_id'], conf_data['node_list'])
-            cls_path, cls_name = self.get_cluster_exec_class(data_node_name)
-            dyna_cls = self.load_class(cls_path, cls_name)
-            data_config = WorkFlowDataImage().get_step_source(data_node_name)
+            #(x_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+            data_config = WorkFlowDataImage().get_step_source(data_node_name[0])
             labels = data_config['labels']
-            input_data = dyna_cls.load_data(data_node_name, parm='all')
             preprocess = data_config['preprocess']
 
             # input image dimensions
@@ -64,18 +66,17 @@ class NeuralNetNodeReNet(NeuralNetNode):
             else:
                 model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
-            for data in input_data:
-                rawdata = data['image_features']
-                targets = data['targets']
-                targets_conv = []
-
-                for i in range(0, rawdata.len(), batch_size):
+            while (train_data_set.has_next()):
+                for i in range(0, train_data_set.len(), batch_size):
+                    data_set = train_data_set[i:i + batch_size]
+                    X_train = data_set[0]
+                    targets = data_set[1]
+                    targets_conv = []
                     len = 0
-                    if rawdata.len() < batch_size:
-                        len = rawdata.len()
+                    if data_set[0].size < batch_size:
+                        len = data_set[0].size
                     else:
                         len = i + batch_size
-                    X_train = rawdata[i:i + batch_size]
                     rawdata_conv = np.zeros((X_train.size, X_train[0].size))
                     for j in range(i, len, 1):
                         targets_conv.append(labels.index(str(targets[j], 'utf-8')))
@@ -138,11 +139,14 @@ class NeuralNetNodeReNet(NeuralNetNode):
                                             #validation_data=(X_test, Y_test),
                                             nb_epoch=nb_epoch, verbose=1, max_q_size=100,
                                             callbacks=[lr_reducer, early_stopper, csv_logger])
+                train_data_set.next()
 
             os.makedirs(self.md_store_path, exist_ok=True)
             keras.models.save_model(model,''.join([self.md_store_path, '/model.bin']))
         except Exception as e:
             raise Exception(e)
+        finally:
+            keras.backend.clear_session()
         return None
 
     def _init_node_parm(self, node_id):
@@ -171,8 +175,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
                     for file in filelist:
                         value = file[1]
                         filename = file[1].name
-                        data_node_name = WorkFlowCommonNode()._get_node_relation(node_id.split('_')[0],node_id.split('_')[1],node_id)['prev'][0]
-                        data_config = WorkFlowDataImage().get_step_source(data_node_name)
+                        data_node_name = self._get_backward_node_with_type(node_id, 'data')
+                        data_config = WorkFlowDataImage().get_step_source(data_node_name[0])
                         labels = data_config['labels']
                         preprocess = data_config['preprocess']
 
@@ -208,6 +212,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
                             data_sub[key] = labels[int(onesort[i][0])]
                             data_sub[val] = onesort[i][1]
                         data[filename] = data_sub
+                    keras.backend.clear_session()
                     return data
             else:
                 raise Exception('No Model')
