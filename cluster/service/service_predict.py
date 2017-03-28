@@ -26,6 +26,7 @@ class PredictNet(WorkFlowCommonNode):
         query_list.append("SELECT NI.NN_WF_NODE_ID  ")
         query_list.append("FROM MASTER_NN_VER_WFLIST_INFO WV JOIN MASTER_NN_WF_STATE_INFO WS   ")
         query_list.append("     ON WV.NN_WF_VER_ID =  WS.NN_WF_VER_ID_ID    ")
+        query_list.append("     AND WV.NN_ID_ID = WS.NN_ID    ")
         query_list.append("     AND WV.ACTIVE_FLAG = 'Y'    ")
         query_list.append("     AND WV.NN_ID_ID = %s    ")
         query_list.append("     JOIN MASTER_NN_WF_NODE_INFO NI    ")

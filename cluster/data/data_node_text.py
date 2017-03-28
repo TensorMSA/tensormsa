@@ -61,7 +61,7 @@ class DataNodeText(DataNode):
 
         with open(file_path, 'r') as myfile:
             os.remove(file_path)
-            return myfile.read()
+            return myfile.readlines()
 
     def _save_hdf5(self, buffer_list):
         """

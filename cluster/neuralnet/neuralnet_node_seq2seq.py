@@ -49,29 +49,32 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :return:
         """
         try :
-            wf_conf = WfNetconfSeq2Seq(node_id)
-            self.md_store_path = wf_conf.get_model_store_path()
-            self.cell_type = wf_conf.get_cell_type()
-            self.decoder_num_layers = wf_conf.get_decoder_depth()
-            self.decoder_seq_length = wf_conf.get_decoder_len()
-            self.drop_out = wf_conf.get_drop_out()
-            self.encoder_num_layers = wf_conf.get_encoder_depth()
-            self.encoder_seq_length = wf_conf.get_encoder_len()
-            self.word_embed_type = wf_conf.get_word_embed_type()
-            self.word_embed_id = wf_conf.get_word_embed_id()
-            self.cell_size = wf_conf.get_cell_size()
+            try :
+                wf_conf = WfNetconfSeq2Seq(node_id)
+                self.md_store_path = wf_conf.get_model_store_path()
+                self.cell_type = wf_conf.get_cell_type()
+                self.decoder_num_layers = wf_conf.get_decoder_depth()
+                self.decoder_seq_length = wf_conf.get_decoder_len()
+                self.drop_out = wf_conf.get_drop_out()
+                self.encoder_num_layers = wf_conf.get_encoder_depth()
+                self.encoder_seq_length = wf_conf.get_encoder_len()
+                self.word_embed_type = wf_conf.get_word_embed_type()
+                self.word_embed_id = wf_conf.get_word_embed_id()
+                self.cell_size = wf_conf.get_cell_size()
 
-            if(self.word_embed_type == 'w2v') :
-                #w2v_conf = WorkFlowNetConfW2V(self.word_embed_id)
-                #self.vocab_size = w2v_conf.get_vector_size()
-                self.word_vector_size = 100
-            self.vocab_size = self._get_vocab_size()
-            self.grad_clip = 5.
-            self.learning_rate = wf_conf.get_learn_rate()
-            self.decay_rate = wf_conf.get_learn_rate()
-            self.num_epochs = wf_conf.get_iter_size()
-            self.batch_size = wf_conf.get_batch_size()
-            self.num_batches = 1
+                if(self.word_embed_type == 'w2v') :
+                    #w2v_conf = WorkFlowNetConfW2V(self.word_embed_id)
+                    #self.vocab_size = w2v_conf.get_vector_size()
+                    self.word_vector_size = 100
+                self.vocab_size = self._get_vocab_size()
+                self.grad_clip = 5.
+                self.learning_rate = wf_conf.get_learn_rate()
+                self.decay_rate = wf_conf.get_learn_rate()
+                self.num_epochs = wf_conf.get_iter_size()
+                self.batch_size = wf_conf.get_batch_size()
+                self.num_batches = 1
+            except Exception as e :
+                raise Exception ("seq2seq netconf parms not set")
 
         except Exception as e :
             raise Exception (e)

@@ -8,13 +8,13 @@ train_files =  get_all_files('/home/dev/train/')
 eval_files =  get_all_files('/home/dev/eval/')
 
 # update source_info
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_encode_node/',
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/1/node/data_encode_node/',
                      files = train_files,)
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 # update source_info
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/5/node/data_encode_node/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/textdata/src/local/form/raw/prg/source/nnid/nn00004/ver/1/node/data_encode_node/',
                      json={
                          "source_server": "local",
                          "source_sql": "all",
