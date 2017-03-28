@@ -92,6 +92,8 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                         if guess[0] not in ['\n', '#', './SF'] and guess[1] > 0:
                             return_val = return_val + [guess[0]]
                             break
+            elif (parm['type'] == 'vocablen'):
+                return len(model.wv.vocab) - 1
             else :
                 raise Exception ("Not available type : {0}".format(parm['type']))
             return return_val

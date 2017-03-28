@@ -5,6 +5,42 @@ class PreNodeFeedText2Seq(PreNodeFeed):
     """
 
     """
+
+    def run(self, conf_data):
+        """
+
+        :param conf_data:
+        :return:
+        """
+        super(PreNodeFeedText2Seq, self).run(conf_data)
+        self.file_list_size = max([len(self.input_paths[0]), len(self.input_paths[1])])
+
+    def has_next(self):
+        """
+        check if hdf5 file pointer has next
+        :return:
+        """
+
+        if(self.file_list_size > self.pointer) :
+            return True
+        else :
+            return False
+
+    def next(self):
+        """
+        move pointer +1
+        :return:
+        """
+        if(self.has_next()) :
+            self.pointer = self.pointer + 1
+
+    def len(self):
+        """
+
+        :return:
+        """
+        return self.file_list_size
+
     def __getitem__(self, key):
         """
 
