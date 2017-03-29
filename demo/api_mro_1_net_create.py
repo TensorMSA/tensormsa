@@ -63,7 +63,7 @@ print("insert workflow version info evaluation result : {0}".format(data))
 # insert workflow version node info
 resp = requests.post('http://' + gUrl + '/api/v1/type/wf/target/init/mode/simple/'+nn_id+'/wfver/'+wf_ver_id+'/',
                      json={
-                         "type": "image"
+                         "type": "cnn"
                      })
 data = json.loads(resp.json())
 print("insert workflow version node info evaluation result : {0}".format(data))
