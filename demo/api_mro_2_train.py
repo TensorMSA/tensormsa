@@ -42,7 +42,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "traincnt": 1,
                                  "batch_size":10000,
                                  "num_classes":5,
-                                 "predictcnt": 4
+                                 "predictcnt": 5
                                  }
                          ,"layer1": {
                                  "type": "cnn",
@@ -90,7 +90,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "maxpoolmatrix": "",
                                  "maxpoolstride": "",
                                  "node_in": 128,
-                                 "node_out": 1024,
+                                 "node_out": 625,
                                  "regualizer": "",
                                  "padding": "SAME",
                                  "droprate": ""
