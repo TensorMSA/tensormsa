@@ -8,7 +8,7 @@ import pandas as pd
 import csv
 import os
 
-class DataConfNodeFrame(DataConfNode):
+class DataConfNodeFrame( DataConfNode):
     """
         Data Columns을 설정 하고 Validation Check가 필요함
         그러나 매번 Training을 할때는 필요 없음
@@ -22,6 +22,8 @@ class DataConfNodeFrame(DataConfNode):
     def run(self, conf_data):
         try:
             self._init_node_parm(conf_data['node_id'])
+            #ErrorCHeck
+
             print("data_conf : " + str(self.data_conf))
 
             data_store_path = WorkFlowDataFrame(conf_data['nn_id'] + "_" + conf_data['wf_ver'] + "_" + "data_node").source_path
@@ -43,8 +45,11 @@ class DataConfNodeFrame(DataConfNode):
         Init parameter from workflow_data_frame
         :return:
         """
-        wf_data_conf = WorkflowDataConfFrame(key)
-        self.data_conf = wf_data_conf.data_conf
+        try:
+            wf_data_conf = WorkflowDataConfFrame(key)
+            self.data_conf = wf_data_conf.data_conf
+        except Exception as e:
+            raise Exception("dataconf_node_fame._init_node_parm Initializing Error : " +str(e))
 
     def validate_data(self, path, configuration):
         try:

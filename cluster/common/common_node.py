@@ -10,7 +10,7 @@ import os,h5py
 
 class WorkFlowCommonNode :
     """
-
+        wdnn을 위한 load data를 위한 빈 메소드 생성
     """
     def run(self, conf_data):
         pass
@@ -262,3 +262,6 @@ class WorkFlowCommonNode :
                 doc_list.append(line_list)
                 line_list = []
         return doc_list
+
+    def load_data(self, node_id, parm = 'all'):
+        pass

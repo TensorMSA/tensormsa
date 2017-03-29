@@ -65,7 +65,7 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
         """
         return None
 
-    def put_step_source(self,nnid, ver, node, input_data):
+    def put_step_source(self, nnid, ver, node, input_data):
         """
         putter for source step
         :param obj: config data from view
@@ -74,23 +74,6 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
 
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(ver) + "_" + str(node))
-            config_data = getattr(obj, 'node_config_data')
-            config_data['data_conf'] = input_data
-            setattr(obj, 'node_config_data', config_data)
-            obj.save()
-            return config_data
-        except Exception as e:
-            raise Exception(e)
-
-    def put_step_source(self, node_id, input_data):
-        """
-        putter for source step
-        :param obj: config data from view
-        :return:boolean
-        """
-
-        try:
-            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             config_data = getattr(obj, 'node_config_data')
             config_data['data_conf'] = input_data
             setattr(obj, 'node_config_data', config_data)

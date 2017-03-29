@@ -3,6 +3,7 @@ import os
 
 class PreNodeFeed(PreProcessNode):
     """
+    Error check rule add : Dataconf Add
 
     """
     def run(self, conf_data):
@@ -16,6 +17,8 @@ class PreNodeFeed(PreProcessNode):
             if 'data' == self.rel['prev_grp'][count]:
                 data_node_name = self.rel['prev'][count]
             if 'pre_merge' == self.rel['prev_type'][count]:
+                data_node_name = self.rel['prev'][count]
+            if 'dataconf' == self.rel['prev_grp'][count]:
                 data_node_name = self.rel['prev'][count]
         if len(data_node_name) == 0:
             raise Exception("data node must be needed to use feed node")

@@ -205,9 +205,9 @@ print("evaluation result : {0}".format(data))
 # insert submenu info
 resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/dataconf/submenu/',
                      json={
-                        "wf_task_submenu_id": "df_frame",
-                        "wf_task_submenu_name": "df_frame",
-                        "wf_task_submenu_desc": "df_frame",
+                        "wf_task_submenu_id": "data_dfconf",
+                        "wf_task_submenu_name": "data_dfconf",
+                        "wf_task_submenu_desc": "data_dfconf",
                         "wf_node_class_path": "cluster.dataconfig.dataconf_node_frame",
                         "wf_node_class_name" : "DataConfNodeFrame"
                      })

@@ -85,7 +85,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             #x = tf.Print(feature_map['age'], [feature_map['age']])
             #print(x)
 
-            #target = feature_map.pop("label")
+            target = ""
         except Exception as e:
             raise e
 

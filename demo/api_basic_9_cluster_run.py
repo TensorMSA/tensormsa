@@ -14,7 +14,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 println("S")
 
-nn_id = "nn00004"
+nn_id = "nn00001"
 wf_ver_id = "1"
 
 # Run All Workflow

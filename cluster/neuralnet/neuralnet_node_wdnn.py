@@ -46,14 +46,13 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #read hdf5
             try:
                 #TODO file이 여러개면 어떻하지?
-                #filename = data_store_path + "/" + "adult.h5"
-                #filenames = [files for root, dirs, files in os.walk(data_store_path)]
-                #h5_filename = data_store_path + "/" + str(filenames[0][0])
-                file_path = list()
-                for file_path in utils.get_filepaths(data_store_path, "tfrecords"):
-                    file_path.append(file_path)
+                file_paths = list()
+                # for file_path in utils.get_filepaths(data_store_path, "tfrecords"):
+                #     file_paths.append(file_path)
+                for file_path in utils.get_filepaths(data_store_path, "h5"):
+                    file_paths.append(file_path)
 
-                df = self.read_hdf5(file_path[0])
+                df = self.read_hdf5(file_paths[0])
 
             except Exception as e:
                 print("Error Message : {0}".format(e))

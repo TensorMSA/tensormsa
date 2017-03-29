@@ -280,5 +280,5 @@ class DataNodeFrame(DataNode):
             self.sent_max_len = wf_data_frame.max_sentence_len
             self.multi_node_flag = wf_data_frame.multi_node_flag
         except Exception as e :
-            raise Exception ("WorkFlowDataFrame parms are not set ")
+            raise Exception ("WorkFlowDataFrame parms are not set " + str(e))
 
