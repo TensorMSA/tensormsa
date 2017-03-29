@@ -55,7 +55,7 @@ class PreNodeFeed(PreProcessNode):
         if(self.has_next()) :
             self.pointer = self.pointer + 1
 
-    def len(self):
+    def file_size(self):
         """
 
         :return:
@@ -73,9 +73,8 @@ class PreNodeFeed(PreProcessNode):
     def _convert_data_format(self, obj, index):
         pass
 
-    def size(self):
+    def data_size(self):
         pass
-
 
 
 

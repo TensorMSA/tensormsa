@@ -66,3 +66,12 @@ class PreNodeFeedText2Seq(PreNodeFeed):
             raise Exception(e)
         finally:
             h5file.close()
+
+    def data_size(self):
+        try:
+            h5file = h5py.File(self.input_paths[self.pointer], mode='r')
+            return h5file['rawdata'].len()
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            h5file.close()
