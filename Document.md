@@ -47,3 +47,35 @@ $ git stash pop
 
 ### Mark Down Guide
 * [Mark Down Editor] (http://dillinger.io) - Online Guide
+
+### Set Debug in Pycharm
+Run -> Edit Configurations -> Python (+)
+```sh
+Name : django
+Scripts : /home/dev/hoyai/manage.py
+Scripts Parameter : runserver HOSTNAME:8000 (ex:HOSTNAME - Docker Container ID)
+```
+
+### HOYAI Drop Table and Create Table Again
+delete /master/migrations/*.py (except __init__.py)
+```sh
+drop table master_NN_DEF_LIST_INFO ,
+master_NN_VER_WFLIST_INFO, 
+master_NN_VER_BATCHLIST_INFO, 
+master_TRAIN_SUMMARY_RESULT_INFO, 
+master_TRAIN_SUMMARY_ACCLOSS_INFO, 
+master_BATCH_INFO_JOBCONFIG,
+master_NN_WF_STATE_INFO, 
+master_NN_WF_EASY_MODE_RULE, 
+master_NN_WF_NODE_RELATION, 
+master_WF_TASK_MENU_RULE, 
+master_WF_TASK_SUBMENU_RULE, 
+master_NN_WF_NODE_INFO, 
+master_WF_TASK_REALATION_RULE
+```
+make migrations
+```sh
+./manage.py makemigrations
+./manage.py migrate --fake master zero
+./manage.py migrate
+```
