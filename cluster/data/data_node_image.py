@@ -44,7 +44,18 @@ class DataNodeImage(DataNode):
             filecnt = 0
             for forder in forderlist:
                 filelist = os.listdir(directory + '/' + forder)
-                filecnt += len(filelist)
+                for filename in filelist:
+                    value = tf.read_file(directory + '/' + forder + '/' + filename)
+                    try:
+                        decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
+                        resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
+
+                        with tf.Session() as sess:
+                            image = sess.run(resized_image)
+                            image = image.reshape([-1, x_size, y_size, channel])
+                        filecnt += 1
+                    except:
+                        None
 
             if len(forderlist) > 0 and filecnt > 0:
                 output_path = os.path.join(output_directory, output_filename)
@@ -77,19 +88,25 @@ class DataNodeImage(DataNode):
                     for filename in filelist:
                         # println(filename)
                         value = tf.read_file(directory + '/' + forder + '/' + filename)
-                        decoded_image = tf.image.decode_jpeg(value, channels=channel)
-                        resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
-                        resized_image = tf.cast(resized_image, tf.uint8)
-                        with tf.Session() as sess:
-                            image = sess.run(resized_image)
-                            image = image.reshape([-1, x_size, y_size, channel])
+                        # decoded_image = tf.image.decode_jpeg(value, channels=channel)
+                        # resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
+                        # resized_image = tf.cast(resized_image, tf.uint8)
+                        try:
+                            decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
+                            resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
 
-                            # println(image)
-                            image = image.flatten()
-                            hdf_features[i] = image
-                            hdf_shapes[i] = image.shape
-                            hdf_labels[i] = forder.encode('utf8')
-                            i += 1
+                            with tf.Session() as sess:
+                                image = sess.run(resized_image)
+                                image = image.reshape([-1, x_size, y_size, channel])
+
+                                # println(image)
+                                image = image.flatten()
+                                hdf_features[i] = image
+                                hdf_shapes[i] = image.shape
+                                hdf_labels[i] = forder.encode('utf8')
+                                i += 1
+                        except:
+                            println("ErrorFile="+directory + " forder=" + forder + "  name=" + filename)
 
                     shutil.rmtree(directory + "/" + forder)
                     try:

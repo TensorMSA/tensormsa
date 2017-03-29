@@ -15,17 +15,16 @@ typeStr = "cnn"
 nn_id = "nn00004"
 
 files = {
-           #
-    'files000001': open('/hoya_src_root/dataTest/car/1car.jpg','rb')
-    ,'files000002': open('/hoya_src_root/dataTest/car/3car.jpg','rb')
-    ,'files000003': open('/hoya_src_root/dataTest/airplane/1air.jpg','rb')
-,'files000004': open('/hoya_src_root/dataTest/airplane/86_pic1.jpg','rb')
-,'files000005': open('/hoya_src_root/dataTest/airplane/1014879013-2.jpg','rb')
-,'files000006': open('/hoya_src_root/dataTest/airplane/744395362_9a3a25ad84.jpg','rb')
-           # ,
-    # 'files000002': open('/hoya_src_root/dataTest/car/2car.jpg','rb')
-           # ,
-    # 'files000001': open('/hoya_src_root/dataTest/airplane/1air.jpg','rb')
+         'files000001':  open('/hoya_src_root/nn00004/30/airplane/1air.jpg','rb')
+        ,'files000002':  open('/hoya_src_root/nn00004/30/airplane/2air.jpg','rb')
+        # ,'files000003':  open('/hoya_src_root/nn00004/30/bolt/1bolt.jpg','rb')
+        # ,'files000004':  open('/hoya_src_root/nn00004/30/bolt/2bolt.jpg','rb')
+        # ,'files000005':  open('/hoya_src_root/nn00004/30/car/1car.jpg','rb')
+        # ,'files000006':  open('/hoya_src_root/nn00004/30/car/2car.jpg','rb')
+        ,'files000007':  open('/hoya_src_root/nn00004/30/glove/1glove.gif','rb')
+        # ,'files000008':  open('/hoya_src_root/nn00004/30/glove/2glove.jpg','rb')
+        # ,'files000009':  open('/hoya_src_root/nn00004/30/motor/1motor.jpg','rb')
+        ,'files0000010': open('/hoya_src_root/nn00004/30/motor/2motor.jpg','rb')
         }
 
 # get workflow version info
