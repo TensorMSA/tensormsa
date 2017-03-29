@@ -29,7 +29,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             # train vocab and model
             while(train_data_set.has_next()) :
                 for x in range(0, self.iter_size) :
-                    for i in range(0, train_data_set.len(), self.batch_size):
+                    for i in range(0, train_data_set.data_size(), self.batch_size):
                         data_set = train_data_set[i:i + self.batch_size]
                         if (update_flag == False):
                             model.build_vocab(data_set.tolist(), update=False)

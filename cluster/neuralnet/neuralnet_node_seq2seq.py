@@ -32,7 +32,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self._set_train_model()
 
             while(train_data_set.has_next()) :
-                for i in range(0, train_data_set.len(), self.num_batches):
+                for i in range(0, train_data_set.data_size(), self.num_batches):
                     data_set = train_data_set[i:i + self.num_batches]
                     decode_batch = self._get_dict_id(data_set[1])
                     encode_batch = self._word_embed_data(data_set[0])

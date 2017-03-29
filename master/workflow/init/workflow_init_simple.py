@@ -445,6 +445,18 @@ class WorkFlowSimpleManager :
             input_data['node_draw_y'] = 0
             self.__put_nn_wf_node_info(input_data)
 
+            # data node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_test_data_node'
+            input_data['nn_wf_node_name'] = 'test_data_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'data_text'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
             # net conf node
             input_data = {}
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_netconf_node'
@@ -457,11 +469,24 @@ class WorkFlowSimpleManager :
             input_data['node_draw_y'] = 0
             self.__put_nn_wf_node_info(input_data)
 
+            # feed node
             input_data = {}
-            input_data['nn_wf_node_id'] = str(wf_state_id) + '_evaldata'
-            input_data['nn_wf_node_name'] = 'evaldata'
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_pre_feed_text2dv_test'
+            input_data['nn_wf_node_name'] = '_pre_feed_text2dv_test'
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['wf_task_submenu_id'] = 'data_text'
+            input_data['wf_task_submenu_id'] = 'pre_feed_text2dv'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # feed node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_pre_feed_text2dv_train'
+            input_data['nn_wf_node_name'] = 'pre_feed_text2dv'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'pre_feed_text2dv'
             input_data['wf_node_status'] = 0
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
@@ -483,6 +508,12 @@ class WorkFlowSimpleManager :
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_data_node'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_pre_feed_text2dv_train'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_pre_feed_text2dv_train'
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
             self.__put_nn_wf_node_relation(input_data)
 
@@ -494,15 +525,19 @@ class WorkFlowSimpleManager :
 
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_evaldata'
-            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_test_data_node'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_pre_feed_text2dv_test'
             self.__put_nn_wf_node_relation(input_data)
 
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_pre_feed_text2dv_test'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
+            self.__put_nn_wf_node_relation(input_data)
         except Exception as e:
             raise Exception(e)
         finally:
             return True
-
 
     def _create_predefined_nodes_frame(self, wf_state_id):
         """
