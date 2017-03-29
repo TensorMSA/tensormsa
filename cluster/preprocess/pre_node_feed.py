@@ -73,6 +73,9 @@ class PreNodeFeed(PreProcessNode):
     def _convert_data_format(self, obj, index):
         pass
 
+    def size(self):
+        pass
+
 
 
 

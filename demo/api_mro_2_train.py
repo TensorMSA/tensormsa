@@ -40,7 +40,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                   }
                          ,"config": {"learnrate": 0.001,
                                  "traincnt": 1,
-                                 "batch_size":10000,
+                                 "batch_size":50,
                                  "num_classes":5,
                                  "predictcnt": 5
                                  }
@@ -101,6 +101,19 @@ data = json.loads(resp.json())
 
 node = "datasrc"
 
+resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+                     json={
+                            "key" : {"node": node,
+                                  "nn_id": nn_id,
+                                  "wf_ver_id": wf_ver_id
+                                  }
+                         ,"preprocess": {"x_size": 32,
+                                        "y_size": 32,
+                                        "channel":3}
+                         ,"labels":[]
+
+                     })
+node = 'evaldata'
 resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                             "key" : {"node": node,

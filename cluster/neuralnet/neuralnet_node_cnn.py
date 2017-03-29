@@ -166,14 +166,11 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
     start_time = time.time()
 
     try:
-        for data in input_data:
-            println(data)
-            labels_data = data['targets']
-            img_data = data['image_features']
-            # println(labels)
-            for i in range(0, img_data.len(), batchsize):
-                label_data_batch = labels_data[i:i + batchsize]
-                img_data_batch = img_data[i:i + batchsize]
+        while (input_data.has_next()):
+            for i in range(0, input_data.size(), batchsize):
+                data_set = input_data[i:i + batchsize]
+                label_data_batch = data_set[1]
+                img_data_batch = data_set[0]
 
                 y_batch = np.zeros((len(label_data_batch), num_classes))
                 r = 0
@@ -198,7 +195,7 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
                 # println("Image /////////////////////////////////////////////////")
                 # println(x_batch)
                 train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
-
+            input_data.next()
     except Exception as e:
         net_check = "Error[400] .............................................."
         println(net_check)
@@ -253,20 +250,28 @@ class NeuralNetNodeCnn(NeuralNetNode):
     """
     def run(self, conf_data):
         println("run NeuralNetNodeCnn")
-        # println(conf_data)
+        node_id = conf_data['node_id']
+        println(conf_data)
         ################################################################
-        dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
-        netconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][1]))
+        feed_node_name = self._get_backward_node_with_type(node_id, 'preprocess')
+        data_node_name = self._get_backward_node_with_type(node_id, 'data')
+        netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
+        dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
+
         num_classes = netconf["config"]["num_classes"]
         labels = dataconf["labels"]
+        cls_pool = conf_data['cls_pool']
         if len(labels) > num_classes:
             num_classes = len(labels)
 
         net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(self, netconf, dataconf, num_classes, "T")
         println(model)
         if net_check == "S":
-            input_data = DataNodeImage().load_data(str(conf_data["node_list"][0]))
-            train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step, num_classes)
+            println(cls_pool)
+            println(feed_node_name[0])
+            train_data_set = cls_pool[feed_node_name[0]]
+            println(train_data_set)
+            train_cnn(train_data_set, netconf, dataconf, X, Y, optimizer, accuracy, global_step, num_classes)
         else:
             println("net_check=" + net_check)
 

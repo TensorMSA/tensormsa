@@ -4,15 +4,12 @@ import h5py
 import numpy as np
 from PIL import Image, ImageFilter
 from cluster.data.data_node import DataNode
-from cluster.data.hdf5 import H5PYDataset
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
-from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
 from time import gmtime, strftime
 from common import utils
 from common.utils import *
 import tensorflow as tf
 import shutil
-from master import models
 
 class DataNodeImage(DataNode):
     """
@@ -20,14 +17,22 @@ class DataNodeImage(DataNode):
     """
     def run(self, conf_data):
         try:
-            # println(conf_data)
-            dataconf = WorkFlowNetConfCNN().get_view_obj(str(conf_data["node_list"][0]))
-            directory = get_source_path(dataconf["key"]["nn_id"], dataconf["key"]["wf_ver_id"], dataconf["key"]["node"])
-            output_directory = get_store_path(dataconf["key"]["nn_id"], dataconf["key"]["wf_ver_id"], dataconf["key"]["node"])
+            println("run DataNodeImage")
+            node_id = conf_data['node_id']
+
+            dataconf = WorkFlowDataImage().get_step_source(node_id)
+            if dataconf == {}:
+                println("/cluster/data/data_node_image DataNodeImage run dataconf("+node_id+") is not Exist")
+                return
+            else:
+                println(node_id)
+            directory = dataconf["source_path"]
+            output_directory = dataconf["store_path"]
             x_size = dataconf["preprocess"]["x_size"]
             y_size = dataconf["preprocess"]["y_size"]
             channel = dataconf["preprocess"]["channel"]
             output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
+            labels = dataconf['labels']
 
             # unzip & remove zip
             ziplist = os.listdir(directory)
@@ -80,8 +85,6 @@ class DataNodeImage(DataNode):
                 hdf_features.dims[0].label = 'batch'
                 i = 0
 
-                labels = dataconf['labels']
-                # println(labels)
                 for forder in forderlist:
                     filelist = os.listdir(directory + '/' + forder)
                     # println(forder)
@@ -117,9 +120,7 @@ class DataNodeImage(DataNode):
                 dataconf["labels"] = labels
                 # println(labels)
 
-                obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=dataconf["key"]["nn_id"] + "_" + dataconf["key"]["wf_ver_id"], nn_wf_node_name=dataconf["key"]["node"])
-                setattr(obj, 'node_config_data', dataconf)
-                obj.save()
+                WorkFlowDataImage().put_step_source_ori(node_id, dataconf)
 
                 h5file.flush()
                 h5file.close()
@@ -138,13 +139,8 @@ class DataNodeImage(DataNode):
 
     def load_data(self, node_id, parm = 'all'):
         dataconf = WorkFlowDataImage().get_step_source(node_id)
-        output_directory = get_store_path(dataconf["key"]["nn_id"], dataconf["key"]["wf_ver_id"], dataconf["key"]["node"])
-        fp_list = utils.get_filepaths(output_directory)
-        return_arr = []
-        for file_path in fp_list:
-            h5file = h5py.File(file_path, mode='r')
-            return_arr.append(h5file)
-        return return_arr
+        output_directory = dataconf["store_path"]
+        return  utils.get_filepaths(output_directory)
 
     def _resize_file_image(self, im, format_info):
         """

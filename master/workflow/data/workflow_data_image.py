@@ -29,6 +29,33 @@ class WorkFlowDataImage(WorkFlowData) :
         """
         return None
 
+    def get_data(self):
+        """
+
+        :param type:
+        :param conn:
+        :return:
+        """
+        return None
+
+
+    def put_step_source_ori(self, node_id, config_data):
+        """
+
+        :param type:
+        :param conn:
+        :return:
+        """
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            setattr(obj, 'node_config_data', config_data)
+            obj.save()
+            return config_data
+
+        except Exception as e:
+            raise Exception(e)
+        return None
+
 
     def get_step_source(self, node_id):
         """
@@ -55,6 +82,8 @@ class WorkFlowDataImage(WorkFlowData) :
             old_config_data = getattr(obj, 'node_config_data')
             if('labels' in old_config_data) :
                 config_data["labels"] = old_config_data["labels"]
+            config_data["source_path"] = get_source_path(nnid, wfver, node)
+            config_data["store_path"] = get_store_path(nnid, wfver, node)
             setattr(obj, 'node_config_data', config_data)
             obj.save()
             return config_data
