@@ -160,6 +160,22 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
 
+    def _get_index2vocab(self, input_data):
+        """
+        change word to vector
+        :param input_data:
+        :return:
+        """
+        if(self.word_embed_type == 'w2v'):
+            return_arr = []
+            for data in input_data :
+                parm =  {"type" : "povb2vocab", "val_1" : {}, "val_2" : []}
+                parm['val_1'] = data
+                return_arr.append(PredictNetW2V().run(self.word_embed_id, parm))
+            return return_arr
+        else :
+            raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
+
     def _get_vocab_size(self):
         """
         change word to vector
@@ -305,8 +321,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             for num in range(self.decoder_seq_length):
                 [probsval, state] = sess.run([self.probs, self.last_state]
                                              , feed_dict={self.input_data: self._word_embed_data(np.array([[word]])), self.istate: state})
-
-                output = output + self._get_vec2word(np.array([[probsval[0]]]))
+                if(self._get_index2vocab(np.array([[probsval[0]]]))[0][0] not in ['./SF', '?/SF']) :
+                    output = output + self._get_index2vocab(np.array([[probsval[0]]]))
             sess.close()
             return output
         except Exception as e :

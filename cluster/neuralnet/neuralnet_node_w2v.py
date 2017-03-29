@@ -83,11 +83,23 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                     else : return_val.append([0.] * self.vector_size)
             elif(parm['type'] == 'sim') :
                 return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=5))
-            elif(parm['type'] == 'dict') :
+            elif(parm['type'] == 'dict' or parm['type'] == 'vocab2index') :
                 for key in parm['val_1'] :
                     if key in model : return_val.append(model.wv.vocab[key].index)
                     else : return_val.append(0)
-            elif (parm['type'] == 'vec2word'):
+            elif(parm['type'] == 'index2vocab'):
+                for key in parm['val_1']:
+                    if len(model.wv.index2word) >= key:
+                        return_val.append(model.wv.index2word[key])
+            elif(parm['type'] == 'povb2vocab') :
+                for key in parm['val_1']:
+                    filter_list = ['#', 'SF']
+                    for filter_set in filter_list :
+                        key[model.wv.vocab[filter_set].index] = 0.0
+                    index = key.argmax(axis=0)
+                    if len(model.wv.index2word) >= index:
+                        return_val.append(model.wv.index2word[index])
+            elif(parm['type'] == 'vec2word'):
                 for key in parm['val_1']:
                     for guess in model.similar_by_vector(key) :
                         if guess[0] not in ['\n', '#', './SF'] and guess[1] > 0:
