@@ -243,6 +243,30 @@ class WorkFlowSimpleManager :
             input_data['node_draw_y'] = 0
             self.__put_nn_wf_node_info(input_data)
 
+            # data node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_evaldata'
+            input_data['nn_wf_node_name'] = 'evaldata'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'data_image'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # feed node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_pre_feed_img2renet_eval'
+            input_data['nn_wf_node_name'] = 'pre_feed_img2renet_eval'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'pre_feed_img2renet'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
             # net conf node
             input_data = {}
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_eval_node'
@@ -258,12 +282,30 @@ class WorkFlowSimpleManager :
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_pre_feed_img2renet_train'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_pre_feed_img2renet_train'
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
             self.__put_nn_wf_node_relation(input_data)
 
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_evaldata'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_pre_feed_img2renet_eval'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_pre_feed_img2renet_eval'
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
             self.__put_nn_wf_node_relation(input_data)
 

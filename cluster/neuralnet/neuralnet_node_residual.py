@@ -67,7 +67,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
                 model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
             while (train_data_set.has_next()):
-                for i in range(0, train_data_set.len(), batch_size):
+                for i in range(0, train_data_set.data_size(), batch_size):
                     data_set = train_data_set[i:i + batch_size]
                     X_train = data_set[0]
                     targets = data_set[1]
