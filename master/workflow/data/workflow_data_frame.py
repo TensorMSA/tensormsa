@@ -151,7 +151,7 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['source_sql'] = input_data['source_sql']
             config_data['source_path'] = utils.get_source_path(nnid, wfver, node)
             config_data['max_sentence_len'] = input_data.get('max_sentence_len' , 0)
-            config_data['multi_node_flag'] = input_data['multi_node_flag']
+            config_data['multi_node_flag'] = input_data.get('multi_node_flag')
             setattr(obj, 'node_config_data', config_data)
             obj.save()
             return config_data

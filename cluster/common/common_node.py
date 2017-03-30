@@ -5,6 +5,7 @@ from master import models
 from konlpy.tag import Kkma
 from konlpy.tag import Mecab
 from konlpy.tag import Twitter
+import warnings
 import os,h5py
 
 class WorkFlowCommonNode :
@@ -148,6 +149,78 @@ class WorkFlowCommonNode :
         """
         return self.node_type
 
+    def get_linked_next_node_with_grp(self, grp):
+        """
+        get linked node forward with type
+        :param type:
+        :return:
+        """
+        return_obj_list = []
+        obj = self
+
+        obj_next = obj.get_next_node()
+        if(len(obj_next) == 0):
+            return []
+
+        for i in range(len(obj_next)):
+            if(obj_next[i].get_node_grp() == grp) :
+                return_obj_list.append(obj_next[i])
+            return  return_obj_list + obj_next[i].get_linked_next_node_with_grp(grp)
+
+    def get_linked_prev_node_with_grp(self, grp):
+        """
+        get linked node forward with type
+        :param type:
+        :return:
+        """
+        return_obj_list = []
+        obj = self
+
+        obj_prev = obj.get_prev_node()
+        if(len(obj_prev) == 0):
+            return []
+
+        for i in range(len(obj_prev)):
+            if(obj_prev[i].get_node_grp() == grp) :
+                return_obj_list.append(obj_prev[i])
+            return  return_obj_list + obj_prev[i].get_linked_prev_node_with_grp(grp)
+
+    def get_linked_prev_node_with_type(self, type):
+        """
+        get linked node forward with type
+        :param type:
+        :return:
+        """
+        return_obj_list = []
+        obj = self
+
+        obj_prev = obj.get_prev_node()
+        if(len(obj_prev) == 0):
+            return []
+
+        for i in range(len(obj_prev)):
+            if(obj_prev[i].get_node_type() == type) :
+                return_obj_list.append(obj_prev[i])
+            return  return_obj_list + obj_prev[i].get_linked_prev_node_with_type(type)
+
+    def get_linked_next_node_with_type(self, type):
+        """
+        get linked node forward with type
+        :param type:
+        :return:
+        """
+        return_obj_list = []
+        obj = self
+
+        obj_prev = obj.get_prev_node()
+        if(len(obj_prev) == 0):
+            return []
+
+        for i in range(len(obj_prev)):
+            if(obj_prev[i].get_node_grp() == type) :
+                return_obj_list.append(obj_prev[i])
+            return  return_obj_list + obj_prev[i].get_linked_next_node_with_type(type)
+
     def find_prev_node(self, node_name, node_list):
         """
         find prev node and return name
@@ -155,6 +228,8 @@ class WorkFlowCommonNode :
         :param node_list:
         :return:
         """
+        #TODO : will be deprecated
+        warnings.warn("find_prev_node will be deprecated !! ")
         if(node_list.index(node_name) > 0) :
             return node_list[node_list.index(node_name) - 1]
         else :
@@ -167,6 +242,8 @@ class WorkFlowCommonNode :
         :param node_list:
         :return:
         """
+        # TODO : will be deprecated
+        warnings.warn("find_next_node will be deprecated !! ")
         if(node_list.index(node_name) < len(node_list)) :
             return node_list[node_list.index(node_name) + 1]
         else :
@@ -217,6 +294,8 @@ class WorkFlowCommonNode :
         get node relations connected with selected node_id
         :return:
         """
+        # TODO : will be deprecated
+        warnings.warn("_get_node_relation will be deprecated !! ")
         return_obj = {}
         prev_arr = []
         prev_grp = []
@@ -255,6 +334,8 @@ class WorkFlowCommonNode :
         get node relations connected with selected node_id
         :return:
         """
+        # TODO : will be deprecated
+        warnings.warn("_get_forward_node_with_type will be deprecated !! ")
         try :
             return_list = []
             node_list = []
@@ -294,6 +375,8 @@ class WorkFlowCommonNode :
         get node relations connected with selected node_id
         :return:
         """
+        # TODO : will be deprecated
+        warnings.warn("_get_backward_node_with_type will be deprecated !! ")
         try:
             return_list = []
             node_list = []

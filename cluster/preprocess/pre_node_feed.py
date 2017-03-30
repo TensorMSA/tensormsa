@@ -8,31 +8,31 @@ class PreNodeFeed(PreProcessNode):
     """
     def run(self, conf_data):
         self.pointer = 0
-        self.rel = self._get_node_relation(conf_data['nn_id'], conf_data['wf_ver'], conf_data['node_id'])
-        self.cls_pool = conf_data['cls_pool']
-        data_node_name = ""
-        netconf_node_name = ""
+        data_node_cls = None
+        netconf_node_cls = None
 
-        for count in range(0, len(self.rel['prev_grp'])):
-            if 'data' == self.rel['prev_grp'][count]:
-                data_node_name = self.rel['prev'][count]
-            if 'pre_merge' == self.rel['prev_type'][count]:
-                data_node_name = self.rel['prev'][count]
-            if 'dataconf' == self.rel['prev_grp'][count]:
-                data_node_name = self.rel['prev'][count]
-        if len(data_node_name) == 0:
+        prev_node_list = self.get_prev_node()
+        for prev_node in prev_node_list:
+            if 'data' == prev_node.get_node_grp():
+                data_node_cls = prev_node
+            if 'pre_merge' == prev_node.get_node_type():
+                data_node_cls = prev_node
+            if 'dataconf' == prev_node.get_node_grp():
+                data_node_cls = prev_node
+        if data_node_cls == None:
             raise Exception("data node must be needed to use feed node")
 
-        for count in range(0, len(self.rel['next_grp'])):
-            if 'netconf' == self.rel['next_grp'][count]:
-                netconf_node_name = self.rel['next'][count]
-            if 'eval' == self.rel['next_grp'][count]:
-                netconf_node_name = self.rel['next'][count]
-        if len(netconf_node_name) == 0:
+        next_node_list = self.get_next_node()
+        for next_node in next_node_list:
+            if 'netconf' == next_node.get_node_grp():
+                netconf_node_cls = next_node
+            if 'eval' == next_node.get_node_grp():
+                netconf_node_cls = next_node
+        if netconf_node_cls == None :
             raise Exception("netconf node must be needed to use feed node")
 
         self._init_node_parm(conf_data['node_id'])
-        self.input_paths = self.cls_pool[data_node_name].load_data(data_node_name, parm='all')
+        self.input_paths = data_node_cls.load_data("", parm='all')
 
     def _init_node_parm(self, node_id):
         pass

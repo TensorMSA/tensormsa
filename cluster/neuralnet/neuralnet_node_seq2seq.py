@@ -25,8 +25,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self.cls_pool = conf_data['cls_pool']
 
             # get prev node for load data
-            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
-            train_data_set = self.cls_pool[data_node_name[0]]
+            train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
 
             # prepare net conf
             self._set_train_model()

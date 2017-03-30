@@ -57,3 +57,17 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             return self._mecab_parse(input_data)
         else :
             return input_data
+
+    def data_size(self):
+        """
+        get data array size of this calss
+        :return:
+        """
+        try :
+            store = pd.HDFStore(self.input_paths[self.pointer])
+            table_data = store.select('table1')
+            return table_data[table_data.columns.values[0]].count()
+        except Exception as e :
+            raise Exception (e)
+        finally:
+            store.close()

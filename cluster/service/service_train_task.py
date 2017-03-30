@@ -68,14 +68,14 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
             next_task = None
             current_Task = None
 
-            if(graph_node.get_search_flag() == False) :
+            if(graph_node.get_search_flag() == False and graph_node.check_prev() == -1) :
                 graph_node.set_search_flag()
                 current_Task = graph_node
 
-            if (graph_node.check_next() > -1) :
-                next_task = graph_node.get_next_node()[graph_node.check_next()]
-            elif (graph_node.check_prev() > -1):
+            if(graph_node.check_prev() > -1) :
                 next_task = graph_node.get_prev_node()[graph_node.check_prev()]
+            elif(graph_node.check_next() > -1):
+                next_task = graph_node.get_next_node()[graph_node.check_next()]
             elif(len(graph_node.get_prev_node()) > 0) :
                 next_task = graph_node.get_prev_node()[0]
             else :
