@@ -37,8 +37,10 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
 
             # execute nodes by sequece
             result_info = []
-            while(self._search_next_node(first_node)[0] == True ) :
+            while True :
                 search_info = self._search_next_node(first_node)
+                if(search_info[0] == False) :
+                    break
                 first_node = search_info[1]
                 if(search_info[2] != None) :
                     _relation = self._get_node_relation(nn_id, wf_ver, search_info[2].get_node_name())
