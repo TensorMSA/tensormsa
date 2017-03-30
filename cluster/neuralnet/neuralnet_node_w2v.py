@@ -5,9 +5,6 @@ import os, json
 from konlpy.tag import Mecab
 
 class NeuralNetNodeWord2Vec(NeuralNetNode):
-    """
-
-    """
 
     def run(self, conf_data):
         try :
@@ -22,14 +19,16 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             # load model for train
             update_flag = False
             model = word2vec.Word2Vec(size=self.vector_size , window=self.window_size, min_count=5, workers=4)
-            if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
-                model = word2vec.Word2Vec.load(''.join([self.md_store_path, '/model.bin']))
+            if (os.path.exists(self._get_model_path()) == True):
+                model = word2vec.Word2Vec.load(self._get_model_path())
                 update_flag = True
 
-            # train vocab and model
+            # train per files in folder
             while(train_data_set.has_next()) :
+                # Iteration is to improve for Model Accuracy
                 for x in range(0, self.iter_size) :
-                    for i in range(0, train_data_set.data_size(), self.batch_size):
+                    # Per Line in file
+                    for i in range(0, train_data_set.data_size()):
                         data_set = train_data_set[i:i + self.batch_size]
                         if (update_flag == False):
                             model.build_vocab(data_set.tolist(), update=False)
@@ -37,10 +36,11 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                         else:
                             model.build_vocab(data_set.tolist(), update=True)
                         model.train(data_set.tolist())
-                        os.makedirs(self.md_store_path, exist_ok=True)
-                        model.save(''.join([self.md_store_path, '/model.bin']))
-                        print(len(model.raw_vocab))
+                #Select Next file
                 train_data_set.next()
+
+            os.makedirs(self.md_store_path, exist_ok=True)
+            model.save(self._get_model_path())
             return len(model.raw_vocab)
         except Exception as e:
             raise Exception(e)
@@ -53,12 +53,16 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
         self.batch_size = wf_conf.get_batch_size()
         self.iter_size = wf_conf.get_iter_size()
 
+    def _get_model_path(self):
+        return ''.join([self.md_store_path, '/model.bin'])
+
+
     def _set_progress_state(self):
         return None
 
     def predict(self, node_id, parm = {"type" : "vector", "val_1" : [], "val_2" : []}):
         """
-        predict service method
+        predict service _get_model_path
         1. type (vector) : return vector
         2. type (sim) : positive list & negative list
         :param node_id:
@@ -69,11 +73,11 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
         try :
             self._init_node_parm(node_id)
             return_val = []
-            if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == False):
+            if (os.path.exists(self._get_model_path()) == False):
                 raise Exception ("No pretrained model exist")
 
-            model = word2vec.Word2Vec.load(''.join([self.md_store_path, '/model.bin']))
-            if(parm['type'] in ['vector', 'sim']):
+            model = word2vec.Word2Vec.load(self._get_model_path())
+            if(parm['type'] in ['vector', 'sim', 'similarity']):
                 if ('val_1' in parm): parm['val_1'] = self._pos_raw_data(parm['val_1'])
                 if ('val_2' in parm): parm['val_2'] = self._pos_raw_data(parm['val_2'])
 
@@ -83,6 +87,8 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                     else : return_val.append([0.] * self.vector_size)
             elif(parm['type'] == 'sim') :
                 return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=5))
+            elif(parm['type'] == 'similarity') :
+                return_val.append(model.similarity(parm['val_1'][0], parm['val_2'][0]))
             elif(parm['type'] == 'dict' or parm['type'] == 'vocab2index') :
                 for key in parm['val_1'] :
                     if key in model : return_val.append(model.wv.vocab[key].index)
