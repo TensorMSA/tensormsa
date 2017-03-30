@@ -5,13 +5,20 @@ from master import models
 from konlpy.tag import Kkma
 from konlpy.tag import Mecab
 from konlpy.tag import Twitter
-from common import utils
 import os,h5py
 
 class WorkFlowCommonNode :
     """
         wdnn을 위한 load data를 위한 빈 메소드 생성
     """
+    def __init__(self):
+        self.prev_nodes = []
+        self.next_nodes = []
+        self.node_name = ''
+        self.node_grp = ''
+        self.node_type = ''
+        self.search_flag = False
+
     def run(self, conf_data):
         pass
 
@@ -20,6 +27,126 @@ class WorkFlowCommonNode :
 
     def _set_progress_state(self):
         pass
+
+    def set_search_flag(self):
+        """
+        set flag for tree search
+        :return:
+        """
+        self.search_flag = True
+
+    def get_search_flag(self):
+        """
+        set flag for tree search
+        :return:
+        """
+        return self.search_flag
+
+    def set_next_node(self, node_cls):
+        """
+        next node class
+        :param name:
+        :return:
+        """
+        self.next_nodes.append(node_cls)
+
+    def check_next(self):
+        """
+        check if next nodes are all searched
+        :param name:
+        :return:
+        """
+        index = 0
+        for node in self.next_nodes :
+            if(node.get_search_flag() == False) :
+                return index
+            index = index + 1
+        return -1
+
+    def check_prev(self):
+        """
+        check if prev nodes are all searched
+        :param name:
+        :return:
+        """
+        index = 0
+        for node in self.prev_nodes :
+            if(node.get_search_flag() == False) :
+                return index
+            index = index + 1
+        return -1
+
+    def get_next_node(self):
+        """
+        next node class
+        :param name:
+        :return:
+        """
+        return self.next_nodes
+
+    def set_prev_node(self, node_cls):
+        """
+        prev_node class
+        :param name:
+        :return:
+        """
+        self.prev_nodes.append(node_cls)
+
+    def get_prev_node(self):
+        """
+        prev_node class
+        :param name:
+        :return:
+        """
+        return self.prev_nodes
+
+    def set_node_name(self, node_name):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        self.node_name = node_name
+
+    def get_node_name(self):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        return self.node_name
+
+    def set_node_grp(self, node_grp):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        self.node_grp = node_grp
+
+    def get_node_grp(self):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        return self.node_grp
+
+    def set_node_type(self, node_type):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        self.node_type = node_type
+
+    def get_node_type(self):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        return self.node_type
 
     def find_prev_node(self, node_name, node_list):
         """
