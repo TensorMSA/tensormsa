@@ -26,23 +26,21 @@ for i in data:
 
 wf_ver_id = str(wf_ver_id)
 
-# get workflow version info
 
+# Network Config input
 node = "netconf_node"
 
-# update workflow node conf info
 resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                          "key" : {"node": node,
                                   "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id,
-                                  "modelname": "model"
+                                  "wf_ver_id": wf_ver_id
                                   }
                          ,"config": {"learnrate": 0.001,
                                  "traincnt": 1,
-                                 "batch_size":50,
-                                 "num_classes":5,
-                                 "predictcnt": 5
+                                 "batch_size":10000,
+                                 "num_classes":1,
+                                 "predictcnt": 2
                                  }
                          ,"layer1": {
                                  "type": "cnn",
@@ -99,6 +97,18 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
 data = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(data))
 
+# data Config input
+node = "eval_node"
+
+resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+                    json={
+                      "key" : {"node": node,
+                                  "nn_id": nn_id,
+                                  "wf_ver_id": wf_ver_id
+                                  }
+                    })
+
+# data Config input
 node = "datasrc"
 
 resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
@@ -113,6 +123,8 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/
                          ,"labels":[]
 
                      })
+
+# eval Config input
 node = 'evaldata'
 resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
@@ -127,7 +139,7 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/
 
                      })
 
-# Run All Workflow
+# Run Training
 resp = requests.post('http://' + gUrl + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

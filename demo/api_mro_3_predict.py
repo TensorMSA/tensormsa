@@ -14,19 +14,6 @@ println("S")
 typeStr = "cnn"
 nn_id = "nn00004"
 
-files = {
-         'files000001':  open('/hoya_src_root/nn00004/30/airplane/1air.jpg','rb')
-        ,'files000002':  open('/hoya_src_root/nn00004/30/airplane/2air.jpg','rb')
-        # ,'files000003':  open('/hoya_src_root/nn00004/30/bolt/1bolt.jpg','rb')
-        # ,'files000004':  open('/hoya_src_root/nn00004/30/bolt/2bolt.jpg','rb')
-        # ,'files000005':  open('/hoya_src_root/nn00004/30/car/1car.jpg','rb')
-        # ,'files000006':  open('/hoya_src_root/nn00004/30/car/2car.jpg','rb')
-        ,'files000007':  open('/hoya_src_root/nn00004/30/glove/1glove.gif','rb')
-        # ,'files000008':  open('/hoya_src_root/nn00004/30/glove/2glove.jpg','rb')
-        # ,'files000009':  open('/hoya_src_root/nn00004/30/motor/1motor.jpg','rb')
-        ,'files0000010': open('/hoya_src_root/nn00004/30/motor/2motor.jpg','rb')
-        }
-
 # get workflow version info
 restURL = 'http://' + gUrl + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/'
 
@@ -39,6 +26,18 @@ for i in data:
         wf_ver_id = i["pk"]
 
 wf_ver_id = str(wf_ver_id)
+files = {
+         'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
+        ,'files000002':  open('/home/dev/hoyai/demo/data/airplane/2air.jpg','rb')
+        ,'files000003':  open('/home/dev/hoyai/demo/data/bolt/1bolt.jpg','rb')
+        ,'files000004':  open('/home/dev/hoyai/demo/data/bolt/2bolt.jpg','rb')
+        ,'files000005':  open('/home/dev/hoyai/demo/data/car/1car.jpg','rb')
+        ,'files000006':  open('/home/dev/hoyai/demo/data/car/2car.jpg','rb')
+        ,'files000007':  open('/home/dev/hoyai/demo/data/glove/1glove.jpg','rb')
+        ,'files000008':  open('/home/dev/hoyai/demo/data/glove/2glove.jpg','rb')
+        ,'files000009':  open('/home/dev/hoyai/demo/data/motor/1motor.jpg','rb')
+        ,'files000010':  open('/home/dev/hoyai/demo/data/motor/2motor.jpg','rb')
+        }
 
 # get workflow version info
 
