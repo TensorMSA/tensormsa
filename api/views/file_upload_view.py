@@ -25,12 +25,13 @@ class FileUploadView(APIView):
 
                     file = requestSingleFile
                     filepath = get_source_path(nnid, ver, dir)
-
+                    print(filepath)
+                    print(file.name)
                     # payload = MultipartEncoder({})
                     # save file on file system
                     if not os.path.exists(filepath):
                         os.makedirs(filepath)
-                    fp = open(filepath + "/" + file.name,'wb')
+                    fp = open(filepath + "/" + str(key),'wb')
 
                     for chunk in file.chunks():
                         fp.write(chunk)
