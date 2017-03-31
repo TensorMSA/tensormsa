@@ -11,7 +11,7 @@ class PreNodeFeedImg2Renet(PreNodeFeed):
         """
         override init class
         """
-        super(PreNodeFeedImg2Renet, self).__init__()
+        super(PreNodeFeedImg2Renet, self).run(conf_data)
         self._init_node_parm(conf_data['node_id'])
 
     def _convert_data_format(self, file_path, index):

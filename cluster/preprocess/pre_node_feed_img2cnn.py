@@ -10,7 +10,7 @@ class PreNodeFeedImg2Cnn(PreNodeFeed):
         """
         override init class
         """
-        super(PreNodeFeedImg2Cnn, self).__init__()
+        super(PreNodeFeedImg2Cnn, self).run(conf_data)
         self._init_node_parm(conf_data['node_id'])
 
     def _convert_data_format(self, file_path, index):

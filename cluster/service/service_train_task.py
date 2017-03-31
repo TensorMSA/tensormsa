@@ -72,12 +72,10 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                 graph_node.set_search_flag()
                 current_Task = graph_node
 
-            if(graph_node.check_prev() > -1) :
-                next_task = graph_node.get_prev_node()[graph_node.check_prev()]
-            elif(graph_node.check_next() > -1):
-                next_task = graph_node.get_next_node()[graph_node.check_next()]
-            elif(len(graph_node.get_prev_node()) > 0) :
-                next_task = graph_node.get_prev_node()[0]
+            if(graph_node.check_prev() != -1) :
+                next_task = graph_node.get_prev_node_as_dict()[graph_node.check_prev()]
+            elif(graph_node.check_next() != -1):
+                next_task = graph_node.get_next_node_as_dict()[graph_node.check_next()]
             else :
                 stop_flag = False
             return stop_flag, next_task, current_Task
@@ -161,10 +159,22 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
 
             for rel_node in node_rel_list :
                 if(node.get('nn_wf_node_id') == rel_node[0]) :
-                    cls.set_next_node(class_list[rel_node[1]])
+                    cls.set_next_node(rel_node[1], class_list[rel_node[1]])
                 if(node.get('nn_wf_node_id') == rel_node[1]):
-                    cls.set_prev_node(class_list[rel_node[0]])
+                    cls.set_prev_node(rel_node[0], class_list[rel_node[0]])
             class_list[node.get('nn_wf_node_id')] = cls
+
+        # set inital node info
+        for node in reversed(node_list) :
+            cls = class_list[node.get('nn_wf_node_id')]
+
+            for rel_node in node_rel_list :
+                if(node.get('nn_wf_node_id') == rel_node[0]) :
+                    cls.set_next_node(rel_node[1], class_list[rel_node[1]])
+                if(node.get('nn_wf_node_id') == rel_node[1]):
+                    cls.set_prev_node(rel_node[0], class_list[rel_node[0]])
+            class_list[node.get('nn_wf_node_id')] = cls
+
         return class_list[node_list[0].get('nn_wf_node_id')]
 
     def _run_next_node(self):

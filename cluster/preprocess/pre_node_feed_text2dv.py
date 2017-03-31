@@ -9,7 +9,7 @@ class PreNodeFeedText2Dv(PreNodeFeed):
         """
         override init class
         """
-        super(PreNodeFeedText2Dv, self).__init__()
+        super(PreNodeFeedText2Dv, self).run(conf_data)
         self._init_node_parm(conf_data['node_id'])
 
 

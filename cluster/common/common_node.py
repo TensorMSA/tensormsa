@@ -13,8 +13,8 @@ class WorkFlowCommonNode :
         wdnn을 위한 load data를 위한 빈 메소드 생성
     """
     def __init__(self):
-        self.prev_nodes = []
-        self.next_nodes = []
+        self.prev_nodes = {}
+        self.next_nodes = {}
         self.node_name = ''
         self.node_grp = ''
         self.node_type = ''
@@ -43,13 +43,13 @@ class WorkFlowCommonNode :
         """
         return self.search_flag
 
-    def set_next_node(self, node_cls):
+    def set_next_node(self, key, node_cls):
         """
         next node class
         :param name:
         :return:
         """
-        self.next_nodes.append(node_cls)
+        self.next_nodes[key] = node_cls
 
     def check_next(self):
         """
@@ -57,11 +57,9 @@ class WorkFlowCommonNode :
         :param name:
         :return:
         """
-        index = 0
-        for node in self.next_nodes :
-            if(node.get_search_flag() == False) :
-                return index
-            index = index + 1
+        for node in self.next_nodes.keys() :
+            if(self.next_nodes[node].get_search_flag() == False) :
+                return node
         return -1
 
     def check_prev(self):
@@ -70,11 +68,9 @@ class WorkFlowCommonNode :
         :param name:
         :return:
         """
-        index = 0
-        for node in self.prev_nodes :
-            if(node.get_search_flag() == False) :
-                return index
-            index = index + 1
+        for node in self.prev_nodes.keys() :
+            if(self.prev_nodes[node].get_search_flag() == False) :
+                return node
         return -1
 
     def get_next_node(self):
@@ -83,17 +79,39 @@ class WorkFlowCommonNode :
         :param name:
         :return:
         """
+        return_list = []
+        for name in self.next_nodes.keys() :
+            return_list.append(self.next_nodes[name])
+        return return_list
+
+    def get_next_node_as_dict(self):
+        """
+        next node class
+        :param name:
+        :return:
+        """
         return self.next_nodes
 
-    def set_prev_node(self, node_cls):
+    def set_prev_node(self, key, node_cls):
         """
         prev_node class
         :param name:
         :return:
         """
-        self.prev_nodes.append(node_cls)
+        self.prev_nodes[key] = node_cls
 
     def get_prev_node(self):
+        """
+        prev_node class
+        :param name:
+        :return:
+        """
+        return_list = []
+        for name in self.prev_nodes.keys() :
+            return_list.append(self.prev_nodes[name])
+        return return_list
+
+    def get_prev_node_as_dict(self):
         """
         prev_node class
         :param name:

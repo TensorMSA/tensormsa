@@ -10,7 +10,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         """
         override init class
         """
-        super(PreNodeFeedFr2Wdnn, self).__init__()
+        super(PreNodeFeedFr2Wdnn, self).run(conf_data)
         self._init_node_parm(conf_data['node_id'])
 
     def _convert_data_format(self, obj, index):
