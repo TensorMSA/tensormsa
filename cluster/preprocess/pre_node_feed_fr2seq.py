@@ -41,8 +41,8 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             chunk = store.select('table1',
                                start=index.start,
                                stop=index.stop)
-            encode = self._preprocess(chunk[self.encode_col])
-            decode = self._preprocess(chunk[self.decode_col])
+            encode = self._preprocess(chunk[self.encode_col].values)
+            decode = self._preprocess(chunk[self.decode_col].values)
 
             return encode, decode
         except Exception as e :

@@ -23,12 +23,13 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                 model = word2vec.Word2Vec.load(self._get_model_path())
                 update_flag = True
 
+
             # train per files in folder
             while(train_data_set.has_next()) :
                 # Iteration is to improve for Model Accuracy
                 for x in range(0, self.iter_size) :
                     # Per Line in file
-                    for i in range(0, train_data_set.data_size()):
+                    for i in range(0, train_data_set.data_size(), self.batch_size):
                         data_set = train_data_set[i:i + self.batch_size]
                         if (update_flag == False):
                             model.build_vocab(data_set.tolist(), update=False)

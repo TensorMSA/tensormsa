@@ -480,7 +480,7 @@ class WorkFlowCommonNode :
             count = count + 1
             line_list.append("{0}/{1}".format(word, tag))
             #Add POS Tagging for divide (kkma and twitter)
-            if(tag == 'SF' or tag == 'Punctuation') :
+            if(tag in ['Punctuation','SF'] or word in ['.', '?']) :
                 if(len(line_list) > self.sent_max_len - 1) :
                     line_list = line_list[0:self.sent_max_len-1]
                 else :

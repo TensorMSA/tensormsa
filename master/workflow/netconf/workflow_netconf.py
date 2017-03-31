@@ -40,11 +40,6 @@ class WorkFlowNetConf :
         try:
             self.validation_check(input_data)
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
-            nn_id = input_data["key"]["nn_id"]
-            wfver = input_data["key"]["wf_ver_id"]
-            node = input_data["key"]["node"]
-            input_data["modelpath"] = get_model_path(nn_id, wfver, node)
-            input_data["modelname"] = "model_"+nn_id+"_"+wfver
             setattr(obj, "node_config_data", input_data)
             obj.save()
             return input_data
