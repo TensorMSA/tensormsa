@@ -12,11 +12,11 @@ from common.utils import *
 # ./manage.py runserver [HOST]:8000
 
 println("S")
-
+url = gUrl
 nn_id = "nn00004"
 
 # get workflow version info
-resp = requests.get('http://' + gUrl + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/')
+resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/')
 data = json.loads(resp.json())
 
 wf_ver_id = 0
@@ -26,21 +26,20 @@ for i in data:
 
 wf_ver_id = str(wf_ver_id)
 
-
-# Network Config input
+# CNN Network WorkFlow Node : Network Config Setup
+# (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
 node = "netconf_node"
-
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                          "key" : {"node": node,
                                   "nn_id": nn_id,
                                   "wf_ver_id": wf_ver_id
                                   }
                          ,"config": {"learnrate": 0.001,
-                                 "traincnt": 1,
+                                 "traincnt": 20,
                                  "batch_size":10000,
-                                 "num_classes":1,
-                                 "predictcnt": 2
+                                 "num_classes":5,
+                                 "predictcnt": 5
                                  }
                          ,"layer1": {
                                  "type": "cnn",
@@ -94,24 +93,24 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn
                                  "droprate": ""
                                 }
                         })
-data = json.loads(resp.json())
-# print("insert workflow node conf info evaluation result : {0}".format(data))
+netconf = json.loads(resp.json())
+# print("insert workflow node conf info evaluation result : {0}".format(netconf))
 
-# data Config input
+# CNN Network WorkFlow Node :  Eval Config Setup
 node = "eval_node"
-
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                     json={
                       "key" : {"node": node,
                                   "nn_id": nn_id,
                                   "wf_ver_id": wf_ver_id
                                   }
                     })
+evalconf = json.loads(resp.json())
+# print("insert workflow node conf info evaluation result : {0}".format(evalconf))
 
-# data Config input
+# CNN Network WorkFlow Node :  Data Config Setup
 node = "datasrc"
-
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                             "key" : {"node": node,
                                   "nn_id": nn_id,
@@ -123,10 +122,13 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/
                          ,"labels":[]
 
                      })
+dataconf = json.loads(resp.json())
+# print("insert workflow node conf info evaluation result : {0}".format(dataconf))
 
-# eval Config input
+# CNN Network WorkFlow Node :  Eval Data Config Setup
+# (CNN Network WorkFlow Node의 Data Config를 Setup 해준다.)
 node = 'evaldata'
-resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                             "key" : {"node": node,
                                   "nn_id": nn_id,
@@ -138,11 +140,29 @@ resp = requests.put('http://' + gUrl + '/api/v1/type/wf/state/imgdata/src/local/
                          ,"labels":[]
 
                      })
+edataconf = json.loads(resp.json())
+# print("insert workflow node conf info evaluation result : {0}".format(edataconf))
 
-# Run Training
-resp = requests.post('http://' + gUrl + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
+
+# # Sample Data Insert
+# # (CNN Network Train을 할 수 있게 Sample Data를 특정 장소에 Copy 해준다..)
+# import shutil
+# sample_path = '/home/dev/hoyai/demo/data/sample_cnn_img.zip'
+# source_path = dataconf["source_path"]
+# esource_path = edataconf["source_path"]
+#
+# shutil.copy(sample_path, source_path)
+# shutil.copy(sample_path, esource_path)
+# print(source_path)
+# print(esource_path)
+
+# CNN Network Training
+# (CNN Network Training을 실행한다.)
+resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+
 
 println("E")
 

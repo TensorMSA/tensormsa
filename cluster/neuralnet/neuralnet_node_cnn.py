@@ -197,11 +197,12 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
     start_time = time.time()
 
     try:
+        return_arr = []
         while (input_data.has_next()):
             for i in range(0, input_data.size(), batchsize):
                 data_set = input_data[i:i + batchsize]
                 x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes)
-                train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
+                return_data = train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr)
             input_data.next()
     except Exception as e:
         net_check = "Error[400] .............................................."
@@ -215,8 +216,10 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
 
     # Print the time-usage.
     println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
+    return_data = return_arr
+    return return_data
 
-def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step):
+def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr):
     modelname = netconf["modelname"]
     train_cnt = netconf["config"]["traincnt"]
     model_path = netconf["modelpath"]
@@ -243,6 +246,8 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
                 batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
                 msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
                 println(msg.format(i_global, batch_acc))
+                result = "Global Step:     "+str(i_global)+", Training Batch Accuracy:  "+str(batch_acc*100)+"%"
+                return_arr.append(result)
 
             # Save a checkpoint to disk every 100 iterations (and last).
             if (i_global % 100 == 0) or (i == train_cnt - 1):
@@ -251,6 +256,7 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step)
                 model_file_delete(model_path, modelname)
 
     println("Saved checkpoint.")
+    return return_arr
 ########################################################################
 def eval_cnn(input_data, netconf, dataconf, X, Y, model, y_pred_cls):
     batchsize = netconf["config"]["batch_size"]
@@ -413,20 +419,27 @@ def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
         except Exception as e:
             println("None to restore checkpoint. Initializing variables instead.")
             println(e)
+    return data
 
 class NeuralNetNodeCnn(NeuralNetNode):
     """
     """
     def _init_node_parm(self, node_id):
-        return None
+        wf_conf = WorkFlowNetConfCNN(node_id)
+        # self.md_store_path = wf_conf.get_model_store_path()
+        # self.window_size = wf_conf.get_window_size()
+        # self.vector_size = wf_conf.get_vector_size()
+        # self.batch_size = wf_conf.get_batch_size()
+        # self.iter_size = wf_conf.get_iter_size()
 
     def _set_progress_state(self):
         return None
 
     def run(self, conf_data):
-        println("run NeuralNetNodeCnn")
+        println("run NeuralNetNodeCnn Train")
         println(conf_data)
         node_id = conf_data['node_id']
+        self._init_node_parm(node_id)
         feed_node = self.get_prev_node()
 
         for feed in feed_node:
@@ -445,20 +458,22 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 if net_check == "S":
                     cls_pool = conf_data['cls_pool']
                     input_data = cls_pool[feed_name]
-                    train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
+                    return_arr = train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
                 else:
                     println("net_check=" + net_check)
 
-        println("train end......")
-
-        return None
+        println("end NeuralNetNodeCnn Train")
+        return_data = {}
+        return_data["TrainReult"] = return_arr
+        return return_data
 
     def eval(self, conf_data):
     # def predict(self, node_id, filelist):
-        println("run NeuralNetNodeCnn eval .........")
+        println("run NeuralNetNodeCnn eval")
         println(conf_data)
 
         node_id = conf_data['node_id']
+        self._init_node_parm(node_id)
         feed_node = self.get_prev_node()
 
         # for feed in feed_node:
@@ -486,6 +501,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         #
         # println("eval end........")
 
+        println("end NeuralNetNodeCnn eval")
         return None
 
     def predict(self, node_id, filelist):
@@ -499,6 +515,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         """
         println("run NeuralNetNodeCnn Predict")
         println(node_id)
+        self._init_node_parm(node_id)
         ################################################################
         data_node_name = self._get_backward_node_with_type(node_id, 'data')
         netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
@@ -512,7 +529,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         else:
             println("net_check=" + net_check)
 
-        println("predict end........")
+        println("end NeuralNetNodeCnn Predict")
         # NeuralNetNodeCnn().eval_cnn(conf_data)
         return data
 

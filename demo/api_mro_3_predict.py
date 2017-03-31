@@ -11,21 +11,20 @@ println("S")
 #rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
+url = gUrl
 typeStr = "cnn"
 nn_id = "nn00004"
 
 # get workflow version info
-restURL = 'http://' + gUrl + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/'
-
-resp = requests.get(restURL)
+resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/')
 data = json.loads(resp.json())
 
-wf_ver_id = 0
-for i in data:
-    if i["pk"] > wf_ver_id:
-        wf_ver_id = i["pk"]
+for config in data:
+    if config["fields"]["active_flag"] == "Y":
+        wf_ver_id = config["pk"]
 
 wf_ver_id = str(wf_ver_id)
+
 files = {
          'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
         ,'files000002':  open('/home/dev/hoyai/demo/data/airplane/2air.jpg','rb')
@@ -39,22 +38,17 @@ files = {
         ,'files000010':  open('/home/dev/hoyai/demo/data/motor/2motor.jpg','rb')
         }
 
-# get workflow version info
-
-node_id = nn_id+"_"+wf_ver_id+"_netconf_node"
-
-restURL = 'http://' + gUrl + '/api/v1/type/service/state/predict/type/'+typeStr+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
+restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/'+typeStr+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
 
 resp = requests.post(restURL,
                      files=files,
                      json={
-                         "key" : {"node_id": node_id,
+                         "key" : {
                                   "nn_id": nn_id,
                                   "wf_ver_id": wf_ver_id
                                   }
                      }
                      )
-
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 

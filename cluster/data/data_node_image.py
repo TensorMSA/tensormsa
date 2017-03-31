@@ -47,6 +47,9 @@ class DataNodeImage(DataNode):
             forderlist = os.listdir(directory)
 
             filecnt = 0
+            image_arr = []
+            lable_arr = []
+            shape_arr = []
             for forder in forderlist:
                 filelist = os.listdir(directory + '/' + forder)
                 for filename in filelist:
@@ -58,9 +61,21 @@ class DataNodeImage(DataNode):
                         with tf.Session() as sess:
                             image = sess.run(resized_image)
                             image = image.reshape([-1, x_size, y_size, channel])
+                            image = image.flatten()
+                            image_arr.append(image)
+                            shape_arr.append(image.shape)
+                            lable_arr.append(forder.encode('utf8'))
                         filecnt += 1
                     except:
-                        None
+                        println("ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                shutil.rmtree(directory + "/" + forder)
+                try:
+                    idx = labels.index(forder)
+                except:
+                    labels.append(forder)
+
+            dataconf["labels"] = labels
+            WorkFlowDataImage().put_step_source_ori(node_id, dataconf)
 
             if len(forderlist) > 0 and filecnt > 0:
                 output_path = os.path.join(output_directory, output_filename)
@@ -83,48 +98,15 @@ class DataNodeImage(DataNode):
 
                 # Add axis annotations
                 hdf_features.dims[0].label = 'batch'
-                i = 0
 
-                for forder in forderlist:
-                    filelist = os.listdir(directory + '/' + forder)
-                    # println(forder)
-                    for filename in filelist:
-                        # println(filename)
-                        value = tf.read_file(directory + '/' + forder + '/' + filename)
-                        # decoded_image = tf.image.decode_jpeg(value, channels=channel)
-                        # resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
-                        # resized_image = tf.cast(resized_image, tf.uint8)
-                        try:
-                            decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
-                            resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
-
-                            with tf.Session() as sess:
-                                image = sess.run(resized_image)
-                                image = image.reshape([-1, x_size, y_size, channel])
-
-                                # println(image)
-                                image = image.flatten()
-                                hdf_features[i] = image
-                                hdf_shapes[i] = image.shape
-                                hdf_labels[i] = forder.encode('utf8')
-                                i += 1
-                        except:
-                            println("ErrorFile="+directory + " forder=" + forder + "  name=" + filename)
-
-                    shutil.rmtree(directory + "/" + forder)
-                    try:
-                        idx = labels.index(forder)
-                    except:
-                        labels.append(forder)
-
-                dataconf["labels"] = labels
-                # println(labels)
-
-                WorkFlowDataImage().put_step_source_ori(node_id, dataconf)
+                for i in range(len(image_arr)):
+                    hdf_features[i] = image_arr[i]
+                    hdf_shapes[i] = shape_arr[i]
+                    hdf_labels[i] = lable_arr[i]
 
                 h5file.flush()
                 h5file.close()
-
+            println("end DataNodeImage")
             return None
 
         except Exception as e:
