@@ -18,6 +18,11 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
     def create_feature_columns(self):
         # Sparse base columns.
+            # cate < class 'list'>: ['workclass', 'occupation', 'relationship', 'native_country', 'marital_status', 'sex',
+            #                   'education', 'race']
+
+       # cinti < class 'list'>: ['hours_per_week', 'age', 'capital_loss', 'capital_gain', 'education_num']
+
         gender = tf.contrib.layers.sparse_column_with_keys(
             column_name="sex", keys=["female", "male"])
         race = tf.contrib.layers.sparse_column_with_keys(
@@ -75,6 +80,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
             feature_map = tf.contrib.learn.io.read_batch_record_features(
                 file_pattern=[data_file],
+                #file_pattern=data_file,
                 batch_size=batch_size,
                 features=features,
                 name="read_batch_features_{}".format(mode))
@@ -91,7 +97,10 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             #x = tf.Print(feature_map['age'], [feature_map['age']])
             #print(x)
 
-            target = ""
+            target = feature_map.pop("label")
+
+            #num_epoch =
+            print(str(batch_size))
         except Exception as e:
             raise e
 

@@ -7,7 +7,9 @@ import json
 import os
 from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame
 from cluster.common.neural_common_wdnn import NeuralCommonWdnn
+from cluster.preprocess.pre_node_feed_fr2wdnn import PreNodeFeedFr2Wdnn
 from common import utils
+import  tensorflow as tf
 
 class NeuralNetNodeWdnn(NeuralNetNode):
     """
@@ -44,95 +46,41 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             wdnn = NeuralCommonWdnn()
             wdnn_model = wdnn.wdnn_build('wdnn', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
 
+            #feed
+
+            # get prev node for load data
+            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+            train_data_set = self.cls_pool[data_node_name[0]]
+            file_queue  = str(train_data_set.input_paths[0])
+            #str(file_queue[0])
+            #feed = PreNodeFeedFr2Wdnn()
 
             #read hdf5
-            try:
-                #TODO file이 여러개면 어떻하지?
-                file_paths = list()
-                # for file_path in utils.get_filepaths(data_store_path, "tfrecords"):
-                #     file_paths.append(file_path)
-                for file_path in utils.get_filepaths(data_store_path, "h5"):
-                    file_paths.append(file_path)
-
-                df = self.read_hdf5(file_paths[0])
-
-            except Exception as e:
-                print("Error Message : {0}".format(e))
-                raise Exception(e)
+            # try:
+            #     #TODO file이 여러개면 어떻하지?
+            #     #file_paths = list()
+            #     #for file_path in utils.get_filepaths(data_store_path, "tfrecords"):
+            #     #    file_paths.append(file_path)
+            #
+            #
+            #     #df = self.read_hdf5(file_paths[0])
+            #
+            # except Exception as e:
+            #     print("Error Message : {0}".format(e))
+            #     raise Exception(e)
 
             #feature, label = wdnn.input_fn( df, conf_data['node_id'],data_conf_info)
 
-            wdnn_model.fit(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=200)
+            #multi Feeder modified
+            wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,128), steps=200)
 
-            results = wdnn_model.evaluate(input_fn=lambda: wdnn.input_fn( df, conf_data['node_id'],data_conf_info), steps=1)
+            results = wdnn_model.evaluate(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,128), steps=1)
             for key in sorted(results):
                 print("%s: %s" % (key, results[key]))
 
-            #m.fit(input_fn=lambda: input_fn(df_train), steps=train_steps)
-
-
-
-            #for root, dirs, files in os.walk(data_store_path):
-            #    for file in files:
-            #        print(file)
-
-            # make wide & deep model
-            #wdnn_model = WdnnCommonManager.wdnn_build(self, nnid = nnid)
-
-
-            #print(filename)
-
-
-            #self.model_path = wf_net_conf.model_path
-            #self.hidden_layers = wf_net_conf.hidden_layers
-            #self.activation_function = wf_net_conf.activation_function
-            #activation_function
-
-            # #make wide & deep model
-            # wdnn_model = WdnnCommonManager.wdnn_build(self, nnid = nnid)
-            #
-            # #get json from postgres by nnid
-            # json_string = WdnnCommonManager.get_all_info_json_by_nnid(self, nnid=nnid)
-            # database = json_string["dir"]
-            # table_name = json_string["table"]
-            #
-            # #Make NetworkConfiguration Json Objct
-            # json_string = netconf.load_ori_format(nnid)
-            # json_ob = json.loads(json_string)
-            #
-            # #get label column from hbase nn config json
-            # t_label = json_ob["label"]
-            # label_column = list(t_label.keys())[0]
-            #
-            # #get train hyper param
-            # #job_parm = JobStateLoader().get_selected_job_info(nnid)
-            # batch_size = int(job_parm.batchsize)
-            # model_lint_cnt = int(job_parm.epoch)
-            #
-            #
-            # df, pnt = data.DataMaster().query_data(database, table_name, "a", use_df=True,limit_cnt=batch_size,with_label=label_column, start_pnt = start_pnt)
-            # df_eval = df.copy()
-            #
-            #
-            #
-            # ##MAKE MONITOR
-            #
-            # customsMonitor = Monitors.MonitorCommon(p_nn_id = nnid, p_max_steps=model_lint_cnt, p_every_n_steps=1000)
-            #
-            #
-            # wdnn_model.fit(input_fn=lambda: WdnnCommonManager.input_fn(self, df, nnid), steps=model_lint_cnt, monitors=[customsMonitor])
-            #
-            # if(len(df_eval) < 10):
-            #
-            #     results = wdnn_model.evaluate(input_fn=lambda: WdnnCommonManager.input_fn(self, df_eval, nnid), steps=1)
-            #     for key in sorted(results):
-            #         tfmsa_logger("%s: %s" % (key, results[key]))
-            #     return nnid
-            # else:
-            #     JobStateLoader().inc_job_data_pointer(nnid)
-            #     self.run_wdd_train(nnid = nnid , start_pnt = pnt)
-            #
-            # return nnid
+            #feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
+            print("end")
+            #with tf.Session() as sess:
         except Exception as e:
             print ("Error Message : {0}".format(e))
             raise Exception(e)

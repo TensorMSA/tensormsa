@@ -7,6 +7,7 @@ import tensorflow as tf
 import pandas as pd
 import csv
 import os
+from common import utils
 
 class DataConfNodeFrame( DataConfNode):
     """
@@ -21,6 +22,16 @@ class DataConfNodeFrame( DataConfNode):
 
     def run(self, conf_data):
         try:
+
+            self._init_node_parm(conf_data['node_id'])
+            self.cls_pool = conf_data['cls_pool']
+
+
+            # get prev node for load data
+            #data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+            #train_data_set = self.cls_pool[data_node_name[0]]
+
+
             self._init_node_parm(conf_data['node_id'])
             #ErrorCHeck
 
@@ -50,6 +61,26 @@ class DataConfNodeFrame( DataConfNode):
             self.data_conf = wf_data_conf.data_conf
         except Exception as e:
             raise Exception("dataconf_node_fame._init_node_parm Initializing Error : " +str(e))
+
+    def load_data(self, node_id, parm = 'all'):
+        """
+        load train data
+        Multi Locad를 위한 메소드 변경 피더 로 인한 변경포함
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        try:
+            multi_node_flag = self.get_prev_node()[0].multi_node_flag
+            data_store_path = self.get_prev_node()[0].data_store_path
+            if multi_node_flag == True:
+                return utils.get_filepaths(data_store_path, 'tfrecords')
+            else:
+                return utils.get_filepaths(data_store_path, 'h5')
+
+        except Exception as e:
+            raise Exception(e)
+
 
     def validate_data(self, path, configuration):
         try:

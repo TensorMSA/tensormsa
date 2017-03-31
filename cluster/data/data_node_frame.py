@@ -133,17 +133,22 @@ class DataNodeFrame(DataNode):
         """
         try:
             example = tf.train.Example()
+            _CONTINUOUS_COLUMNS = CONTINUOUS_COLUMNS[:]
+            _CATEGORICAL_COLUMNS = CATEGORICAL_COLUMNS[:]
+            _CONTINUOUS_COLUMNS.remove("fnlwgt")
+            _CATEGORICAL_COLUMNS.remove("income_bracket")
 
             for col, value in row.items():
                 #print(col)
                 #print(value)
-                if col in CATEGORICAL_COLUMNS:
+                if col in _CATEGORICAL_COLUMNS:
                     example.features.feature[col].bytes_list.value.extend([str.encode(value)])
-                elif col in CONTINUOUS_COLUMNS:
+                elif col in _CONTINUOUS_COLUMNS:
                     example.features.feature[col].int64_list.value.extend([int(value)])
-
-                #if col == "income_bracket":
-                #    example.features.feature['label'].int64_list.value.extend([int(">50K" in value)])
+                #'income_bracket'
+                #'fnlwgt'
+                if col == "income_bracket":
+                    example.features.feature['label'].int64_list.value.extend([int(">50K" in value)])
 
             return example
         except Exception as e:
