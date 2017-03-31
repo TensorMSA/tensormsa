@@ -10,7 +10,7 @@ import keras
 from master.workflow.netconf.workflow_netconf_renet import WorkFlowNetConfReNet
 from cluster.neuralnet import resnet
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
-from cluster.common.common_node import WorkFlowCommonNode
+from cluster.common.train_summary_info import TrainSummaryInfo
 import operator
 from PIL import Image
 from cluster.data.data_node_image import DataNodeImage
@@ -21,6 +21,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
     """
 
     def run(self, conf_data):
+        return
         try:
             # init parms
             self._init_node_parm(conf_data['node_id'])
@@ -219,11 +220,15 @@ class NeuralNetNodeReNet(NeuralNetNode):
         except Exception as e:
             raise Exception(e)
 
-    def eval(self, node_id, parm={}):
+    def eval(self, node_id, parm):
         """
 
         :param node_id:
         :param parm:
         :return:
         """
-        pass
+        print('nneval')
+        config = {"type" : "category", "labels" : ['car','airplane']}
+        train = TrainSummaryInfo(config)
+        train.set_result_info('car','car')
+        return
