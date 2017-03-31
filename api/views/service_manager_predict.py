@@ -27,7 +27,7 @@ class ServiceManagerPredict(APIView):
                     # TO-DO : need predict function for active taged version
                     raise Exception("on developing now !")
                 elif (type == "wdnn"):
-                    raise Exception("on developing now !")
+                    return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
                 elif(type == "seq2seq"):
                     return_data = PredictNetSeq2Seq().run(nnid, request.data)
                 elif (type == "renet"):

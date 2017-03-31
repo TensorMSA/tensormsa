@@ -10,9 +10,14 @@ class EvalNodeExtra(EvalNode):
 
     def run(self, conf_data):
         println("run EvalNodeExtra")
-        result = ""
-        # result = NeuralNetNodeCnn().eval_cnn(conf_data)
-        return result
+        try:
+            self.cls_pool = conf_data['cls_pool']
+            net_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'netconf')
+            net_node = self.cls_pool[net_node_name[0]]
+            result = net_node.eval(conf_data['node_id'],conf_data)
+            return result
+        except Exception as e:
+            raise Exception(e)
 
     def _init_node_parm(self):
         pass
