@@ -7,6 +7,13 @@ class PreNodeFeedImg2Renet(PreNodeFeed):
 
     """
 
+    def run(self, conf_data):
+        """
+        override init class
+        """
+        super(PreNodeFeedImg2Renet, self).__init__()
+        self._init_node_parm(conf_data['node_id'])
+
     def _convert_data_format(self, file_path, index):
         try:
             h5file = h5py.File(file_path, mode='r')

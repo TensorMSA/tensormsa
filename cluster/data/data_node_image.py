@@ -137,7 +137,7 @@ class DataNodeImage(DataNode):
     def _set_progress_state(self):
         return None
 
-    def load_data(self, node_id, parm = 'all'):
+    def load_data(self, node_id="", parm = 'all'):
         dataconf = WorkFlowDataImage().get_step_source(node_id)
         output_directory = dataconf["store_path"]
         return  utils.get_filepaths(output_directory)

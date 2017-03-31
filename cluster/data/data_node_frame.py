@@ -162,7 +162,7 @@ class DataNodeFrame(DataNode):
         hdf.put('table1', dataframe, format='table', data_columns=True, encoding='UTF-8')
         hdf.close()
 
-    def load_data(self, node_id, parm = 'all'):
+    def load_data(self, node_id = "", parm = 'all'):
         """
         load train data
         :param node_id:

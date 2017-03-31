@@ -14,6 +14,7 @@ class PreNodeFeedText2Seq(PreNodeFeed):
         """
         super(PreNodeFeedText2Seq, self).run(conf_data)
         self.file_list_size = max([len(self.input_paths[0]), len(self.input_paths[1])])
+        self._init_node_parm(conf_data['node_id'])
 
     def has_next(self):
         """

@@ -61,7 +61,7 @@ class WorkFlowDataText(WorkFlowData) :
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_step_source()
-        return self.conf['source_sql']
+        return self.conf.get('source_sql')
 
     def get_src_type(self):
         """
@@ -73,7 +73,7 @@ class WorkFlowDataText(WorkFlowData) :
         """
         if ('conf' in self.__dict__):
             self.conf = self.get_step_source()
-        return self.conf['source_type']
+        return self.conf.get('source_type')
 
     def get_src_server(self):
         """
@@ -85,7 +85,7 @@ class WorkFlowDataText(WorkFlowData) :
         """
         if ('conf' in self.__dict__):
             self.conf = self.get_step_source()
-        return self.conf['source_server']
+        return self.conf.get('source_server')
 
     def get_parse_type(self):
         """
@@ -97,7 +97,7 @@ class WorkFlowDataText(WorkFlowData) :
         """
         if ('conf' in self.__dict__):
             self.conf = self.get_step_source()
-        return self.conf['source_parse_type']
+        return self.conf.get('source_parse_type')
 
     def get_source_path(self):
         """
@@ -109,7 +109,7 @@ class WorkFlowDataText(WorkFlowData) :
         """
         if ('conf' in self.__dict__):
             self.conf = self.get_step_source()
-        return self.conf['source_path']
+        return self.conf.get('source_path')
 
     def check_step_source(self, obj):
         """

@@ -97,14 +97,13 @@ class DataNodeText(DataNode):
     def _set_progress_state(self):
         return None
 
-    def load_data(self, node_id, parm = 'all'):
+    def load_data(self, node_id = "", parm = 'all'):
         """
         load train data
         :param node_id:
         :param parm:
         :return:
         """
-        self._init_node_parm(node_id)
         return utils.get_filepaths(self.data_store_path)
 
 

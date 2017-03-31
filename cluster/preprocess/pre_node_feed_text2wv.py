@@ -5,6 +5,14 @@ class PreNodeFeedText2Wv(PreNodeFeed):
     """
 
     """
+    def run(self, conf_data):
+        """
+        override init class
+        """
+        super(PreNodeFeedText2Wv, self).__init__()
+        self._init_node_parm(conf_data['node_id'])
+
+
     def _convert_data_format(self, file_path, index):
         """
         just pass hdf5 file chunk

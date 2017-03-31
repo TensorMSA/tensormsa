@@ -31,8 +31,7 @@ class PreNodeFeed(PreProcessNode):
         if netconf_node_cls == None :
             raise Exception("netconf node must be needed to use feed node")
 
-        self._init_node_parm(conf_data['node_id'])
-        self.input_paths = data_node_cls.load_data("", parm='all')
+        self.input_paths = data_node_cls.load_data(data_node_cls.get_node_name(), parm='all')
 
     def _init_node_parm(self, node_id):
         pass
