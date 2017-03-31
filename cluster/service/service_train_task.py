@@ -67,6 +67,8 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
             stop_flag = True
             next_task = None
             current_Task = None
+            if(graph_node == None) :
+                return False, next_task, current_Task
 
             if(graph_node.get_search_flag() == False and graph_node.check_prev() == -1) :
                 graph_node.set_search_flag()
@@ -76,8 +78,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                 next_task = graph_node.get_prev_node_as_dict()[graph_node.check_prev()]
             elif(graph_node.check_next() != -1):
                 next_task = graph_node.get_next_node_as_dict()[graph_node.check_next()]
-            else :
-                stop_flag = False
+
             return stop_flag, next_task, current_Task
         except Exception as e :
             raise Exception ("seach net node error")
