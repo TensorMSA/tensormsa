@@ -2,6 +2,8 @@ from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from master.workflow.netconf.workflow_netconf_wdnn import WorkFlowNetConfWdnn
 from master.workflow.data.workflow_data_frame import WorkFlowDataFrame
 import pandas as pd
+import tensorflow as tf
+import json
 import os
 from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame
 from cluster.common.neural_common_wdnn import NeuralCommonWdnn
@@ -177,8 +179,45 @@ class NeuralNetNodeWdnn(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def predict(self, node_id, parm = {}):
-        pass
+    def predict(self, nn_id, conf_data, parm = {}):
+
+        # model build
+        #
+        # self._init_node_parm(nn_id)
+
+        # data_conf_info = WorkflowDataConfFrame(nn_id + "_" + ver + "_" + "dataconf_node").data_conf
+        try:
+            node_id = conf_data['node_id']
+            netconf = conf_data['net_conf']
+            dataconf = conf_data['data_conf']
+
+            # make wide & deep model
+            wdnn = NeuralCommonWdnn()
+            # wdnn_model = wdnn.wdnn_predict_build('wdnn', nn_id, netconf['hidden_layers'], netconf['activation_function'], '', netconf['model_path'], False)
+
+            wdnn_model = wdnn.wdnn_build('wdnn', nn_id, netconf['hidden_layers'],netconf['activation_function'],dataconf['data_conf'], netconf['model_path'], False)
+
+            label_column = list(dataconf['data_conf']["label"].keys())[0]
+
+            # data -> csv (pandas)
+            df = pd.read_csv( tf.gfile.Open('/hoya_src_root/adultest.data'),
+                             # names=COLUMNS,
+                              skipinitialspace=True,
+                              engine="python")
+
+            # df['label'] = (df[label_column].apply(lambda x: "Y" in x)).astype(int)
+            # df['label'] = (df['income_bracket'].apply(lambda x: '>50K' in x)).astype(int)
+
+
+            # predict
+            #    def input_fn(self, df, nnid, dataconf ):
+            predict_results = wdnn_model.predict(input_fn=lambda: wdnn.input_fn( df, nn_id, dataconf['data_conf']))
+            df['label'] = list(predict_results)
+
+            return None
+        except Exception as e:
+            raise Exception(e)
+        return None
 
     def eval(self, node_id, parm={}):
         """
