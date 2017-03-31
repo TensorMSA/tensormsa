@@ -79,3 +79,11 @@ make migrations
 ./manage.py migrate --fake master zero
 ./manage.py migrate
 ```
+
+
+### Run Jupyter for API Test
+```sh
+vi jupyter_notebook_config.py 
+c.NotebookApp.ip = '*'
+Find in vi - /ip n N
+```
