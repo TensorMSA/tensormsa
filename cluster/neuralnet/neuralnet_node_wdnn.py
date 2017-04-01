@@ -10,6 +10,7 @@ from cluster.common.neural_common_wdnn import NeuralCommonWdnn
 from cluster.preprocess.pre_node_feed_fr2wdnn import PreNodeFeedFr2Wdnn
 from common import utils
 import  tensorflow as tf
+import math
 
 class NeuralNetNodeWdnn(NeuralNetNode):
     """
@@ -25,21 +26,15 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         """
         try:
             self._init_node_parm(conf_data['node_id'])
-
             self.cls_pool = conf_data['cls_pool'] # Data feeder
-            # get prev node for load data
-            #data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
-            #train_data_set = self.cls_pool[data_node_name[0]]
-            # prepare net conf
-            #self._set_train_model()
-
 
             print("model_path : " + str(self.model_path))
             print("hidden_layers : " + str(self.hidden_layers))
             print("activation_function : " + str(self.activation_function))
+            print("batch_size : " + str(self.batch_size))
+            print("epoch : " + str(self.epoch))
 
-            data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
-
+            #data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
             data_conf_info = WorkflowDataConfFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "dataconf_node").data_conf
 
             # make wide & deep model
@@ -47,17 +42,27 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             wdnn_model = wdnn.wdnn_build('wdnn', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
 
             #feed
-
+            # TODO file이 여러개면 어떻하지?
             # get prev node for load data
             data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
-            train_data_set = self.cls_pool[data_node_name[0]]
-            file_queue  = str(train_data_set.input_paths[0])
+            train_data_set = self.cls_pool[data_node_name[0]] #get filename
+            file_queue  = str(train_data_set.input_paths[0]) #get file_name
+
+            #file을 돌면서 최대 Row를 전부 들고 옴 tfrecord 총 record갯수 가져오는 방법필요
+
+            _batch_size = self.batch_size
+            _num_tfrecords_files = 0
+            for index, fn in enumerate(train_data_set.input_paths):
+                _num_tfrecords_files += self.generator_len(tf.python_io.tf_record_iterator(fn)) # get length of generators
+
+
+
             #str(file_queue[0])
             #feed = PreNodeFeedFr2Wdnn()
 
             #read hdf5
             # try:
-            #     #TODO file이 여러개면 어떻하지?
+            #
             #     #file_paths = list()
             #     #for file_path in utils.get_filepaths(data_store_path, "tfrecords"):
             #     #    file_paths.append(file_path)
@@ -72,21 +77,60 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #feature, label = wdnn.input_fn( df, conf_data['node_id'],data_conf_info)
 
             #multi Feeder modified
-            wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,128), steps=200)
+            print("total loop " + str(math.ceil(_num_tfrecords_files/_batch_size)) )
 
-            results = wdnn_model.evaluate(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,128), steps=1)
+            for index in range(int(math.ceil(_num_tfrecords_files/_batch_size))):
+                print("number of for loop " + str(index))
+                wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=200)
+
+            #wdnn_model.fit(input_fn=lambda: wdnn.input_fn(df, conf_data['node_id'], data_conf_info), steps=100)
+            results = wdnn_model.evaluate(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=1)
             for key in sorted(results):
                 print("%s: %s" % (key, results[key]))
 
             #feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
             print("end")
             #with tf.Session() as sess:
+
+            #Todo H5 
+
+            # train per files in folder h5용
+            #if multi_file flag = no이면 기본이 h5임
+            while(train_data_set.has_next()) :
+                print("h5")
+                #파일이 하나 돌때마다
+                #for 배치사이즈와 파일의 총갯수를 가져다가 돌린다. -> 마지막에 뭐가 있을지 구분한다.
+                 #파일에 iter를 넣으면 배치만큼 가져오는 fn이 있음 그걸 __itemd에 넣고
+                # Input 펑션에서 multi를 vk판단해서 col와 ca를 구분한다.(이걸 배치마다 할 필요가 있나?)
+                # -> 그러면서 피팅
+                #
+                # # Iteration is to improve for Model Accuracy
+                # for x in range(0, self.iter_size) :
+                #     # Per Line in file
+                #     for i in range(0, train_data_set.data_size(), self.batch_size):
+                #         data_set = train_data_set[i:i + self.batch_size]
+                #         if (update_flag == False):
+                #             model.build_vocab(data_set.tolist(), update=False)
+                #             update_flag = True
+                #         else:
+                #             model.build_vocab(data_set.tolist(), update=True)
+                #         model.train(data_set.tolist())
+                # #Select Next file
+                train_data_set.next()
         except Exception as e:
             print ("Error Message : {0}".format(e))
             raise Exception(e)
 
 
         return None
+
+    def generator_len(self, it):
+        """
+                Help for Generator length promote util class(?)
+                :param it : python generator
+                :return: length of generator
+        """
+        return len(list(it))
 
     def read_hdf5_chunk(self,filename):
 
@@ -184,3 +228,5 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.model_path = wf_net_conf.model_path
         self.hidden_layers = wf_net_conf.hidden_layers
         self.activation_function = wf_net_conf.activation_function
+        self.batch_size = wf_net_conf.batch_size
+        self.epoch = wf_net_conf.epoch

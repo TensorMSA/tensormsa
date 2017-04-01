@@ -63,7 +63,8 @@ class DataNodeFrame(DataNode):
                 #make tfrecord for multi Threading
                     if _multi_node_flag == True:
                         skip_header = False
-                        self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read)
+                        #Todo Have to remove if production
+                        #self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read)
             except Exception as e:
                 raise Exception(e)
             return None

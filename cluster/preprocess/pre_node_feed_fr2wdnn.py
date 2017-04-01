@@ -16,7 +16,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
     def _convert_data_format(self, obj, index):
         pass
 
-    def create_feature_columns(self):
+    def create_feature_columns(self, dataconf = None):
         # Sparse base columns.
             # cate < class 'list'>: ['workclass', 'occupation', 'relationship', 'native_country', 'marital_status', 'sex',
             #                   'education', 'race']
@@ -73,7 +73,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             label,
         ])
 
-    def input_fn(self, mode, data_file, batch_size):
+    def input_fn(self, mode, data_file, batch_size, dataconf = None):
         try:
             input_features = self.create_feature_columns()
             features = tf.contrib.layers.create_feature_spec_for_parsing(input_features)
@@ -105,3 +105,72 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             raise e
 
         return feature_map, target
+
+        def input_fn2(self, mode, data_file, df, nnid, dataconf):
+            """Wide & Deep Network input tensor maker
+                V1.0    16.11.04    Initial
+                    :param df : dataframe from hbase
+                    :param df, nnid
+                    :return: tensor sparse, constraint """
+            try:
+                self.df_validation(df, dataconf)
+
+                # remove NaN elements
+                df = df.dropna(how='any', axis=0)
+                # df_test = df_test.dropna(how='any', axis=0)
+
+                ##Make List for Continuous, Categorical Columns
+                CONTINUOUS_COLUMNS = []
+                CATEGORICAL_COLUMNS = []
+                ##Get datadesc Continuous and Categorical infomation from Postgres nninfo
+                # json_string = self.get_json_by_nnid(nnid) # DATACONF
+                # json_object = json_string
+
+                j_feature = dataconf['cell_feature']
+                for cn, c_value in j_feature.items():
+                    if c_value["column_type"] == "CATEGORICAL":
+                        CATEGORICAL_COLUMNS.append(cn)
+                    elif c_value["column_type"] == "CONTINUOUS":
+                        CONTINUOUS_COLUMNS.append(cn)
+                    elif c_value["column_type"] == "CATEGORICAL_KEY":
+                        CATEGORICAL_COLUMNS.append(cn)
+
+                        # {"data_conf": {"label": {"income_bracket": "LABEL"}, "cross_cell": {"col1": ["occupation", "education"], "col2": ["native_country", "occupation"]}, "cell_feature": {"age": {"column_type": "CONTINUOUS"}, "race": {"column_type": "CATEGORICAL"}, "gender": {"keys": ["female", "male"], "column_type": "CATEGORICAL_KEY"}, "education": {"column_type": "CATEGORICAL"}, "workclass": {"column_type": "CATEGORICAL"}, "occupation": {"column_type": "CATEGORICAL"}, "capital_gain": {"column_type": "CONTINUOUS"}, "capital_loss": {"column_type": "CONTINUOUS"}, "relationship": {"column_type": "CATEGORICAL"}, "education_num": {"column_type": "CONTINUOUS"}, "hours_per_week": {"column_type": "CONTINUOUS"}, "marital_status": {"column_type": "CATEGORICAL"}, "native_country": {"column_type": "CATEGORICAL"}}, "Transformations": {"col1": {"boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65], "column_name": "age"}}}}
+                # Check Continuous Column is exsist?
+                if len(CONTINUOUS_COLUMNS) > 0:
+                    # print(CONTINUOUS_COLUMNS)
+
+                    continuous_cols = {k: tf.constant(df[k].values) for k in CONTINUOUS_COLUMNS}
+                # Check Categorical Column is exsist?
+                if len(CATEGORICAL_COLUMNS) > 0:
+
+                    for k in CATEGORICAL_COLUMNS:
+                        df[k] = df[k].astype('str')
+
+                    categorical_cols = {k: tf.SparseTensor(
+                        indices=[[i, 0] for i in range(df[k].size)],
+                        values=df[k].values,
+                        dense_shape=[df[k].size, 1])
+                                        for k in CATEGORICAL_COLUMNS}
+
+                # Merges the two dictionaries into one.
+                feature_cols = {}
+                if (len(CONTINUOUS_COLUMNS) > 0):
+                    feature_cols.update(continuous_cols)
+                if len(CATEGORICAL_COLUMNS) > 0:
+                    feature_cols.update(categorical_cols)
+
+
+                # dataconf
+                LABEL_COLUMN = 'label'
+                df[LABEL_COLUMN] = (df['income_bracket'].apply(lambda x: '>50K' in x)).astype(int)
+
+
+
+
+                label = tf.constant(df["label"].values)
+
+                return feature_cols, label
+            except Exception as e:
+                print("Error Message : {0}".format(e))
+                raise Exception(e)

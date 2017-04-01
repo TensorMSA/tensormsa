@@ -29,6 +29,20 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         """
         return self.conf['activation_function']
 
+    @property
+    def batch_size(self):
+        """
+        getter for preprocess
+        """
+        return self.conf['batch_size']
+
+    @property
+    def epoch(self):
+        """
+        getter for preprocess
+        """
+        return self.conf['epoch']
+
 
     def __init__(self, key = None):
         """
@@ -36,8 +50,9 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         :param key:
         :return:
         """
-        self.key = key
-        self.conf = self.get_step_source(key)
+        if key is not None :
+            self.key = key
+            self.conf = self.get_step_source(key)
 
     def get_step_source(self, nnid):
         """
@@ -95,7 +110,8 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
                 config_data['model_path'] = get_model_path(nnid, ver, node)
                 config_data['hidden_layers'] = input_data['hidden_layers']
                 config_data['activation_function'] = input_data['activation_function']
-                # config_data['source_type'] = src
+                config_data['batch_size'] = input_data['batch_size']
+                config_data['epoch'] = input_data['epoch']
                 # config_data['source_parse_type'] = form
                 # config_data['source_server'] = input_data['source_server']
                 # config_data['source_sql'] = input_data['source_sql']

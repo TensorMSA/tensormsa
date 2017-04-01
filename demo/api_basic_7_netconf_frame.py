@@ -11,7 +11,9 @@ try:
                         json={
                             "model_path": "test",
                             "hidden_layers": [100,50],
-                            "activation_function": "Relu"
+                            "activation_function": "Relu",
+                            "batch_size" : 9000,
+                            "epoch" : 200
                         })
     data = json.loads(resp.json())
     print("evaluation result : {0}".format(data))
