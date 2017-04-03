@@ -14,6 +14,7 @@ from cluster.common.train_summary_info import TrainSummaryInfo
 import operator
 from PIL import Image
 from cluster.data.data_node_image import DataNodeImage
+from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
 
 class NeuralNetNodeReNet(NeuralNetNode):
     """
@@ -165,9 +166,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
             if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
                     netconfig = WorkFlowNetConfReNet().get_view_obj(node_id)
                     batch_size = netconfig['batch_size']
-                    #nb_classes = netconfig['nb_classes']
-                    #nb_epoch = netconfig['nb_epoch']
-                    #data_augmentation = (netconfig['data_augmentation'] == 'True')
                     model = keras.models.load_model(''.join([self.md_store_path, '/model.bin']))
                     filelist = sorted(parm.items(), key=operator.itemgetter(0))
                     data = {}
@@ -228,7 +226,74 @@ class NeuralNetNodeReNet(NeuralNetNode):
         :return:
         """
         print('nneval')
-        config = {"type" : "category", "labels" : ['car','airplane']}
-        train = TrainSummaryInfo(config)
-        train.set_result_info('car','car')
-        return
+        try:
+            eval_config_data = WorkFlowEvalConfig().get_step_source(node_id)
+            data_node = self.get_linked_prev_node_with_grp('data')
+            data_node_name = data_node[0].get_node_name()
+            data_config_data = WorkFlowDataImage().get_step_source(data_node_name)
+            labels = data_config_data["labels"]
+            config = {"type" : eval_config_data["type"], "labels" : labels}
+            train = TrainSummaryInfo(config)
+            self.cls_pool = parm['cls_pool']
+            eval_node = self.cls_pool[node_id]
+            prev_node = eval_node.get_prev_node()
+            if prev_node[0].get_node_grp() == 'preprocess':
+                feed_node_name = prev_node[0].get_node_name()
+            else:
+                feed_node_name = prev_node[1].get_node_name()
+            eval_data_set = self.cls_pool[feed_node_name]
+            self._init_node_parm(self.get_node_name())
+            if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
+                model = keras.models.load_model(''.join([self.md_store_path, '/model.bin']))
+            else:
+                raise Exception('No Model')
+            netconfig = WorkFlowNetConfReNet().get_view_obj(self.get_node_name())
+            batch_size = netconfig['batch_size']
+            nb_classes = netconfig['nb_classes']
+            preprocess = data_config_data['preprocess']
+            # input image dimensions
+            img_rows, img_cols = preprocess['x_size'], preprocess['y_size']
+            # The CIFAR10 images are RGB.
+            img_channels = preprocess['channel']
+            while (eval_data_set.has_next()):
+                for i in range(0, eval_data_set.data_size(), batch_size):
+                    data_set = eval_data_set[i:i + batch_size]
+                    X_train = data_set[0]
+                    targets = data_set[1]
+                    targets_conv = []
+                    len = 0
+                    if data_set[0].size < batch_size:
+                        len = data_set[0].size
+                    else:
+                        len = i + batch_size
+                    rawdata_conv = np.zeros((X_train.size, X_train[0].size))
+                    for j in range(i, len, 1):
+                        targets_conv.append(labels.index(str(targets[j], 'utf-8')))
+                    r = 0
+                    for j in X_train:
+                        j = j.tolist()
+                        rawdata_conv[r] = j
+                        r += 1
+                    rawdata_conv = np.reshape(rawdata_conv, (-1, img_rows, img_cols, img_channels))
+                    y_train = targets_conv[i:i + batch_size]
+
+                    # Convert class vectors to binary class matrices.
+                    Y_train = np_utils.to_categorical(y_train, nb_classes)
+                    # Y_test = np_utils.to_categorical(y_test, nb_classes)
+
+                    X_train = rawdata_conv.astype('float32')
+                    # X_test = X_test.astype('float32')
+
+                    # subtract mean and normalize
+                    mean_image = np.mean(X_train, axis=0)
+                    X_train -= mean_image
+                    # X_test -= mean_image
+                    X_train /= 128.
+                    # X_test /= 128.
+                    result = model.evaluate(X_train, Y_train,1,None)
+                    train.set_result_info('car','car')
+            return train
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            keras.backend.clear_session()

@@ -118,7 +118,7 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfRenet.as_view())),
 
     # workflow - test APIs
-    url(r'^api/v1/type/wf/state/eval/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
+    url(r'^api/v1/type/wf/state/eval/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowEvalConf.as_view())),
 
     # runmanager

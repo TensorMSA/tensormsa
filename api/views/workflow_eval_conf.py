@@ -1,7 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.eval.eval_node_extra import EvalNodeExtra
+from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
 
 
 class WorkFlowEvalConf(APIView) :
@@ -30,12 +30,13 @@ class WorkFlowEvalConf(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, nnid):
+    def put(self, request, nnid, ver, node):
         """
         - desc ; update data
         """
         try:
-            return_data = ""
+            config_data = request.data
+            return_data = WorkFlowEvalConfig().put_step_source(nnid,ver,node,config_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

@@ -11,8 +11,8 @@ class TrainSummaryInfo:
                 for j in range(0, len(config["labels"]) - 1, 1):
                     predicts[i][j] = 0
             self.result_info = {"labels": config["labels"], "predicts": predicts}
-        self.acc_info = {}
-        self.loss_info = {}
+        self.acc_info = []
+        self.loss_info = []
         self.type = config["type"]
         self.labels = config["labels"]
 
@@ -51,3 +51,15 @@ class TrainSummaryInfo:
             predicts = self.result_info["predicts"]
             predicts[i][j] = predicts[i][j] + 1
             self.result_info["predicts"] = predicts
+
+    def get_acc_info(self):
+        return self.acc_info
+
+    def set_acc_info(self, acc_info):
+        self.acc_info.append(acc_info)
+
+    def get_loss_info(self):
+        return self.loss_info
+
+    def set_loss_info(self, loss_info):
+        self.loss_info.append(loss_info)
