@@ -176,7 +176,12 @@ class DataNodeFrame(DataNode):
         :return:
         """
         try:
-            return utils.get_filepaths(self.data_store_path)
+            _multi_node_flag = self.multi_node_flag
+            if _multi_node_flag == True:
+                file_path = utils.get_filepaths(self.data_store_path,'h5')
+            else:
+                file_path = utils.get_filepaths(self.data_store_path,'tfrecords')
+            return file_path
         except Exception as e:
             raise Exception(e)
 
