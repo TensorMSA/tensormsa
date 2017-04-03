@@ -481,15 +481,44 @@ class WorkFlowCommonNode :
             line_list.append("{0}/{1}".format(word, tag))
             #Add POS Tagging for divide (kkma and twitter)
             if(tag in ['Punctuation','SF'] or word in ['.', '?']) :
-                if(len(line_list) > self.sent_max_len - 1) :
-                    line_list = line_list[0:self.sent_max_len-1]
-                else :
-                    pad_len = (self.sent_max_len - (len(line_list)+1))
-                    line_list = line_list + ['#'] * pad_len
                 line_list.append('SF')
                 doc_list.append(line_list)
                 line_list = []
         return doc_list
+
+    def encode_pad(self, input_list, max_len = 0, pad_char = '#'):
+        """
+
+        :param pos:
+        :return:
+        """
+        if(max_len == 0) :
+            max_len = self.sent_max_len
+
+        input_list = input_list[0]
+        if (len(input_list) > max_len):
+            output_list = input_list[0:max_len]
+        else:
+            pad_len = (max_len - len(input_list))
+            output_list = [pad_char] * pad_len + input_list
+        return [output_list]
+
+    def decode_pad(self, input_list, max_len = 0, pad_char = '#'):
+        """
+
+        :param pos:
+        :return:
+        """
+        if(max_len == 0) :
+            max_len = self.sent_max_len
+
+        input_list = input_list[0]
+        if (len(input_list) > max_len):
+            output_list = input_list[0:max_len]
+        else:
+            pad_len = (max_len - len(input_list))
+            output_list = input_list + [pad_char] * pad_len
+        return [output_list]
 
     def load_data(self, node_id, parm = 'all'):
         pass
