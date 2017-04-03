@@ -311,7 +311,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             last_word = ""
             output = []
 
-            for word_tuple in mecab.pos(x_input):
+            for word_tuple in self._pad_predict_input(mecab.pos(x_input)):
                 word = ''.join([word_tuple[0], "/" , word_tuple[1]])
                 state = sess.run(self.last_state, feed_dict={self.input_data: self._word_embed_data(np.array([[word]])), self.istate: state})
                 last_word = word
@@ -320,9 +320,24 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             for num in range(self.decoder_seq_length):
                 [probsval, state] = sess.run([self.probs, self.last_state]
                                              , feed_dict={self.input_data: self._word_embed_data(np.array([[word]])), self.istate: state})
-                if(self._get_index2vocab(np.array([[probsval[0]]]))[0][0] not in ['./SF', '?/SF']) :
-                    output = output + self._get_index2vocab(np.array([[probsval[0]]]))
+                word = self._get_index2vocab(np.array([[probsval[0]]]))[0][0]
+                if(word in ['./SF', '?/SF']) :
+                    break
+                else :
+                    output = output + [[word]]
             sess.close()
             return output
         except Exception as e :
             raise Exception(e)
+
+
+    def _pad_predict_input(self, input_tuple):
+        """
+        pad chars for prediction
+        :param input_tuple:
+        :return:
+        """
+        pad_size = self.encoder_seq_length - len(input_tuple)
+        if(pad_size > 0 ) :
+            input_tuple = pad_size * [('#', 'SY')] + input_tuple
+        return input_tuple

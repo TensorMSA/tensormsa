@@ -36,7 +36,7 @@ class DataNodeText(DataNode):
             fp_list = utils.get_filepaths(self.data_src_path)
             for file_path in fp_list :
                 str_buf = self._load_local_files(file_path)
-                conv_buf = self.get_tag_package(self.data_preprocess_type, str_buf)
+                conv_buf = self.encode_pad(self.get_tag_package(self.data_preprocess_type, str_buf))
                 self._save_hdf5(conv_buf)
         except Exception as e:
             raise Exception(e)
