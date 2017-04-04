@@ -31,66 +31,36 @@ wf_ver_id = str(wf_ver_id)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "key" : {"node": node,
-                                  "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id
-                                  }
-                         ,"config": {"learnrate": 0.001,
-                                 "traincnt": 1,
-                                 "batch_size":10000,
-                                 "num_classes":5,
-                                 "predictcnt": 5
-                                 }
-                         ,"layer1": {
-                                 "type": "cnn",
-                                 "active": "relu",
-                                 "cnnfilter": [3, 3],
-                                 "cnnstride": [1, 1],
-                                 "maxpoolmatrix": [2, 2],
-                                 "maxpoolstride": [2, 2],
-                                 "node_in": 1,
-                                 "node_out": 32,
-                                 "regualizer": "",
-                                 "padding": "SAME",
-                                 "droprate": "0.1"
-                                }
-                         ,"layer2": {
-                                 "type": "cnn",
-                                 "active": "relu",
-                                 "cnnfilter": [3, 3],
-                                 "cnnstride": [1, 1],
-                                 "maxpoolmatrix": [2, 2],
-                                 "maxpoolstride": [2, 2],
-                                 "node_in": 32,
-                                 "node_out": 64,
-                                 "regualizer": "",
-                                 "padding": "SAME",
-                                 "droprate": "0.1"
-                                }
-                         ,"layer3": {
-                                 "type": "cnn",
-                                 "active": "relu",
-                                 "cnnfilter": [3, 3],
-                                 "cnnstride": [1, 1],
-                                 "maxpoolmatrix": [2, 2],
-                                 "maxpoolstride": [2, 2],
-                                 "node_in": 64,
-                                 "node_out": 128,
-                                 "regualizer": "",
-                                 "padding": "SAME",
-                                 "droprate": "0.1"
-                                }
-                          ,"out": {
-                                 "active": "softmax",
-                                 "cnnfilter": "",
-                                 "cnnstride": "",
-                                 "maxpoolmatrix": "",
-                                 "maxpoolstride": "",
-                                 "node_in": 128,
-                                 "node_out": 625,
-                                 "regualizer": "",
-                                 "padding": "SAME",
-                                 "droprate": ""
+                         "config": {"learnrate": 0.001,
+                                     "traincnt": 100,
+                                     "batch_size":10000,
+                                     "num_classes":10,
+                                     "predictcnt": 10,
+                                     "layeroutputs":32
+                                     }
+                         ,"layer1": {"type": "cnn",
+                                     "active": "relu",
+                                     "cnnfilter": [3, 3],
+                                     "cnnstride": [1, 1],
+                                     "maxpoolmatrix": [2, 2],
+                                     "maxpoolstride": [2, 2],
+                                     "padding": "SAME",
+                                     "droprate": "0.8",
+                                     "layercnt":2
+                                    }
+                         ,"layer2": {"type": "cnn",
+                                     "active": "relu",
+                                     "cnnfilter": [3, 3],
+                                     "cnnstride": [1, 1],
+                                     "maxpoolmatrix": [2, 2],
+                                     "maxpoolstride": [2, 2],
+                                     "padding": "SAME",
+                                     "droprate": "0.8",
+                                     "layercnt":1
+                                    }
+                          ,"out": {"active": "softmax",
+                                   "node_out": 625,
+                                   "padding": "SAME"
                                 }
                         })
 netconf = json.loads(resp.json())
@@ -98,13 +68,7 @@ netconf = json.loads(resp.json())
 
 # CNN Network WorkFlow Node :  Eval Config Setup
 node = "eval_node"
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
-                    json={
-                      "key" : {"node": node,
-                                  "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id
-                                  }
-                    })
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={})
 evalconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(evalconf))
 
@@ -112,11 +76,7 @@ evalconf = json.loads(resp.json())
 node = "datasrc"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                            "key" : {"node": node,
-                                  "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id
-                                  }
-                         ,"preprocess": {"x_size": 32,
+                            "preprocess": {"x_size": 32,
                                         "y_size": 32,
                                         "channel":3}
                          ,"labels":[]
@@ -130,11 +90,7 @@ dataconf = json.loads(resp.json())
 node = 'evaldata'
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                            "key" : {"node": node,
-                                  "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id
-                                  }
-                         ,"preprocess": {"x_size": 32,
+                            "preprocess": {"x_size": 32,
                                         "y_size": 32,
                                         "channel":3}
                          ,"labels":[]

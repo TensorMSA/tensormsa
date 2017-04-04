@@ -38,7 +38,7 @@ class WorkFlowNetConfCnn(APIView) :
             input_data = json.loads(str(request.body, 'utf-8'))
             if(WorkFlowNetConfCNN().validation_check(input_data)) :
                 node_id = nnid+'_'+ver+'_'+node
-                return_data = WorkFlowNetConfCNN().set_view_obj(node_id, input_data)
+                return_data = WorkFlowNetConfCNN().set_view_obj_path(nnid, ver, node, node_id, input_data)
             else :
                 return_data = {'message' : 'data validation error'}
             return Response(json.dumps(return_data))

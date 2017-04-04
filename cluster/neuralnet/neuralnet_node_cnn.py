@@ -63,97 +63,93 @@ def get_model(netconf, dataconf, type):
     y_size = dataconf["preprocess"]["y_size"]
     channel = dataconf["preprocess"]["channel"]
     num_classes = netconf["config"]["num_classes"]
-
     learnrate = netconf["config"]["learnrate"]
+    numoutputs = netconf["config"]["layeroutputs"]
+    prenumoutputs = 1
     global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
     ################################################################
     X = tf.placeholder(tf.float32, shape=[None, x_size, y_size, channel], name='x')
     Y = tf.placeholder(tf.float32, shape=[None, num_classes], name='y')
     ################################################################
-    net_check = "S"
     stopper = 1
     model = X
-    try:
-        while True:
-            try:
-                layer = netconf["layer" + str(stopper)]
-            except Exception as e:
-                if stopper == 1:
-                    net_check = "Error[100] .............................................."
-                    model = "layer is None."
-                    return net_check, model
-                break
-            println(layer)
+    net_check = 'S'
 
-            try:
-                if str(layer["active"]) == 'relu':
+    while True:
+        try:
+            layer = netconf["layer" + str(stopper)]
+        except Exception as e:
+            if stopper == 1:
+                net_check = "Error[100] layer is None ..............................."
+                return net_check
+            break
+        stopper += 1
+
+        try:
+            layercnt = layer["layercnt"]
+            for i in range(layercnt):
+                # println(layer)
+                if prenumoutputs == 1:
+                    prenumoutputs = numoutputs
+                else:
+                    numoutputs = prenumoutputs*2
+                    prenumoutputs = numoutputs
+                active          = str(layer["active"])
+                convkernelsize  = [int((layer["cnnfilter"][0])), int((layer["cnnfilter"][1]))]
+                maxpkernelsize  = [int((layer["maxpoolmatrix"][0])), int((layer["maxpoolmatrix"][1]))]
+                stride          = [int((layer["maxpoolstride"][0])), int((layer["maxpoolstride"][1]))]
+                padding         = str((layer["padding"]))
+
+                if active == 'relu':
                     activitaion = tf.nn.relu
                 else:
                     activitaion = tf.nn.relu
-
-                model = tf.contrib.layers.conv2d(inputs=model
-                                              , num_outputs=int(layer["node_out"])
-                                              , kernel_size=[int((layer["cnnfilter"][0])), int((layer["cnnfilter"][1]))]
-                                              , activation_fn=activitaion
-                                              , weights_initializer=tf.contrib.layers.xavier_initializer_conv2d()
-                                              , padding=str((layer["padding"])))
-
-                model = tf.contrib.layers.max_pool2d(inputs=model
-                                                  , kernel_size=[int((layer["maxpoolmatrix"][0])),
-                                                                 int((layer["maxpoolmatrix"][1]))]
-                                                  , stride=[int((layer["maxpoolstride"][0])),
-                                                            int((layer["maxpoolstride"][1]))]
-                                                  , padding=str((layer["padding"])))
 
                 if str(layer["droprate"]) is not "":
                     droprate = float((layer["droprate"]))
                 else:
                     droprate = 0.0
 
+                model = tf.contrib.layers.conv2d(inputs=model
+                                                 , num_outputs=numoutputs
+                                                 , kernel_size=convkernelsize
+                                                 , activation_fn=activitaion
+                                                 , weights_initializer=tf.contrib.layers.xavier_initializer_conv2d()
+                                                 , padding=padding)
+
+                model = tf.contrib.layers.max_pool2d(inputs=model
+                                                     , kernel_size=maxpkernelsize
+                                                     , stride=stride
+                                                     , padding=padding)
+
                 if droprate > 0.0 and type == "T":
                     model = tf.nn.dropout(model, droprate)
 
                 println(model)
-            except Exception as e:
-                net_check = "Error[200] .............................................."
-                model = e
-                return net_check, model
+        except Exception as e:
+            net_check = "Error[200] Model Create Fail."
+            println(net_check)
+            println(e)
 
-            stopper += 1
-            if (stopper >= 1000):
-                break
+    fclayer = netconf["out"]
+    reout = int(model.shape[1]) * int(model.shape[2]) * int(model.shape[3])
+    model = tf.reshape(model, [-1, reout])
+    println(model)
+    W1 = tf.Variable(tf.truncated_normal([reout, fclayer["node_out"]], stddev=0.1))
+    model = tf.nn.relu(tf.matmul(model, W1))
+    println(model)
+    W5 = tf.Variable(tf.truncated_normal([fclayer["node_out"], num_classes], stddev=0.1))
+    model = tf.matmul(model, W5)
+    println(model)
 
-        fclayer = netconf["out"]
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
+    optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
+    y_pred_cls = tf.argmax(model, 1)
+    check_prediction = tf.equal(y_pred_cls, tf.argmax(Y, 1))
+    accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
-        # 1. softmax
-        reout = int(model.shape[1])*int(model.shape[2])*int(model.shape[3])
-        model = tf.reshape(model, [-1, reout])
-        println(model)
-        W1 = tf.Variable(tf.truncated_normal([reout, fclayer["node_out"]], stddev=0.1))
-        model = tf.nn.relu(tf.matmul(model, W1))
-        println(model)
-        W5 = tf.Variable(tf.truncated_normal([fclayer["node_out"], num_classes], stddev=0.1))
-        model = tf.matmul(model, W5)
-        println(model)
-        #     # # 2. tf.contrib.layers.fully_connected
-        #     model = tf.contrib.layers.flatten(model)
-        #     model = tf.contrib.layers.fully_connected(model, fclayer["node_out"],
-        #                                            normalizer_fn=tf.contrib.layers.batch_norm)
-        #     model = tf.contrib.layers.fully_connected(model, num_classes)
+    return net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost
 
-        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
-        optimizer = tf.train.AdamOptimizer(learning_rate=learnrate).minimize(cost, global_step=global_step)
-        y_pred_cls = tf.argmax(model, 1)
-        check_prediction = tf.equal(y_pred_cls, tf.argmax(Y, 1))
-        accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
-
-    except Exception as e:
-        net_check = "Error[300] .............................................."
-        println(net_check)
-        println(e)
-        model = e
-
-    return net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step
 ########################################################################
 def get_batch_data(data_set, dataconf, num_classes, type):
     x_size = dataconf["preprocess"]["x_size"]
@@ -230,7 +226,8 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
     train_cnt = netconf["config"]["traincnt"]
     model_path = netconf["modelpath"]
     save_path = model_path + "/" + modelname
-
+    result = ["Trainning ................................................."]
+    return_arr.append(result)
     with tf.Session() as sess:
         try:
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
@@ -247,7 +244,7 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
             i_global, _ = sess.run([global_step, optimizer], feed_dict=feed_dict_train)
 
             # Print status to screen every 10 iterations (and last).
-            if (i_global % 10 == 0) or (i == train_cnt - 1):
+            if (i_global % 100 == 0) or (i == train_cnt - 1):
                 # Calculate the accuracy on the training-batch.
                 batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
                 msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
@@ -259,12 +256,14 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
             # Save a checkpoint to disk every 100 iterations (and last).
             if (i_global % 100 == 0) or (i == train_cnt - 1):
                 model_checkpoint_path = saver.save(sess, save_path=save_path, global_step=global_step)
-                println("train model_checkpoint_path=======================================================================")
-                model_checkpoint_path +=".data-00000-of-00001"
-                println(model_checkpoint_path)
-                println(os.path.isfile(model_checkpoint_path))
+                # println("train model_checkpoint_path=======================================================================")
+                # model_checkpoint_path +=".data-00000-of-00001"
+                # println(model_checkpoint_path)
+                # println(os.path.isfile(model_checkpoint_path))
                 model_file_delete(model_path, modelname)
 
+    result = ''
+    return_arr.append(result)
     println("Saved checkpoint.")
     return return_arr
 ########################################################################
@@ -297,14 +296,31 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
 
     return_arr = {}
     result = []
+
+    strResult = "['Eval ......................................................']"
+    result.append(strResult)
+    totCnt = 0
+    tCnt = 0
+    fCnt = 0
     for i in range(len(labels)):
         strResult  = "Category : " + labels[i] + spaceprint(labels[i], 15)
+        strResult += "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 15)
         strResult += "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]), 15)
         strResult += "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]), 15)
-        strResult += "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 15)
         strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%"
+        totCnt += t_cnt_arr[i] + f_cnt_arr[i]
+        tCnt += t_cnt_arr[i]
+        fCnt += f_cnt_arr[i]
         println(strResult)
         result.append(strResult)
+    strResult = "Total Category="+str(len(labels))+ spaceprint(str(len(labels)), 11)
+    strResult += "TotalCnt="+str(totCnt)+ spaceprint(str(totCnt), 15)
+    strResult += "TrueCnt="+str(tCnt)+ spaceprint(str(tCnt), 15)
+    strResult += "FalseCnt="+str(fCnt)+ spaceprint(str(fCnt), 15)
+    strResult += "True Percent(TrueCnt/TotalCnt*100)="+ str(round(tCnt / totCnt * 100)) + "%"
+
+    result.append(strResult)
+    # println(result)
     return_arr = result
     println("###################################################################################################")
 
@@ -333,10 +349,10 @@ def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, label
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
             saver = tf.train.Saver()
 
-            println("eval model_checkpoint_path=======================================================================")
-            last_chk_path_file = last_chk_path+".data-00000-of-00001"
-            println(last_chk_path_file)
-            println(os.path.isfile(last_chk_path_file))
+            # println("eval model_checkpoint_path=======================================================================")
+            # last_chk_path_file = last_chk_path+".data-00000-of-00001"
+            # println(last_chk_path_file)
+            # println(os.path.isfile(last_chk_path_file))
             # last_chk_path = "/hoya_model_root/nn00004/30/netconf_node/model_nn00004_30-11"
             saver.restore(sess, save_path=last_chk_path)
             println("Restored checkpoint from:" + last_chk_path)
@@ -460,7 +476,14 @@ class NeuralNetNodeCnn(NeuralNetNode):
     """
     """
     def _init_node_parm(self, node_id):
-        None
+        self.net_check = None
+        self.model = None
+        self.X = None
+        self.Y = None
+        self.optimizer = None
+        self.y_pred_cls = None
+        self.accuracy = None
+        self.global_step = None
 
     def _set_progress_state(self):
         return None
@@ -469,6 +492,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         println("run NeuralNetNodeCnn Train")
         # println(conf_data)
         node_id = conf_data['node_id']
+        self._init_node_parm(node_id)
         return_data = ""
         feed_node = self.get_prev_node()
         return_data = {}
@@ -481,17 +505,26 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 ################################################################
                 netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
-                netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(netconf, dataconf)
+                netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(node_id, netconf, dataconf)
 
-                # net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(netconf, dataconf, "T")
-                # println(model)
+                net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost = get_model(netconf, dataconf, "T")
+                println(model)
 
-        #         if net_check == "S":
-        #             cls_pool = conf_data['cls_pool']
-        #             input_data = cls_pool[feed_name]
-        #             return_arr = train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
-        #         else:
-        #             println("net_check=" + net_check)
+                self.net_check = net_check
+                self.model = model
+                self.X = X
+                self.Y = Y
+                self.optimizer = optimizer
+                self.y_pred_cls = y_pred_cls
+                self.accuracy = accuracy
+                self.global_step = global_step
+
+                if net_check == "S":
+                    cls_pool = conf_data['cls_pool']
+                    input_data = cls_pool[feed_name]
+                    return_arr = train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
+                else:
+                    println("net_check=" + net_check)
         return_data["TrainResult"] = return_arr
 
         println("end NeuralNetNodeCnn Train")
@@ -516,22 +549,17 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 ###############################################################
                 netconf = WorkFlowNetConfCNN().get_view_obj(netconf_node_id)
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
-                netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(netconf, dataconf)
+                # netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(node_id, netconf, dataconf)
 
-                net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(netconf, dataconf, "P")
-                println(model)
-
-                if net_check == "S":
+                if self.net_check == "S":
                     cls_pool = conf_data['cls_pool']
                     net_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
                     for data_name in net_node_name:
                         if data_name.find("eval") > 0:
                             input_data = cls_pool[data_name]
-                            return_arr = eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_pred_cls, global_step)
+                            return_arr = eval_cnn(input_data, netconf, dataconf, self.X, self.Y, self.optimizer, self.accuracy, self.model, self.y_pred_cls, self.global_step)
                 else:
-                    println("net_check=" + net_check)
-
-                println("eval end........")
+                    println("net_check=" + self.net_check)
 
         println("end NeuralNetNodeCnn eval")
 
@@ -550,14 +578,23 @@ class NeuralNetNodeCnn(NeuralNetNode):
         """
         println("run NeuralNetNodeCnn Predict")
         println(node_id)
-
+        self._init_node_parm(node_id)
         ################################################################
         data_node_name = self._get_backward_node_with_type(node_id, 'data')
         netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
         dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
 
-        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(netconf, dataconf, "P")
+        net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost = get_model(netconf, dataconf, "P")
         println(model)
+
+        self.net_check = net_check
+        self.model = model
+        self.X = X
+        self.Y = Y
+        self.optimizer = optimizer
+        self.y_pred_cls = y_pred_cls
+        self.accuracy = accuracy
+        self.global_step = global_step
 
         if net_check == "S":
             data = predict_run(filelist, netconf, dataconf, model, y_pred_cls, X)
@@ -566,6 +603,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         println("end NeuralNetNodeCnn Predict")
         # NeuralNetNodeCnn().eval_cnn(conf_data)
+
         return data
 
 

@@ -8,7 +8,7 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
     """
 
     """
-    def set_num_classes_predcnt(self, netconf, dataconf):
+    def set_num_classes_predcnt(self, node_id, netconf, dataconf):
         self.validation_check(netconf)
         labels = dataconf["labels"]
         num_classes = netconf["config"]["num_classes"]
@@ -22,17 +22,13 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         netconf["config"]["num_classes"] = num_classes
         netconf["config"]["predictcnt"] = pred_cnt
 
-        nn_id = netconf["key"]["nn_id"]
-        wfver = netconf["key"]["wf_ver_id"]
-        node = netconf["key"]["node"]
-        node_id = nn_id+'_'+wfver+'_'+node
         obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
 
         setattr(obj, "node_config_data", netconf)
         obj.save()
         return netconf
 
-    def set_view_obj(self, node_id, input_data):
+    def set_view_obj_path(self, nn_id, wfver, node, node_id, input_data):
         """
         set net config data edited on view
         :param obj:
@@ -41,9 +37,6 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         try:
             self.validation_check(input_data)
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
-            nn_id = input_data["key"]["nn_id"]
-            wfver = input_data["key"]["wf_ver_id"]
-            node = input_data["key"]["node"]
             input_data["modelpath"] = get_model_path(nn_id, wfver, node)
             input_data["modelname"] = "model_"+nn_id+"_"+wfver
             setattr(obj, "node_config_data", input_data)
