@@ -58,7 +58,7 @@ class DataConfNodeFrame( DataConfNode):
         """
         try:
             wf_data_conf = WorkflowDataConfFrame(key)
-            self.data_conf = wf_data_conf.data_conf
+            self.data_conf = wf_data_conf.conf
         except Exception as e:
             raise Exception("dataconf_node_fame._init_node_parm Initializing Error : " +str(e))
 

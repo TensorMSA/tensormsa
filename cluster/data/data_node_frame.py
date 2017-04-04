@@ -58,13 +58,43 @@ class DataNodeFrame(DataNode):
                     df_csv_read = self.load_csv_by_pandas(file_path)
                     self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'])
                     self.create_hdf5(self.data_store_path, df_csv_read)
+
                     #os.remove(file_path)
+
+
 
                 #make tfrecord for multi Threading
                     if _multi_node_flag == True:
                         skip_header = False
                         #Todo Have to remove if production
                         #self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read)
+                    #for wdnn
+                    data_dfconf_list = self.get_linked_next_node_with_type('data_dfconf')
+                    #Wdnn인경우 data_dfconf가 무조껀 한개만 존재 하므로 아래와 같은 로직이 가능
+                    if len(data_dfconf_list) > 0:
+                        _key = data_dfconf_list[0].node_name
+                        _nnid = _key.split('_')[0]
+                        _ver = _key.split('_')[1]
+                        _node = 'dataconf_node'
+
+                        _wf_data_conf = wf_data_conf(_key)
+                        if hasattr(_wf_data_conf,'label') == True:
+                            # label check
+                            _label = _wf_data_conf.label
+                            origin_labels_list = _wf_data_conf.label_values
+                            compare_labels_list = self.set_dataconf_for_labels(df_csv_read,_label)
+                            combined_label_list = utils.get_combine_label_list(origin_labels_list,compare_labels_list )
+                            #리스트를 합친다음 DB에 업데이트 한다.
+                            _data_conf = dict()
+                            _data_conf['label_values'] = combined_label_list
+                            _wf_data_conf.put_step_source(_nnid, _ver,_node, _data_conf )
+
+                            print(_wf_data_conf.label)
+                        print(_wf_data_conf)
+                        #data_conf
+                        #label_vales
+
+
             except Exception as e:
                 raise Exception(e)
             return None
@@ -216,7 +246,7 @@ class DataNodeFrame(DataNode):
 
     def set_default_dataconf_from_csv(self,wf_data_config, node_id, data_conf):
         """
-        csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
+
         :param wf_data_config, df, nnid, ver, node:
         :param conf_data:
         tfrecord 때문에 항상 타입을 체크하고 필요할때만 저장
@@ -250,6 +280,7 @@ class DataNodeFrame(DataNode):
         """
         #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
         data_conf = dict()
+        data_conf_cel = dict()
         data_conf_col_type = dict()
         #data_conf_label = dict()
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
@@ -263,13 +294,31 @@ class DataNodeFrame(DataNode):
                 col_type = 'CATEGORICAL'
             column_dtypes['column_type'] = col_type
             data_conf_col_type[i] = column_dtypes
-        data_conf['cell_feature'] = data_conf_col_type
+        data_conf_cel['cell_feature'] = data_conf_col_type
+        data_conf['data_conf'] = data_conf_cel
         data_conf_json_str = json.dumps(data_conf)
         data_conf_json = json.loads(data_conf_json_str)
 
         # DATACONF_FRAME_CALL
         #wf_data_config.put_step_source(node_id, data_conf_json)
         return data_conf_json
+
+
+    def set_dataconf_for_labels(self, df, label):
+        """
+        csv를 읽고 label의 distict 값을 가져옴
+        Extract distinct label values
+        :param wf_data_config, df, nnid, ver, node:
+        :param conf_data:
+        """
+        #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
+
+        label_values = dict()
+
+        label_values = list(pd.unique(df[label].values.ravel()))
+        # DATACONF_FRAME_CALL
+        #wf_data_config.put_step_source(node_id, label_values)
+        return label_values
 
     def _set_progress_state(self):
         return None

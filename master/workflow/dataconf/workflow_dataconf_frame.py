@@ -18,6 +18,46 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
             self.key = key
             self.conf = self.get_step_source(key)
 
+    @property
+    def cell_feature(self):
+        """
+        getter for object type
+        """
+        return self.conf['cell_feature']
+    @property
+    def extend_cell_feature(self):
+        """
+        getter for object type
+        """
+        return self.conf['extend_cell_feature']
+    @property
+    def Transformations(self):
+        """
+        getter for object type
+        """
+        return self.conf['Transformations']
+    @property
+    def cross_cell(self):
+        """
+        getter for object type
+        """
+        return self.conf['cross_cell']
+    @property
+    def label_values(self):
+        """
+        getter for object type
+        """
+        return self.conf['label_values']
+    @property
+    def label(self):
+        """
+        getter for object type
+        """
+        return self.conf['label']
+
+
+
+
     #data_conf
     def get_view_obj(self):
         """
@@ -71,11 +111,24 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
         :param obj: config data from view
         :return:boolean
         """
+# "label":
+# "Transformations":
+# "cross_cell"
+# "cell_feature":
+# "extend_cell_feature":
+# "label_values":
 
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(ver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
-            config_data['data_conf'] = input_data
+            #ternary operator if else statement
+            config_data['label'] = input_data('label') if 'label' in input_data else config_data['label']
+            config_data['Transformations'] = input_data.get('Transformations') if 'Transformations' in input_data else config_data['Transformations']
+            config_data['cross_cell'] = input_data.get('cross_cell') if 'cross_cell' in input_data else config_data['cross_cell']
+            config_data['cell_feature'] = input_data.get('cell_feature') if 'cell_feature' in input_data else config_data['cell_feature']
+            config_data['extend_cell_feature'] = input_data.get('extend_cell_feature') if 'extend_cell_feature' in input_data else config_data['extend_cell_feature']
+            config_data['label_values'] = input_data.get('label_values') if 'label_values' in input_data else config_data['label_values']
+
             setattr(obj, 'node_config_data', config_data)
             obj.save()
             return config_data

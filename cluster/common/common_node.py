@@ -224,20 +224,21 @@ class WorkFlowCommonNode :
     def get_linked_next_node_with_type(self, type):
         """
         get linked node forward with type
+        bug fix prev node to next node
         :param type:
         :return:
         """
         return_obj_list = []
         obj = self
 
-        obj_prev = obj.get_prev_node()
-        if(len(obj_prev) == 0):
+        obj_next = obj.get_next_node()
+        if(len(obj_next) == 0):
             return []
 
-        for i in range(len(obj_prev)):
-            if(obj_prev[i].get_node_grp() == type) :
-                return_obj_list.append(obj_prev[i])
-            return  return_obj_list + obj_prev[i].get_linked_next_node_with_type(type)
+        for i in range(len(obj_next)):
+            if(obj_next[i].get_node_type() == type) :
+                return_obj_list.append(obj_next[i])
+            return  return_obj_list + obj_next[i].get_linked_next_node_with_type(type)
 
     def find_prev_node(self, node_name, node_list):
         """

@@ -6,8 +6,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
-                     json={"label":
-                               {"income_bracket": "LABEL"}
+                     json={"label": "income_bracket"
                          , "Transformations":
                                {"age_buckets": {"boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65], "column_name": "age"}}
                          , "cross_cell": {"col3": ["age_buckets", "education", "occupation"]
@@ -28,8 +27,14 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/fra
                                    , "relationship": {"column_type": "CATEGORICAL"}
                                    , "marital_status": {"column_type": "NONE"}
                                    , "race": {"column_type": "NONE"}
-
                                 }
+                           , "extend_cell_feature" :
+                               {
+                                    "sex": {"keys": ["female", "male"], "column_type": "CATEGORICAL_KEY"}
+                                   , "race": {"column_type": "NONE"}
+                                   , "marital_status": {"column_type": "NONE"}
+                               }
+                           ,"label_values" : ["50<=", "50="]
                            })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
