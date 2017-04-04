@@ -6,7 +6,6 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 ##################################################
 # Data Menu
 ##################################################
-
 # insert menu info
 resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/',
                      json={
@@ -14,6 +13,18 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/',
                         "wf_task_menu_name": "data",
                         "wf_task_menu_desc": "data",
                         "visible_flag": True
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert raw submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/data/submenu/',
+                     json={
+                        "wf_task_submenu_id": "data_raw",
+                        "wf_task_submenu_name": "data_raw",
+                        "wf_task_submenu_desc": "data_raw",
+                        "wf_node_class_path": "cluster.data.data_node_raw",
+                        "wf_node_class_name": "DataNodeRaw"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -53,7 +64,6 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/data/submenu
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
-
 
 ##################################################
 # PreProcess Menu

@@ -438,7 +438,7 @@ class WorkFlowSimpleManager :
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_data_node'
             input_data['nn_wf_node_name'] = 'data_node'
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['wf_task_submenu_id'] = 'data_text'
+            input_data['wf_task_submenu_id'] = 'data_raw'
             input_data['wf_node_status'] = 0
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
@@ -450,7 +450,7 @@ class WorkFlowSimpleManager :
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_test_data_node'
             input_data['nn_wf_node_name'] = 'test_data_node'
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['wf_task_submenu_id'] = 'data_text'
+            input_data['wf_task_submenu_id'] = 'data_raw'
             input_data['wf_node_status'] = 0
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
