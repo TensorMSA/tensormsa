@@ -36,7 +36,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                   "wf_ver_id": wf_ver_id
                                   }
                          ,"config": {"learnrate": 0.001,
-                                 "traincnt": 20,
+                                 "traincnt": 1,
                                  "batch_size":10000,
                                  "num_classes":5,
                                  "predictcnt": 5
@@ -143,28 +143,23 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/f
 edataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(edataconf))
 
-
-# # Sample Data Insert
-# # (CNN Network Train을 할 수 있게 Sample Data를 특정 장소에 Copy 해준다..)
-# import shutil
-# sample_path = '/home/dev/hoyai/demo/data/sample_cnn_img.zip'
-# source_path = dataconf["source_path"]
-# esource_path = edataconf["source_path"]
-#
-# shutil.copy(sample_path, source_path)
-# shutil.copy(sample_path, esource_path)
-# print(source_path)
-# print(esource_path)
-
 # CNN Network Training
 # (CNN Network Training을 실행한다.)
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
-print("evaluation result : {0}".format(data))
+# print(data)
 
+for train in data:
+    if train != None and train != "" and train != {} and train != "status" and train != "result" and train["TrainResult"] != None:
+        # print(train)
+        for tr in train["TrainResult"]:
+            print(tr)
 
 
 println("E")
+
+
+
 
 
 

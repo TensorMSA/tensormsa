@@ -155,7 +155,7 @@ def get_model(netconf, dataconf, type):
 
     return net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step
 ########################################################################
-def get_batch_data(data_set, dataconf, num_classes):
+def get_batch_data(data_set, dataconf, num_classes, type):
     x_size = dataconf["preprocess"]["x_size"]
     y_size = dataconf["preprocess"]["y_size"]
     channel = dataconf["preprocess"]["channel"]
@@ -165,14 +165,20 @@ def get_batch_data(data_set, dataconf, num_classes):
 
     label_data_batch = data_set[1]
     img_data_batch = data_set[0]
-
-    y_batch = np.zeros((len(label_data_batch), num_classes))
-    r = 0
-    for j in label_data_batch:
-        j = j.decode('UTF-8')
-        k = labels.index(j)
-        y_batch[r] = labelsHot[k]
-        r += 1
+    y_batch = None
+    if type == "T":
+        r = 0
+        y_batch = np.zeros((len(label_data_batch), num_classes))
+        for j in label_data_batch:
+            j = j.decode('UTF-8')
+            k = labels.index(j)
+            y_batch[r] = labelsHot[k]
+            r += 1
+    else:
+        y_batch = []
+        for j in label_data_batch:
+            j = j.decode('UTF-8')
+            y_batch.append(j)
 
     x_batch = np.zeros((len(img_data_batch), len(img_data_batch[0])))
     r = 0
@@ -201,7 +207,7 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
         while (input_data.has_next()):
             for i in range(0, input_data.size(), batchsize):
                 data_set = input_data[i:i + batchsize]
-                x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes)
+                x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes, "T")
                 return_data = train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr)
             input_data.next()
     except Exception as e:
@@ -246,19 +252,23 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
                 batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
                 msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
                 println(msg.format(i_global, batch_acc))
-                result = "Global Step:     "+str(i_global)+", Training Batch Accuracy:  "+str(batch_acc*100)+"%"
+                batch_acc = round(batch_acc*100,2)
+                result = ["Global Step:     "+str(i_global)+", Training Batch Accuracy:  "+str(batch_acc)+"%"]
                 return_arr.append(result)
 
             # Save a checkpoint to disk every 100 iterations (and last).
             if (i_global % 100 == 0) or (i == train_cnt - 1):
-                println("Save model_path=" + model_path)
-                saver.save(sess, save_path=save_path, global_step=global_step)
+                model_checkpoint_path = saver.save(sess, save_path=save_path, global_step=global_step)
+                println("train model_checkpoint_path=======================================================================")
+                model_checkpoint_path +=".data-00000-of-00001"
+                println(model_checkpoint_path)
+                println(os.path.isfile(model_checkpoint_path))
                 model_file_delete(model_path, modelname)
 
     println("Saved checkpoint.")
     return return_arr
 ########################################################################
-def eval_cnn(input_data, netconf, dataconf, X, Y, model, y_pred_cls):
+def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_pred_cls, global_step):
     batchsize = netconf["config"]["batch_size"]
     num_classes = netconf["config"]["num_classes"]
     start_time = time.time()
@@ -270,28 +280,34 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, model, y_pred_cls):
         t_cnt_arr.append(0)
         f_cnt_arr.append(0)
 
-    try:
-        while (input_data.has_next()):
-            for i in range(0, input_data.size(), batchsize):
-                data_set = input_data[i:i + batchsize]
-                x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes)
-                t_cnt_arr, f_cnt_arr = eval_run(x_batch, y_batch, netconf, X, Y, model, y_pred_cls, labels, t_cnt_arr, f_cnt_arr)
-            input_data.next()
-    except Exception as e:
-        net_check = "Error[500] .............................................."
-        println(net_check)
-        println(e)
+    # try:
+    while (input_data.has_next()):
+        for i in range(0, input_data.size(), batchsize):
+            data_set = input_data[i:i + batchsize]
+            x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes, "E")
+            t_cnt_arr, f_cnt_arr = eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr)
+        input_data.next()
+    # except Exception as e:
+    #     net_check = "Error[500] .............................................."
+    #     println(net_check)
+    #     println(e)
 
     println("###################################################################################################")
     println(labels)
+
+    return_arr = {}
+    result = []
     for i in range(len(labels)):
-        println("Category : " + labels[i] + spaceprint(labels[i], 15)
-                + "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]), 15)
-                + "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]), 15)
-                + "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 15)
-                + "True Percent(TrueCnt/TotalCnt*100)=" + str(
-            round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%")
+        strResult  = "Category : " + labels[i] + spaceprint(labels[i], 15)
+        strResult += "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]), 15)
+        strResult += "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]), 15)
+        strResult += "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 15)
+        strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%"
+        println(strResult)
+        result.append(strResult)
+    return_arr = result
     println("###################################################################################################")
+
     # println("TotalCnt=" + str(totalcnt) + " TrueCnt=" + str(t_cnt) + " FalseCnt=" + str(f_cnt))
     # percent = round(t_cnt / totalcnt * 100, 2)
     # println("Total Percent=" + str(percent) + "%")
@@ -305,30 +321,47 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, model, y_pred_cls):
     # Print the time-usage.
     println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
 
-def eval_run(x_batch, y_batch, netconf, X, Y, model, y_pred_cls, labels, t_cnt_arr, f_cnt_arr):
+    return return_arr
+
+def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr):
     model_path = netconf["modelpath"]
+    # init = tf.initialize_all_variables()
+    # tf.all_variables()
     with tf.Session() as sess:
         try:
+            sess.run(tf.initialize_all_variables())
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
             saver = tf.train.Saver()
+
+            println("eval model_checkpoint_path=======================================================================")
+            last_chk_path_file = last_chk_path+".data-00000-of-00001"
+            println(last_chk_path_file)
+            println(os.path.isfile(last_chk_path_file))
+            # last_chk_path = "/hoya_model_root/nn00004/30/netconf_node/model_nn00004_30-11"
             saver.restore(sess, save_path=last_chk_path)
             println("Restored checkpoint from:" + last_chk_path)
 
+            # acc = sess.run(accuracy, feed_dict={X: x_batch, Y: y_batch})
+            # println(acc)
             logits, y_pred_true = sess.run([model, y_pred_cls], feed_dict={X: x_batch})
-            # # println(logits)
+            # println(logits)
+            # println(y_pred_true)
+            # println(y_batch)
+            # # # println(logits)
             for i in range(len(logits)):
-                true_name = y_batch[i].decode('UTF-8')
+                true_name = y_batch[i]
                 pred_name = labels[y_pred_true[i]]
-                println("True Category=" + true_name + " Predict Category=" + pred_name)
-                println(logits[i])
+                # println("True Category=" + true_name + " Predict Category=" + pred_name)
+            #     println(logits[i])
                 idx = labels.index(true_name)
                 if true_name == pred_name:
                     t_cnt_arr[idx] = t_cnt_arr[idx] + 1
                 else:
                     f_cnt_arr[idx] = f_cnt_arr[idx] + 1
         except Exception as e:
-            println("None to restore checkpoint. Initializing variables instead.")
             println(e)
+            println("None to restore checkpoint. Initializing variables instead.")
+    return t_cnt_arr, f_cnt_arr
 
 ########################################################################
 def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
@@ -369,7 +402,7 @@ def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
                         # println(image)
 
                         logits, y_pred_true = sess.run([model, y_pred_cls], feed_dict={X: image})
-                        # println(logits)
+                        println(logits)
                         # println(y_pred_true)
                         # cls_name = labels[y_pred_true[0]]
                         # println(cls_name)
@@ -382,30 +415,32 @@ def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
 
                         onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
                         # println("############################################")
+                        # println(onesort)
                         println("filename=" + filename + " predict=" + labels[int(onesort[0][0])])
                         # println(onesort)
                         data_sub = {}
+                        data_sub_key = []
+                        data_sub_val = []
                         for i in range(pred_cnt):
-                            key = str(i) + "key"
-                            val = str(i) + "val"
-                            data_sub[key] = labels[int(onesort[i][0])]
-                            data_sub[val] = onesort[i][1]
+                            data_sub_key.append(labels[int(onesort[i][0])])
+                            data_sub_val.append(round(onesort[i][1],5))
+                        data_sub["key"] = data_sub_key
+                        data_sub["val"] = data_sub_val
                         data[filename] = data_sub
-                        # println(file)
-                        println(data_sub)
+                        # # println(file)
+                        # println(data_sub)
                     except:
                         data_sub = {}
+                        data_sub_key = []
+                        data_sub_val = []
                         for i in range(pred_cnt):
-                            key = str(i) + "key"
-                            val = str(i) + "val"
-                            data_sub[key] = "Fail"
-                            data_sub[val] = "Fail"
-                        println(file)
-                        println(data_sub)
+                            data_sub_key.append(labels[int(onesort[i][0])])
+                            data_sub_val.append(round(onesort[i][1], 5))
+                        data_sub["key"] = data_sub_key
+                        data_sub["val"] = data_sub_val
                         data[filename] = data_sub
-            println(
-                "###################################################################################################")
-            println(labels)
+            # println("###################################################################################################")
+            # println(labels)
             # for i in range(len(labels)):
             #     println("Category : " + labels[i] +spaceprint(labels[i],15)
             #             + "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]),15)
@@ -425,23 +460,19 @@ class NeuralNetNodeCnn(NeuralNetNode):
     """
     """
     def _init_node_parm(self, node_id):
-        wf_conf = WorkFlowNetConfCNN(node_id)
-        # self.md_store_path = wf_conf.get_model_store_path()
-        # self.window_size = wf_conf.get_window_size()
-        # self.vector_size = wf_conf.get_vector_size()
-        # self.batch_size = wf_conf.get_batch_size()
-        # self.iter_size = wf_conf.get_iter_size()
+        None
 
     def _set_progress_state(self):
         return None
 
     def run(self, conf_data):
         println("run NeuralNetNodeCnn Train")
-        println(conf_data)
+        # println(conf_data)
         node_id = conf_data['node_id']
-        self._init_node_parm(node_id)
+        return_data = ""
         feed_node = self.get_prev_node()
-
+        return_data = {}
+        return_arr = None
         for feed in feed_node:
             feed_name = feed.get_node_name()
             data_node = feed.get_prev_node()
@@ -452,57 +483,61 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
                 netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(netconf, dataconf)
 
-                net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(netconf, dataconf, "T")
+                # net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(netconf, dataconf, "T")
+                # println(model)
+
+        #         if net_check == "S":
+        #             cls_pool = conf_data['cls_pool']
+        #             input_data = cls_pool[feed_name]
+        #             return_arr = train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
+        #         else:
+        #             println("net_check=" + net_check)
+        return_data["TrainResult"] = return_arr
+
+        println("end NeuralNetNodeCnn Train")
+
+        return return_data
+
+    def eval(self, node_id, conf_data):
+    # def predict(self, node_id, filelist):
+        println("run NeuralNetNodeCnn eval")
+        # println(conf_data)
+        node_id = conf_data['node_id']
+        # return
+        return_data = {}
+        netconf_node_id = self.get_node_name()
+        feed_node = self.get_prev_node()
+
+        for feed in feed_node:
+            feed_name = feed.get_node_name()
+            data_node = feed.get_prev_node()
+            for data in data_node:
+                data_name = data.get_node_name()
+                ###############################################################
+                netconf = WorkFlowNetConfCNN().get_view_obj(netconf_node_id)
+                dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
+                netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(netconf, dataconf)
+
+                net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(netconf, dataconf, "P")
                 println(model)
 
                 if net_check == "S":
                     cls_pool = conf_data['cls_pool']
-                    input_data = cls_pool[feed_name]
-                    return_arr = train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step)
+                    net_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+                    for data_name in net_node_name:
+                        if data_name.find("eval") > 0:
+                            input_data = cls_pool[data_name]
+                            return_arr = eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_pred_cls, global_step)
                 else:
                     println("net_check=" + net_check)
 
-        println("end NeuralNetNodeCnn Train")
-        return_data = {}
-        return_data["TrainReult"] = return_arr
-        return return_data
-
-    def eval(self, conf_data):
-    # def predict(self, node_id, filelist):
-        println("run NeuralNetNodeCnn eval")
-        println(conf_data)
-
-        node_id = conf_data['node_id']
-        self._init_node_parm(node_id)
-        feed_node = self.get_prev_node()
-
-        # for feed in feed_node:
-        #     feed_name = feed.get_node_name()
-        #     data_node = feed.get_prev_node()
-        #     for data in data_node:
-        #         data_name = data.get_node_name()
-
-        feed_node = "nn00004_8_data_eval_feeder"
-        data_name = "nn00004_8_evaldata"
-        ################################################################
-        # netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
-        # dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
-        # netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(netconf, dataconf)
-
-        # net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step = get_model(netconf, dataconf, "P")
-        # println(model)
-        #
-        # if net_check == "S":
-        #     cls_pool = conf_data['cls_pool']
-        #     input_data = cls_pool[feed_node_name[0]]
-        #     eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy)
-        # else:
-        #     println("net_check=" + net_check)
-        #
-        # println("eval end........")
+                println("eval end........")
 
         println("end NeuralNetNodeCnn eval")
-        return None
+
+
+        return_data["TrainResult"] = return_arr
+        return return_data
 
     def predict(self, node_id, filelist):
         """
@@ -515,7 +550,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         """
         println("run NeuralNetNodeCnn Predict")
         println(node_id)
-        self._init_node_parm(node_id)
+
         ################################################################
         data_node_name = self._get_backward_node_with_type(node_id, 'data')
         netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
