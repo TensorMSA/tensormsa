@@ -492,33 +492,35 @@ class WorkFlowCommonNode :
         :param pos:
         :return:
         """
+        output_list = []
         if(max_len == 0) :
             max_len = self.sent_max_len
 
-        input_list = input_list[0]
-        if (len(input_list) > max_len):
-            output_list = input_list[0:max_len]
-        else:
-            pad_len = (max_len - len(input_list))
-            output_list = [pad_char] * pad_len + input_list
-        return [output_list]
+        for input in input_list :
+            if (len(input) > max_len):
+                output_list.append(input[0:max_len])
+            else:
+                pad_len = (max_len - len(input))
+                output_list.append([pad_char] * pad_len + input)
+        return output_list
 
-    def decode_pad(self, input_list, max_len = 0, pad_char = '#'):
+    def decode_pad(self, input_list, max_len = 0, pad_char = '#', start_char = '@'):
         """
 
         :param pos:
         :return:
         """
+        output_list = []
         if(max_len == 0) :
             max_len = self.sent_max_len
 
-        input_list = input_list[0]
-        if (len(input_list) > max_len):
-            output_list = input_list[0:max_len]
-        else:
-            pad_len = (max_len - len(input_list))
-            output_list = input_list + [pad_char] * pad_len
-        return [output_list]
+        for input in input_list :
+            if (len(input) > max_len - 1):
+                output_list.append([start_char] + input[0:max_len-1])
+            else:
+                pad_len = (max_len - (len(input) + 1))
+                output_list.append([start_char] + input + [pad_char] * pad_len)
+        return output_list
 
     def load_data(self, node_id, parm = 'all'):
         pass

@@ -2,6 +2,7 @@ from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from gensim.models import word2vec
 from master.workflow.netconf.workflow_netconf_w2v import WorkFlowNetConfW2V
 import os, json
+import numpy as np
 from konlpy.tag import Mecab
 
 class NeuralNetNodeWord2Vec(NeuralNetNode):
@@ -31,12 +32,13 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                     # Per Line in file
                     for i in range(0, train_data_set.data_size(), self.batch_size):
                         data_set = train_data_set[i:i + self.batch_size]
+                        filtered_data = [data_set[np.logical_not(data_set == '#')].tolist()]
                         if (update_flag == False):
-                            model.build_vocab(data_set.tolist(), update=False)
+                            model.build_vocab(filtered_data, update=False)
                             update_flag = True
                         else:
-                            model.build_vocab(data_set.tolist(), update=True)
-                        model.train(data_set.tolist())
+                            model.build_vocab(filtered_data, update=True)
+                        model.train(filtered_data)
                 #Select Next file
                 train_data_set.next()
 
@@ -84,8 +86,12 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
 
             if(parm['type'] in ['vector','train']) :
                 for key in parm['val_1'] :
-                    if key in model : return_val.append(model[key])
-                    else : return_val.append([0.] * self.vector_size)
+                    if key in ['#'] :
+                        return_val.append([0.] * self.vector_size)
+                    elif key in model :
+                        return_val.append(model[key])
+                    else :
+                        return_val.append([0.] * self.vector_size)
             elif(parm['type'] == 'sim') :
                 return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=5))
             elif(parm['type'] == 'similarity') :
@@ -100,9 +106,10 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                         return_val.append(model.wv.index2word[key])
             elif(parm['type'] == 'povb2vocab') :
                 for key in parm['val_1']:
-                    filter_list = ['#', 'SF']
+                    filter_list = []
                     for filter_set in filter_list :
-                        key[model.wv.vocab[filter_set].index] = 0.0
+                        if filter_set in model :
+                            key[model.wv.vocab[filter_set].index] = 0.0
                     index = key.argmax(axis=0)
                     if len(model.wv.index2word) >= index:
                         return_val.append(model.wv.index2word[index])

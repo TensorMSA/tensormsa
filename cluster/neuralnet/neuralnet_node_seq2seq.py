@@ -30,13 +30,26 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             # prepare net conf
             self._set_train_model()
 
+            # create session
+            sess = tf.Session()
+            sess.run(tf.initialize_all_variables())
+            saver = tf.train.Saver(tf.all_variables())
+            if (len(get_filepaths(self.md_store_path)) > 0):
+                saver.restore(sess, ''.join([self.md_store_path, '/']))
+
+            # run train
             while(train_data_set.has_next()) :
                 for i in range(0, train_data_set.data_size(), self.num_batches):
                     data_set = train_data_set[i:i + self.num_batches]
-                    decode_batch = self._get_dict_id(data_set[1])
+                    targets = self._get_dict_id(data_set[1])
+                    decode_batch = self._word_embed_data(data_set[1])
                     encode_batch = self._word_embed_data(data_set[0])
-                    self._run_train(encode_batch, decode_batch)
+                    self._run_train(sess, encode_batch, decode_batch, targets)
                 train_data_set.next()
+
+            # save model and close session
+            saver.save(sess, ''.join([self.md_store_path, '/']))
+            sess.close()
 
         except Exception as e :
             raise Exception (e)
@@ -195,9 +208,13 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         try :
             # Construct RNN model
             unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
-            cell = tf.contrib.rnn.MultiRNNCell([unitcell] * self.encoder_num_layers)
+            dropcell = tf.contrib.rnn.DropoutWrapper(unitcell,
+                                                     input_keep_prob = 1.0,
+                                                     output_keep_prob = self.drop_out)
+            cell = tf.contrib.rnn.MultiRNNCell([dropcell] * self.encoder_num_layers)
             self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
-            self.targets = tf.placeholder(tf.int32, [self.batch_size, self.encoder_seq_length])
+            self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
+            self.targets = tf.placeholder(tf.int32, [self.batch_size, self.decoder_seq_length])
             self.istate = cell.zero_state(self.batch_size, tf.float32)
 
             # Weigths
@@ -206,54 +223,57 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
                 inputs = tf.split(self.input_data, self.encoder_seq_length, 1)
                 inputs = [tf.squeeze(_input, [1]) for _input in inputs]
+                outputs = tf.split(self.output_data, self.decoder_seq_length, 1)
+                outputs = [tf.squeeze(_output, [1]) for _output in outputs]
 
-            self.outputs, last_state = tf.contrib.legacy_seq2seq.rnn_decoder(inputs, self.istate, cell
-                                                                        , loop_function=None, scope='rnnlm')
+            self.outputs, last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
+                                                                                   outputs,
+                                                                                   cell,
+                                                                                   dtype=tf.float32,
+                                                                                   scope='rnnlm')
 
             self.output = tf.reshape(tf.concat(self.outputs, 1), [-1, self.cell_size])
             self.logits = tf.nn.xw_plus_b(self.output, softmax_w, softmax_b)
             self.probs = tf.nn.softmax(self.logits)
 
             # Loss
-            self.loss = tf.contrib.legacy_seq2seq.sequence_loss_by_example([self.logits],  # Input
-                                                                      [tf.reshape(self.targets, [-1])],  # Target
-                                                                      [tf.ones([self.batch_size * self.encoder_seq_length])],  # Weight
-                                                                      self.vocab_size)
+            self.loss = tf.contrib.legacy_seq2seq.sequence_loss([self.logits],  # Input
+                                                                  [tf.reshape(self.targets, [-1])],  # Target
+                                                                  [tf.ones([self.batch_size * self.decoder_seq_length])],  # Weight
+                                                                  self.vocab_size)
             # Optimizer
-            self.cost = tf.reduce_sum(self.loss) / self.batch_size / self.encoder_seq_length
+            self.cost = tf.reduce_sum(self.loss) / self.batch_size / self.decoder_seq_length
             self.final_state = last_state
 
-            self.lr = tf.Variable(0.0, trainable=False)
-            self.tvars = tf.trainable_variables()
-            self.grads, _ = tf.clip_by_global_norm(tf.gradients(self.cost, self.tvars), self.grad_clip)
-            _optm = tf.train.AdamOptimizer(self.lr)
-            self.optm = _optm.apply_gradients(zip(self.grads, self.tvars))
+            _opt = tf.train.AdamOptimizer(
+                learning_rate=self.learning_rate,
+                beta1=0.9,
+                beta2=0.999,
+                epsilon=1e-08
+            )
+            self.optm = _opt.minimize(self.loss)
+
         except Exception as e :
             raise Exception (e)
 
 
-    def _run_train(self, xbatch, ybatch):
+    def _run_train(self, sess, xbatch, ybatch, target):
         """
 
         :return:
         """
         try :
-            sess = tf.Session()
-            sess.run(tf.initialize_all_variables())
-            saver = tf.train.Saver(tf.all_variables())
-            if(len(get_filepaths(self.md_store_path)) > 0):
-                saver.restore(sess, ''.join([self.md_store_path , '/']))
             for epoch in range(self.num_epochs):
                 # Learning rate scheduling
-                sess.run(tf.assign(self.lr, self.learning_rate * (self.decay_rate ** epoch)))
+                #sess.run(tf.assign(self.lr, self.learning_rate * (self.decay_rate ** epoch)))
                 state = sess.run(self.istate)
                 train_loss, state, _ = sess.run([self.cost, self.final_state, self.optm]
                                                 , feed_dict={self.input_data: xbatch,
-                                                             self.targets: ybatch,
+                                                             self.output_data: ybatch,
+                                                             self.targets: target,
                                                              self.istate: state})
                 print("[{0}] train_loss : {1}".format(epoch, train_loss))
-            saver.save(sess, ''.join([self.md_store_path , '/']))
-            sess.close()
+            return sess
         except Exception as e :
             raise Exception(e)
 
@@ -264,23 +284,28 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         set tensorflow seq2seq model for train and predict
         :return:
         """
-        encoder_seq_length = 1
         try :
             # Construct RNN model
             unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
             self.cell = tf.contrib.rnn.MultiRNNCell([unitcell] * self.encoder_num_layers)
-            self.input_data = tf.placeholder(tf.float32, [self.batch_size, encoder_seq_length, self.word_vector_size])
+            self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
+            self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
             self.istate = self.cell.zero_state(self.batch_size, tf.float32)
 
             # Weigths
             with tf.variable_scope('rnnlm'):
                 softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
                 softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
-                inputs = tf.split(self.input_data, encoder_seq_length, 1)
+                inputs = tf.split(self.input_data, self.encoder_seq_length, 1)
                 inputs = [tf.squeeze(_input, [1]) for _input in inputs]
+                outputs = tf.split(self.output_data, self.decoder_seq_length, 1)
+                outputs = [tf.squeeze(_output, [1]) for _output in outputs]
 
-            self.outputs, self.last_state = tf.contrib.legacy_seq2seq.rnn_decoder(inputs, self.istate, self.cell
-                                                                        , loop_function=None, scope='rnnlm')
+            self.outputs, self.last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
+                                                                                   outputs,
+                                                                                   self.cell,
+                                                                                   dtype=tf.float32,
+                                                                                   scope='rnnlm')
 
             self.output = tf.reshape(tf.concat(self.outputs, 1), [-1, self.cell_size])
             self.logits = tf.nn.xw_plus_b(self.output, softmax_w, softmax_b)
@@ -308,23 +333,28 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
             state = sess.run(self.cell.zero_state(1,tf.float32))
-            last_word = ""
-            output = []
 
+            word_list = []
             for word_tuple in self._pad_predict_input(mecab.pos(x_input)):
-                word = ''.join([word_tuple[0], "/" , word_tuple[1]])
-                state = sess.run(self.last_state, feed_dict={self.input_data: self._word_embed_data(np.array([[word]])), self.istate: state})
-                last_word = word
-
-            word = last_word
-            for num in range(self.decoder_seq_length):
-                [probsval, state] = sess.run([self.probs, self.last_state]
-                                             , feed_dict={self.input_data: self._word_embed_data(np.array([[word]])), self.istate: state})
-                word = self._get_index2vocab(np.array([[probsval[0]]]))[0][0]
-                if(word in ['./SF', '?/SF']) :
-                    break
+                if(len(word_tuple[1]) > 0) :
+                    word = ''.join([word_tuple[0], "/" , word_tuple[1]])
                 else :
-                    output = output + [[word]]
+                    word = word_tuple[0]
+                word_list.append(word)
+
+            output = ['@'] + [''] * (self.decoder_seq_length - 1)
+            respone = ""
+
+            outputs, probs, state = sess.run([self.outputs, self.probs, self.last_state] ,
+                                     feed_dict={self.input_data: self._word_embed_data(np.array([word_list])),
+                                                self.output_data: self._word_embed_data(np.array([output])),
+                                                self.istate: state})
+            for i in range(0,self.decoder_seq_length) :
+                word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
+                if (word in ['./SF', '?/SF', 'SF']):
+                    continue
+                else :
+                    respone = respone + ' ' + word
             sess.close()
             return output
         except Exception as e :
@@ -337,7 +367,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param input_tuple:
         :return:
         """
-        pad_size = self.encoder_seq_length - len(input_tuple)
+        pad_size = self.encoder_seq_length - len(input_tuple) - 1
         if(pad_size > 0 ) :
-            input_tuple = pad_size * [('#', 'SY')] + input_tuple
+            input_tuple = pad_size * [('#', '')] + input_tuple + [('SF', '')]
         return input_tuple
