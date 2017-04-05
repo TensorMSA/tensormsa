@@ -105,6 +105,7 @@ class WorkFlowSimpleManager :
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
             input_data['node_draw_y'] = 0
+            input_data['nn_wf_node_desc'] = 'Train Data Node'
             self.__put_nn_wf_node_info(input_data)
 
             # feed node
@@ -140,6 +141,7 @@ class WorkFlowSimpleManager :
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
             input_data['node_draw_y'] = 0
+            input_data['nn_wf_node_desc'] = 'Evaluation Data Node'
             self.__put_nn_wf_node_info(input_data)
 
             # feed node
@@ -217,6 +219,7 @@ class WorkFlowSimpleManager :
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
             input_data['node_draw_y'] = 0
+            input_data['nn_wf_node_desc'] = 'Train Data Node'
             self.__put_nn_wf_node_info(input_data)
 
             # net conf node
@@ -253,6 +256,7 @@ class WorkFlowSimpleManager :
             input_data['node_config_data'] = {}
             input_data['node_draw_x'] = 0
             input_data['node_draw_y'] = 0
+            input_data['nn_wf_node_desc'] = 'Evaluation Data Node'
             self.__put_nn_wf_node_info(input_data)
 
             # feed node

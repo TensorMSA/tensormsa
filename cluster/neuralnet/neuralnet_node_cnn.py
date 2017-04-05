@@ -149,7 +149,6 @@ def get_model(netconf, dataconf, type):
     accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
     return net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost
-
 ########################################################################
 def get_batch_data(data_set, dataconf, num_classes, type):
     x_size = dataconf["preprocess"]["x_size"]
@@ -220,7 +219,6 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
     println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
     return_data = return_arr
     return return_data
-
 def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr):
     modelname = netconf["modelname"]
     train_cnt = netconf["config"]["traincnt"]
@@ -304,9 +302,9 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
     fCnt = 0
     for i in range(len(labels)):
         strResult  = "Category : " + labels[i] + spaceprint(labels[i], 15)
-        strResult += "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 15)
-        strResult += "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]), 15)
-        strResult += "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]), 15)
+        strResult += "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 8)
+        strResult += "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]), 8)
+        strResult += "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]), 8)
         strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%"
         totCnt += t_cnt_arr[i] + f_cnt_arr[i]
         tCnt += t_cnt_arr[i]
@@ -314,9 +312,9 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
         println(strResult)
         result.append(strResult)
     strResult = "Total Category="+str(len(labels))+ spaceprint(str(len(labels)), 11)
-    strResult += "TotalCnt="+str(totCnt)+ spaceprint(str(totCnt), 15)
-    strResult += "TrueCnt="+str(tCnt)+ spaceprint(str(tCnt), 15)
-    strResult += "FalseCnt="+str(fCnt)+ spaceprint(str(fCnt), 15)
+    strResult += "TotalCnt="+str(totCnt)+ spaceprint(str(totCnt), 8)
+    strResult += "TrueCnt="+str(tCnt)+ spaceprint(str(tCnt), 8)
+    strResult += "FalseCnt="+str(fCnt)+ spaceprint(str(fCnt), 8)
     strResult += "True Percent(TrueCnt/TotalCnt*100)="+ str(round(tCnt / totCnt * 100)) + "%"
 
     result.append(strResult)
@@ -338,22 +336,14 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
     println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
 
     return return_arr
-
 def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr):
     model_path = netconf["modelpath"]
-    # init = tf.initialize_all_variables()
-    # tf.all_variables()
     with tf.Session() as sess:
         try:
             sess.run(tf.initialize_all_variables())
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
             saver = tf.train.Saver()
 
-            # println("eval model_checkpoint_path=======================================================================")
-            # last_chk_path_file = last_chk_path+".data-00000-of-00001"
-            # println(last_chk_path_file)
-            # println(os.path.isfile(last_chk_path_file))
-            # last_chk_path = "/hoya_model_root/nn00004/30/netconf_node/model_nn00004_30-11"
             saver.restore(sess, save_path=last_chk_path)
             println("Restored checkpoint from:" + last_chk_path)
 
@@ -362,13 +352,10 @@ def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, label
             logits, y_pred_true = sess.run([model, y_pred_cls], feed_dict={X: x_batch})
             # println(logits)
             # println(y_pred_true)
-            # println(y_batch)
-            # # # println(logits)
             for i in range(len(logits)):
                 true_name = y_batch[i]
                 pred_name = labels[y_pred_true[i]]
                 # println("True Category=" + true_name + " Predict Category=" + pred_name)
-            #     println(logits[i])
                 idx = labels.index(true_name)
                 if true_name == pred_name:
                     t_cnt_arr[idx] = t_cnt_arr[idx] + 1
@@ -378,7 +365,6 @@ def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, label
             println(e)
             println("None to restore checkpoint. Initializing variables instead.")
     return t_cnt_arr, f_cnt_arr
-
 ########################################################################
 def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
     x_size = dataconf["preprocess"]["x_size"]
@@ -388,11 +374,10 @@ def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
     model_path = netconf["modelpath"]
 
     filelist = sorted(filelist.items(), key=operator.itemgetter(0))
-    # println(filelist)
+
     data = {}
     labels = dataconf["labels"]
-    # println(labels)
-    # labelsDictHot = one_hot_encoded(num_classes)
+
     with tf.Session() as sess:
         try:
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
@@ -455,18 +440,7 @@ def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
                         data_sub["key"] = data_sub_key
                         data_sub["val"] = data_sub_val
                         data[filename] = data_sub
-            # println("###################################################################################################")
-            # println(labels)
-            # for i in range(len(labels)):
-            #     println("Category : " + labels[i] +spaceprint(labels[i],15)
-            #             + "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]),15)
-            #             + "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]),15)
-            #             + "TotalCnt=" + str(t_cnt_arr[i]+f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]+f_cnt_arr[i]),15)
-            #             + "True Percent(TrueCnt/TotalCnt*100)=" + str(round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100))+ "%")
-            # println("###################################################################################################")
-            # println("TotalCnt=" + str(totalcnt) + " TrueCnt=" + str(t_cnt) + " FalseCnt=" + str(f_cnt))
-            # percent = round(t_cnt/totalcnt*100,2)
-            # println("Total Percent="+str(percent)+"%")
+
         except Exception as e:
             println("None to restore checkpoint. Initializing variables instead.")
             println(e)
@@ -493,7 +467,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # println(conf_data)
         node_id = conf_data['node_id']
         self._init_node_parm(node_id)
-        return_data = ""
         feed_node = self.get_prev_node()
         return_data = {}
         return_arr = None
@@ -549,7 +522,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 ###############################################################
                 netconf = WorkFlowNetConfCNN().get_view_obj(netconf_node_id)
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
-                # netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(node_id, netconf, dataconf)
 
                 if self.net_check == "S":
                     cls_pool = conf_data['cls_pool']

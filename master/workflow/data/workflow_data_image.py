@@ -91,6 +91,27 @@ class WorkFlowDataImage(WorkFlowData) :
         except Exception as e:
             raise Exception(e)
 
+    def get_data_node_info(self, nnid, wfver, submenu_id):
+        """
+        getter for source step
+        :return:obj(json) to make view
+        """
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.filter(wf_state_id_id=str(nnid) + "_" + str(wfver), wf_task_submenu_id_id=submenu_id)
+            return_data = {}
+            i = 0
+            for config in obj:
+                return_data_sub = {}
+                return_data_sub['nn_wf_node_id'] = getattr(config, 'nn_wf_node_id')
+                return_data_sub['nn_wf_node_name'] = getattr(config, 'nn_wf_node_name')
+                return_data_sub['nn_wf_node_desc'] = getattr(config, 'nn_wf_node_desc')
+                return_data["data"+str(i)] = return_data_sub
+                i += 1
+        except Exception as e:
+            raise Exception(e)
+
+        return return_data
+
     def get_step_preprocess(self):
         """
         getter for preprocess

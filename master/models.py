@@ -147,6 +147,7 @@ class NN_WF_NODE_INFO(models.Model):
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)
     last_updated_by = models.IntegerField(default=0)
+    nn_wf_node_desc = models.CharField(max_length=250, blank=True)
 
 class WF_TASK_REALATION_RULE(models.Model):
     key = models.IntegerField(primary_key=True)
