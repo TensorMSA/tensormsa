@@ -77,9 +77,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 self.cell_size = wf_conf.get_cell_size()
 
                 if(self.word_embed_type == 'w2v') :
-                    #w2v_conf = WorkFlowNetConfW2V(self.word_embed_id)
-                    #self.vocab_size = w2v_conf.get_vector_size()
-                    self.word_vector_size = 100
+                    self.word_vector_size = self._get_w2v_vector_size(self.word_embed_id)
 
                 if(wf_conf.get_vocab_size() != None and wf_conf.get_vocab_size() == self._get_vocab_size()) :
                     self.vocab_size = wf_conf.get_vocab_size() + 4
@@ -99,6 +97,31 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
         except Exception as e :
             raise Exception (e)
+
+    def _get_w2v_vector_size(self, nn_id):
+        """
+        get active version word2vec networks config
+        :param nn_id:
+        :return:
+        """
+        node_id = self._find_netconf_node_id(nn_id)
+        _path, _cls = self.get_cluster_exec_class(node_id)
+        cls = self.load_class(_path, _cls)
+        cls._init_node_parm(node_id)
+        if('vector_size' in cls.__dict__) :
+            return cls.vector_size
+        return 10
+
+    def _get_linked_prev_node_has_vector(self):
+        """
+        get linked node prev with condition sent_max_len exists
+        :param type:
+        :return:
+        """
+        objs = self.get_linked_prev_node_with_cond('sent_max_len')
+        if(len(objs) > 0 ) :
+            return objs[0].sent_max_len
+        return 100
 
     def _set_progress_state(self):
         return None
