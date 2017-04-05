@@ -41,7 +41,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src
                      json={
                          "encode_column" : "a",
                          "decode_column" : "b",
-                         "max_sentence_len": 50,
+                         "max_sentence_len": 6,
                          "preprocess": "mecab",
                      })
 data = json.loads(resp.json())

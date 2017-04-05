@@ -49,6 +49,13 @@ class PreNodeFeed(PreProcessNode):
         else :
             return False
 
+    def reset_pointer(self):
+        """
+        check if hdf5 file pointer has next
+        :return:
+        """
+        self.pointer = 0
+
     def next(self):
         """
         move pointer +1

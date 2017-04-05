@@ -58,12 +58,9 @@ class DataNodeFrame(DataNode):
                     df_csv_read = self.load_csv_by_pandas(file_path)
                     self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'])
                     self.create_hdf5(self.data_store_path, df_csv_read)
+                    os.remove(file_path)
 
-                    #os.remove(file_path)
-
-
-
-                #make tfrecord for multi Threading
+                    #make tfrecord for multi Threading
                     if _multi_node_flag == True:
                         skip_header = False
                         #Todo Have to remove if production
