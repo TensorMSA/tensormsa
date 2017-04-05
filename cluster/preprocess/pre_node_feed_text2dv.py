@@ -37,3 +37,6 @@ class PreNodeFeedText2Dv(PreNodeFeed):
             raise Exception(e)
         finally:
             h5file.close()
+
+    def train_file_path(self):
+        return self.input_paths[self.pointer]
