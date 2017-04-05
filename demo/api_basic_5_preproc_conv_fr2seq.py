@@ -8,7 +8,7 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/sr
                      json={
                          "encode_column" : "a",
                          "decode_column" : "b",
-                         "max_sentence_len": 50,
+                         "max_sentence_len": 10,
                          "preprocess": "mecab",
                      })
 data = json.loads(resp.json())

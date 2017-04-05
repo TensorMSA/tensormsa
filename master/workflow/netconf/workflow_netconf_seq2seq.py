@@ -15,8 +15,6 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
 
     def validation_check(self, json_data):
         error_msg = ""
-        if('model_path' not in json_data) :
-            error_msg = ''.join([error_msg, 'model_path (str) not defined'])
         if('encoder_len' not in json_data) :
             error_msg = ''.join([error_msg, 'encoder_len (int) not defined'])
         if('decoder_len' not in json_data) :

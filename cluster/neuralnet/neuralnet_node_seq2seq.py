@@ -37,20 +37,22 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             if (len(get_filepaths(self.md_store_path)) > 0):
                 saver.restore(sess, ''.join([self.md_store_path, '/']))
 
-            # run train
-            while(train_data_set.has_next()) :
-                for i in range(0, train_data_set.data_size(), self.num_batches):
-                    data_set = train_data_set[i:i + self.num_batches]
-                    targets = self._get_dict_id(data_set[1])
-                    decode_batch = self._word_embed_data(data_set[1])
-                    encode_batch = self._word_embed_data(data_set[0])
-                    self._run_train(sess, encode_batch, decode_batch, targets)
-                train_data_set.next()
+            for self.epoch in range(self.num_epochs):
+                # run train
+                while(train_data_set.has_next()) :
+                    for i in range(0, train_data_set.data_size(), self.num_batches):
+                        data_set = train_data_set[i:i + self.num_batches]
+                        targets = self._get_dict_id(data_set[1])
+                        decode_batch = self._word_embed_data(data_set[1])
+                        encode_batch = self._word_embed_data(data_set[0])
+                        self._run_train(sess, encode_batch, decode_batch, targets)
+                    train_data_set.next()
+                train_data_set.reset_pointer()
 
             # save model and close session
             saver.save(sess, ''.join([self.md_store_path, '/']))
+            # close session
             sess.close()
-
         except Exception as e :
             raise Exception (e)
 
@@ -80,11 +82,11 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                     self.word_vector_size = 100
 
                 if(wf_conf.get_vocab_size() != None and wf_conf.get_vocab_size() == self._get_vocab_size()) :
-                    self.vocab_size = wf_conf.get_vocab_size()
+                    self.vocab_size = wf_conf.get_vocab_size() + 4
                 else :
                     del_filepaths(self.md_store_path)
                     wf_conf.set_vocab_size(self._get_vocab_size())
-                    self.vocab_size = self._get_vocab_size()
+                    self.vocab_size = self._get_vocab_size() + 4
 
                 self.grad_clip = 5.
                 self.learning_rate = wf_conf.get_learn_rate()
@@ -238,9 +240,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             # Loss
             self.loss = tf.contrib.legacy_seq2seq.sequence_loss([self.logits],  # Input
-                                                                  [tf.reshape(self.targets, [-1])],  # Target
-                                                                  [tf.ones([self.batch_size * self.decoder_seq_length])],  # Weight
-                                                                  self.vocab_size)
+                                                                [tf.reshape(self.targets, [-1])],  # Target
+                                                                [tf.ones([self.batch_size * self.decoder_seq_length])],  # Weight
+                                                                self.vocab_size)
             # Optimizer
             self.cost = tf.reduce_sum(self.loss) / self.batch_size / self.decoder_seq_length
             self.final_state = last_state
@@ -263,16 +265,16 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :return:
         """
         try :
-            for epoch in range(self.num_epochs):
-                # Learning rate scheduling
-                #sess.run(tf.assign(self.lr, self.learning_rate * (self.decay_rate ** epoch)))
-                state = sess.run(self.istate)
-                train_loss, state, _ = sess.run([self.cost, self.final_state, self.optm]
-                                                , feed_dict={self.input_data: xbatch,
-                                                             self.output_data: ybatch,
-                                                             self.targets: target,
-                                                             self.istate: state})
-                print("[{0}] train_loss : {1}".format(epoch, train_loss))
+
+            # Learning rate scheduling
+            #sess.run(tf.assign(self.lr, self.learning_rate * (self.decay_rate ** epoch)))
+            state = sess.run(self.istate)
+            train_loss, state, _ = sess.run([self.cost, self.final_state, self.optm]
+                                            , feed_dict={self.input_data: xbatch,
+                                                         self.output_data: ybatch,
+                                                         self.targets: target,
+                                                         self.istate: state})
+            print("[{0}] train_loss : {1}".format(self.epoch, train_loss))
             return sess
         except Exception as e :
             raise Exception(e)
@@ -344,19 +346,23 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             output = ['@'] + [''] * (self.decoder_seq_length - 1)
             respone = ""
-
+            start_flag = False
             outputs, probs, state = sess.run([self.outputs, self.probs, self.last_state] ,
                                      feed_dict={self.input_data: self._word_embed_data(np.array([word_list])),
                                                 self.output_data: self._word_embed_data(np.array([output])),
                                                 self.istate: state})
             for i in range(0,self.decoder_seq_length) :
                 word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
-                if (word in ['./SF', '?/SF', 'SF']):
-                    continue
-                else :
-                    respone = respone + ' ' + word
+                if (word in ['START'] ):
+                    start_flag = True
+                if(word not in ['PAD', 'UNKNOWN','START'] and start_flag == True and len(word) > 0) :
+                    if ('/' in word) : respone = respone + ' ' + word.split('/')[0]
+                    if ('/' not in word) : respone = respone + ' ' + word
+                if (word in ['SF', './SF', '?/SF'] ):
+                    break
+
             sess.close()
-            return output
+            return respone
         except Exception as e :
             raise Exception(e)
 
