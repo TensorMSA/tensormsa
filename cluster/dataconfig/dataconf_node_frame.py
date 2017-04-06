@@ -39,7 +39,9 @@ class DataConfNodeFrame( DataConfNode):
 
             data_store_path = WorkFlowDataFrame(conf_data['nn_id'] + "_" + conf_data['wf_ver'] + "_" + "data_node").source_path
             data_conf = self.data_conf
-            self.validate_data(data_store_path,data_conf )
+
+            #Todo validate for h5
+            #self.validate_data(data_store_path,data_conf )
 
             return None
         except Exception as e:

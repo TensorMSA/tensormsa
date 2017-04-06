@@ -17,7 +17,7 @@ from sklearn.preprocessing import LabelEncoder
 
 class DataNodeFrame(DataNode):
     """
-
+        DataNode Configuration
     """
 
 
@@ -32,8 +32,7 @@ class DataNodeFrame(DataNode):
         self._init_node_parm(conf_data['node_id'])
 
         if(self.data_src_type == 'local' and self.type == "csv") :
-            #self.src_local_handler(conf_data)
-            self.src_local_handler(conf_data, tfrecode_flag=True)
+            self.src_local_handler(conf_data)
         if (self.data_src_type == 'rdb'):
             raise Exception ("on development now")
         if (self.data_src_type == 's3'):
@@ -41,17 +40,16 @@ class DataNodeFrame(DataNode):
         if (self.data_src_type == 'hbase'):
             raise Exception("on development now")
 
-
-
-    def src_local_handler(self, conf_data, tfrecode_flag = False):
+    def src_local_handler(self, conf_data):
         """
-        :param conf_data:
-        :return:
+        Make h5 & tfrecord for multi treading
+
+        Arguments:
+            conf_data : data_source_path. etc
         """
         try:
 
             fp_list = utils.get_filepaths(self.data_src_path)
-
             _multi_node_flag = self.multi_node_flag
 
             try:
@@ -59,7 +57,6 @@ class DataNodeFrame(DataNode):
                     df_csv_read = self.load_csv_by_pandas(file_path)
                     self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id']) # make columns type of csv
                     self.create_hdf5(self.data_store_path, df_csv_read)
-
 
                     #Todo 뽑아서 함수화 시킬것
                     #for wdnn
@@ -89,8 +86,8 @@ class DataNodeFrame(DataNode):
                                 # Todo Have to remove if production
                                 self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read,_label)
 
-                        os.remove(file_path) #승우씨것
-                        print(_wf_data_conf)
+                    os.remove(file_path) #승우씨것
+                    print(_wf_data_conf)
             except Exception as e:
                 raise Exception(e)
             return None
