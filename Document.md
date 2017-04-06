@@ -79,7 +79,7 @@ make migrations
 ./manage.py migrate --fake master zero
 ./manage.py migrate
 ```
-or
+or 
 delete from django_migrations where app = 'master'; 
 
 ./manage.py migrate
