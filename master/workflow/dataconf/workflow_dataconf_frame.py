@@ -47,7 +47,7 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
         """
         getter for object type
         """
-        return self.conf['label_values']
+        return self.conf['label_values'] if ('label_values' in self.conf) else list()
     @property
     def label(self):
         """
@@ -122,7 +122,7 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(ver) + "_" + str(node))
             config_data = getattr(obj, 'node_config_data')
             #ternary operator if else statement
-            config_data['label'] = input_data('label') if 'label' in input_data else config_data['label']
+            config_data['label'] = input_data.get('label') if 'label' in input_data else config_data['label']
             config_data['Transformations'] = input_data.get('Transformations') if 'Transformations' in input_data else config_data['Transformations']
             config_data['cross_cell'] = input_data.get('cross_cell') if 'cross_cell' in input_data else config_data['cross_cell']
             config_data['cell_feature'] = input_data.get('cell_feature') if 'cell_feature' in input_data else config_data['cell_feature']

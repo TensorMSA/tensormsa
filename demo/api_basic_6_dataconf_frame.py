@@ -21,12 +21,11 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/fra
                                    , "education": {"column_type": "CATEGORICAL"}
                                    , "occupation": {"column_type": "CATEGORICAL"}
                                    , "workclass": {"column_type": "CATEGORICAL"}
-                                   , "sex": {"keys": ["female", "male"]
-                                   , "column_type": "CATEGORICAL_KEY"}
+                                   , "sex":  {"column_type": "CATEGORICAL"}
                                    , "native_country": {"column_type": "CATEGORICAL"}
                                    , "relationship": {"column_type": "CATEGORICAL"}
-                                   , "marital_status": {"column_type": "NONE"}
-                                   , "race": {"column_type": "NONE"}
+                                   , "marital_status":  {"column_type": "CATEGORICAL"}
+                                   , "race":  {"column_type": "CATEGORICAL"}
                                 }
                            , "extend_cell_feature" :
                                {
@@ -34,7 +33,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/fra
                                    , "race": {"column_type": "NONE"}
                                    , "marital_status": {"column_type": "NONE"}
                                }
-                           ,"label_values" : ["50<=", "50="]
+                           ,"label_values" : []
                            })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

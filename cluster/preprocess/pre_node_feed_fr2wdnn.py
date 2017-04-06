@@ -1,7 +1,9 @@
 from cluster.preprocess.pre_node_feed import PreNodeFeed
 import tensorflow as tf
 import pandas as pd
-
+from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame as wf_data_conf
+from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_data_frame
+from common import utils
 
 class PreNodeFeedFr2Wdnn(PreNodeFeed):
     """
@@ -11,71 +13,115 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         """
         override init class
         """
+        #전 노드중 dataconf를 찾아 온다 wdnn만 가능
+        data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
+        self._init_node_parm(data_dfconf_list[0].node_name)
         super(PreNodeFeedFr2Wdnn, self).run(conf_data)
-        self._init_node_parm(conf_data['node_id'])
+        #input_features = self.create_feature_columns()
+
+        #test
+        self.multi_queue(self.input_paths[0])
 
     def _convert_data_format(self, obj, index):
         pass
 
     def create_feature_columns(self, dataconf = None):
-        # Sparse base columns.
-            # cate < class 'list'>: ['workclass', 'occupation', 'relationship', 'native_country', 'marital_status', 'sex',
-            #                   'education', 'race']
+        """
+        Get feature columns for tfrecord reader
+        TFRecord에서 feature를 추출
+        """
 
-       # cinti < class 'list'>: ['hours_per_week', 'age', 'capital_loss', 'capital_gain', 'education_num']
 
-        gender = tf.contrib.layers.sparse_column_with_keys(
-            column_name="sex", keys=["female", "male"])
-        race = tf.contrib.layers.sparse_column_with_keys(
-            column_name="race", keys=[
-                "Amer-Indian-Eskimo",
-                "Asian-Pac-Islander",
-                "Black",
-                "Other",
-                "White"
-            ])
+        _cell_feature = self.cell_feature
+        _extend_cell_feature = self.extend_cell_feature
+        _label = self.label
+        _label_calues = self.label_values
 
-        education = tf.contrib.layers.sparse_column_with_hash_bucket(
-            "education", hash_bucket_size=1000)
-        marital_status = tf.contrib.layers.sparse_column_with_hash_bucket(
-            "marital_status", hash_bucket_size=100)
-        relationship = tf.contrib.layers.sparse_column_with_hash_bucket(
-            "relationship", hash_bucket_size=100)
-        workclass = tf.contrib.layers.sparse_column_with_hash_bucket(
-            "workclass", hash_bucket_size=100)
-        occupation = tf.contrib.layers.sparse_column_with_hash_bucket(
-            "occupation", hash_bucket_size=1000)
-        native_country = tf.contrib.layers.sparse_column_with_hash_bucket(
-            "native_country", hash_bucket_size=1000)
+        CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS = self.make_continuous_category_list(_cell_feature)
+        CALCULATED_CONTINUOUS_COLUMNS, CALCULATED_CATEGORICAL_COLUMNS = self.add_none_keys_cate_conti_list(CONTINUOUS_COLUMNS,CATEGORICAL_COLUMNS )
 
-        # Continuous base columns.
-        age = tf.contrib.layers.real_valued_column("age", dtype=tf.int64)
-        education_num = tf.contrib.layers.real_valued_column("education_num", dtype=tf.int64)
-        capital_gain = tf.contrib.layers.real_valued_column("capital_gain", dtype=tf.int64)
-        capital_loss = tf.contrib.layers.real_valued_column("capital_loss", dtype=tf.int64)
-        hours_per_week = tf.contrib.layers.real_valued_column("hours_per_week", dtype=tf.int64)
+        # cate를 가지고 formon을 돌리는데 카테로 만들고 extend에 key 있으면 key도 추가 하고
+        #conti도 for문 돌리고
+        #마지막에 set을 어떻게 할지도 중요하고
 
-        label = tf.contrib.layers.real_valued_column("label", dtype=tf.int64)
+        category_tensor = dict()
+        continuous_tensor = dict()
+        for cate_item in CALCULATED_CATEGORICAL_COLUMNS:
+            category_tensor[cate_item] = tf.contrib.layers.sparse_column_with_hash_bucket(cate_item, hash_bucket_size=1000)
+        for conti_item in CALCULATED_CONTINUOUS_COLUMNS:
+            continuous_tensor[conti_item] = tf.contrib.layers.real_valued_column(conti_item, dtype=tf.int64)
+        #NONE은 다 처리 되었고
+        #KEY를 처리 할려면
+        for key_item, value in _extend_cell_feature.items():
+            if value.get("column_type") == "CATEGORICAL_KEY":
+                category_tensor[key_item] = tf.contrib.layers.sparse_column_with_keys(column_name=key_item, keys=value.get("keys"))
 
-        return set([
-            workclass,
-            education,
-            marital_status,
-            occupation,
-            relationship,
-            race,
-            gender,
-            native_country,
-            age,
-            education_num,
-            capital_gain,
-            capital_loss,
-            hours_per_week,
-            label,
-        ])
+        category_tensor.update(continuous_tensor)
+        modi_set = {_v for _v in category_tensor.values()}
+        label_modi = tf.contrib.layers.real_valued_column("label", dtype=tf.int64)
+        modi_set.add(label_modi)
+
+        #
+        # gender = tf.contrib.layers.sparse_column_with_keys(
+        #     column_name="sex", keys=["female", "male"])
+        # race = tf.contrib.layers.sparse_column_with_keys(
+        #     column_name="race", keys=[
+        #         "Amer-Indian-Eskimo",
+        #         "Asian-Pac-Islander",
+        #         "Black",
+        #         "Other",
+        #         "White"
+        #     ])
+        #
+        #
+        #
+        # education = tf.contrib.layers.sparse_column_with_hash_bucket(
+        #     "education", hash_bucket_size=1000)
+        # marital_status = tf.contrib.layers.sparse_column_with_hash_bucket(
+        #     "marital_status", hash_bucket_size=100)
+        # relationship = tf.contrib.layers.sparse_column_with_hash_bucket(
+        #     "relationship", hash_bucket_size=100)
+        # workclass = tf.contrib.layers.sparse_column_with_hash_bucket(
+        #     "workclass", hash_bucket_size=100)
+        # occupation = tf.contrib.layers.sparse_column_with_hash_bucket(
+        #     "occupation", hash_bucket_size=1000)
+        # native_country = tf.contrib.layers.sparse_column_with_hash_bucket(
+        #     "native_country", hash_bucket_size=1000)
+        #
+        # # Continuous base columns.
+        # age = tf.contrib.layers.real_valued_column("age", dtype=tf.int64)
+        # education_num = tf.contrib.layers.real_valued_column("education_num", dtype=tf.int64)
+        # capital_gain = tf.contrib.layers.real_valued_column("capital_gain", dtype=tf.int64)
+        # capital_loss = tf.contrib.layers.real_valued_column("capital_loss", dtype=tf.int64)
+        # hours_per_week = tf.contrib.layers.real_valued_column("hours_per_week", dtype=tf.int64)
+        #
+        # label = tf.contrib.layers.real_valued_column("label", dtype=tf.int64)
+        #
+        # ori_set =  set([
+        #     workclass,
+        #     education,
+        #     marital_status,
+        #     occupation,
+        #     relationship,
+        #     race,
+        #     gender,
+        #     native_country,
+        #     age,
+        #     education_num,
+        #     capital_gain,
+        #     capital_loss,
+        #     hours_per_week,
+        #     label,
+        # ])
+
+        return modi_set #ori_set
+
+
 
     def input_fn(self, mode, data_file, batch_size, dataconf = None):
         try:
+
+
             input_features = self.create_feature_columns()
             features = tf.contrib.layers.create_feature_spec_for_parsing(input_features)
 
@@ -85,18 +131,6 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
                 batch_size=batch_size,
                 features=features,
                 name="read_batch_features_{}".format(mode))
-            # sess = tf.InteractiveSession()
-            # print(feature_map["age"].eval())
-            # sess.close()
-            #  with tf.Session() as sess:
-            #    print(sess.run(feature_map["age"]))
-            #     print(feature_map["age"].eval())
-
-            # a = feature_map
-            # sess = tf.Session()
-            # sess.run(a)
-            #x = tf.Print(feature_map['age'], [feature_map['age']])
-            #print(x)
 
             target = feature_map.pop("label")
 
@@ -126,6 +160,8 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             ##Get datadesc Continuous and Categorical infomation from Postgres nninfo
             # json_string = self.get_json_by_nnid(nnid) # DATACONF
             # json_object = json_string
+
+            #Todo 트레이닝 하기 위해서 바꿔야함
 
             j_feature = dataconf['cell_feature']
             for cn, c_value in j_feature.items():
@@ -216,3 +252,139 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             raise Exception(e)
         finally:
             store.close()
+
+    def make_continuous_category_list(self,cell_feature ):
+        """
+        Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list
+
+        """
+        CONTINUOUS_COLUMNS = list()
+        CATEGORICAL_COLUMNS = list()
+        for type_columne, type_value in cell_feature.items():
+            if type_value["column_type"] == 'CONTINUOUS':
+                CONTINUOUS_COLUMNS.append(type_columne)
+            else:
+                CATEGORICAL_COLUMNS.append(type_columne)
+        return CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS
+
+    def add_none_keys_cate_conti_list(self,conti_list, cate_list ):
+        """
+        Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list
+
+        """
+        CALCULATED_CONTINUOUS_COLUMNS = list()
+        CALCULATED_CATEGORICAL_COLUMNS = list()
+
+        # , "extend_cell_feature":
+        # {
+        #     "sex": {"keys": ["female", "male"], "column_type": "CATEGORICAL_KEY"}
+        #     , "race": {"column_type": "NONE"}
+        #     , "marital_status": {"column_type": "NONE"}
+        # }
+
+        _extend_cell_feature = self.extend_cell_feature
+        _extend_cell_feature_list = list()
+        _label = self.label
+        for _k, _v in _extend_cell_feature.items():
+            if _v.get("column_type") == "CATEGORICAL_KEY":
+                _extend_cell_feature_list.append(_k)
+
+        #_extend_cell_feature_list = list(_extend_cell_feature.keys())
+        _extend_cell_feature_list.append(_label)
+        label_extend_list = list(_extend_cell_feature_list)
+
+
+        for _,_key in enumerate(label_extend_list):
+            if _key in conti_list:
+                conti_list.remove(_key)
+            if _key in cate_list:
+                cate_list.remove(_key)
+
+        # for type_columne, type_value in cell_feature.items():
+        #     if type_value["column_type"] == 'CONTINUOUS':
+        #         CONTINUOUS_COLUMNS.append(type_columne)
+        #     else:
+        #         CATEGORICAL_COLUMNS.append(type_columne)
+        return conti_list, cate_list
+
+    def multi_queue(self, file_name):
+        #filename = 'adult_data.tfrecords'
+
+        # Queue 는 이런식으로 설정 여기서는 쓰지 않음
+        #filename_queue = tf.train.string_input_producer(
+        #    [filename], num_epochs=1)
+
+        # 꼭 local variable initial  해야함
+        init_op = tf.local_variables_initializer()
+
+        #file_name = "adult_data.tfrecords"
+
+        #iterrrrr = tf.python_io.tf_record_iterator(file_name)
+        #print("tfrecord count " + str(ilen(iterrrrr)))
+        # for s_example in tf.python_io.tf_record_iterator(file_name):
+        #     example = tf.parse_single_example(s_example, features=features)
+        #     data.append(tf.expand_dims(example['x'], 0))
+
+        # reader = tf.TFRecordReader()
+        # index, row = reader.read(filename_queue)
+
+        # Multi Thread로 들고옴
+        feature_map, target = self.input_fn(tf.contrib.learn.ModeKeys.EVAL, file_name, 128)
+
+        with tf.Session() as sess:
+            # Start populating the filename queue.
+            sess.run(init_op)
+            coord = tf.train.Coordinator()
+            threads = tf.train.start_queue_runners(coord=coord)
+
+            tfrecord_list_row = list()  # 출력을 위한 List
+            print_column = True
+
+            for i in range(3):
+                # Multi Thread에서 넣을것을 Session으로 실행
+                example, label = sess.run([feature_map, target])
+
+                _row = ""
+                if print_column == True:  # Header를 위한 Column Key 설정 첫줄만
+                    tfrecord_list_key = [col for col in example.keys()]
+                    tfrecord_list_key.append('label')
+                    print_column = False
+                    tfrecord_list_row.append(tfrecord_list_key)
+
+                for i in range(len(example[list(example.keys())[0]])):  # Row를 들고 오기 뭔가 지저분함
+
+                    tfrecord_list_col = list()
+                    for _k in example.keys():
+                        if str(type(example[_k])).find('Sparse') > -1:  # Sparse는 Bytes로 나와서 Bytes를 String 으로 처리
+                            tfrecord_list_col.append(str(example[_k].values[i].decode()))
+                        else:
+                            # numpy도 ndarray로 나와서 [0]을 붙여 정리함
+                            tfrecord_list_col.append(str(example[_k][i][0]))
+                    tfrecord_list_col.append(str(label[i][0]))
+                    columns_value = tfrecord_list_col
+                    tfrecord_list_row.append(columns_value)
+
+                # 이쁘게 출력하기 위해 Print 함수 설정
+                for item in tfrecord_list_row:
+                    print(str(item[0:])[1:-1])
+
+            coord.request_stop()
+            coord.join(threads)
+
+    def _init_node_parm(self, key):
+        """
+        Init parameter from workflow_data_frame
+        :return:
+        """
+        try :
+            _wf_data_conf = wf_data_conf(key)
+            self.label = _wf_data_conf.label
+            self.cell_feature= _wf_data_conf.cell_feature
+            self.cross_cell = _wf_data_conf.cross_cell
+            self.extend_cell_feature = _wf_data_conf.extend_cell_feature
+            self.label_values = _wf_data_conf.label_values
+            _wf_data_conf = wf_data_frame(key.split('_')[0]+'_'+key.split('_')[1]+'_'+'data_node')
+            self.multi_node_flag = _wf_data_conf.multi_node_flag
+
+        except Exception as e :
+            raise Exception ("WorkFlowDataFrame parms are not set " + str(e))

@@ -11,6 +11,8 @@ from cluster.preprocess.pre_node_feed_fr2wdnn import PreNodeFeedFr2Wdnn
 from common import utils
 import  tensorflow as tf
 import math
+from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame as wf_data_conf
+from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_data_node
 
 class NeuralNetNodeWdnn(NeuralNetNode):
     """
@@ -37,7 +39,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #self.get_node_name("d")
 
             #data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
-            data_conf_info = WorkflowDataConfFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "dataconf_node").data_conf
+            data_conf_info = self.data_conf
 
             # make wide & deep model
             wdnn = NeuralCommonWdnn()
@@ -54,9 +56,6 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             _batch_size = self.batch_size
             _num_tfrecords_files = 0
-
-
-
 
             #str(file_queue[0])
             #feed = PreNodeFeedFr2Wdnn()
@@ -78,7 +77,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #feature, label = wdnn.input_fn( df, conf_data['node_id'],data_conf_info)
 
             #multi Feeder modified
-            multi_read_flag = False
+            multi_read_flag = self.multi_read_flag
             if multi_read_flag == True:
                 for index, fn in enumerate(train_data_set.input_paths):
                     _num_tfrecords_files += self.generator_len(
@@ -247,3 +246,14 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.activation_function = wf_net_conf.activation_function
         self.batch_size = wf_net_conf.batch_size
         self.epoch = wf_net_conf.epoch
+        #Todo 어떻게 꺼내는지 승우씨한테 물어볼것
+        _wf_data_conf = wf_data_conf(key.split('_')[0]+'_'+key.split('_')[1]+'_'+'dataconf_node')
+        self.data_conf = _wf_data_conf.conf
+        self.label = _wf_data_conf.label
+        self.cell_feature = _wf_data_conf.cell_feature
+        self.cross_cell = _wf_data_conf.cross_cell
+        self.extend_cell_feature = _wf_data_conf.extend_cell_feature
+        self.label_values = _wf_data_conf.label_values
+        _wf_data_node = wf_data_node(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
+        self.multi_read_flag = _wf_data_node.multi_node_flag
+
