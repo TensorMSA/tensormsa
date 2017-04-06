@@ -1,6 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from master.workflow.netconf.workflow_netconf_autoencoder import WorkFlowNetConfAutoEncoder
 
 
 class WorkFlowNetConfAutoEncoder(APIView) :
@@ -29,12 +30,17 @@ class WorkFlowNetConfAutoEncoder(APIView) :
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, nnid):
+    def put(self, request, nnid, ver, node):
         """
         - desc ; update data
         """
         try:
-            return_data = ""
+            input_data = request.data
+            if(WorkFlowNetConfAutoEncoder().validation_check(input_data)) :
+                node_id = ''.join([nnid, '_', ver , '_', node])
+                return_data = WorkFlowNetConfAutoEncoder().set_view_obj(node_id, input_data)
+            else :
+                return_data = {'message' : 'data validation error'}
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
