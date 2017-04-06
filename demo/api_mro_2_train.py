@@ -16,7 +16,7 @@ url = gUrl
 nn_id = "nn00004"
 
 # get workflow version info
-resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/')
+resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
 data = json.loads(resp.json())
 
 wf_ver_id = 0

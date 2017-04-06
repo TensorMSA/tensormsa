@@ -313,6 +313,18 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/subm
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "autoencoder",
+                        "wf_task_submenu_name": "autoencoder",
+                        "wf_task_submenu_desc": "autoencoder",
+                        "wf_node_class_path": "cluster.neuralnet.neuralnet_node_autoencoder",
+                        "wf_node_class_name": "NeuralNetNodeAutoEncoder"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
 
 ##################################################
 # Test Menu
