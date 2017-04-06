@@ -87,7 +87,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             if(parm['type'] in ['vector','train']) :
                 return_val = self._predict_word2vec(parm, return_val, model)
             elif(parm['type'] in ['sim']) :
-                return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'] , topn=5))
+                return_val = self._predict_sim(parm, return_val, model)
             elif(parm['type'] in ['similarity']) :
                 return_val.append(model.similarity(parm['val_1'][0], parm['val_2'][0]))
             elif(parm['type'] in ['dict'] or parm['type'] in ['vocab2index']) :
@@ -124,6 +124,21 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             else:
                 return_val.append([-3.] * self.vector_size)
         return return_val
+
+    def _predict_sim(self, parm, return_val, model):
+        """
+        return most similar vocabs (close to each other)
+        :param parm:
+        :param return_val:
+        :param model:
+        :return:
+        """
+        try :
+            return_val.append(model.most_similar(positive=parm['val_1'], negative=parm['val_2'], topn=5))
+            return return_val
+        except Exception as e :
+            return return_val.append(e)
+
 
     def _predict_vocab2index(self, parm, return_val, model):
         """
