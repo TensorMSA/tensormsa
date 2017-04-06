@@ -5,7 +5,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 for idx in range(0, 20) :
     # insert workflow info
-    resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/nn0000' + str(idx) + '/version/',
+    resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/nnid/nn0000' + str(idx) + '/version/',
                          json={
                              "nn_def_list_info_nn_id": "",
                              "nn_wf_ver_info": "test version info",
@@ -16,7 +16,7 @@ for idx in range(0, 20) :
     print("evaluation result : {0}".format(data))
 
     # update workflow info
-    resp = requests.put('http://' + url + '/api/v1/type/common/target/nninfo/nn0000' + str(idx) + '/version/',
+    resp = requests.put('http://' + url + '/api/v1/type/common/target/nninfo/nnid/nn0000' + str(idx) + '/version/',
                          json={
                              "nn_wf_ver_id": "11",
                              "nn_def_list_info_nn_id": "",

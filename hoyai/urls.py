@@ -27,9 +27,9 @@ urlpatterns = [
         csrf_exempt(rest_view.ConfServerData.as_view())),
 
     # net definition manager
-    url(r'^api/v1/type/common/target/nninfo/(?P<nnid>.*)/version/',
+    url(r'^api/v1/type/common/target/nninfo/nnid/(?P<nnid>.*)/version/',
         csrf_exempt(rest_view.CommonNNInfoVersion.as_view())),
-    url(r'^api/v1/type/common/target/nninfo/',
+    url(r'^api/v1/type/common/target/nninfo/nnid/(?P<nnid>.*)/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
     # rule management
