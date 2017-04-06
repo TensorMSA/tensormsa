@@ -80,7 +80,8 @@ make migrations
 ./manage.py migrate
 ```
 or
-delete from django_migrations where app = 'master';
+delete from django_migrations where app = 'master'; 
+
 ./manage.py migrate
 
 ### Run Jupyter for API Test
