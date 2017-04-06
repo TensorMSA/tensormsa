@@ -17,7 +17,7 @@ typeStr = "cnn"
 nn_id = "nn00004"
 
 # get workflow version info
-resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/')
+resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
 data = json.loads(resp.json())
 
 for config in data:
@@ -42,13 +42,7 @@ files = {
 restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/'+typeStr+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
 
 resp = requests.post(restURL,
-                     files=files,
-                     json={
-                         "key" : {
-                                  "nn_id": nn_id,
-                                  "wf_ver_id": wf_ver_id
-                                  }
-                     }
+                     files=files
                      )
 data = json.loads(resp.json())
 print(data)
