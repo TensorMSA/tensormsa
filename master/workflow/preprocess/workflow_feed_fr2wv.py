@@ -1,6 +1,6 @@
 from master.workflow.preprocess.workflow_pre import WorkFlowPre
 
-class WorkflowFeedFr2Seq(WorkFlowPre):
+class WorkflowFeedFr2Wv(WorkFlowPre):
     """
 
     """
@@ -12,10 +12,10 @@ class WorkflowFeedFr2Seq(WorkFlowPre):
         :return:
         """
         self.key = key
-        self._set_essence_parms(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
-        self._set_update_prohibited_ids(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
+        self._set_essence_parms(['col_list', 'max_sentence_len', 'preprocess'])
+        self._set_update_prohibited_ids(['col_list', 'max_sentence_len', 'preprocess'])
 
-    def get_encode_column(self):
+    def get_column_list(self):
         """
 
         :param node_id:
@@ -23,17 +23,7 @@ class WorkflowFeedFr2Seq(WorkFlowPre):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['encode_column']
-
-    def get_decode_column(self):
-        """
-
-        :param node_id:
-        :return:
-        """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['decode_column']
+        return self.conf['col_list']
 
     def get_sent_max_len(self):
         """

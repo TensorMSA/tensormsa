@@ -11,20 +11,8 @@ class WorkFlowPreMerge(WorkFlowPre):
         :return:
         """
         self.key = key
-
-    def validation_check(self, json_data):
-        error_msg = ""
-        if('batchsize' not in json_data) :
-            error_msg = ''.join([error_msg, 'batchsize (int) not defined'])
-        if('merge_rule' not in json_data) :
-            error_msg = ''.join([error_msg, 'merge_rule (dict) not defined'])
-        if('type' not in json_data) :
-            error_msg = ''.join([error_msg, 'type (str) not defined'])
-
-        if(error_msg == "") :
-            return True
-        else :
-            raise Exception(error_msg)
+        self._set_essence_parms(['batchsize', 'merge_rule', 'type'])
+        self._set_update_prohibited_ids([])
 
     def get_batchsize(self):
         if('conf' not in self.__dict__) :

@@ -12,11 +12,5 @@ class WorkflowFeedText2Dv(WorkFlowPre):
         :return:
         """
         self.key = key
-
-    def validation_check(self, json_data):
-        error_msg = ""
-
-        if(error_msg == "") :
-            return True
-        else :
-            raise Exception (error_msg)
+        self._set_essence_parms([])
+        self._set_update_prohibited_ids([])

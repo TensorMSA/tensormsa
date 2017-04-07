@@ -4,6 +4,15 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
     """
 
     """
+    def __init__(self, key = None):
+        """
+        init key variable
+        :param key:
+        :return:
+        """
+        self.key = key
+        self._set_update_prohibited_ids(['display_step'])
+
     def validation_check(self, json_data):
         error_msg = ""
         if ('display_step' not in json_data):
@@ -20,3 +29,6 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
             return True
         else:
             raise Exception (error_msg)
+
+
+

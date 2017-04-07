@@ -12,6 +12,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         :return:
         """
         self.key = key
+        self._set_update_prohibited_ids(['encoder_len', 'decoder_len', 'cell_type', 'word_embed_type', 'word_embed_id'])
 
     def validation_check(self, json_data):
         error_msg = ""

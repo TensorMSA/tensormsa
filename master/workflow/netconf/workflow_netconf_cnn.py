@@ -8,6 +8,16 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
     """
 
     """
+    def __init__(self, key = None):
+        """
+        init key variable
+        :param key:
+        :return:
+        """
+        self.key = key
+        self._set_essence_parms([])
+        self._set_update_prohibited_ids([])
+
     def set_num_classes_predcnt(self, node_id, netconf, dataconf):
         self.validation_check(netconf)
         labels = dataconf["labels"]
@@ -45,7 +55,3 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         except Exception as e:
             raise Exception(e)
         return None
-
-
-    def validation_check(self, json_data):
-        return True
