@@ -49,7 +49,7 @@ class DataNodeFrame(DataNode):
         """
         try:
 
-            fp_list = utils.get_filepaths(self.data_src_path)
+            fp_list = utils.get_filepaths(self.data_src_path, file_type='csv')
             _multi_node_flag = self.multi_node_flag
 
             try:

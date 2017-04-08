@@ -1,6 +1,7 @@
 from cluster.preprocess.pre_node_feed import PreNodeFeed
 from master.workflow.preprocess.workflow_feed_fr2wv import WorkflowFeedFr2Wv
 import pandas as pd
+import numpy as np
 
 class PreNodeFeedFr2Wv(PreNodeFeed):
     """
@@ -43,8 +44,9 @@ class PreNodeFeedFr2Wv(PreNodeFeed):
                                stop=index.stop)
 
             for column in self.column_list :
-                return_data = return_data + self._preprocess(chunk[column].values)
-            return return_data
+                for line in self._preprocess(chunk[column].values)[index.start:index.stop] :
+                    return_data = return_data + line
+            return [return_data]
         except Exception as e :
             raise Exception (e)
         finally:
@@ -54,7 +56,7 @@ class PreNodeFeedFr2Wv(PreNodeFeed):
         """
 
         :param input_data:
-        :return:
+        :returnen:
         """
         if(self.preprocess_type == 'mecab') :
             return self._mecab_parse(input_data)

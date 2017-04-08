@@ -19,27 +19,35 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
 
             # load model for train
             update_flag = False
-            model = word2vec.Word2Vec(size=self.vector_size , window=self.window_size, min_count=5, workers=4)
+            model = word2vec.Word2Vec(size=self.vector_size , window=self.window_size, min_count=0, workers=4)
             if (os.path.exists(self._get_model_path()) == True):
                 model = word2vec.Word2Vec.load(self._get_model_path())
                 update_flag = True
 
 
-            # train per files in folder
+            # build vocab first by batch size
             while(train_data_set.has_next()) :
                 # Iteration is to improve for Model Accuracy
                 for x in range(0, self.iter_size) :
                     # Per Line in file
                     for i in range(0, train_data_set.data_size(), self.batch_size):
                         data_set = train_data_set[i:i + self.batch_size]
-                        filtered_data = [data_set[np.logical_not(data_set == '#')].tolist()]
                         if (update_flag == False):
-                            model.build_vocab(filtered_data, update=False)
+                            model.build_vocab(data_set, update=False)
                             update_flag = True
                         else:
-                            model.build_vocab(filtered_data, update=True)
-                        model.train(filtered_data)
-                #Select Next file
+                            model.build_vocab(data_set, update=True)
+                train_data_set.next()
+
+            # after all new vocab stacked on voacb start train
+            train_data_set.reset_pointer()
+            while (train_data_set.has_next()):
+                # Iteration is to improve for Model Accuracy
+                for x in range(0, self.iter_size):
+                    # Per Line in file
+                    for i in range(0, train_data_set.data_size(), self.batch_size):
+                        data_set = train_data_set[i:i + self.batch_size]
+                        model.train(data_set)
                 train_data_set.next()
 
             os.makedirs(self.md_store_path, exist_ok=True)
