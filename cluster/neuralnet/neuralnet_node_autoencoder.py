@@ -1,4 +1,7 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
+from master.workflow.netconf.workflow_netconf_autoencoder import WorkFlowNetConfAutoEncoder
+import tensorflow as tf
+import numpy as np
 
 class NeuralNetNodeAutoEncoder(NeuralNetNode):
     """
@@ -6,10 +9,16 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
     """
 
     def run(self, conf_data):
-        return None
+        try:
+            # init parms
+            self._init_node_parm(conf_data['node_id'])
+            self.cls_pool = conf_data['cls_pool']
+            return None
+        except Exception as e:
+            raise Exception(e)
 
     def _init_node_parm(self, node_id):
-        return None
+        wf_conf = WorkFlowNetConfAutoEncoder(node_id)
 
     def _set_progress_state(self):
         return None

@@ -151,32 +151,35 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
         get node graph
         :return:
         """
-        # set inital node info
-        for node in node_list :
-            cls = class_list[node.get('nn_wf_node_id')]
-            cls.set_node_name(node.get('nn_wf_node_id'))
-            cls.set_node_type(node.get('wf_task_submenu_id_id'))
-            cls.set_node_grp(node.get('wf_task_menu_id_id'))
+        try :
+            # set inital node info
+            for node in node_list :
+                cls = class_list[node.get('nn_wf_node_id')]
+                cls.set_node_name(node.get('nn_wf_node_id'))
+                cls.set_node_type(node.get('wf_task_submenu_id_id'))
+                cls.set_node_grp(node.get('wf_task_menu_id_id'))
 
-            for rel_node in node_rel_list :
-                if(node.get('nn_wf_node_id') == rel_node[0]) :
-                    cls.set_next_node(rel_node[1], class_list[rel_node[1]])
-                if(node.get('nn_wf_node_id') == rel_node[1]):
-                    cls.set_prev_node(rel_node[0], class_list[rel_node[0]])
-            class_list[node.get('nn_wf_node_id')] = cls
+                for rel_node in node_rel_list :
+                    if(node.get('nn_wf_node_id') == rel_node[0]) :
+                        cls.set_next_node(rel_node[1], class_list[rel_node[1]])
+                    if(node.get('nn_wf_node_id') == rel_node[1]):
+                        cls.set_prev_node(rel_node[0], class_list[rel_node[0]])
+                class_list[node.get('nn_wf_node_id')] = cls
 
-        # set inital node info
-        for node in reversed(node_list) :
-            cls = class_list[node.get('nn_wf_node_id')]
+            # set inital node info
+            for node in reversed(node_list) :
+                cls = class_list[node.get('nn_wf_node_id')]
 
-            for rel_node in node_rel_list :
-                if(node.get('nn_wf_node_id') == rel_node[0]) :
-                    cls.set_next_node(rel_node[1], class_list[rel_node[1]])
-                if(node.get('nn_wf_node_id') == rel_node[1]):
-                    cls.set_prev_node(rel_node[0], class_list[rel_node[0]])
-            class_list[node.get('nn_wf_node_id')] = cls
+                for rel_node in node_rel_list :
+                    if(node.get('nn_wf_node_id') == rel_node[0]) :
+                        cls.set_next_node(rel_node[1], class_list[rel_node[1]])
+                    if(node.get('nn_wf_node_id') == rel_node[1]):
+                        cls.set_prev_node(rel_node[0], class_list[rel_node[0]])
+                class_list[node.get('nn_wf_node_id')] = cls
 
-        return class_list[node_list[0].get('nn_wf_node_id')]
+            return class_list[node_list[0].get('nn_wf_node_id')]
+        except Exception as e :
+            raise Exception (e)
 
     def _run_next_node(self):
         return None
