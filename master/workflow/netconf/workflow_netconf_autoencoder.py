@@ -11,7 +11,7 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
         :return:
         """
         self.key = key
-        self._set_update_prohibited_ids(['display_step'])
+        self._set_prhb_parms(['display_step'])
 
     def validation_check(self, json_data):
         error_msg = ""

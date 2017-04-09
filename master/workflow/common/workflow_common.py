@@ -51,9 +51,9 @@ class WorkFlowCommon:
         :return:
         """
         if('type' in json_data) :
-            filter_list = self._get_essence_parms(type=json_data.get('type'))
+            filter_list = self._get_key_parms(type=json_data.get('type'))
         else :
-            filter_list = self._get_essence_parms()
+            filter_list = self._get_key_parms()
 
 
         if(filter_list) :
@@ -66,7 +66,7 @@ class WorkFlowCommon:
                 raise Exception (error_msg)
 
 
-    def _get_essence_parms(self, type='default'):
+    def _get_key_parms(self, type='default'):
         """
         return update black list
         :return:
@@ -76,7 +76,7 @@ class WorkFlowCommon:
         else :
             return None
 
-    def _set_essence_parms(self, lists, type='default'):
+    def _set_key_parms(self, lists, type='default'):
         """
         set update black list
         :param lists:
@@ -93,12 +93,12 @@ class WorkFlowCommon:
         """
         db_parm = self.get_view_obj(node_id)
         exists_list = list(set(json_data).intersection(db_parm))
-        black_list = self._get_update_prohibited_ids()
+        black_list = self._get_prhb_parms()
 
         if(len(list(set(black_list).intersection(exists_list))) > 0) :
             raise Exception("you cannot change critical values, create new version for diffrent model")
 
-    def _get_update_prohibited_ids(self):
+    def _get_prhb_parms(self):
         """
         return update black list
         :return:
@@ -108,7 +108,7 @@ class WorkFlowCommon:
         else :
             return []
 
-    def _set_update_prohibited_ids(self, lists):
+    def _set_prhb_parms(self, lists):
         """
         set update black list
         :param lists:

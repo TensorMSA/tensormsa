@@ -12,8 +12,8 @@ class WorkflowFeedFr2Wv(WorkFlowPre):
         :return:
         """
         self.key = key
-        self._set_essence_parms(['col_list', 'max_sentence_len', 'preprocess'])
-        self._set_update_prohibited_ids(['col_list', 'max_sentence_len', 'preprocess'])
+        self._set_key_parms(['col_list', 'max_sentence_len', 'preprocess'])
+        self._set_prhb_parms(['col_list', 'max_sentence_len', 'preprocess'])
 
     def get_column_list(self):
         """

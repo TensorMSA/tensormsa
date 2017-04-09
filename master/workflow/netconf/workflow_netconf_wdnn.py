@@ -54,7 +54,7 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
             self.key = key
             self.conf = self.get_step_source(key)
 
-        self._set_update_prohibited_ids(['model_path', 'encoder_len', 'decoder_len','encoder_depth', 'cell_type'])
+        self._set_prhb_parms(['model_path', 'encoder_len', 'decoder_len','encoder_depth', 'cell_type'])
 
     def validation_check(self, json_data):
         error_msg = ""

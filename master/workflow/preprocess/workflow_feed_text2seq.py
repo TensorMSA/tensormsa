@@ -12,5 +12,5 @@ class WorkflowFeedText2Seq(WorkFlowPre):
         :return:
         """
         self.key = key
-        self._set_essence_parms([])
-        self._set_update_prohibited_ids([])
+        self._set_key_parms([])
+        self._set_prhb_parms([])

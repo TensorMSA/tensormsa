@@ -11,8 +11,8 @@ class WorkFlowPreMerge(WorkFlowPre):
         :return:
         """
         self.key = key
-        self._set_essence_parms(['batchsize', 'merge_rule', 'type'])
-        self._set_update_prohibited_ids([])
+        self._set_key_parms(['batchsize', 'merge_rule', 'type'])
+        self._set_prhb_parms([])
 
     def get_batchsize(self):
         if('conf' not in self.__dict__) :

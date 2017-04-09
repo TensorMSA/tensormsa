@@ -11,24 +11,8 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         :return:
         """
         self.key = key
-        self._set_update_prohibited_ids(['window_size', 'vector_size'])
-
-    def validation_check(self, json_data):
-        error_msg = ""
-        if ('model_path' not in json_data):
-            error_msg = ''.join([error_msg, 'model_path (str) not defined'])
-        if ('window_size' not in json_data):
-            error_msg = ''.join([error_msg, 'window_size (int) not defined'])
-        if ('vector_size' not in json_data):
-            error_msg = ''.join([error_msg, 'vector_size (int) not defined'])
-        if ('batch_size' not in json_data):
-            error_msg = ''.join([error_msg, 'batch_size (int) not defined'])
-        if ('iter' not in json_data):
-            error_msg = ''.join([error_msg, 'iter (int) not defined'])
-        if (error_msg == ""):
-            return True
-        else:
-            raise Exception (error_msg)
+        self._set_key_parms(['window_size', 'window_size', 'vector_size', 'batch_size', 'iter', 'min_count'])
+        self._set_prhb_parms(['window_size', 'vector_size'])
 
     def get_model_store_path(self):
         """
@@ -38,7 +22,7 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['model_path']
+        return self.conf.get('model_path')
 
     def get_window_size(self):
         """
@@ -48,7 +32,7 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['window_size']
+        return self.conf.get('window_size')
 
     def get_vector_size(self):
         """
@@ -58,7 +42,7 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['vector_size']
+        return self.conf.get('vector_size')
 
     def get_batch_size(self):
         """
@@ -68,7 +52,7 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['batch_size']
+        return self.conf.get('batch_size')
 
     def get_iter_size(self):
         """
@@ -78,4 +62,14 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         """
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
-        return self.conf['iter']
+        return self.conf.get('iter')
+
+    def get_min_count(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('min_count')

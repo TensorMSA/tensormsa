@@ -12,8 +12,8 @@ class WorkflowFeedFr2Seq(WorkFlowPre):
         :return:
         """
         self.key = key
-        self._set_essence_parms(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
-        self._set_update_prohibited_ids(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
+        self._set_key_parms(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
+        self._set_prhb_parms(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
 
     def get_encode_column(self):
         """
