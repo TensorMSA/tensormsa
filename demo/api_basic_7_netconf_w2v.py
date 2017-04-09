@@ -14,6 +14,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/w2v/
                         "vector_size" : 100,
                         "batch_size" : 100,
                         "iter" : 5,
+                        "min_count" : 0
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -30,6 +31,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/w2v/
                         "vector_size" : 300,
                         "batch_size" : 100,
                         "iter" : 5,
+                        "min_count" : 0
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

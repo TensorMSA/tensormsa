@@ -19,7 +19,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
 
             # load model for train
             update_flag = False
-            model = word2vec.Word2Vec(size=self.vector_size , window=self.window_size, min_count=0, workers=4)
+            model = word2vec.Word2Vec(size=self.vector_size , window=self.window_size, min_count=self.min_count, workers=4)
             if (os.path.exists(self._get_model_path()) == True):
                 model = word2vec.Word2Vec.load(self._get_model_path())
                 update_flag = True
@@ -63,6 +63,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
         self.vector_size = wf_conf.get_vector_size()
         self.batch_size = wf_conf.get_batch_size()
         self.iter_size = wf_conf.get_iter_size()
+        self.min_count = wf_conf.get_min_count()
 
     def _get_model_path(self):
         return ''.join([self.md_store_path, '/model.bin'])
