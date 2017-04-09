@@ -13,8 +13,6 @@ from .workflow_pre_merge import WorkFlowPreMerge
 from .workflow_pre_predict import WorkFlowPrePredict
 from .workflow_netconf_autoencoder import WorkFlowNetConfAutoEncoder
 from .workflow_netconf_cnn import WorkFlowNetConfCnn
-from .workflow_netconf_gru import WorkFlowNetConfGru
-from .workflow_netconf_lstm import WorkFlowNetConfLstm
 from .workflow_netconf_predefined import WorkFlowNetConfPredefined
 from .workflow_netconf_rnn import WorkFlowNetConfRnn
 from .workflow_netconf_wdnn import WorkFlowNetConfWdnn

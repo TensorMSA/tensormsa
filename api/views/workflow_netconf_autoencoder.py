@@ -36,11 +36,8 @@ class WorkFlowNetConfAutoEncoder(APIView) :
         """
         try:
             input_data = request.data
-            if(AutoEncoder().validation_check(input_data)) :
-                node_id = ''.join([nnid, '_', ver , '_', node])
-                return_data = AutoEncoder().set_view_obj(node_id, input_data)
-            else :
-                return_data = {'message' : 'data validation error'}
+            node_id = ''.join([nnid, '_', ver , '_', node])
+            return_data = AutoEncoder().set_view_obj(node_id, input_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
