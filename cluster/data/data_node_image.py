@@ -66,8 +66,9 @@ class DataNodeImage(DataNode):
                             shape_arr.append(image.shape)
                             lable_arr.append(forder.encode('utf8'))
                         filecnt += 1
+                        print("File=" + directory + " forder=" + forder + "  name=" + filename)
                     except:
-                        println("ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                        print("ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
                 shutil.rmtree(directory + "/" + forder)
                 try:
                     idx = labels.index(forder)
@@ -100,6 +101,7 @@ class DataNodeImage(DataNode):
                 hdf_features.dims[0].label = 'batch'
 
                 for i in range(len(image_arr)):
+                    print("HDF5 Create=" + str(lable_arr[i].decode('UTF-8')))
                     hdf_features[i] = image_arr[i]
                     hdf_shapes[i] = shape_arr[i]
                     hdf_labels[i] = lable_arr[i]
