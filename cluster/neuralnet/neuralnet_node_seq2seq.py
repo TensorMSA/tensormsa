@@ -140,7 +140,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         # predict network
         return self._run_predict(parm['input_data'])
 
-    def eval(self, node_id, parm={}):
+    def eval(self, node_id, conf, data=None, result=None):
         """
 
         :param node_id:

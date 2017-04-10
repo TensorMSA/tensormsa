@@ -218,7 +218,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
         except Exception as e:
             raise Exception(e)
 
-    def eval(self, node_id, parm):
+    def eval(self, node_id, parm, data=None, result=None):
         """
 
         :param node_id:
@@ -227,13 +227,13 @@ class NeuralNetNodeReNet(NeuralNetNode):
         """
         print('nneval')
         try:
-            eval_config_data = WorkFlowEvalConfig().get_step_source(node_id)
+            eval_config_data = WorkFlowEvalConfig().get_view_obj(node_id)
             data_node = self.get_linked_prev_node_with_grp('data')
             data_node_name = data_node[0].get_node_name()
             data_config_data = WorkFlowDataImage().get_step_source(data_node_name)
             labels = data_config_data["labels"]
             config = {"type" : eval_config_data["type"], "labels" : labels}
-            train = TrainSummaryInfo(config)
+            train = TrainSummaryInfo(conf=config)
             self.cls_pool = parm['cls_pool']
             eval_node = self.cls_pool[node_id]
             prev_node = eval_node.get_prev_node()

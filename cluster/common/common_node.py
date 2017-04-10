@@ -73,7 +73,7 @@ class WorkFlowCommonNode :
                 return node
         return -1
 
-    def get_next_node(self):
+    def get_next_node(self, grp=None, type=None):
         """
         next node class
         :param name:
@@ -81,7 +81,9 @@ class WorkFlowCommonNode :
         """
         return_list = []
         for name in self.next_nodes.keys() :
-            return_list.append(self.next_nodes[name])
+            if ((grp == None or grp == self.next_nodes[name].get_node_grp()) and
+                    (type == None or type == self.next_nodes[name].get_node_type())):
+                return_list.append(self.next_nodes[name])
         return return_list
 
     def get_next_node_as_dict(self):
@@ -100,7 +102,7 @@ class WorkFlowCommonNode :
         """
         self.prev_nodes[key] = node_cls
 
-    def get_prev_node(self):
+    def get_prev_node(self, grp=None, type=None):
         """
         prev_node class
         :param name:
@@ -108,7 +110,9 @@ class WorkFlowCommonNode :
         """
         return_list = []
         for name in self.prev_nodes.keys() :
-            return_list.append(self.prev_nodes[name])
+            if ((grp == None or grp == self.prev_nodes[name].get_node_grp()) and
+                    (type == None or type == self.prev_nodes[name].get_node_type())):
+                return_list.append(self.prev_nodes[name])
         return return_list
 
     def get_prev_node_as_dict(self):
