@@ -67,9 +67,9 @@ class DataNodeImage(DataNode):
                             shape_arr.append(image.shape)
                             lable_arr.append(forder.encode('utf8'))
                             filecnt += 1
-                            print("Processcnt="+processcnt+" File=" + directory + " forder=" + forder + "  name=" + filename)
+                            print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
                         except:
-                            print("Processcnt="+processcnt+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                            print("Processcnt="+str(processcnt)+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
                         processcnt += 1
                     shutil.rmtree(directory + "/" + forder)
                     try:
