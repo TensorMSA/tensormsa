@@ -11,12 +11,12 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/seq2
                          "encoder_depth" : 2,
                          "decoder_depth" : 2,
                          "cell_type" : "lstm",   #vanila, lstm, gru
-                         "cell_size" : 300,
+                         "cell_size" : 500,
                          "drop_out" : 0.8,
                          "word_embed_type" : "w2v",   #w2v, onehot
                          "word_embed_id" : "nn00002",
                          "batch_size" : 100,
-                         "iter" : 100,
+                         "iter" : 10,
                          "early_stop" : 0.9,
                          "learning_rate" : 0.001
                      })
@@ -33,12 +33,12 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/seq2
                          "encoder_depth" : 2,
                          "decoder_depth" : 2,
                          "cell_type" : "lstm",   #vanila, lstm, gru
-                         "cell_size" : 300,
+                         "cell_size" : 500,
                          "drop_out" : 0.8,
                          "word_embed_type" : "w2v",   #w2v, onehot
-                         "word_embed_id" : "nn00002",
+                         "word_embed_id" : "nn00009",
                          "batch_size" : 100,
-                         "iter" : 100,
+                         "iter" : 10,
                          "early_stop" : 0.9,
                          "learning_rate" : 0.001
                      })

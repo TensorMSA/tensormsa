@@ -22,7 +22,7 @@ class EvalNodeExtra(EvalNode):
             data_node = self.get_prev_node(grp='preprocess')
             self._init_node_parm(conf_data['node_id'])
             result = TrainSummaryInfo(type=self.eval_result_type)
-            result = net_node[0].eval(conf_data['node_id'], conf_data, data=data_node, result=result)
+            result = net_node[0].eval(conf_data['node_id'], conf_data, data=data_node[0], result=result)
             input_data = {}
             input_data['nn_id'] = result.get_nn_id()
             input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()

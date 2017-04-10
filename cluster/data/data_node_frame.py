@@ -87,7 +87,6 @@ class DataNodeFrame(DataNode):
                                 self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read,_label)
 
                     os.remove(file_path) #승우씨것
-                    print(_wf_data_conf)
             except Exception as e:
                 raise Exception(e)
             return None
@@ -221,9 +220,9 @@ class DataNodeFrame(DataNode):
         try:
             _multi_node_flag = self.multi_node_flag
             if _multi_node_flag == True:
-                file_path = utils.get_filepaths(self.data_store_path,'h5')
+                file_path = utils.get_filepaths(self.data_store_path, 'tfrecords')
             else:
-                file_path = utils.get_filepaths(self.data_store_path,'tfrecords')
+                file_path = utils.get_filepaths(self.data_store_path, 'h5')
             return file_path
         except Exception as e:
             raise Exception(e)

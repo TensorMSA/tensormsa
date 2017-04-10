@@ -74,7 +74,7 @@ class TrainSummaryInfo:
             self.result_info["predicts"] = predicts
         elif self.type == 'w2v':
             raise Exception ("Eval for W2V is on development now")
-        elif self.type == 'seq2swq':
+        elif self.type == 'seq2seq':
             self.result_info['question'].append(input)
             self.result_info['answer'].append(label)
             self.result_info['predict'].append(predict)

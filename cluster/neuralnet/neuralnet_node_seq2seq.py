@@ -1,16 +1,9 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from master.workflow.netconf.workflow_netconf_seq2seq import WorkFlowNetConfSeq2Seq as WfNetconfSeq2Seq
-from master.workflow.netconf.workflow_netconf_w2v import WorkFlowNetConfW2V
-import numpy as np
-import tensorflow as tf
 from cluster.service.service_predict_w2v import PredictNetW2V
 import numpy as np
 import tensorflow as tf
-import collections
-import argparse
-import time
 from common.utils import *
-import os
 from konlpy.tag import Mecab
 
 class NeuralNetNodeSeq2Seq(NeuralNetNode):
@@ -28,6 +21,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
 
             # prepare net conf
+            self._set_weight_vectors()
             self._set_train_model()
 
             # create session
@@ -55,6 +49,16 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             sess.close()
         except Exception as e :
             raise Exception (e)
+
+    def _set_weight_vectors(self):
+        """
+        set weight vecotrs seperatly for sharing weight with preidicts logic
+        :return:
+        """
+        # Weigths
+        with tf.variable_scope('rnnlm'):
+            self.softmax_w = tf.Variable(tf.random_normal([self.cell_size, self.vocab_size], stddev=0.35), name="softmax_w")
+            self.softmax_b = tf.Variable(tf.random_normal([self.vocab_size], stddev=0.35), name="softmax_b")
 
     def _init_node_parm(self, node_id):
         """
@@ -137,8 +141,12 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         self._init_node_parm(node_id)
         # prepare net conf
         self._set_predict_model()
-        # predict network
-        return self._run_predict(parm['input_data'])
+        # create session
+        sess = tf.Session()
+        sess.run(tf.initialize_all_variables())
+        result = self._run_predict(sess, parm['input_data'])
+        sess.close()
+        return result
 
     def eval(self, node_id, conf, data=None, result=None):
         """
@@ -147,7 +155,21 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param parm:
         :return:
         """
-        pass
+        result.set_result_data_format({})
+        tf.reset_default_graph()
+        sess = tf.Session()
+        sess.run(tf.initialize_all_variables())
+        # prepare net conf
+        self._set_predict_model()
+
+        while (data.has_next()):
+            for i in range(0, data.data_size(), self.num_batches):
+                data_set = data[i:i + self.num_batches]
+                predict = self._run_predict(sess, data_set[0][0], type='pre', clean_ans=False)
+                result.set_result_info(' '.join(data_set[1][0]), ' '.join(predict), input=' '.join(data_set[0][0]), acc=None)
+            data.next()
+        sess.close()
+        return result
 
     def _word_embed_data(self, input_data):
         """
@@ -242,14 +264,14 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self.targets = tf.placeholder(tf.int32, [self.batch_size, self.decoder_seq_length])
             self.istate = cell.zero_state(self.batch_size, tf.float32)
 
-            # Weigths
-            with tf.variable_scope('rnnlm'):
-                softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
-                softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
-                inputs = tf.split(self.input_data, self.encoder_seq_length, 1)
-                inputs = [tf.squeeze(_input, [1]) for _input in inputs]
-                outputs = tf.split(self.output_data, self.decoder_seq_length, 1)
-                outputs = [tf.squeeze(_output, [1]) for _output in outputs]
+            # set weight vectors
+            self._set_weight_vectors()
+
+            # reshape data matirx
+            inputs = tf.split(self.input_data, self.encoder_seq_length, 1)
+            inputs = [tf.squeeze(_input, [1]) for _input in inputs]
+            outputs = tf.split(self.output_data, self.decoder_seq_length, 1)
+            outputs = [tf.squeeze(_output, [1]) for _output in outputs]
 
             self.outputs, last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
                                                                                    outputs,
@@ -258,7 +280,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                                                                                    scope='rnnlm')
 
             self.output = tf.reshape(tf.concat(self.outputs, 1), [-1, self.cell_size])
-            self.logits = tf.nn.xw_plus_b(self.output, softmax_w, softmax_b)
+            self.logits = tf.nn.xw_plus_b(self.output, self.softmax_w, self.softmax_b)
             self.probs = tf.nn.softmax(self.logits)
 
             # Loss
@@ -317,14 +339,14 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
             self.istate = self.cell.zero_state(self.batch_size, tf.float32)
 
+            # set weight vectors
+            self._set_weight_vectors()
+
             # Weigths
-            with tf.variable_scope('rnnlm'):
-                softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
-                softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
-                inputs = tf.split(self.input_data, self.encoder_seq_length, 1)
-                inputs = [tf.squeeze(_input, [1]) for _input in inputs]
-                outputs = tf.split(self.output_data, self.decoder_seq_length, 1)
-                outputs = [tf.squeeze(_output, [1]) for _output in outputs]
+            inputs = tf.split(self.input_data, self.encoder_seq_length, 1)
+            inputs = [tf.squeeze(_input, [1]) for _input in inputs]
+            outputs = tf.split(self.output_data, self.decoder_seq_length, 1)
+            outputs = [tf.squeeze(_output, [1]) for _output in outputs]
 
             self.outputs, self.last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
                                                                                    outputs,
@@ -333,58 +355,58 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                                                                                    scope='rnnlm')
 
             self.output = tf.reshape(tf.concat(self.outputs, 1), [-1, self.cell_size])
-            self.logits = tf.nn.xw_plus_b(self.output, softmax_w, softmax_b)
+            self.logits = tf.nn.xw_plus_b(self.output, self.softmax_w, self.softmax_b)
             self.probs = tf.nn.softmax(self.logits)
 
         except Exception as e :
             raise Exception (e)
 
-    def _run_predict(self, x_input):
+    def _run_predict(self, sess, x_input, type='raw', clean_ans=True):
         """
 
         :return:
         """
         try :
-            # create session
-            sess = tf.Session()
-            sess.run(tf.initialize_all_variables())
-            saver = tf.train.Saver(tf.all_variables())
-
             #restore model
+            saver = tf.train.Saver(tf.all_variables())
             if (len(get_filepaths(self.md_store_path)) > 0):
                 saver.restore(sess, ''.join([self.md_store_path , '/']))
             else :
                 raise Exception ("error : no pretrained model exist")
 
-            mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
-            state = sess.run(self.cell.zero_state(1,tf.float32))
-
+            #preprocess input data if necessary
             word_list = []
-            for word_tuple in self._pad_predict_input(mecab.pos(x_input)):
-                if(len(word_tuple[1]) > 0) :
-                    word = ''.join([word_tuple[0], "/" , word_tuple[1]])
-                else :
-                    word = word_tuple[0]
-                word_list.append(word)
+            if(type == 'raw') :
+                word_list = [self._pos_tag_predict_data(x_input)]
+            elif(type=='pre'):
+                word_list = [x_input]
+            else :
+                raise Exception ("Wrong predict data type error!")
 
+            # run predict
             output = ['@'] + [''] * (self.decoder_seq_length - 1)
-            respone = ""
-            start_flag = False
+            respone = None
+            state = sess.run(self.cell.zero_state(1, tf.float32))
             outputs, probs, state = sess.run([self.outputs, self.probs, self.last_state] ,
-                                     feed_dict={self.input_data: self._word_embed_data(np.array([word_list])),
+                                     feed_dict={self.input_data: self._word_embed_data(np.array(word_list)),
                                                 self.output_data: self._word_embed_data(np.array([output])),
                                                 self.istate: state})
-            for i in range(0,self.decoder_seq_length) :
-                word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
-                if (word in ['START'] ):
-                    start_flag = True
-                if(word not in ['PAD', 'UNKNOWN','START'] and start_flag == True and len(word) > 0) :
-                    if ('/' in word) : respone = respone + ' ' + word.split('/')[0]
-                    if ('/' not in word) : respone = respone + ' ' + word
-                if (word in ['SF', './SF', '?/SF'] ):
-                    break
-
-            sess.close()
+            if(clean_ans) :
+                #prepare clean answer
+                respone = ""
+                start_flag = False
+                for i in range(0,self.decoder_seq_length) :
+                    word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
+                    resp, flag, start_flag = self._clean_predict_result(word, respone, start_flag)
+                    respone = respone + resp
+                    if(flag == False) :
+                        break
+            else :
+                #return vector
+                respone = []
+                for i in range(0, self.decoder_seq_length):
+                    word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
+                    respone.append(word)
             return respone
         except Exception as e :
             raise Exception(e)
@@ -400,3 +422,36 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         if(pad_size > 0 ) :
             input_tuple = pad_size * [('#', '')] + input_tuple + [('SF', '')]
         return input_tuple
+
+    def _pos_tag_predict_data(self, x_input):
+        """
+
+        :param x_input:
+        :return:
+        """
+        word_list = []
+        mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
+        for word_tuple in self._pad_predict_input(mecab.pos(x_input)):
+            if (len(word_tuple[1]) > 0):
+                word = ''.join([word_tuple[0], "/", word_tuple[1]])
+            else:
+                word = word_tuple[0]
+            word_list.append(word)
+        return word_list
+
+    def _clean_predict_result(self, word, respone, start_flag):
+        """
+        clean predict result
+        :param word:
+        :return:
+        """
+        if (word in ['START']):
+            start_flag = True
+        if (word not in ['PAD', 'UNKNOWN', 'START'] and start_flag == True and len(word) > 0):
+            if ('/' in word):
+                return respone + ' ' + word.split('/')[0] , True, start_flag
+            if ('/' not in word):
+                return respone + ' ' + word , True, start_flag
+        if (word in ['SF', './SF', '?/SF']):
+            return respone , False, start_flag
+        return respone, True, start_flag
