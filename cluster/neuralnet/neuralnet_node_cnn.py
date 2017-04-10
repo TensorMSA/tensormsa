@@ -246,7 +246,7 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
                 # Calculate the accuracy on the training-batch.
                 batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
                 msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
-                println(msg.format(i_global, batch_acc))
+                print(msg.format(i_global, batch_acc))
                 batch_acc = round(batch_acc*100,2)
                 result = ["Global Step:     "+str(i_global)+", Training Batch Accuracy:  "+str(batch_acc)+"%"]
                 return_arr.append(result)
