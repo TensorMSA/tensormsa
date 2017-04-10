@@ -4,6 +4,7 @@ from master import models
 from cluster.common.train_summary_info import TrainSummaryInfo
 from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
 from common.utils import *
+from master import serializers
 
 class EvalNodeExtra(EvalNode):
     """
@@ -22,7 +23,15 @@ class EvalNodeExtra(EvalNode):
             self._init_node_parm(conf_data['node_id'])
             result = TrainSummaryInfo(type=self.eval_result_type)
             result = net_node[0].eval(conf_data['node_id'], conf_data, data=data_node, result=result)
-            return result
+            input_data = {}
+            input_data['nn_id'] = result.get_nn_id()
+            input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
+            input_data['nn_batch_ver_id'] = 1
+            input_data['result_info'] = result.get_result_info()
+            serializer = serializers.TRAIN_SUMMARY_RESULT_INFO_Serializer(data=input_data)
+            if serializer.is_valid():
+                serializer.save()
+            return input_data['result_info']
         except Exception as e:
             raise Exception(e)
 

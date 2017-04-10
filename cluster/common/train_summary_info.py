@@ -7,8 +7,6 @@ class TrainSummaryInfo:
         self.nn_id = ''
         self.nn_wf_ver_id = ''
         self.nn_batch_ver_id = ''
-        self.acc_info = []
-        self.loss_info = []
 
         if(type) :
             self.type = type
@@ -16,6 +14,8 @@ class TrainSummaryInfo:
         if(conf) :
             self.type = conf.get('type')
             self.set_result_data_format(conf)
+            self.nn_id = conf.get('nn_id')
+            self.nn_wf_ver_id = conf.get('nn_wf_ver_id')
 
     def set_result_data_format(self, config):
         """
@@ -44,7 +44,7 @@ class TrainSummaryInfo:
         self.nn_id = nn_id
 
     def get_nn_wf_ver_id(self):
-        return self.nn_batch_ver_id
+        return self.nn_wf_ver_id
 
     def set_nn_wf_ver_id(self, nn_wf_ver_id):
         self.nn_wf_ver_id = nn_wf_ver_id
@@ -79,15 +79,3 @@ class TrainSummaryInfo:
             self.result_info['answer'].append(label)
             self.result_info['predict'].append(predict)
             self.result_info['accuracy'].append(acc)
-
-    def get_acc_info(self):
-        return self.acc_info
-
-    def set_acc_info(self, acc_info):
-        self.acc_info.append(acc_info)
-
-    def get_loss_info(self):
-        return self.loss_info
-
-    def set_loss_info(self, loss_info):
-        self.loss_info.append(loss_info)

@@ -61,3 +61,11 @@ class NN_WF_NODE_RELATION_Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.NN_WF_NODE_RELATION
         fields = ('wf_state_id', 'nn_wf_node_id_1', 'nn_wf_node_id_2')
+
+class TRAIN_SUMMARY_RESULT_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : TRAIN_SUMMARY_RESULT_INFO
+    """
+    class Meta:
+        model = models.TRAIN_SUMMARY_RESULT_INFO
+        fields = ('nn_id', 'nn_wf_ver_id', 'nn_batch_ver_id', 'result_info')
