@@ -11,9 +11,8 @@ class WorkFlowNetConfReNet(WorkFlowNetConf):
         :return:
         """
         self.key = key
-
-    def validation_check(self, json_data):
-        return True
+        self._set_key_parms([])
+        self._set_prhb_parms([])
 
     def get_model_store_path(self):
         """

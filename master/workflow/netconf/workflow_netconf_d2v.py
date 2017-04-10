@@ -11,6 +11,7 @@ class WorkFlowNetConfD2V(WorkFlowNetConf):
         :return:
         """
         self.key = key
+        self._set_prhb_parms(['model_path', 'window_size', 'vector_size' ])
 
     def validation_check(self, json_data):
         error_msg = ""

@@ -1,5 +1,6 @@
+from master.workflow.common.workflow_common import WorkFlowCommon
 
-class WorkFlowData :
+class WorkFlowData(WorkFlowCommon) :
     """
 
     """

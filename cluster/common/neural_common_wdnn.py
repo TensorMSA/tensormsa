@@ -33,8 +33,8 @@ class NeuralCommonWdnn():
             hidden_layers_value = hidden_layers
             json_object = dataconf #json.load(dataconf)
             data_conf_json = dataconf #json.loads(dataconf)
-
-            label_object  = dataconf
+            _extend_cell_feature = dataconf.get('extend_cell_feature')
+            #label_object  = dataconf
 
             featureDeepEmbedding={}
             featureTransfomation = {}
@@ -47,15 +47,31 @@ class NeuralCommonWdnn():
             featureColumnCategorical = {cn:tf.contrib.layers.sparse_column_with_hash_bucket(cn, hash_bucket_size=1000)
                                         for cn, c_value in j_feature.items()  if c_value["column_type"] == "CATEGORICAL" }
             # 범주형 Categorial columns을 추가 업데이트를 통해 두 딕셔너리를 합침 세련되게
-            featureColumnCategorical.update({ cn:tf.contrib.layers.sparse_column_with_keys(column_name=cn,keys=c_value["keys"])
-                                        for cn, c_value in j_feature.items() if c_value["column_type"] == "CATEGORICAL_KEY" })
+            #featureColumnCategorical.update({ cn:tf.contrib.layers.sparse_column_with_keys(column_name=cn,keys=c_value["keys"])
+            #                            for cn, c_value in j_feature.items() if c_value["column_type"] == "CATEGORICAL_KEY" })
+
+            # Extend_cell_feature를 가져와서 사용자가 입력한것을 반영
+            for _k, _v in _extend_cell_feature.items():
+                featureColumnCategorical.pop(_k, None) # 중복제거를 위하 Dict에서 사용자지정항목 삭제
+
+            for _k, _v in _extend_cell_feature.items():
+                if _v.get("column_type") == "CATEGORICAL_KEY":
+                    featureColumnCategorical.update({ _k:tf.contrib.layers.sparse_column_with_keys(column_name=_k,keys=_v.get("keys"))})
+
 
             # Categorucal layer를 emdedding 해서 차원을 줄임
             featureDeepEmbedding = {key:tf.contrib.layers.embedding_column(value, dimension=8) for key, value in featureColumnCategorical.items()}
 
+
+
+
             # Json에서 Continuous Colums 가져옴
             featureColumnContinuous = {cn:tf.contrib.layers.real_valued_column(cn)
                                     for cn, c_value in j_feature.items() if c_value["column_type"] == "CONTINUOUS"}
+
+            # Extend_cell_feature를 가져와서 사용자가 입력한것을 반영
+            for _k, _v in _extend_cell_feature.items():
+                featureColumnContinuous.pop(_k, None) # 중복제거를 위하 Dict에서 사용자지정항목 삭제
 
             #Transformations
             if data_conf_json.get('Transformations'):
@@ -66,9 +82,9 @@ class NeuralCommonWdnn():
             wide_columns= [sparseTensor for key, sparseTensor in featureColumnCategorical.items()]
             wide_columns.extend([transTensor for key, transTensor in featureTransfomation.items()])
 
-            # , "cross_cell": {"col2": ["native_country", "occupation"]
-            #               , "col1": ["occupation", "education"]}
-            # #ross cell make
+
+
+
             cross_list = list()
             if data_conf_json.get('cross_cell'):
                 for key, cross_col_list in data_conf_json["cross_cell"].items():

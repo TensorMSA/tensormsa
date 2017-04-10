@@ -142,6 +142,7 @@ class NN_WF_NODE_INFO(models.Model):
     node_config_data = JSONField()
     node_draw_x = models.IntegerField()
     node_draw_y = models.IntegerField()
+    nn_wf_node_desc = models.CharField(max_length=250, blank=True)
     task_fin_flag = models.BooleanField(default=False)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)

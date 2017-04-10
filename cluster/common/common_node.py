@@ -73,7 +73,7 @@ class WorkFlowCommonNode :
                 return node
         return -1
 
-    def get_next_node(self):
+    def get_next_node(self, grp=None, type=None):
         """
         next node class
         :param name:
@@ -81,7 +81,9 @@ class WorkFlowCommonNode :
         """
         return_list = []
         for name in self.next_nodes.keys() :
-            return_list.append(self.next_nodes[name])
+            if ((grp == None or grp == self.next_nodes[name].get_node_grp()) and
+                    (type == None or type == self.next_nodes[name].get_node_type())):
+                return_list.append(self.next_nodes[name])
         return return_list
 
     def get_next_node_as_dict(self):
@@ -100,7 +102,7 @@ class WorkFlowCommonNode :
         """
         self.prev_nodes[key] = node_cls
 
-    def get_prev_node(self):
+    def get_prev_node(self, grp=None, type=None):
         """
         prev_node class
         :param name:
@@ -108,7 +110,9 @@ class WorkFlowCommonNode :
         """
         return_list = []
         for name in self.prev_nodes.keys() :
-            return_list.append(self.prev_nodes[name])
+            if ((grp == None or grp == self.prev_nodes[name].get_node_grp()) and
+                    (type == None or type == self.prev_nodes[name].get_node_type())):
+                return_list.append(self.prev_nodes[name])
         return return_list
 
     def get_prev_node_as_dict(self):
@@ -185,9 +189,27 @@ class WorkFlowCommonNode :
                 return_obj_list.append(obj_next[i])
             return  return_obj_list + obj_next[i].get_linked_next_node_with_grp(grp)
 
+    def get_linked_prev_node_with_cond(self, val, cond='has_value'):
+        """
+        get linked node prev until find node which have specific parm
+        :param type:
+        :return:
+        """
+        return_obj_list = []
+        obj = self
+
+        obj_prev = obj.get_prev_node()
+        if(len(obj_prev) == 0):
+            return []
+
+        for i in range(len(obj_prev)):
+            if(val in obj_prev[i].__dict__) :
+                return_obj_list.append(obj_prev[i])
+            return  return_obj_list + obj_prev[i].get_linked_prev_node_with_grp(val)
+
     def get_linked_prev_node_with_grp(self, grp):
         """
-        get linked node forward with type
+        get linked node prev with type
         :param type:
         :return:
         """
@@ -224,20 +246,21 @@ class WorkFlowCommonNode :
     def get_linked_next_node_with_type(self, type):
         """
         get linked node forward with type
+        bug fix prev node to next node
         :param type:
         :return:
         """
         return_obj_list = []
         obj = self
 
-        obj_prev = obj.get_prev_node()
-        if(len(obj_prev) == 0):
+        obj_next = obj.get_next_node()
+        if(len(obj_next) == 0):
             return []
 
-        for i in range(len(obj_prev)):
-            if(obj_prev[i].get_node_grp() == type) :
-                return_obj_list.append(obj_prev[i])
-            return  return_obj_list + obj_prev[i].get_linked_next_node_with_type(type)
+        for i in range(len(obj_next)):
+            if(obj_next[i].get_node_type() == type) :
+                return_obj_list.append(obj_next[i])
+            return  return_obj_list + obj_next[i].get_linked_next_node_with_type(type)
 
     def find_prev_node(self, node_name, node_list):
         """
@@ -492,33 +515,69 @@ class WorkFlowCommonNode :
         :param pos:
         :return:
         """
+        output_list = []
         if(max_len == 0) :
             max_len = self.sent_max_len
 
-        input_list = input_list[0]
-        if (len(input_list) > max_len):
-            output_list = input_list[0:max_len]
-        else:
-            pad_len = (max_len - len(input_list))
-            output_list = [pad_char] * pad_len + input_list
-        return [output_list]
+        for input in input_list :
+            if (len(input) > max_len):
+                output_list.append(input[0:max_len])
+            else:
+                pad_len = (max_len - len(input))
+                output_list.append([pad_char] * pad_len + input)
+        return output_list
 
-    def decode_pad(self, input_list, max_len = 0, pad_char = '#'):
+    def decode_pad(self, input_list, max_len = 0, pad_char = '#', start_char = '@'):
         """
 
         :param pos:
         :return:
         """
+        output_list = []
         if(max_len == 0) :
             max_len = self.sent_max_len
 
-        input_list = input_list[0]
-        if (len(input_list) > max_len):
-            output_list = input_list[0:max_len]
-        else:
-            pad_len = (max_len - len(input_list))
-            output_list = input_list + [pad_char] * pad_len
-        return [output_list]
+        for input in input_list :
+            if (len(input) > max_len - 1):
+                output_list.append([start_char] + input[0:max_len-1])
+            else:
+                pad_len = (max_len - (len(input) + 1))
+                output_list.append([start_char] + input + [pad_char] * pad_len)
+        return output_list
 
     def load_data(self, node_id, parm = 'all'):
         pass
+
+    def _find_netconf_node_id(self, nn_id):
+        """
+        return node id of netconf
+        :param nn_id:
+        :param version:
+        :return:
+        """
+
+        # make query string (use raw query only when cate is too complicated)
+        query_list = []
+        query_list.append("SELECT NI.NN_WF_NODE_ID  ")
+        query_list.append("FROM MASTER_NN_VER_WFLIST_INFO WV JOIN MASTER_NN_WF_STATE_INFO WS   ")
+        query_list.append("     ON WV.NN_WF_VER_ID =  WS.NN_WF_VER_ID_ID    ")
+        query_list.append("     AND WV.NN_ID_ID = WS.NN_ID    ")
+        query_list.append("     AND WV.ACTIVE_FLAG = 'Y'    ")
+        query_list.append("     AND WV.NN_ID_ID = %s    ")
+        query_list.append("     JOIN MASTER_NN_WF_NODE_INFO NI    ")
+        query_list.append("     ON WS.WF_STATE_ID = NI.WF_STATE_ID_ID    ")
+        query_list.append("     JOIN MASTER_WF_TASK_SUBMENU_RULE SR  ")
+        query_list.append("     ON SR.WF_TASK_SUBMENU_ID = NI.WF_TASK_SUBMENU_ID_ID    ")
+        query_list.append("     AND SR.WF_TASK_MENU_ID_ID = 'netconf'")
+
+        # parm_list : set parm value as list
+        parm_list = []
+        parm_list.append(nn_id)
+
+        with connection.cursor() as cursor:
+            cursor.execute(''.join(query_list), parm_list)
+            row = dictfetchall(cursor)
+        if(len(row) > 0):
+            return row[0]['nn_wf_node_id']
+        else :
+            raise Exception ("No Active version Exist for predict service !")

@@ -36,7 +36,7 @@ class WorkFlowEvalConf(APIView) :
         """
         try:
             config_data = request.data
-            return_data = WorkFlowEvalConfig().put_step_source(nnid,ver,node,config_data)
+            return_data = WorkFlowEvalConfig().set_view_obj(''.join([nnid, '_', ver, '_', node]),config_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

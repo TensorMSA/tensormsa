@@ -1,20 +1,41 @@
 class TrainSummaryInfo:
-    def __init__(self,config):
+    def __init__(self, conf = None, type=None):
+        """
+        set type of result form is necessary
+        :param type:
+        """
         self.nn_id = ''
         self.nn_wf_ver_id = ''
         self.nn_batch_ver_id = ''
-        if config["type"] == 'regression':
+        self.acc_info = []
+        self.loss_info = []
+
+        if(type) :
+            self.type = type
+
+        if(conf) :
+            self.type = conf.get('type')
+            self.set_result_data_format(conf)
+
+    def set_result_data_format(self, config):
+        """
+        set config parms and result form is necessary before use
+        :param config:
+        :return:
+        """
+        if self.type == 'regression':
             self.result_info = {"labels":[], "predicts":[]}
-        elif config["type"] == 'category':
+        elif self.type == 'category':
             predicts = [[0 for col in range(len(config["labels"]))] for row in range(len(config["labels"]))]
             for i in range(0, len(config["labels"]) - 1, 1):
                 for j in range(0, len(config["labels"]) - 1, 1):
                     predicts[i][j] = 0
             self.result_info = {"labels": config["labels"], "predicts": predicts}
-        self.acc_info = []
-        self.loss_info = []
-        self.type = config["type"]
-        self.labels = config["labels"]
+            self.labels = config["labels"]
+        elif self.type == 'w2v':
+            self.result_info = {"word":[], "x":[], "y":[]}
+        elif self.type == 'seq2seq':
+            self.result_info = {"question":[], "answer":[], "predict":[], "accuracy":[]}
 
     def get_nn_id(self):
         return self.nn_id
@@ -37,7 +58,7 @@ class TrainSummaryInfo:
     def get_result_info(self):
         return self.result_info
 
-    def set_result_info(self, label, predict):
+    def set_result_info(self, label, predict, input=None, acc=None, coord_x=None, coord_y=None):
         if self.type == 'regression':
             labels = self.result_info["labels"]
             labels.append(label)
@@ -51,6 +72,13 @@ class TrainSummaryInfo:
             predicts = self.result_info["predicts"]
             predicts[i][j] = predicts[i][j] + 1
             self.result_info["predicts"] = predicts
+        elif self.type == 'w2v':
+            raise Exception ("Eval for W2V is on development now")
+        elif self.type == 'seq2swq':
+            self.result_info['question'].append(input)
+            self.result_info['answer'].append(label)
+            self.result_info['predict'].append(predict)
+            self.result_info['accuracy'].append(acc)
 
     def get_acc_info(self):
         return self.acc_info

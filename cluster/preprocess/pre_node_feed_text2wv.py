@@ -1,5 +1,6 @@
 from cluster.preprocess.pre_node_feed import PreNodeFeed
 import os,h5py
+import numpy as np
 
 class PreNodeFeedText2Wv(PreNodeFeed):
     """
@@ -23,7 +24,9 @@ class PreNodeFeedText2Wv(PreNodeFeed):
         try:
             h5file = h5py.File(file_path, mode='r')
             raw_data = h5file['rawdata']
-            return raw_data[index.start : index.stop]
+            data_set = raw_data[index.start: index.stop]
+            filtered_data = [data_set[np.logical_not(data_set == '#')].tolist()]
+            return filtered_data
         except Exception as e:
             raise Exception(e)
         finally:

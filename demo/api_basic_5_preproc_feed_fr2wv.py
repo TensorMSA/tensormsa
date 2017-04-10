@@ -4,11 +4,10 @@ import json, os
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 # merge data sets to one
-resp = requests.post('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src/frame/net/seq2seq/nnid/nn00007/ver/1/node/feed_fr2seq/',
+resp = requests.post('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src/frame/net/word2vec/nnid/nn00009/ver/1/node/pre_feed_fr2wv_train/',
                      json={
-                         "encode_column" : "a",
-                         "decode_column" : "b",
-                         "max_sentence_len": 50,
+                         "col_list" : ["a","b"],
+                         "max_sentence_len": 10,
                          "preprocess": "mecab",
                      })
 data = json.loads(resp.json())

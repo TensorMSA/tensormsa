@@ -13,9 +13,8 @@ network_type = "cnn"
 
 # CNN Network : Create
 # (CNN Network를 생성해 준다. ID가 같은 CNN Network가 있으면 재 생성 하지 않는다.)
-resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/',
+resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+ '/',
                      json={
-                         "nn_id": nn_id,
                          "biz_cate": biz_cate,
                          "biz_sub_cate": biz_sub_cate,
                          "nn_title" : nn_title,
@@ -29,7 +28,7 @@ print("Insert nn_info evaluation result : {0}".format(data))
 
 # CNN Network WorkFlow : Create
 # (CNN Network WorkFlow를 생성해 준다. 실행할 때마다 신규 버전을 새로 생성 한다.)<br>
-resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/',
+resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/',
                      json={
                          "nn_def_list_info_nn_id": "",
                          "nn_wf_ver_info": nn_wf_ver_info,
@@ -42,7 +41,7 @@ print("Insert nn_info Work Flow Create")
 # CNN Network WorkFlow : Get Active Version
 # (여러개의 CNN Network WorkFlow중 Active한 Version을 가져온다.)<br>
 # get workflow version info
-resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/')
+resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
 data = json.loads(resp.json())
 
 # get Active workflow version
@@ -67,7 +66,7 @@ wf_ver_id = str(wf_ver_id)
 # CNN Network WorkFlow : Set Active Version
 # (여러개의 CNN Network WorkFlow중 특정 Version을 Active 시킨다. Active한 Version은 한 개만 존재 할 수 있다.)
 # update workflow version info
-resp = requests.put('http://' + url + '/api/v1/type/common/target/nninfo/'+nn_id+'/version/',
+resp = requests.put('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/',
                      json={
                          "nn_wf_ver_id": wf_ver_id,
                          "nn_def_list_info_nn_id": "",
@@ -87,8 +86,6 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/init/mode/simple/
                      })
 data = json.loads(resp.json())
 print("insert workflow version node info evaluation result : {0}".format(data))
-
-
 
 
 

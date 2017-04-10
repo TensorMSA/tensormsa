@@ -16,10 +16,7 @@ class WorkFlowNetConfD2V(APIView) :
             input_data = request.data
             input_data['model_path'] = get_model_path(nnid, ver, node)
             nodeid = ''.join([nnid, '_', ver, '_', node])
-            if(Doc2Vec().validation_check(input_data)) :
-                return_data = Doc2Vec().set_view_obj(nodeid, input_data)
-            else :
-                return_data = {'message' : 'data validation error'}
+            return_data = Doc2Vec().set_view_obj(nodeid, input_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -45,10 +42,7 @@ class WorkFlowNetConfD2V(APIView) :
             input_data = json.loads(str(request.body, 'utf-8'))
             input_data['model_path'] = get_model_path(nnid, ver, node)
             nodeid = ''.join([nnid, '_', ver, '_', node])
-            if(Doc2Vec().validation_check(input_data)) :
-                return_data = Doc2Vec().set_view_obj(nodeid, input_data)
-            else :
-                return_data = {'message' : 'data validation error'}
+            return_data = Doc2Vec().set_view_obj(nodeid, input_data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

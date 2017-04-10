@@ -6,7 +6,6 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 ##################################################
 # Data Menu
 ##################################################
-
 # insert menu info
 resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/',
                      json={
@@ -14,6 +13,18 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/',
                         "wf_task_menu_name": "data",
                         "wf_task_menu_desc": "data",
                         "visible_flag": True
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert raw submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/data/submenu/',
+                     json={
+                        "wf_task_submenu_id": "data_raw",
+                        "wf_task_submenu_name": "data_raw",
+                        "wf_task_submenu_desc": "data_raw",
+                        "wf_node_class_path": "cluster.data.data_node_raw",
+                        "wf_node_class_name": "DataNodeRaw"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -53,7 +64,6 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/data/submenu
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
-
 
 ##################################################
 # PreProcess Menu
@@ -187,6 +197,31 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/s
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_img2auto",
+                        "wf_task_submenu_name": "pre_feed_img2auto",
+                        "wf_task_submenu_desc": "pre_feed_img2auto",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_img2auto",
+                        "wf_node_class_name": "PreNodeFeedImg2Auto"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_fr2wv",
+                        "wf_task_submenu_name": "pre_feed_fr2wv",
+                        "wf_task_submenu_desc": "pre_feed_fr2wv",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_fr2wv",
+                        "wf_node_class_name": "PreNodeFeedFr2Wv"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
 ##################################################
 # DataConfig Menu
 ##################################################
@@ -299,6 +334,18 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/subm
                         "wf_task_submenu_desc": "seq_to_seq",
                         "wf_node_class_path": "cluster.neuralnet.neuralnet_node_seq2seq",
                         "wf_node_class_name": "NeuralNetNodeSeq2Seq"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "autoencoder",
+                        "wf_task_submenu_name": "autoencoder",
+                        "wf_task_submenu_desc": "autoencoder",
+                        "wf_node_class_path": "cluster.neuralnet.neuralnet_node_autoencoder",
+                        "wf_node_class_name": "NeuralNetNodeAutoEncoder"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

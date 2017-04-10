@@ -27,9 +27,9 @@ urlpatterns = [
         csrf_exempt(rest_view.ConfServerData.as_view())),
 
     # net definition manager
-    url(r'^api/v1/type/common/target/nninfo/(?P<nnid>.*)/version/',
+    url(r'^api/v1/type/common/target/nninfo/nnid/(?P<nnid>.*)/version/',
         csrf_exempt(rest_view.CommonNNInfoVersion.as_view())),
-    url(r'^api/v1/type/common/target/nninfo/',
+    url(r'^api/v1/type/common/target/nninfo/nnid/(?P<nnid>.*)/',
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
     # rule management
@@ -98,10 +98,6 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfAutoEncoder.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/cnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfCnn.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/gru/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
-        csrf_exempt(rest_view.WorkFlowNetConfGru.as_view())),
-    url(r'^api/v1/type/wf/state/netconf/detail/lstm/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
-        csrf_exempt(rest_view.WorkFlowNetConfLstm.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/predefined/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfPredefined.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/rnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',

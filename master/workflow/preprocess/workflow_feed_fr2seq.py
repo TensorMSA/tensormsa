@@ -12,21 +12,8 @@ class WorkflowFeedFr2Seq(WorkFlowPre):
         :return:
         """
         self.key = key
-
-    def validation_check(self, json_data):
-        error_msg = ""
-        if('encode_column' not in json_data) :
-            error_msg = ''.join([error_msg, 'encode_column not defined'])
-        if('decode_column' not in json_data) :
-            error_msg = ''.join([error_msg, 'decode_column not defined'])
-        if ('max_sentence_len' not in json_data):
-            error_msg = ''.join([error_msg, 'max_sentence_len not defined'])
-        if ('preprocess' not in json_data):
-            error_msg = ''.join([error_msg, 'preprocess not defined'])
-        if(error_msg == "") :
-            return True
-        else :
-            raise Exception(error_msg)
+        self._set_key_parms(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
+        self._set_prhb_parms(['encode_column', 'decode_column', 'max_sentence_len','preprocess'])
 
     def get_encode_column(self):
         """

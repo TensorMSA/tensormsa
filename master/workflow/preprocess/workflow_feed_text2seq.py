@@ -12,11 +12,5 @@ class WorkflowFeedText2Seq(WorkFlowPre):
         :return:
         """
         self.key = key
-
-    def validation_check(self, json_data):
-        error_msg = ""
-
-        if(error_msg == "") :
-            return True
-        else :
-            raise Exception (error_msg)
+        self._set_key_parms([])
+        self._set_prhb_parms([])

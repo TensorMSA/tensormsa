@@ -32,15 +32,11 @@ class NNCommonManager :
             query_list.append("  AND NL.biz_cate like %s ")
             query_list.append("  AND NL.biz_sub_cate like %s ")
 
-            print("query_list : " + ''.join(query_list))
-
             # parm_list : set parm value as list
             parm_list = []
-            parm_list.append("%" + condition["nn_id"])
-            parm_list.append("%" + condition["biz_cate"])
-            parm_list.append("%" + condition["biz_sub_cate"])
-
-            print("parm_list : " + ''.join(parm_list))
+            parm_list.append("%" + ('' if condition.get("nn_id") is None else condition.get("nn_id")))
+            parm_list.append("%" + ('' if condition.get("biz_cate") is None else condition.get("biz_cate")))
+            parm_list.append("%" + ('' if condition.get("biz_sub_cate") is None else condition.get("biz_sub_cate")))
 
             with connection.cursor() as cursor:
                 cursor.execute(''.join(query_list), parm_list)
