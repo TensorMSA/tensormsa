@@ -50,30 +50,32 @@ class DataNodeImage(DataNode):
             image_arr = []
             lable_arr = []
             shape_arr = []
-            for forder in forderlist:
-                filelist = os.listdir(directory + '/' + forder)
-                for filename in filelist:
-                    value = tf.read_file(directory + '/' + forder + '/' + filename)
-                    try:
-                        decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
-                        resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
+            processcnt = 1
+            with tf.Session() as sess:
+                for forder in forderlist:
+                    filelist = os.listdir(directory + '/' + forder)
+                    for filename in filelist:
+                        value = tf.read_file(directory + '/' + forder + '/' + filename)
+                        try:
+                            decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
+                            resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
 
-                        with tf.Session() as sess:
                             image = sess.run(resized_image)
                             image = image.reshape([-1, x_size, y_size, channel])
                             image = image.flatten()
                             image_arr.append(image)
                             shape_arr.append(image.shape)
                             lable_arr.append(forder.encode('utf8'))
-                        filecnt += 1
-                        print("File=" + directory + " forder=" + forder + "  name=" + filename)
+                            filecnt += 1
+                            print("Processcnt="+processcnt+" File=" + directory + " forder=" + forder + "  name=" + filename)
+                        except:
+                            print("Processcnt="+processcnt+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                        processcnt += 1
+                    shutil.rmtree(directory + "/" + forder)
+                    try:
+                        idx = labels.index(forder)
                     except:
-                        print("ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
-                shutil.rmtree(directory + "/" + forder)
-                try:
-                    idx = labels.index(forder)
-                except:
-                    labels.append(forder)
+                        labels.append(forder)
 
             dataconf["labels"] = labels
             WorkFlowDataImage().put_step_source_ori(node_id, dataconf)
