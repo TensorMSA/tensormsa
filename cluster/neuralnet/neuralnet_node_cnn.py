@@ -11,6 +11,9 @@ import operator
 import json
 import datetime
 import matplotlib.pyplot as plt
+from PIL import Image
+import io
+from cluster.common.train_summary_info import TrainSummaryInfo
 ########################################################################
 def plot_image(image, cls_true):
     # Create figure with sub-plots.
@@ -52,7 +55,6 @@ def model_file_delete(model_path, save_name):
             flist.append(tmp)
         i += 1
         flistsort = sorted(flist, key=operator.itemgetter(1), reverse=True)
-    # print(flistsort)
 
     for i in range(len(flistsort)):
         if i > existcnt * 3:
@@ -137,7 +139,7 @@ def get_model(netconf, dataconf, type):
     println(model)
     W1 = tf.Variable(tf.truncated_normal([reout, fclayer["node_out"]], stddev=0.1))
     model = tf.nn.relu(tf.matmul(model, W1))
-    println(model)
+
     W5 = tf.Variable(tf.truncated_normal([fclayer["node_out"], num_classes], stddev=0.1))
     model = tf.matmul(model, W5)
     println(model)
@@ -193,9 +195,8 @@ def get_batch_data(data_set, dataconf, num_classes, type):
     return x_batch, y_batch
 ########################################################################
 def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step):
-    batchsize = netconf["config"]["batch_size"]
+    batchsize = netconf["param"]["batch_size"]
     num_classes = netconf["config"]["num_classes"]
-    start_time = time.time()
 
     try:
         return_arr = []
@@ -209,19 +210,12 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
         net_check = "Error[400] .............................................."
         println(net_check)
         println(e)
-    # Ending time.
-    end_time = time.time()
 
-    # Difference between start and end-times.
-    time_dif = end_time - start_time
-
-    # Print the time-usage.
-    println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
     return_data = return_arr
     return return_data
 def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr):
     modelname = netconf["modelname"]
-    train_cnt = netconf["config"]["traincnt"]
+    train_cnt = netconf["param"]["traincnt"]
     model_path = netconf["modelpath"]
     save_path = model_path + "/" + modelname
     result = ["Trainning ................................................."]
@@ -231,7 +225,7 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
             saver = tf.train.Saver()
             saver.restore(sess, save_path=last_chk_path)
-            println("Restored checkpoint from:" + last_chk_path)
+            println("Train Restored checkpoint from:" + last_chk_path)
         except:
             println("None to restore checkpoint. Initializing variables instead.")
             sess.run(tf.initialize_all_variables())
@@ -254,21 +248,16 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
             # Save a checkpoint to disk every 100 iterations (and last).
             if (i_global % 100 == 0) or (i == train_cnt - 1):
                 model_checkpoint_path = saver.save(sess, save_path=save_path, global_step=global_step)
-                # println("train model_checkpoint_path=======================================================================")
-                # model_checkpoint_path +=".data-00000-of-00001"
-                # println(model_checkpoint_path)
-                # println(os.path.isfile(model_checkpoint_path))
                 model_file_delete(model_path, modelname)
 
     result = ''
     return_arr.append(result)
-    println("Saved checkpoint.")
+
     return return_arr
 ########################################################################
-def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_pred_cls, global_step):
-    batchsize = netconf["config"]["batch_size"]
+def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_pred_cls, global_step, eval_data):
+    batchsize = netconf["param"]["batch_size"]
     num_classes = netconf["config"]["num_classes"]
-    start_time = time.time()
 
     labels = dataconf["labels"]
     t_cnt_arr = []
@@ -277,24 +266,15 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
         t_cnt_arr.append(0)
         f_cnt_arr.append(0)
 
-    # try:
     while (input_data.has_next()):
         for i in range(0, input_data.size(), batchsize):
             data_set = input_data[i:i + batchsize]
             x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes, "E")
-            t_cnt_arr, f_cnt_arr = eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr)
+            t_cnt_arr, f_cnt_arr, eval_data = eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr, eval_data)
         input_data.next()
-    # except Exception as e:
-    #     net_check = "Error[500] .............................................."
-    #     println(net_check)
-    #     println(e)
 
     println("###################################################################################################")
-    println(labels)
-
-    return_arr = {}
     result = []
-
     strResult = "['Eval ......................................................']"
     result.append(strResult)
     totCnt = 0
@@ -305,38 +285,28 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
         strResult += "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 8)
         strResult += "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]), 8)
         strResult += "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]), 8)
-        strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%"
+        if t_cnt_arr[i] + f_cnt_arr[i] != 0:
+            strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%"
         totCnt += t_cnt_arr[i] + f_cnt_arr[i]
         tCnt += t_cnt_arr[i]
         fCnt += f_cnt_arr[i]
         println(strResult)
         result.append(strResult)
+
     strResult = "Total Category="+str(len(labels))+ spaceprint(str(len(labels)), 11)
     strResult += "TotalCnt="+str(totCnt)+ spaceprint(str(totCnt), 8)
     strResult += "TrueCnt="+str(tCnt)+ spaceprint(str(tCnt), 8)
     strResult += "FalseCnt="+str(fCnt)+ spaceprint(str(fCnt), 8)
-    strResult += "True Percent(TrueCnt/TotalCnt*100)="+ str(round(tCnt / totCnt * 100)) + "%"
+    if totCnt != 0:
+        strResult += "True Percent(TrueCnt/TotalCnt*100)="+ str(round(tCnt / totCnt * 100)) + "%"
 
     result.append(strResult)
     # println(result)
     return_arr = result
     println("###################################################################################################")
+    return return_arr, eval_data
 
-    # println("TotalCnt=" + str(totalcnt) + " TrueCnt=" + str(t_cnt) + " FalseCnt=" + str(f_cnt))
-    # percent = round(t_cnt / totalcnt * 100, 2)
-    # println("Total Percent=" + str(percent) + "%")
-
-    # Ending time.
-    end_time = time.time()
-
-    # Difference between start and end-times.
-    time_dif = end_time - start_time
-
-    # Print the time-usage.
-    println("Time usage: " + str(timedelta(seconds=int(round(time_dif)))))
-
-    return return_arr
-def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr):
+def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr, eval_data):
     model_path = netconf["modelpath"]
     with tf.Session() as sess:
         try:
@@ -345,7 +315,7 @@ def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, label
             saver = tf.train.Saver()
 
             saver.restore(sess, save_path=last_chk_path)
-            println("Restored checkpoint from:" + last_chk_path)
+            println("Eval Restored checkpoint from:" + last_chk_path)
 
             # acc = sess.run(accuracy, feed_dict={X: x_batch, Y: y_batch})
             # println(acc)
@@ -361,16 +331,18 @@ def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, label
                     t_cnt_arr[idx] = t_cnt_arr[idx] + 1
                 else:
                     f_cnt_arr[idx] = f_cnt_arr[idx] + 1
+
+                eval_data.set_result_info(true_name, pred_name)
         except Exception as e:
             println(e)
             println("None to restore checkpoint. Initializing variables instead.")
-    return t_cnt_arr, f_cnt_arr
+    return t_cnt_arr, f_cnt_arr, eval_data
 ########################################################################
 def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
     x_size = dataconf["preprocess"]["x_size"]
     y_size = dataconf["preprocess"]["y_size"]
     channel = dataconf["preprocess"]["channel"]
-    pred_cnt = netconf["config"]["predictcnt"]
+    pred_cnt = netconf["param"]["predictcnt"]
     model_path = netconf["modelpath"]
 
     filelist = sorted(filelist.items(), key=operator.itemgetter(0))
@@ -383,25 +355,28 @@ def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
             last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=model_path)
             saverss = tf.train.Saver()
             saverss.restore(sess, save_path=last_chk_path)
-            println("Restored checkpoint from:" + last_chk_path)
+            println("Predict Restored checkpoint from:" + last_chk_path)
 
             for file in filelist:
                 # println(file)
                 value = file[1]
                 filename = file[1].name
 
-                for value in value.chunks():
+                for image in value.chunks():
                     # decoded_image = tf.image.decode_jpeg(chunk, channels=channel)
                     # resized_image = tf.image.resize_images(decoded_image, [x_size, y_size])
                     # resized_image = tf.cast(resized_image, tf.uint8)
-                    decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
-                    resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
+
+                    # decoded_image = tf.image.decode_image(contents=image, channels=channel, name="img")
+                    # resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
+                    # image = sess.run(resized_image)
+
+                    image = Image.open(io.BytesIO(image))
+                    image = image.resize((x_size, y_size), Image.ANTIALIAS)
+                    image = np.array(image)
+                    image = image.reshape([-1, x_size, y_size, channel])
 
                     try:
-                        image = sess.run(resized_image)
-                        image = image.reshape([-1, x_size, y_size, channel])
-                        # println(image)
-
                         logits, y_pred_true = sess.run([model, y_pred_cls], feed_dict={X: image})
                         println(logits)
                         # println(y_pred_true)
@@ -481,7 +456,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(node_id, netconf, dataconf)
 
                 net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost = get_model(netconf, dataconf, "T")
-                println(model)
 
                 self.net_check = net_check
                 self.model = model
@@ -500,11 +474,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
                     println("net_check=" + net_check)
         return_data["TrainResult"] = return_arr
 
-        println("end NeuralNetNodeCnn Train")
-
         return return_data
 
-    def eval(self, node_id, conf_data):
+    def eval(self, node_id, conf_data, data=None, result=None):
     # def predict(self, node_id, filelist):
         println("run NeuralNetNodeCnn eval")
         # println(conf_data)
@@ -513,6 +485,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
         return_data = {}
         netconf_node_id = self.get_node_name()
         feed_node = self.get_prev_node()
+
+
 
         for feed in feed_node:
             feed_name = feed.get_node_name()
@@ -523,21 +497,22 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 netconf = WorkFlowNetConfCNN().get_view_obj(netconf_node_id)
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
 
+                config = {"type": netconf["config"]["type"], "labels": dataconf["labels"]}
+                eval_data = TrainSummaryInfo(conf=config)
+                eval_data.set_nn_id(conf_data["nn_id"])
+                eval_data.set_nn_wf_ver_id(conf_data["wf_ver"])
+
                 if self.net_check == "S":
                     cls_pool = conf_data['cls_pool']
                     net_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
                     for data_name in net_node_name:
                         if data_name.find("eval") > 0:
                             input_data = cls_pool[data_name]
-                            return_arr = eval_cnn(input_data, netconf, dataconf, self.X, self.Y, self.optimizer, self.accuracy, self.model, self.y_pred_cls, self.global_step)
+                            return_arr, eval_data = eval_cnn(input_data, netconf, dataconf, self.X, self.Y, self.optimizer, self.accuracy, self.model, self.y_pred_cls, self.global_step, eval_data)
                 else:
                     println("net_check=" + self.net_check)
 
-        println("end NeuralNetNodeCnn eval")
-
-
-        return_data["TrainResult"] = return_arr
-        return return_data
+        return eval_data
 
     def predict(self, node_id, filelist):
         """
@@ -557,7 +532,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
 
         net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost = get_model(netconf, dataconf, "P")
-        println(model)
 
         self.net_check = net_check
         self.model = model
@@ -572,9 +546,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
             data = predict_run(filelist, netconf, dataconf, model, y_pred_cls, X)
         else:
             println("net_check=" + net_check)
-
-        println("end NeuralNetNodeCnn Predict")
-        # NeuralNetNodeCnn().eval_cnn(conf_data)
 
         return data
 

@@ -22,7 +22,7 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         self.validation_check(netconf)
         labels = dataconf["labels"]
         num_classes = netconf["config"]["num_classes"]
-        pred_cnt = netconf["config"]["predictcnt"]
+        pred_cnt = netconf["param"]["predictcnt"]
 
         if len(labels) > num_classes:
             num_classes = len(labels)
@@ -30,7 +30,7 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
             pred_cnt = len(labels)
 
         netconf["config"]["num_classes"] = num_classes
-        netconf["config"]["predictcnt"] = pred_cnt
+        netconf["param"]["predictcnt"] = pred_cnt
 
         obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
 

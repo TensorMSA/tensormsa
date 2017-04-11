@@ -51,31 +51,35 @@ class DataNodeImage(DataNode):
             lable_arr = []
             shape_arr = []
             processcnt = 1
-            with tf.Session() as sess:
-                for forder in forderlist:
-                    filelist = os.listdir(directory + '/' + forder)
-                    for filename in filelist:
-                        value = tf.read_file(directory + '/' + forder + '/' + filename)
-                        try:
-                            decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
-                            resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
-
-                            image = sess.run(resized_image)
-                            image = image.reshape([-1, x_size, y_size, channel])
-                            image = image.flatten()
-                            image_arr.append(image)
-                            shape_arr.append(image.shape)
-                            lable_arr.append(forder.encode('utf8'))
-                            filecnt += 1
-                            print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
-                        except:
-                            print("Processcnt="+str(processcnt)+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
-                        processcnt += 1
-                    shutil.rmtree(directory + "/" + forder)
+            # with tf.Session() as sess:
+            for forder in forderlist:
+                filelist = os.listdir(directory + '/' + forder)
+                for filename in filelist:
+                    # value = tf.read_file(directory + '/' + forder + '/' + filename)
+                    image = Image.open(directory + '/' + forder + '/' + filename)#<class PIL.JpegImagePlugin.JpegImageFile>
                     try:
-                        idx = labels.index(forder)
+                        # decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
+                        # resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
+                        # image = sess.run(resized_image)
+
+                        image = image.resize((x_size, y_size), Image.ANTIALIAS)
+                        image = np.array(image)
+
+                        image = image.reshape([-1, x_size, y_size, channel])
+                        image = image.flatten()
+                        image_arr.append(image)
+                        shape_arr.append(image.shape)
+                        lable_arr.append(forder.encode('utf8'))
+                        filecnt += 1
+                        print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
                     except:
-                        labels.append(forder)
+                        print("Processcnt="+str(processcnt)+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                    processcnt += 1
+                shutil.rmtree(directory + "/" + forder)
+                try:
+                    idx = labels.index(forder)
+                except:
+                    labels.append(forder)
 
             dataconf["labels"] = labels
             WorkFlowDataImage().put_step_source_ori(node_id, dataconf)
@@ -110,7 +114,7 @@ class DataNodeImage(DataNode):
 
                 h5file.flush()
                 h5file.close()
-            println("end DataNodeImage")
+
             return None
 
         except Exception as e:

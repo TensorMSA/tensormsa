@@ -9,7 +9,27 @@ from common.utils import *
 # rabbitmqctl set_user_tags tensormsa administrator
 # rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
+# pip install flower
+# celery -A hoyai flower &
+# celery flower -A hoyai --address=127.0.0.1 --port=5555
+# celery flower -A hoyai --address=127.0.0.1 --port=5555
 # ./manage.py runserver [HOST]:8000
+# celery -A hoyai flower --address=2fb1ece74beb --port=5555
+# celery -A hoyai flower --address=52.78.67.19 --port=5555
+#
+# celery flower -A hoyai --broker=amqp://tensormsa:tensormsa@52.78.67.19:5672 &
+#
+#                         Broker: amqp://tensormsa:**@2fb1ece74beb:5672//
+#
+#
+# celery flower -A hoyai --address=127.0.0.1 --port=5555
+#
+# celery flower -A hoyai --address=52.78.67.19 --broker=amqp://tensormsa:tensormsa@52.78.67.19:5672
+#
+# celery flower -A hoyai --address=2fb1ece74beb --broker=amqp://tensormsa:tensormsa@2fb1ece74beb:5672
+#
+# docker-ip YOUR_CONTAINER_ID
+
 
 println("S")
 url = gUrl
@@ -31,12 +51,14 @@ wf_ver_id = str(wf_ver_id)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "config": {"learnrate": 0.001,
-                                     "traincnt": 100,
+                         "param":{"traincnt": 1,
                                      "batch_size":10000,
-                                     "num_classes":10,
-                                     "predictcnt": 10,
-                                     "layeroutputs":32
+                                     "predictcnt": 10
+                         },
+                         "config": {"num_classes":10,
+                                    "learnrate": 0.001,
+                                     "layeroutputs":32,
+                                     "type":"category"
                                      }
                          ,"layer1": {"type": "cnn",
                                      "active": "relu",
@@ -103,14 +125,52 @@ edataconf = json.loads(resp.json())
 # (CNN Network Training을 실행한다.)
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
-# print(data)
+print(data)
+
+def spaceprint(val, cnt):
+    leng = len(str(val))
+    cnt = cnt - leng
+    restr = ""
+    for i in range(cnt):
+        restr += " "
+    restr = restr+str(val)
+    return restr
 
 for train in data:
-    if train != None and train != "" and train != {} and train != "status" and train != "result" and train["TrainResult"] != None:
-        # print(train)
-        for tr in train["TrainResult"]:
-            print(tr)
+    if train != None and train != "" and train != {} and train != "status" and train != "result":
+        try:
+            for tr in train["TrainResult"]:
+                print(tr)
+        except:
+            maxcnt = 0
+            line = ""
+            for label in train["labels"]:
+                if maxcnt<len(label)+2:
+                    maxcnt = len(label)+2
 
+            for i in range(len(train["labels"])):
+                for j in range(maxcnt+4):
+                    line += "="
+
+            label_sub = []
+            for label in train["labels"]:
+                label = spaceprint(label,maxcnt)
+                label_sub.append(label)
+
+            space = ""
+            for s in range(maxcnt):
+                space +=" "
+
+            print(space, label_sub)
+            print(space, line)
+            for i in range(len(train["labels"])):
+                predict_sub = []
+                for j in range(len(train["predicts"][i])):
+                    pred = spaceprint(train["predicts"][i][j],maxcnt)
+
+                    predict_sub.append(pred)
+
+                print(spaceprint(train["labels"][i],maxcnt), predict_sub)
 
 println("E")
 
