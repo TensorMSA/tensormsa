@@ -12,14 +12,12 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/auto
                      json={
                          # Parameters
                         "learning_rate" : 0.01,
-                        "training_epochs" : 1,
+                        "iter" : 10,
                         "batch_size" : 256,
-                        "display_step" : 1,
                         "examples_to_show" : 10,
                         # Network Parameters
-                        "n_hidden_1" : 256, # 1st layer num features
-                        "n_hidden_2" : 128,  # 2nd layer num features
-                        "n_input" : 784,  # data input (img shape: 28*28)
+                        "n_hidden" : 256, # 1st layer num features
+                        "n_input" : 30000,  # data input (img shape: 28*28)
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
