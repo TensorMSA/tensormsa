@@ -111,6 +111,7 @@ class DataNodeImage(DataNode):
                     hdf_features[i] = image_arr[i]
                     hdf_shapes[i] = shape_arr[i]
                     hdf_labels[i] = lable_arr[i]
+                    processcnt += 1
 
                 h5file.flush()
                 h5file.close()
