@@ -8,7 +8,6 @@ from master.workflow.data.workflow_data_image import WorkFlowDataImage
 from time import gmtime, strftime
 from common import utils
 from common.utils import *
-import tensorflow as tf
 import shutil
 
 class DataNodeImage(DataNode):

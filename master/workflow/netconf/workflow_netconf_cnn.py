@@ -29,8 +29,8 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         if pred_cnt > len(labels):
             pred_cnt = len(labels)
 
-        netconf["config"]["num_classes"] = num_classes
-        netconf["param"]["predictcnt"] = pred_cnt
+        netconf["config"]["num_classes"]=num_classes
+        netconf["param"]["predictcnt"]=pred_cnt
 
         obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
 

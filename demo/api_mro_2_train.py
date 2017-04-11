@@ -122,7 +122,7 @@ edataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(edataconf))
 
 # CNN Network Training
-# (CNN Network Training을 실행한다.)
+# (CNN Network Training을 실행한다 .)
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
 print(data)

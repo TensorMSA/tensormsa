@@ -273,7 +273,7 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
             t_cnt_arr, f_cnt_arr, eval_data = eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr, eval_data)
         input_data.next()
 
-    println("###################################################################################################")
+    println("####################################################################################################")
     result = []
     strResult = "['Eval ......................................................']"
     result.append(strResult)
