@@ -234,9 +234,9 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
             feed_dict_train = {X: x_batch, Y: y_batch}
 
             i_global, _ = sess.run([global_step, optimizer], feed_dict=feed_dict_train)
-
+            println("Train Count="+str(i+1))
             # Print status to screen every 10 iterations (and last).
-            if (i_global % 100 == 0) or (i == train_cnt - 1):
+            if (i_global % 10 == 0) or (i == train_cnt - 1):
                 # Calculate the accuracy on the training-batch.
                 batch_acc = sess.run(accuracy, feed_dict=feed_dict_train)
                 msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"

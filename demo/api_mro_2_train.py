@@ -51,11 +51,11 @@ wf_ver_id = str(wf_ver_id)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"traincnt": 1,
+                         "param":{"traincnt": 10,
                                      "batch_size":10000,
                                      "predictcnt": 10
                          },
-                         "config": {"num_classes":10,
+                         "config": {"num_classes":1,
                                     "learnrate": 0.001,
                                      "layeroutputs":32,
                                      "type":"category"
@@ -125,7 +125,7 @@ edataconf = json.loads(resp.json())
 # (CNN Network Training을 실행한다 .)
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
-print(data)
+# print(data)
 
 def spaceprint(val, cnt):
     leng = len(str(val))
@@ -145,8 +145,8 @@ for train in data:
             maxcnt = 0
             line = ""
             for label in train["labels"]:
-                if maxcnt<len(label)+2:
-                    maxcnt = len(label)+2
+                if maxcnt<len(label):
+                    maxcnt = len(label)
 
             for i in range(len(train["labels"])):
                 for j in range(maxcnt+4):
