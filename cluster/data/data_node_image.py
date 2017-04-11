@@ -55,8 +55,8 @@ class DataNodeImage(DataNode):
                 filelist = os.listdir(directory + '/' + forder)
                 for filename in filelist:
                     # value = tf.read_file(directory + '/' + forder + '/' + filename)
-                    image = Image.open(directory + '/' + forder + '/' + filename)#<class PIL.JpegImagePlugin.JpegImageFile>
                     try:
+                        image = Image.open(directory + '/' + forder + '/' + filename)  # <class PIL.JpegImagePlugin.JpegImageFile>
                         # decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
                         # resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
                         # image = sess.run(resized_image)
