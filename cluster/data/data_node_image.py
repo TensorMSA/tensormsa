@@ -83,13 +83,14 @@ class DataNodeImage(DataNode):
             dataconf["labels"] = labels
             WorkFlowDataImage().put_step_source_ori(node_id, dataconf)
 
+            processcnt = 1
             if len(forderlist) > 0 and filecnt > 0:
                 output_path = os.path.join(output_directory, output_filename)
                 h5file = h5py.File(output_path, mode='w')
                 dtype = h5py.special_dtype(vlen=np.dtype('uint8'))
                 hdf_features = h5file.create_dataset('image_features', (filecnt,), dtype=dtype)
                 hdf_shapes = h5file.create_dataset('image_features_shapes', (filecnt, channel), dtype='int32')
-                hdf_labels = h5file.create_dataset('targets', (filecnt,), dtype='S10')
+                hdf_labels = h5file.create_dataset('targets', (filecnt,), dtype='S240')
 
                 # Attach shape annotations and scales
                 hdf_features.dims.create_scale(hdf_shapes, 'shapes')
@@ -106,7 +107,7 @@ class DataNodeImage(DataNode):
                 hdf_features.dims[0].label = 'batch'
 
                 for i in range(len(image_arr)):
-                    print("HDF5 Create=" + str(lable_arr[i].decode('UTF-8')))
+                    print("Processcnt="+str(processcnt)+" HDF5 Create=" + str(lable_arr[i].decode('UTF-8')))
                     hdf_features[i] = image_arr[i]
                     hdf_shapes[i] = shape_arr[i]
                     hdf_labels[i] = lable_arr[i]
