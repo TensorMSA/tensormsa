@@ -7,6 +7,7 @@ from cluster.service.service_predict_cnn import PredictNetCnn
 from cluster.service.service_predict_renet import PredictNetRenet
 from cluster.service.service_predict_wdnn import PredictNetWdnn
 from cluster.service.service_predict_seq2seq import PredictNetSeq2Seq
+from cluster.service.service_predict_autoencoder import PredictNetAutoEncoder
 from common.utils import *
 
 class ServiceManagerPredict(APIView):
@@ -30,6 +31,8 @@ class ServiceManagerPredict(APIView):
                     return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
                 elif(type == "seq2seq"):
                     return_data = PredictNetSeq2Seq().run(nnid, request.data)
+                elif(type == "autoencoder"):
+                    return_data = PredictNetAutoEncoder().run(nnid, request.data)
                 elif (type == "renet"):
                     #return_data = PredictNetRenet().run(nnid, ver, request.FILES)
                     # TO-DO : need to create PredictNetRenet class first
