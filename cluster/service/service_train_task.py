@@ -103,7 +103,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
         # make query string (use raw query only when cate is too complicated)
         try:
             query_list = []
-            query_list.append("SELECT ND.nn_wf_node_id, ND.wf_task_submenu_id_id, SB.wf_task_menu_id_id   ")
+            query_list.append("SELECT ND.nn_wf_node_id, ND.wf_task_submenu_id_id, SB.wf_task_menu_id_id, ND.nn_wf_node_name   ")
             query_list.append("FROM  master_NN_WF_NODE_INFO ND JOIN master_WF_TASK_SUBMENU_RULE SB   ")
             query_list.append("      ON ND.wf_task_submenu_id_id =  SB.wf_task_submenu_id   ")
             query_list.append("WHERE ND.wf_state_id_id = %s")
@@ -158,6 +158,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                 cls.set_node_name(node.get('nn_wf_node_id'))
                 cls.set_node_type(node.get('wf_task_submenu_id_id'))
                 cls.set_node_grp(node.get('wf_task_menu_id_id'))
+                cls.set_node_def(node.get('nn_wf_node_name'))
 
                 for rel_node in node_rel_list :
                     if(node.get('nn_wf_node_id') == rel_node[0]) :

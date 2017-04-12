@@ -440,6 +440,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def run(self, conf_data):
         println("run NeuralNetNodeCnn Train")
         # println(conf_data)
+        nn_id = conf_data['nn_id']
+        wfver = conf_data['wf_ver']
+        node = self.get_node_def()
         node_id = conf_data['node_id']
         self._init_node_parm(node_id)
 
@@ -455,7 +458,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 data_name = data.get_node_name()
                 ################################################################
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
-                netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(node_id, netconf, dataconf)
+                netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(nn_id, wfver, node, node_id, netconf)
 
                 net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost = get_model(netconf, dataconf, "T")
 
