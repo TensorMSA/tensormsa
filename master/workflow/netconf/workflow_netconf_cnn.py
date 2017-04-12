@@ -46,14 +46,14 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         """
         self.validation_check(input_data)
         obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
-        old_config_data = getattr(obj, 'node_config_data')
         try:
+            old_config_data = getattr(obj, 'node_config_data')
             input_data["labels"] = old_config_data["labels"]
-            input_data["modelpath"] = get_model_path(nn_id, wfver, node)
-            input_data["modelname"] = "model_" + nn_id + "_" + wfver
-            setattr(obj, "node_config_data", input_data)
-            obj.save()
         except:
             None
 
+        input_data["modelpath"] = get_model_path(nn_id, wfver, node)
+        input_data["modelname"] = "model_" + nn_id + "_" + wfver
+        setattr(obj, "node_config_data", input_data)
+        obj.save()
         return input_data
