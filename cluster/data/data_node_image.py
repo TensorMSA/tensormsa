@@ -39,7 +39,7 @@ class DataNodeImage(DataNode):
             try:
                 filesize = dataconf["preprocess"]["filesize"]
             except:
-                filesize = 10000
+                filesize = 1000000
 
             # unzip & remove zip
             ziplist = os.listdir(directory)

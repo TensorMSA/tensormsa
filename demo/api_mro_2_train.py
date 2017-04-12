@@ -75,7 +75,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/f
                             "preprocess": {"x_size": 32,
                                            "y_size": 32,
                                            "channel":3,
-                                           "filesize": 4}
+                                           "filesize": 1000000}
                      })
 dataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(dataconf))
@@ -92,7 +92,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/f
                             "preprocess": {"x_size": 32,
                                            "y_size": 32,
                                            "channel":3,
-                                           "filesize": 4}
+                                           "filesize": 1000000}
                      })
 edataconf = json.loads(resp.json())
 
