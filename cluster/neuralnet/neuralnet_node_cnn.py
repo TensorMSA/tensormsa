@@ -34,12 +34,13 @@ def one_hot_encoded(num_classes):
                 one[i][j] = 1
     return one
 ########################################################################
-def spaceprint(str, cnt):
-    leng = len(str)
+def spaceprint(val, cnt):
+    leng = len(str(val))
     cnt = cnt - leng
     restr = ""
     for i in range(cnt):
         restr += " "
+    restr = restr+str(val)
     return restr
 ########################################################################
 def model_file_delete(model_path, save_name):
@@ -152,11 +153,10 @@ def get_model(netconf, dataconf, type):
 
     return net_check, model, X, Y, optimizer, y_pred_cls, accuracy, global_step, cost
 ########################################################################
-def get_batch_data(data_set, dataconf, num_classes, type):
+def get_batch_data(data_set, dataconf, labels, num_classes, type):
     x_size = dataconf["preprocess"]["x_size"]
     y_size = dataconf["preprocess"]["y_size"]
     channel = dataconf["preprocess"]["channel"]
-    labels = dataconf["labels"]
 
     labelsHot = one_hot_encoded(num_classes)
 
@@ -197,13 +197,13 @@ def get_batch_data(data_set, dataconf, num_classes, type):
 def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step):
     batchsize = netconf["param"]["batch_size"]
     num_classes = netconf["config"]["num_classes"]
-
+    labels = netconf["labels"]
     try:
         return_arr = []
         while (input_data.has_next()):
             for i in range(0, input_data.size(), batchsize):
                 data_set = input_data[i:i + batchsize]
-                x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes, "T")
+                x_batch, y_batch = get_batch_data(data_set, dataconf, labels, num_classes, "T")
                 return_data = train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr)
             input_data.next()
     except Exception as e:
@@ -259,7 +259,7 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
     batchsize = netconf["param"]["batch_size"]
     num_classes = netconf["config"]["num_classes"]
 
-    labels = dataconf["labels"]
+    labels = netconf["labels"]
     t_cnt_arr = []
     f_cnt_arr = []
     for i in range(len(labels)):
@@ -269,7 +269,7 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
     while (input_data.has_next()):
         for i in range(0, input_data.size(), batchsize):
             data_set = input_data[i:i + batchsize]
-            x_batch, y_batch = get_batch_data(data_set, dataconf, num_classes, "E")
+            x_batch, y_batch = get_batch_data(data_set, dataconf, labels, num_classes, "E")
             t_cnt_arr, f_cnt_arr, eval_data = eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, labels, global_step, t_cnt_arr, f_cnt_arr, eval_data)
         input_data.next()
 
@@ -281,10 +281,10 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
     tCnt = 0
     fCnt = 0
     for i in range(len(labels)):
-        strResult  = "Category : " + labels[i] + spaceprint(labels[i], 15)
-        strResult += "TotalCnt=" + str(t_cnt_arr[i] + f_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 8)
-        strResult += "TrueCnt=" + str(t_cnt_arr[i]) + spaceprint(str(t_cnt_arr[i]), 8)
-        strResult += "FalseCnt=" + str(f_cnt_arr[i]) + spaceprint(str(f_cnt_arr[i]), 8)
+        strResult  = "Category : " + spaceprint(labels[i], 15)+" "
+        strResult += "TotalCnt=" + spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 8)+" "
+        strResult += "TrueCnt=" + spaceprint(str(t_cnt_arr[i]), 8)+" "
+        strResult += "FalseCnt=" + spaceprint(str(f_cnt_arr[i]), 8)+" "
         if t_cnt_arr[i] + f_cnt_arr[i] != 0:
             strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%"
         totCnt += t_cnt_arr[i] + f_cnt_arr[i]
@@ -293,10 +293,10 @@ def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_
         println(strResult)
         result.append(strResult)
 
-    strResult = "Total Category="+str(len(labels))+ spaceprint(str(len(labels)), 11)
-    strResult += "TotalCnt="+str(totCnt)+ spaceprint(str(totCnt), 8)
-    strResult += "TrueCnt="+str(tCnt)+ spaceprint(str(tCnt), 8)
-    strResult += "FalseCnt="+str(fCnt)+ spaceprint(str(fCnt), 8)
+    strResult = "Total Category="+spaceprint(str(len(labels)), 11)+" "
+    strResult += "TotalCnt="+spaceprint(str(totCnt), 8)+" "
+    strResult += "TrueCnt="+spaceprint(str(tCnt), 8)+" "
+    strResult += "FalseCnt="+spaceprint(str(fCnt), 8)+" "
     if totCnt != 0:
         strResult += "True Percent(TrueCnt/TotalCnt*100)="+ str(round(tCnt / totCnt * 100)) + "%"
 
@@ -325,7 +325,7 @@ def eval_run(x_batch, y_batch, netconf, X, Y, accuracy, model, y_pred_cls, label
             for i in range(len(logits)):
                 true_name = y_batch[i]
                 pred_name = labels[y_pred_true[i]]
-                # println("True Category=" + true_name + " Predict Category=" + pred_name)
+                print("True Category=" + true_name + " Predict Category=" + pred_name)
                 idx = labels.index(true_name)
                 if true_name == pred_name:
                     t_cnt_arr[idx] = t_cnt_arr[idx] + 1
@@ -348,7 +348,7 @@ def predict_run(filelist, netconf, dataconf, model, y_pred_cls, X):
     filelist = sorted(filelist.items(), key=operator.itemgetter(0))
 
     data = {}
-    labels = dataconf["labels"]
+    labels = netconf["labels"]
 
     with tf.Session() as sess:
         try:
@@ -442,6 +442,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # println(conf_data)
         node_id = conf_data['node_id']
         self._init_node_parm(node_id)
+
+        netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
+
         feed_node = self.get_prev_node()
         return_data = {}
         return_arr = None
@@ -451,7 +454,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
             for data in data_node:
                 data_name = data.get_node_name()
                 ################################################################
-                netconf = WorkFlowNetConfCNN().get_view_obj(node_id)
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
                 netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(node_id, netconf, dataconf)
 
@@ -486,8 +488,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         netconf_node_id = self.get_node_name()
         feed_node = self.get_prev_node()
 
-
-
         for feed in feed_node:
             feed_name = feed.get_node_name()
             data_node = feed.get_prev_node()
@@ -497,7 +497,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 netconf = WorkFlowNetConfCNN().get_view_obj(netconf_node_id)
                 dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
 
-                config = {"type": netconf["config"]["type"], "labels": dataconf["labels"]}
+                config = {"type": netconf["config"]["type"], "labels": netconf["labels"]}
                 eval_data = TrainSummaryInfo(conf=config)
                 eval_data.set_nn_id(conf_data["nn_id"])
                 eval_data.set_nn_wf_ver_id(conf_data["wf_ver"])

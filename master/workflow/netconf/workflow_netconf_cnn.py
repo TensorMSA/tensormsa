@@ -20,7 +20,7 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
 
     def set_num_classes_predcnt(self, node_id, netconf, dataconf):
         self.validation_check(netconf)
-        labels = dataconf["labels"]
+        labels = netconf["labels"]
         num_classes = netconf["config"]["num_classes"]
         pred_cnt = netconf["param"]["predictcnt"]
 
@@ -44,14 +44,16 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         :param obj:
         :return:
         """
+        self.validation_check(input_data)
+        obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+        old_config_data = getattr(obj, 'node_config_data')
         try:
-            self.validation_check(input_data)
-            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            input_data["labels"] = old_config_data["labels"]
             input_data["modelpath"] = get_model_path(nn_id, wfver, node)
-            input_data["modelname"] = "model_"+nn_id+"_"+wfver
+            input_data["modelname"] = "model_" + nn_id + "_" + wfver
             setattr(obj, "node_config_data", input_data)
             obj.save()
-            return input_data
-        except Exception as e:
-            raise Exception(e)
-        return None
+        except:
+            None
+
+        return input_data

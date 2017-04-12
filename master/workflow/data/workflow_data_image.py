@@ -79,9 +79,9 @@ class WorkFlowDataImage(WorkFlowData) :
 
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(wf_state_id=str(nnid) + "_" + str(wfver), nn_wf_node_name=node)
-            old_config_data = getattr(obj, 'node_config_data')
-            if('labels' in old_config_data) :
-                config_data["labels"] = old_config_data["labels"]
+            # old_config_data = getattr(obj, 'node_config_data')
+            # if('labels' in old_config_data) :
+            #     config_data["labels"] = old_config_data["labels"]
             config_data["source_path"] = get_source_path(nnid, wfver, node)
             config_data["store_path"] = get_store_path(nnid, wfver, node)
             setattr(obj, 'node_config_data', config_data)

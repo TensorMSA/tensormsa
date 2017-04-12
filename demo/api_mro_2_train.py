@@ -9,27 +9,6 @@ from common.utils import *
 # rabbitmqctl set_user_tags tensormsa administrator
 # rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
-# pip install flower
-# celery -A hoyai flower &
-# celery flower -A hoyai --address=127.0.0.1 --port=5555
-# celery flower -A hoyai --address=127.0.0.1 --port=5555
-# ./manage.py runserver [HOST]:8000
-# celery -A hoyai flower --address=2fb1ece74beb --port=5555
-# celery -A hoyai flower --address=52.78.67.19 --port=5555
-#
-# celery flower -A hoyai --broker=amqp://tensormsa:tensormsa@52.78.67.19:5672 &
-#
-#                         Broker: amqp://tensormsa:**@2fb1ece74beb:5672//
-#
-#
-# celery flower -A hoyai --address=127.0.0.1 --port=5555
-#
-# celery flower -A hoyai --address=52.78.67.19 --broker=amqp://tensormsa:tensormsa@52.78.67.19:5672
-#
-# celery flower -A hoyai --address=2fb1ece74beb --broker=amqp://tensormsa:tensormsa@2fb1ece74beb:5672
-#
-# docker-ip YOUR_CONTAINER_ID
-
 
 println("S")
 url = gUrl
@@ -51,11 +30,11 @@ wf_ver_id = str(wf_ver_id)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"traincnt": 10,
+                         "param":{"traincnt": 1,
                                      "batch_size":10000,
                                      "predictcnt": 10
                          },
-                         "config": {"num_classes":1,
+                         "config": {"num_classes":10,
                                     "learnrate": 0.001,
                                      "layeroutputs":32,
                                      "type":"category"
@@ -80,46 +59,42 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                      "droprate": "0.8",
                                      "layercnt":1
                                     }
-                          ,"out": {"active": "softmax",
+                         ,"out": {"active": "softmax",
                                    "node_out": 625,
                                    "padding": "SAME"
                                 }
+                         ,"labels":[]
                         })
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
-
-# CNN Network WorkFlow Node :  Eval Config Setup
-node = "eval_node"
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={})
-evalconf = json.loads(resp.json())
-# print("insert workflow node conf info evaluation result : {0}".format(evalconf))
 
 # CNN Network WorkFlow Node :  Data Config Setup
 node = "datasrc"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                             "preprocess": {"x_size": 32,
-                                        "y_size": 32,
-                                        "channel":3}
-                         ,"labels":[]
-
+                                           "y_size": 32,
+                                           "channel":3,
+                                           "filesize": 4}
                      })
 dataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(dataconf))
 
+# CNN Network WorkFlow Node :  Eval Config Setup
+node = "eval_node"
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={})
+evalconf = json.loads(resp.json())
+
 # CNN Network WorkFlow Node :  Eval Data Config Setup
 # (CNN Network WorkFlow Node의 Data Config를 Setup 해준다.)
 node = 'evaldata'
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
-                     json={
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={
                             "preprocess": {"x_size": 32,
-                                        "y_size": 32,
-                                        "channel":3}
-                         ,"labels":[]
-
+                                           "y_size": 32,
+                                           "channel":3,
+                                           "filesize": 4}
                      })
 edataconf = json.loads(resp.json())
-# print("insert workflow node conf info evaluation result : {0}".format(edataconf))
 
 # CNN Network Training
 # (CNN Network Training을 실행한다 .)
