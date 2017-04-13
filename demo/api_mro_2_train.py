@@ -14,7 +14,7 @@ println("S")
 url = gUrl
 nn_id = "nn00004"
 
-# get workflow version info
+# get workflow version
 resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
 data = json.loads(resp.json())
 

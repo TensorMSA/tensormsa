@@ -222,7 +222,7 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
     train_cnt = netconf["param"]["traincnt"]
     model_path = netconf["modelpath"]
     save_path = model_path + "/" + modelname
-    result = ["Trainning ................................................."]
+    result = ["Trainning .................................................."]
     return_arr.append(result)
     with tf.Session() as sess:
         try:
