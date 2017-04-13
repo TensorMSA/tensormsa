@@ -55,7 +55,12 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
         """
         return self.conf['label']
 
-
+    @property
+    def label_type(self):
+        """
+        getter for object type
+        """
+        return self.conf['label_type']
 
 
     #data_conf
@@ -128,7 +133,7 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
             config_data['cell_feature'] = input_data.get('cell_feature') if 'cell_feature' in input_data else config_data['cell_feature']
             config_data['extend_cell_feature'] = input_data.get('extend_cell_feature') if 'extend_cell_feature' in input_data else config_data['extend_cell_feature']
             config_data['label_values'] = input_data.get('label_values') if 'label_values' in input_data else config_data['label_values']
-
+            config_data['label_type'] = input_data.get('label_type') if 'label_type' in input_data else config_data['label_type']
             setattr(obj, 'node_config_data', config_data)
             obj.save()
             return config_data

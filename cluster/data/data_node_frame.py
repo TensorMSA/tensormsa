@@ -52,6 +52,7 @@ class DataNodeFrame(DataNode):
             fp_list = utils.get_filepaths(self.data_src_path, file_type='csv')
             _multi_node_flag = self.multi_node_flag
 
+
             try:
                 for file_path in fp_list:
                     df_csv_read = self.load_csv_by_pandas(file_path)
@@ -72,6 +73,7 @@ class DataNodeFrame(DataNode):
                         if hasattr(_wf_data_conf,'label') == True:
                             # label check
                             _label = _wf_data_conf.label
+                            _labe_type = _wf_data_conf.label_type
                             origin_labels_list = _wf_data_conf.label_values if hasattr(_wf_data_conf,'label_values') else list() #처음 입려할때 라벨벨류가 없으면 빈 리스트 넘김
                             compare_labels_list = self.set_dataconf_for_labels(df_csv_read,_label)
                             self.combined_label_list = utils.get_combine_label_list(origin_labels_list,compare_labels_list )
@@ -84,7 +86,7 @@ class DataNodeFrame(DataNode):
                             if _multi_node_flag == True:
                                 skip_header = False
                                 # Todo Have to remove if production
-                                self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read,_label)
+                                self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read,_label, _labe_type)
 
                     os.remove(file_path) #승우씨것
             except Exception as e:
@@ -110,7 +112,7 @@ class DataNodeFrame(DataNode):
                 input_data[key] = self._mecab_parse(input_data[key])
             return input_data
 
-    def save_tfrecord(self, csv_data_file, store_path, skip_header, df_csv_read, label):
+    def save_tfrecord(self, csv_data_file, store_path, skip_header, df_csv_read, label, label_type):
         """
         Creates a TFRecords file for the given input data and
         example transofmration function
@@ -118,9 +120,9 @@ class DataNodeFrame(DataNode):
 
         filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
         output_file = store_path +"/"+ filename + ".tfrecords"
-        self.create_tfrecords_file( output_file, skip_header, df_csv_read, label)
+        self.create_tfrecords_file( output_file, skip_header, df_csv_read, label,label_type)
 
-    def create_tfrecords_file(self, output_file, skip_header, df_csv_read, label):
+    def create_tfrecords_file(self, output_file, skip_header, df_csv_read, label,label_type):
         """
         Creates a TFRecords file for the given input data and
         example transofmration function
@@ -133,7 +135,7 @@ class DataNodeFrame(DataNode):
 
             csv_dataframe = df_csv_read
             for _, row in csv_dataframe.iterrows():
-                x = self.create_example_pandas(row, CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS, label)
+                x = self.create_example_pandas(row, CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS, label,label_type)
                 writer.write(x.SerializeToString())
             writer.close()
             print("Wrote to", output_file)
@@ -154,7 +156,7 @@ class DataNodeFrame(DataNode):
                 CATEGORICAL_COLUMNS.append(type_columne)
         return CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS
 
-    def create_example_pandas(self, row, CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS, label):
+    def create_example_pandas(self, row, CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS, label, label_type):
         """
         Make TFRecord Extend row (Example)
         TFRecord를 만들기 위한 Example을 만든다.
@@ -165,7 +167,14 @@ class DataNodeFrame(DataNode):
             _CONTINUOUS_COLUMNS = CONTINUOUS_COLUMNS[:]
             _CATEGORICAL_COLUMNS = CATEGORICAL_COLUMNS[:]
             #_CONTINUOUS_COLUMNS.remove("fnlwgt")
-            _CATEGORICAL_COLUMNS.remove(label)
+            try:
+                if label in _CATEGORICAL_COLUMNS:
+                    _CATEGORICAL_COLUMNS.remove(label)
+                if label in _CONTINUOUS_COLUMNS:
+                    _CONTINUOUS_COLUMNS.remove(label)
+            except Exception as e:
+                raise Exception(e)
+
             le = LabelEncoder()
             le.fit(self.combined_label_list)
 
@@ -181,13 +190,16 @@ class DataNodeFrame(DataNode):
                 if col == label:
                     #example.features.feature['label'].int64_list.value.extend([int(">50K" in value)])
 
-                    ori = int(">50K" in value)
+                    #Todo Category? Continuous?
+
+                    #ori = int(">50K" in value)
                     #print("original label convert" + str(ori))
-
-
-                    trans = le.transform([value])[0] # 무조껀 0번째임
-                    example.features.feature['label'].int64_list.value.extend([int(trans)])
-                    inverse_label = le.inverse_transform([trans])
+                    if label_type == "CONTINUOUS":
+                        example.features.feature['label'].int64_list.value.extend([int(value)])
+                    else:
+                        trans = le.transform([value])[0] # 무조껀 0번째임
+                        example.features.feature['label'].int64_list.value.extend([int(trans)])
+                    #inverse_label = le.inverse_transform([trans])
 
                     #print(value + " ori : " + str(ori) + "    convert label convert :" + str(trans) + "    inverse label :" + str(inverse_label))
 
@@ -250,8 +262,9 @@ class DataNodeFrame(DataNode):
             dataconf_nodes = self._get_forward_node_with_type(node_id, 'dataconf')
             if(len(dataconf_nodes) > 0 ) :
                 wf_data_conf_node = wf_data_conf(dataconf_nodes[0])
-                if ('conf' not in wf_data_conf_node.__dict__):
-                    self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, self.data_conf)
+                if(len(wf_data_conf_node.cell_feature) == 0 or 'conf' not in wf_data_conf_node.__dict__):
+                #if ('conf' not in wf_data_conf_node.__dict__):
+                    self.set_default_dataconf_from_csv(wf_data_conf_node, node_id,data_conf)
             return data_conf
         except Exception as e:
             raise Exception(e)
@@ -282,7 +295,11 @@ class DataNodeFrame(DataNode):
         # data_conf_json = json.loads(data_conf_json_str)
 
         # DATACONF_FRAME_CALL
-        wf_data_config.put_step_source(node_id, data_conf)
+        #self, nnid, ver, node, input_data):
+        nnid = node_id.split('_')[0]
+        ver = node_id.split('_')[1]
+        data_node = "dataconf_node"
+        wf_data_config.put_step_source(nnid, ver, data_node, data_conf)
 
     def set_dataconf_for_checktype(self, df, node_id):
         """
@@ -327,7 +344,7 @@ class DataNodeFrame(DataNode):
 
         label_values = dict()
 
-        label_values = list(pd.unique(df[label].values.ravel()))
+        label_values = pd.unique(df[label].values.ravel().astype(int)).tolist()
         # DATACONF_FRAME_CALL
         #wf_data_config.put_step_source(node_id, label_values)
         return label_values

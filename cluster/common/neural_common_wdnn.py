@@ -40,7 +40,7 @@ class NeuralCommonWdnn():
             featureTransfomation = {}
 
             j_feature = data_conf_json["cell_feature"]
-
+            _label = data_conf_json['label']
 
             # one line expression change
             # Categorial columns을 Sparse Layer로 만듬 python처럼 한줄로 표시
@@ -50,7 +50,11 @@ class NeuralCommonWdnn():
             #featureColumnCategorical.update({ cn:tf.contrib.layers.sparse_column_with_keys(column_name=cn,keys=c_value["keys"])
             #                            for cn, c_value in j_feature.items() if c_value["column_type"] == "CATEGORICAL_KEY" })
 
+            if _label in featureColumnCategorical:
+                featureColumnCategorical.pop(_label)
+
             # Extend_cell_feature를 가져와서 사용자가 입력한것을 반영
+
             for _k, _v in _extend_cell_feature.items():
                 featureColumnCategorical.pop(_k, None) # 중복제거를 위하 Dict에서 사용자지정항목 삭제
 
@@ -68,6 +72,11 @@ class NeuralCommonWdnn():
             # Json에서 Continuous Colums 가져옴
             featureColumnContinuous = {cn:tf.contrib.layers.real_valued_column(cn)
                                     for cn, c_value in j_feature.items() if c_value["column_type"] == "CONTINUOUS"}
+
+
+
+            if _label in featureColumnContinuous:
+                featureColumnContinuous.pop(_label)
 
             # Extend_cell_feature를 가져와서 사용자가 입력한것을 반영
             for _k, _v in _extend_cell_feature.items():
@@ -108,6 +117,15 @@ class NeuralCommonWdnn():
             if model_type == "wdnn":
 
                 m = tf.contrib.learn.DNNLinearCombinedClassifier(
+                    model_dir=model_dir,
+                    linear_feature_columns=wide_columns,
+                    dnn_feature_columns=deep_columns,
+                    #n_classes=2,  # 0.11 bug
+                    dnn_hidden_units=hidden_layers_value)
+
+            elif model_type == "regression":
+
+                m = tf.contrib.learn.DNNLinearCombinedRegressor(
                     model_dir=model_dir,
                     linear_feature_columns=wide_columns,
                     dnn_feature_columns=deep_columns,
