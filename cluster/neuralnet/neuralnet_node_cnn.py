@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import io
 from cluster.common.train_summary_info import TrainSummaryInfo
+
 ########################################################################
 def plot_image(image, cls_true):
     # Create figure with sub-plots.
@@ -195,16 +196,19 @@ def get_batch_data(data_set, dataconf, labels, num_classes, type):
     return x_batch, y_batch
 ########################################################################
 def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_step):
+    epoch = netconf["param"]["epoch"]
     batchsize = netconf["param"]["batch_size"]
     num_classes = netconf["config"]["num_classes"]
     labels = netconf["labels"]
+    g_total_cnt = 0
     try:
         return_arr = []
         while (input_data.has_next()):
-            for i in range(0, input_data.size(), batchsize):
-                data_set = input_data[i:i + batchsize]
-                x_batch, y_batch = get_batch_data(data_set, dataconf, labels, num_classes, "T")
-                return_data = train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr)
+            for i in range(epoch):
+                for i in range(0, input_data.size(), batchsize):
+                    data_set = input_data[i:i + batchsize]
+                    x_batch, y_batch = get_batch_data(data_set, dataconf, labels, num_classes, "T")
+                    return_data, g_total_cnt = train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr, g_total_cnt)
             input_data.next()
     except Exception as e:
         net_check = "Error[400] .............................................."
@@ -213,7 +217,7 @@ def train_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, global_s
 
     return_data = return_arr
     return return_data
-def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr):
+def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step, return_arr, g_total_cnt):
     modelname = netconf["modelname"]
     train_cnt = netconf["param"]["traincnt"]
     model_path = netconf["modelpath"]
@@ -234,7 +238,8 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
             feed_dict_train = {X: x_batch, Y: y_batch}
 
             i_global, _ = sess.run([global_step, optimizer], feed_dict=feed_dict_train)
-            println("Train Count="+str(i+1))
+            g_total_cnt += 1
+            println("Train Count="+str(g_total_cnt))
             # Print status to screen every 10 iterations (and last).
             if (i_global % 10 == 0) or (i == train_cnt - 1):
                 # Calculate the accuracy on the training-batch.
@@ -253,7 +258,7 @@ def train_run(x_batch, y_batch, netconf, X, Y, optimizer, accuracy, global_step,
     result = ''
     return_arr.append(result)
 
-    return return_arr
+    return return_arr, g_total_cnt
 ########################################################################
 def eval_cnn(input_data, netconf, dataconf, X, Y, optimizer, accuracy, model, y_pred_cls, global_step, eval_data):
     batchsize = netconf["param"]["batch_size"]
@@ -551,7 +556,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
             println("net_check=" + net_check)
 
         return data
-
 
 
 
