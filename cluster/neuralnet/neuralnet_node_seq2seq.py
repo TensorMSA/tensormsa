@@ -134,6 +134,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         # set init params
         self._init_node_parm(node_id)
         # prepare net conf
+        tf.reset_default_graph()
         self._set_predict_model()
         # create session
         sess = tf.Session()
