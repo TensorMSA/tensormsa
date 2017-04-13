@@ -24,7 +24,8 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             wf_conf = WorkflowFeedFr2Seq(node_id)
             self.encode_col = wf_conf.get_encode_column()
             self.decode_col = wf_conf.get_decode_column()
-            self.sent_max_len = wf_conf.get_sent_max_len()
+            self.encode_len = wf_conf.get_encode_len()
+            self.decode_len = wf_conf.get_decode_len()
             self.preprocess_type = wf_conf.get_preprocess_type()
         except Exception as e:
             raise Exception(e)
@@ -41,8 +42,8 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             chunk = store.select('table1',
                                start=index.start,
                                stop=index.stop)
-            encode = self.encode_pad(self._preprocess(chunk[self.encode_col].values))
-            decode = self.decode_pad(self._preprocess(chunk[self.decode_col].values))
+            encode = self.encode_pad(self._preprocess(chunk[self.encode_col].values), max_len=self.encode_len)
+            decode = self.decode_pad(self._preprocess(chunk[self.decode_col].values), max_len=self.decode_len)
 
             return encode, decode
         except Exception as e :
