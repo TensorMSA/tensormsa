@@ -31,8 +31,8 @@ node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                          "param":{"epoch":2
-                                  ,"traincnt": 1
-                                  ,"batch_size":100
+                                  ,"traincnt": 20
+                                  ,"batch_size":10000
                                   ,"predictcnt": 10
                          },
                          "config": {"num_classes":10,
