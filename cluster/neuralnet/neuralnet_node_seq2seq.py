@@ -442,9 +442,11 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param input_tuple:
         :return:
         """
-        pad_size = self.encoder_seq_length - len(input_tuple) - 1
-        if(pad_size > 0 ) :
-            input_tuple = pad_size * [('#', '')] + input_tuple + [('SF', '')]
+        pad_size = self.encoder_seq_length - (len(input_tuple) + 1)
+        if(pad_size >= 0 ) :
+            input_tuple = pad_size * [('#', '')] + input_tuple[0: self.encoder_seq_length-1] + [('SF', '')]
+        else :
+            input_tuple = input_tuple[0: self.encoder_seq_length-1] + [('SF', '')]
         return input_tuple
 
     def _pos_tag_predict_data(self, x_input):
