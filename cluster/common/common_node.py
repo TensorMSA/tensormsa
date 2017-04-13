@@ -18,6 +18,7 @@ class WorkFlowCommonNode :
         self.node_name = ''
         self.node_grp = ''
         self.node_type = ''
+        self.node_def = ''
         self.search_flag = False
 
     def run(self, conf_data):
@@ -138,6 +139,22 @@ class WorkFlowCommonNode :
         :return:
         """
         return self.node_name
+
+    def get_node_def(self):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        return self.node_def
+
+    def set_node_def(self, name):
+        """
+        node name string
+        :param name:
+        :return:
+        """
+        self.node_def = name
 
     def set_node_grp(self, node_grp):
         """

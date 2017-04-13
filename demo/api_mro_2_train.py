@@ -9,7 +9,6 @@ from common.utils import *
 # rabbitmqctl set_user_tags tensormsa administrator
 # rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
-# ./manage.py runserver [HOST]:8000
 
 println("S")
 url = gUrl
@@ -31,12 +30,14 @@ wf_ver_id = str(wf_ver_id)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "config": {"learnrate": 0.001,
-                                     "traincnt": 100,
+                         "param":{"traincnt": 1,
                                      "batch_size":10000,
-                                     "num_classes":10,
-                                     "predictcnt": 10,
-                                     "layeroutputs":32
+                                     "predictcnt": 10
+                         },
+                         "config": {"num_classes":10,
+                                    "learnrate": 0.001,
+                                     "layeroutputs":32,
+                                     "type":"category"
                                      }
                          ,"layer1": {"type": "cnn",
                                      "active": "relu",
@@ -58,59 +59,93 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                      "droprate": "0.8",
                                      "layercnt":1
                                     }
-                          ,"out": {"active": "softmax",
+                         ,"out": {"active": "softmax",
                                    "node_out": 625,
                                    "padding": "SAME"
                                 }
+                         ,"labels":[]
                         })
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
-
-# CNN Network WorkFlow Node :  Eval Config Setup
-node = "eval_node"
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={})
-evalconf = json.loads(resp.json())
-# print("insert workflow node conf info evaluation result : {0}".format(evalconf))
 
 # CNN Network WorkFlow Node :  Data Config Setup
 node = "datasrc"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                             "preprocess": {"x_size": 32,
-                                        "y_size": 32,
-                                        "channel":3}
-                         ,"labels":[]
-
+                                           "y_size": 32,
+                                           "channel":3,
+                                           "filesize": 1000000}
                      })
 dataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(dataconf))
 
+# CNN Network WorkFlow Node :  Eval Config Setup
+node = "eval_node"
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={})
+evalconf = json.loads(resp.json())
+
 # CNN Network WorkFlow Node :  Eval Data Config Setup
 # (CNN Network WorkFlow Node의 Data Config를 Setup 해준다.)
 node = 'evaldata'
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
-                     json={
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={
                             "preprocess": {"x_size": 32,
-                                        "y_size": 32,
-                                        "channel":3}
-                         ,"labels":[]
-
+                                           "y_size": 32,
+                                           "channel":3,
+                                           "filesize": 1000000}
                      })
 edataconf = json.loads(resp.json())
-# print("insert workflow node conf info evaluation result : {0}".format(edataconf))
 
 # CNN Network Training
-# (CNN Network Training을 실행한다.)
+# (CNN Network Training을 실행한다 .)
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
 # print(data)
 
-for train in data:
-    if train != None and train != "" and train != {} and train != "status" and train != "result" and train["TrainResult"] != None:
-        # print(train)
-        for tr in train["TrainResult"]:
-            print(tr)
+def spaceprint(val, cnt):
+    leng = len(str(val))
+    cnt = cnt - leng
+    restr = ""
+    for i in range(cnt):
+        restr += " "
+    restr = restr+str(val)
+    return restr
 
+for train in data:
+    if train != None and train != "" and train != {} and train != "status" and train != "result":
+        try:
+            for tr in train["TrainResult"]:
+                print(tr)
+        except:
+            maxcnt = 0
+            line = ""
+            for label in train["labels"]:
+                if maxcnt<len(label):
+                    maxcnt = len(label)
+
+            for i in range(len(train["labels"])):
+                for j in range(maxcnt+4):
+                    line += "="
+
+            label_sub = []
+            for label in train["labels"]:
+                label = spaceprint(label,maxcnt)
+                label_sub.append(label)
+
+            space = ""
+            for s in range(maxcnt):
+                space +=" "
+
+            print(space, label_sub)
+            print(space, line)
+            for i in range(len(train["labels"])):
+                predict_sub = []
+                for j in range(len(train["predicts"][i])):
+                    pred = spaceprint(train["predicts"][i][j],maxcnt)
+
+                    predict_sub.append(pred)
+
+                print(spaceprint(train["labels"][i],maxcnt), predict_sub)
 
 println("E")
 

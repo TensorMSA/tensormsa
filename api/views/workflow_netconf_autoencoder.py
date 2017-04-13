@@ -2,6 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.netconf.workflow_netconf_autoencoder import WorkFlowNetConfAutoEncoder as AutoEncoder
+from common.utils import *
 
 
 class WorkFlowNetConfAutoEncoder(APIView) :
@@ -36,6 +37,8 @@ class WorkFlowNetConfAutoEncoder(APIView) :
         """
         try:
             input_data = request.data
+            #Add Model Path from utils
+            input_data['model_path'] = get_model_path(nnid, ver, node)
             node_id = ''.join([nnid, '_', ver , '_', node])
             return_data = AutoEncoder().set_view_obj(node_id, input_data)
             return Response(json.dumps(return_data))

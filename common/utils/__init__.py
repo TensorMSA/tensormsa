@@ -8,6 +8,7 @@ from .path_util import get_store_path
 from .path_util import get_filepaths
 from .path_util import get_model_path
 from .file_upload_util import save_upload_file
+from .file_upload_util import hdf_create
 from .path_util import del_filepaths
 from .common_util import get_combine_label_list
 from .onehot_encoder import OneHotEncoder

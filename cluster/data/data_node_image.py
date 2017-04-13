@@ -1,6 +1,5 @@
 import os
 import zipfile
-import h5py
 import numpy as np
 from PIL import Image, ImageFilter
 from cluster.data.data_node import DataNode
@@ -8,31 +7,39 @@ from master.workflow.data.workflow_data_image import WorkFlowDataImage
 from time import gmtime, strftime
 from common import utils
 from common.utils import *
-import tensorflow as tf
 import shutil
 
 class DataNodeImage(DataNode):
     """
-
     """
     def run(self, conf_data):
         try:
             println("run DataNodeImage")
+            nnid = conf_data['nn_id']
             node_id = conf_data['node_id']
-
+            net_conf_id = self._find_netconf_node_id(nnid)
+            netconf = WorkFlowDataImage().get_step_source(net_conf_id)
             dataconf = WorkFlowDataImage().get_step_source(node_id)
             if dataconf == {}:
                 println("/cluster/data/data_node_image DataNodeImage run dataconf("+node_id+") is not Exist")
                 return
             else:
                 println(node_id)
+
             directory = dataconf["source_path"]
             output_directory = dataconf["store_path"]
+            output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
+            output_path = os.path.join(output_directory, output_filename)
+
             x_size = dataconf["preprocess"]["x_size"]
             y_size = dataconf["preprocess"]["y_size"]
             channel = dataconf["preprocess"]["channel"]
-            output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-            labels = dataconf['labels']
+
+            labels = netconf['labels']
+            try:
+                filesize = dataconf["preprocess"]["filesize"]
+            except:
+                filesize = 1000000
 
             # unzip & remove zip
             ziplist = os.listdir(directory)
@@ -51,71 +58,57 @@ class DataNodeImage(DataNode):
             lable_arr = []
             shape_arr = []
             processcnt = 1
-            with tf.Session() as sess:
-                for forder in forderlist:
-                    filelist = os.listdir(directory + '/' + forder)
-                    for filename in filelist:
-                        value = tf.read_file(directory + '/' + forder + '/' + filename)
-                        try:
-                            decoded_image = tf.image.decode_image(contents=value, channels=channel, name="img")
-                            resized_image = tf.image.resize_image_with_crop_or_pad(decoded_image, x_size, y_size)
+            createcnt = 1
 
-                            image = sess.run(resized_image)
-                            image = image.reshape([-1, x_size, y_size, channel])
-                            image = image.flatten()
-                            image_arr.append(image)
-                            shape_arr.append(image.shape)
-                            lable_arr.append(forder.encode('utf8'))
-                            filecnt += 1
-                            print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
-                        except:
-                            print("Processcnt="+str(processcnt)+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
-                        processcnt += 1
-                    shutil.rmtree(directory + "/" + forder)
+            for forder in forderlist:
+                filelist = os.listdir(directory + '/' + forder)
+                for filename in filelist:
                     try:
-                        idx = labels.index(forder)
+                        image = Image.open(directory + '/' + forder + '/' + filename)
+                        image = image.resize((x_size, y_size), Image.ANTIALIAS)
+                        image = np.array(image)
+
+                        image = image.reshape([-1, x_size, y_size, channel])
+                        image = image.flatten()
+                        image_arr.append(image)
+                        shape_arr.append(image.shape)
+                        lable_arr.append(forder.encode('utf8'))
+                        filecnt += 1
+
+                        if filecnt >= filesize :
+                            output_path_sub = output_path+"_"+str(createcnt)
+                            hdf_create(self, output_path_sub, filecnt, channel, image_arr, shape_arr, lable_arr)
+
+                            filecnt = 0
+                            image_arr = []
+                            lable_arr = []
+                            shape_arr = []
+                            createcnt += 1
+
+                        print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
                     except:
-                        labels.append(forder)
+                        print("Processcnt="+str(processcnt)+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                    processcnt += 1
+                shutil.rmtree(directory + "/" + forder)
+                try:
+                    idx = labels.index(forder)
+                except:
+                    labels.append(forder)
 
-            dataconf["labels"] = labels
-            WorkFlowDataImage().put_step_source_ori(node_id, dataconf)
+            if filecnt > 0:
+                output_path_sub = output_path + "_" + str(createcnt)
+                hdf_create(self, output_path_sub, filecnt, channel, image_arr, shape_arr, lable_arr)
 
-            if len(forderlist) > 0 and filecnt > 0:
-                output_path = os.path.join(output_directory, output_filename)
-                h5file = h5py.File(output_path, mode='w')
-                dtype = h5py.special_dtype(vlen=np.dtype('uint8'))
-                hdf_features = h5file.create_dataset('image_features', (filecnt,), dtype=dtype)
-                hdf_shapes = h5file.create_dataset('image_features_shapes', (filecnt, channel), dtype='int32')
-                hdf_labels = h5file.create_dataset('targets', (filecnt,), dtype='S10')
+            netconf["labels"] = labels
+            WorkFlowDataImage().put_step_source_ori(net_conf_id, netconf)
 
-                # Attach shape annotations and scales
-                hdf_features.dims.create_scale(hdf_shapes, 'shapes')
-                hdf_features.dims[0].attach_scale(hdf_shapes)
-
-                hdf_shapes_labels = h5file.create_dataset('image_features_shapes_labels', (channel,), dtype='S7')
-                hdf_shapes_labels[...] = ['channel'.encode('utf8'),
-                                          'height'.encode('utf8'),
-                                          'width'.encode('utf8')]
-                hdf_features.dims.create_scale(hdf_shapes_labels, 'shape_labels')
-                hdf_features.dims[0].attach_scale(hdf_shapes_labels)
-
-                # Add axis annotations
-                hdf_features.dims[0].label = 'batch'
-
-                for i in range(len(image_arr)):
-                    print("HDF5 Create=" + str(lable_arr[i].decode('UTF-8')))
-                    hdf_features[i] = image_arr[i]
-                    hdf_shapes[i] = shape_arr[i]
-                    hdf_labels[i] = lable_arr[i]
-
-                h5file.flush()
-                h5file.close()
-            println("end DataNodeImage")
             return None
 
         except Exception as e:
             println(e)
             raise Exception(e)
+
+
 
     def _init_node_parm(self, node_id):
         return None
