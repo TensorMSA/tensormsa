@@ -477,7 +477,7 @@ class WorkFlowCommonNode :
         mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
         return_arr = []
         for data in str_arr:
-            return_arr = return_arr + self._flat(mecab.pos(data))
+            return_arr = return_arr + self._flat(mecab.pos(str(data)))
         return return_arr
 
     def _kkma_parse(self, str_arr):
@@ -489,7 +489,7 @@ class WorkFlowCommonNode :
         kkma = Kkma()
         return_arr = []
         for data in str_arr:
-            return_arr = return_arr + self._flat(kkma.pos(data))
+            return_arr = return_arr + self._flat(kkma.pos(str(data)))
         return return_arr
 
     def _twitter_parse(self, str_arr):
@@ -501,7 +501,7 @@ class WorkFlowCommonNode :
         twitter = Twitter(jvmpath=None)
         return_arr = []
         for data in str_arr:
-            return_arr = return_arr + self._flat(twitter.pos(data))
+            return_arr = return_arr + self._flat(twitter.pos(str(data)))
         return return_arr
 
     def _default_parse(self):
@@ -516,11 +516,16 @@ class WorkFlowCommonNode :
         doc_list = []
         line_list = []
         count = 0
+        max_len = len(pos)
         for word, tag in pos :
             count = count + 1
             line_list.append("{0}/{1}".format(word, tag))
             #Add POS Tagging for divide (kkma and twitter)
             if(tag in ['Punctuation','SF'] or word in ['.', '?']) :
+                line_list.append('SF')
+                doc_list.append(line_list)
+                line_list = []
+            elif(count >= max_len) :
                 line_list.append('SF')
                 doc_list.append(line_list)
                 line_list = []

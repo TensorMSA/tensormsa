@@ -42,7 +42,9 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src
                          "encode_column" : "a",
                          "decode_column" : "b",
                          "max_sentence_len": 10,
-                         "preprocess": "mecab",
+                         "encode_len": 10,
+                         "decode_len": 2,
+                         "preprocess" : "mecab"
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
