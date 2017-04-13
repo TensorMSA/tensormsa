@@ -76,6 +76,9 @@ class OneHotEncoder :
         :return:
         """
         idx = vector.argmax(axis=0)
-        return self.dict_list[idx]
+        if(vector[idx] > 0.95) :
+            return self.dict_list[idx]
+        else :
+            return "-1"
 
 
