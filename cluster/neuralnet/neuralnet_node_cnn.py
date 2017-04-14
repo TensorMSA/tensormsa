@@ -17,7 +17,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def _init_node_parm(self):
         self.node_id = self.get_node_name()
         self.node = self.get_node_def()
-        self.net_check = None
         self.model = None
         self.X = None
         self.Y = None
@@ -106,7 +105,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         ################################################################
         stopper = 1
         model = X
-        net_check = 'S'
         numoutputs = self.numoutputs
 
         while True:
@@ -114,8 +112,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 layer = netconf["layer" + str(stopper)]
             except Exception as e:
                 if stopper == 1:
-                    net_check = "Error[100] layer is None ..............................."
-                    return net_check
+                    return "Error[100] layer is None ..............................."
                 break
             stopper += 1
 
@@ -161,8 +158,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                     println(model)
             except Exception as e:
-                net_check = "Error[200] Model Create Fail."
-                println(net_check)
+                println("Error[200] Model Create Fail.")
                 println(e)
 
         reout = int(model.shape[1]) * int(model.shape[2]) * int(model.shape[3])
@@ -181,7 +177,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         check_prediction = tf.equal(y_pred_cls, tf.argmax(Y, 1))
         accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
 
-        self.net_check = net_check
         self.model = model
         self.X = X
         self.Y = Y
@@ -254,7 +249,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 input_data = cls_pool[feed_name]
                 return_arr = self.train_cnn(input_data)
 
-
         return_data["TrainResult"] = return_arr
 
         return return_data
@@ -271,8 +265,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         return_arr, g_total_cnt = self.train_run(x_batch, y_batch, return_arr, g_total_cnt)
                 input_data.next()
         except Exception as e:
-            net_check = "Error[400] .............................................."
-            println(net_check)
+            println("Error[400] ..............................................")
             println(e)
 
         return return_arr
@@ -340,15 +333,12 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 eval_data.set_nn_id(nn_id)
                 eval_data.set_nn_wf_ver_id(wfver)
 
-                if self.net_check == "S":
-                    cls_pool = conf_data['cls_pool']
-                    net_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
-                    for data_name in net_node_name:
-                        if data_name.find("eval") > 0:
-                            input_data = cls_pool[data_name]
-                            eval_data = self.eval_cnn(input_data, eval_data)
-                else:
-                    println("net_check=" + self.net_check)
+                cls_pool = conf_data['cls_pool']
+                net_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+                for data_name in net_node_name:
+                    if data_name.find("eval") > 0:
+                        input_data = cls_pool[data_name]
+                        eval_data = self.eval_cnn(input_data, eval_data)
 
         return eval_data
 
@@ -442,10 +432,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         self.get_model(netconf, "P")
 
-        if self.net_check == "S":
-            data = self.predict_run(filelist)
-        else:
-            println("net_check=" + self.net_check)
+        data = self.predict_run(filelist)
 
         return data
 
