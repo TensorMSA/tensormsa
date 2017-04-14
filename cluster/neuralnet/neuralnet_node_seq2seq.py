@@ -21,6 +21,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
 
             # prepare net conf
+            tf.reset_default_graph()
             self._set_train_model()
 
             # create session
@@ -44,10 +45,10 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             # save model and close session
             saver.save(sess, ''.join([self.md_store_path, '/']))
+            sess.close()
         except Exception as e :
             raise Exception (e)
         finally :
-            sess.close()
             self.wf_conf.set_vocab_list(self.onehot_encoder.dics())
 
     def _init_node_parm(self, node_id):
@@ -269,7 +270,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :return:
         """
         # Weigths
-        with tf.variable_scope('rnnlm'):
+        with tf.variable_scope('rnnlm') as scope:
             self.softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
             self.softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
 
@@ -280,15 +281,18 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         """
         try :
             # Construct RNN model
-            unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
-            dropcell = tf.contrib.rnn.DropoutWrapper(unitcell,
-                                                     input_keep_prob = 1.0,
-                                                     output_keep_prob = self.drop_out)
-            cell = tf.contrib.rnn.MultiRNNCell([dropcell] * self.encoder_num_layers)
+            cells = []
+            for _ in range(self.encoder_num_layers) :
+                unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
+                dropcell = tf.contrib.rnn.DropoutWrapper(unitcell,
+                                                         input_keep_prob=1.0,
+                                                         output_keep_prob=self.drop_out)
+                cells.append(dropcell)
+            mul_cell = tf.contrib.rnn.MultiRNNCell(cells)
             self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
             self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
             self.targets = tf.placeholder(tf.int32, [self.batch_size, self.decoder_seq_length])
-            self.istate = cell.zero_state(self.batch_size, tf.float32)
+            self.istate = mul_cell.zero_state(self.batch_size, tf.float32)
 
             # set weight vectors
             self._set_weight_vectors()
@@ -301,7 +305,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             self.outputs, last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
                                                                                    outputs,
-                                                                                   cell,
+                                                                                   mul_cell,
                                                                                    dtype=tf.float32,
                                                                                    scope='rnnlm')
 
@@ -359,11 +363,17 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         """
         try :
             # Construct RNN model
-            unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
-            self.cell = tf.contrib.rnn.MultiRNNCell([unitcell] * self.encoder_num_layers)
+            cells = []
+            for _ in range(self.encoder_num_layers) :
+                unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
+                dropcell = tf.contrib.rnn.DropoutWrapper(unitcell,
+                                                         input_keep_prob=1.0,
+                                                         output_keep_prob=self.drop_out)
+                cells.append(dropcell)
+            self.mul_cell = tf.contrib.rnn.MultiRNNCell(cells)
             self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
             self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
-            self.istate = self.cell.zero_state(self.batch_size, tf.float32)
+            self.istate = self.mul_cell.zero_state(self.batch_size, tf.float32)
 
             # set weight vectors
             self._set_weight_vectors()
@@ -376,7 +386,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             self.outputs, self.last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
                                                                                    outputs,
-                                                                                   self.cell,
+                                                                                   self.mul_cell,
                                                                                    dtype=tf.float32,
                                                                                    scope='rnnlm')
 
@@ -412,7 +422,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             # run predict
             output = ['@'] + [''] * (self.decoder_seq_length - 1)
             respone = None
-            state = sess.run(self.cell.zero_state(1, tf.float32))
+            state = sess.run(self.mul_cell.zero_state(1, tf.float32))
             outputs, probs, state = sess.run([self.outputs, self.probs, self.last_state] ,
                                      feed_dict={self.input_data: self._word_embed_data(np.array(word_list)),
                                                 self.output_data: self._word_embed_data(np.array([output])),
