@@ -34,8 +34,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             for self.epoch in range(self.num_epochs):
                 # run train
                 while(train_data_set.has_next()) :
-                    for i in range(0, train_data_set.data_size(), self.num_batches):
-                        data_set = train_data_set[i:i + self.num_batches]
+                    for i in range(0, train_data_set.data_size(), self.batch_size):
+                        data_set = train_data_set[i:i + self.batch_size]
+                        if(len(data_set[0]) != self.batch_size) : break
                         targets = self._get_dict_id(data_set[1])
                         decode_batch = self._word_embed_data(data_set[1])
                         encode_batch = self._word_embed_data(data_set[0])
@@ -49,7 +50,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         except Exception as e :
             raise Exception (e)
         finally :
-            self.wf_conf.set_vocab_list(self.onehot_encoder.dics())
+            if (self.word_embed_type == 'onehot'):
+                self.wf_conf.set_vocab_list(self.onehot_encoder.dics())
 
     def _init_node_parm(self, node_id):
         """
@@ -89,8 +91,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 self.learning_rate = wf_conf.get_learn_rate()
                 self.decay_rate = wf_conf.get_learn_rate()
                 self.num_epochs = wf_conf.get_iter_size()
-                self.batch_size = 1
-                self.num_batches = 1
+                self.batch_size = wf_conf.get_batch_size()
+                self.predict_batch = 1
             except Exception as e :
                 raise Exception ("seq2seq netconf parms not set")
 
@@ -159,8 +161,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         self._set_predict_model()
 
         while (data.has_next()):
-            for i in range(0, data.data_size(), self.num_batches):
-                data_set = data[i:i + self.num_batches]
+            for i in range(0, data.data_size(), self.predict_batch):
+                data_set = data[i:i + self.predict_batch]
+                if (len(data_set[0]) != self.predict_batch): break
                 predict = self._run_predict(sess, data_set[0][0], type='pre', clean_ans=False)
                 result.set_result_info(' '.join(data_set[1][0]), ' '.join(predict), input=' '.join(data_set[0][0]), acc=None)
             data.next()
@@ -368,9 +371,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
                 cells.append(unitcell)
             self.mul_cell = tf.contrib.rnn.MultiRNNCell(cells)
-            self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
-            self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
-            self.istate = self.mul_cell.zero_state(self.batch_size, tf.float32)
+            self.input_data = tf.placeholder(tf.float32, [self.predict_batch, self.encoder_seq_length, self.word_vector_size])
+            self.output_data = tf.placeholder(tf.float32, [self.predict_batch, self.decoder_seq_length, self.word_vector_size])
+            self.istate = self.mul_cell.zero_state(self.predict_batch, tf.float32)
 
             # set weight vectors
             self._set_weight_vectors()
