@@ -1,6 +1,5 @@
-from chatbot.renponse.response_selection import ResponseSelection
 
-class ResponseGenerator(ResponseSelection):
+class ResponseGenerator():
     """
 
     """
