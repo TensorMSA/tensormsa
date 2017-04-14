@@ -521,7 +521,7 @@ class WorkFlowCommonNode :
             count = count + 1
             line_list.append("{0}/{1}".format(word, tag))
             #Add POS Tagging for divide (kkma and twitter)
-            if(tag in ['Punctuation','SF'] or word in ['.', '?']) :
+            if(tag in ['Punctuation','SF']) :
                 line_list.append('SF')
                 doc_list.append(line_list)
                 line_list = []

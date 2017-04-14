@@ -2,6 +2,7 @@ from cluster.preprocess.pre_node_feed import PreNodeFeed
 from master.workflow.preprocess.workflow_feed_fr2seq import WorkflowFeedFr2Seq
 import pandas as pd
 import warnings
+import numpy as np
 
 class PreNodeFeedFr2Seq(PreNodeFeed):
     """
@@ -43,9 +44,10 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             chunk = store.select('table1',
                                start=index.start,
                                stop=index.stop)
+            count = index.stop - index.start
             if(self.encode_col in chunk and self.decode_col in chunk) :
-                encode = self.encode_pad(self._preprocess(chunk[self.encode_col].values), max_len=self.encode_len)
-                decode = self.decode_pad(self._preprocess(chunk[self.decode_col].values), max_len=self.decode_len)
+                encode = self.encode_pad(self._preprocess(chunk[self.encode_col].values)[0:count], max_len=self.encode_len)
+                decode = self.decode_pad(self._preprocess(chunk[self.decode_col].values)[0:count], max_len=self.decode_len)
                 return encode, decode
             else :
                 warnings.warn("not exists column names requested !!")
