@@ -366,10 +366,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             cells = []
             for _ in range(self.encoder_num_layers) :
                 unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
-                dropcell = tf.contrib.rnn.DropoutWrapper(unitcell,
-                                                         input_keep_prob=1.0,
-                                                         output_keep_prob=self.drop_out)
-                cells.append(dropcell)
+                cells.append(unitcell)
             self.mul_cell = tf.contrib.rnn.MultiRNNCell(cells)
             self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
             self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
