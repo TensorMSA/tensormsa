@@ -69,14 +69,16 @@ class OneHotEncoder :
         except Exception as e :
             raise Exception ("get vector error !")
 
-    def get_vocab(self, vector):
+    def get_vocab(self, vector, prob_idx = 0, min_prob = 0.0):
         """
         get posb max item
         :param item: posb vector
         :return:
         """
-        idx = vector.argmax(axis=0)
-        if(vector[idx] > 0.60) :
+        sorted_list = sorted(vector, reverse=True)
+        idx = np.where(vector==sorted_list[prob_idx])[0][0]
+
+        if(vector[idx] > min_prob) :
             return self.dict_list[idx]
         else :
             return "-1"

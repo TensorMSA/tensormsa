@@ -127,7 +127,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def predict(self, node_id, parm = {"input_data" : {}}):
+    def predict(self, node_id, parm = {"input_data" : {}, "num" : 0}):
         """
 
         :param node_id:
@@ -142,7 +142,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         # create session
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
-        result = self._run_predict(sess, parm['input_data'])
+        result = self._run_predict(sess, parm['input_data'], predict_num=parm.get("num") if parm.get("num") != None else 0)
         sess.close()
         return result
 
@@ -232,7 +232,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
 
-    def _get_index2vocab(self, input_data):
+    def _get_index2vocab(self, input_data, prob_idx = 0):
         """
         change word to vector
         :param input_data:
@@ -241,7 +241,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         return_arr = []
         if(self.word_embed_type == 'w2v'):
             for data in input_data :
-                parm =  {"type" : "povb2vocab", "val_1" : {}, "val_2" : []}
+                parm =  {"type" : "povb2vocab", "val_1" : {}, "val_2" : [], "prob_idx" :  prob_idx}
                 parm['val_1'] = data
                 return_arr.append(PredictNetW2V().run(self.word_embed_id, parm))
             return return_arr
@@ -249,7 +249,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             for data in input_data:
                 row_arr = []
                 for row in data:
-                    row_arr.append(self.onehot_encoder.get_vocab(row))
+                    row_arr.append(self.onehot_encoder.get_vocab(row, prob_idx = prob_idx))
                 return_arr.append(row_arr)
             return return_arr
         else :
@@ -360,7 +360,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
 
     def _set_predict_model(self):
-        """
+        """prob_idx
         set tensorflow seq2seq model for train and predict
         :return:
         """
@@ -397,7 +397,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         except Exception as e :
             raise Exception (e)
 
-    def _run_predict(self, sess, x_input, type='raw', clean_ans=True):
+    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0):
         """
 
         :return:
@@ -421,28 +421,31 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             # run predict
             output = ['@'] + [''] * (self.decoder_seq_length - 1)
-            respone = None
+            responses = []
             state = sess.run(self.mul_cell.zero_state(1, tf.float32))
             outputs, probs, state = sess.run([self.outputs, self.probs, self.last_state] ,
                                      feed_dict={self.input_data: self._word_embed_data(np.array(word_list)),
                                                 self.output_data: self._word_embed_data(np.array([output])),
                                                 self.istate: state})
-            if(clean_ans) :
-                #prepare clean answer
-                respone = ""
-                start_flag = False
-                for i in range(0,self.decoder_seq_length) :
-                    word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
-                    respone, flag, start_flag = self._clean_predict_result(word, respone, start_flag)
-                    if(flag == False) :
-                        break
-            else :
-                #return vector
-                respone = []
-                for i in range(0, self.decoder_seq_length):
-                    word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
-                    respone.append(word)
-            return respone
+            for idx in range(0, predict_num + 1) :
+                response = None
+                if(clean_ans) :
+                    #prepare clean answer
+                    response = ""
+                    start_flag = False
+                    for i in range(0,self.decoder_seq_length) :
+                        word = self._get_index2vocab(np.array([[probs[i]]]), prob_idx = idx)[0][0]
+                        response, flag, start_flag = self._clean_predict_result(word, response, start_flag)
+                        if(flag == False) :
+                            break
+                else :
+                    #return vector
+                    response = []
+                    for i in range(0, self.decoder_seq_length):
+                        word = self._get_index2vocab(np.array([[probs[i]]]), prob_idx = idx)[0][0]
+                        response.append(word)
+                responses.append(response)
+            return responses
         except Exception as e :
             raise Exception(e)
 

@@ -200,8 +200,12 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             filter_index = []
             for idx in filter_index:
                 key[idx] = 0.0
+            if 'prob_idx' in parm :
+                sorted_list = sorted(key, reverse=True)
+                index = key.index(sorted_list[parm.get['prob_idx']])
+            else :
+                index = key.argmax(axis=0)
 
-            index = key.argmax(axis=0)
             if len(model.wv.index2word) > index:
                 return_val.append(model.wv.index2word[index])
             elif len(model.wv.index2word) == index:
