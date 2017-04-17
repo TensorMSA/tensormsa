@@ -3,7 +3,9 @@ import json
 #sentence Analyzer
 class AnalyzeSentence:
 
-
+    """
+    TODO:swkim
+    """
     def get_entity_value(self, sentence):
 
         mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
