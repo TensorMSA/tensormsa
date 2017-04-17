@@ -5,3 +5,4 @@
 */migrations/
 tests/__pycache__
 *.log
+demo/*.txt
