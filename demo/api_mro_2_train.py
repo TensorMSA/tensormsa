@@ -24,15 +24,14 @@ for i in data:
         wf_ver_id = i["pk"]
 
 wf_ver_id = str(wf_ver_id)
-
 # CNN Network WorkFlow Node : Network Config Setup
 # (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch":10
-                                  ,"traincnt": 5
-                                  ,"batch_size":150
+                         "param":{"epoch":0
+                                  ,"traincnt": 10
+                                  ,"batch_size":25000
                                   ,"predictcnt": 10
                          },
                          "config": {"num_classes":10,
@@ -121,8 +120,8 @@ for train in data:
             maxcnt = 0
             line = ""
             for label in train["labels"]:
-                if maxcnt<len(label):
-                    maxcnt = len(label)
+                if maxcnt<len(label)+2:
+                    maxcnt = len(label)+2
 
             for i in range(len(train["labels"])):
                 for j in range(maxcnt+4):
@@ -140,13 +139,23 @@ for train in data:
             print(space, label_sub)
             print(space, line)
             for i in range(len(train["labels"])):
+                truecnt = 0
+                totcnt = 0
                 predict_sub = []
                 for j in range(len(train["predicts"][i])):
                     pred = spaceprint(train["predicts"][i][j],maxcnt)
 
                     predict_sub.append(pred)
+                    totcnt += int(pred)
+                    # print(train["labels"].index(train["labels"][i]))
+                    if train["labels"].index(train["labels"][i]) == j:
+                        truecnt = int(pred)
+                if totcnt == 0:
+                    percent = 0
+                else:
+                    percent = round(truecnt/totcnt*100,2)
+                print(spaceprint(train["labels"][i],maxcnt), predict_sub, str(percent)+"%")
 
-                print(spaceprint(train["labels"][i],maxcnt), predict_sub)
 
 println("E")
 
