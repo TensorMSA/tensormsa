@@ -41,3 +41,7 @@ class ResponseSelection:
     def get_default_response(self):
         answer = ""
         return answer
+
+    def get_image_response(self):
+        require_image = "이미지를 첨부하시면 찾을 수 있습니다."
+        return require_image
