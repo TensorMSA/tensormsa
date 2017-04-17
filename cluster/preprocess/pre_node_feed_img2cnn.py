@@ -18,7 +18,8 @@ class PreNodeFeedImg2Cnn(PreNodeFeed):
             h5file = h5py.File(file_path, mode='r')
             rawdata = h5file['image_features']
             targets = h5file['targets']
-            return rawdata[index.start: index.stop], targets[index.start: index.stop]
+            names = h5file['names']
+            return rawdata[index.start: index.stop], targets[index.start: index.stop], names[index.start: index.stop]
         except Exception as e:
             raise Exception(e)
         finally:

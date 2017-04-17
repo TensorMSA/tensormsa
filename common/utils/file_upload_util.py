@@ -32,13 +32,14 @@ def save_upload_file(request, nnid, ver, dir):
         return 0
 
 
-def hdf_create(self, output_path, filecnt, channel, image_arr, shape_arr, lable_arr):
+def hdf_create(self, output_path, filecnt, channel, image_arr, shape_arr, lable_arr, name_arr):
     h5file = h5py.File(output_path, mode='w')
     dtype = h5py.special_dtype(vlen=np.dtype('uint8'))
     hdf_features = h5file.create_dataset('image_features', (filecnt,), dtype=dtype)
     hdf_shapes = h5file.create_dataset('image_features_shapes', (filecnt, channel),
                                        dtype='int32')
     hdf_labels = h5file.create_dataset('targets', (filecnt,), dtype='S240')
+    hdf_names = h5file.create_dataset('names', (filecnt,), dtype='S240')
 
     # Attach shape annotations and scales
     hdf_features.dims.create_scale(hdf_shapes, 'shapes')
@@ -59,6 +60,7 @@ def hdf_create(self, output_path, filecnt, channel, image_arr, shape_arr, lable_
         hdf_features[i] = image_arr[i]
         hdf_shapes[i] = shape_arr[i]
         hdf_labels[i] = lable_arr[i]
+        hdf_names[i] = name_arr[i]
 
     h5file.flush()
     h5file.close()

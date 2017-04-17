@@ -189,6 +189,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def get_batch_data(self, data_set, type):
         labelsHot = self.one_hot_encoded(self.num_classes)
 
+        name_data_batch = data_set[2]
         label_data_batch = data_set[1]
         img_data_batch = data_set[0]
 
@@ -206,6 +207,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 j = j.decode('UTF-8')
                 y_batch.append(j)
 
+        n_batch = []
+        for j in name_data_batch:
+            j = j.decode('UTF-8')
+            n_batch.append(j)
+
         x_batch = np.zeros((len(img_data_batch), len(img_data_batch[0])))
         r = 0
         for j in img_data_batch:
@@ -221,7 +227,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # println("Image /////////////////////////////////////////////////")
         # println(x_batch)
 
-        return x_batch, y_batch
+        return x_batch, y_batch, n_batch
     ########################################################################
     def run(self, conf_data):
         println("run NeuralNetNodeCnn Train")
@@ -257,59 +263,64 @@ class NeuralNetNodeCnn(NeuralNetNode):
         try:
             return_arr = []
             g_total_cnt = 0
-            while (input_data.has_next()):
-                for i in range(self.epoch):
-                    for i in range(0, input_data.size(), self.batchsize):
-                        data_set = input_data[i:i + self.batchsize]
-                        x_batch, y_batch = self.get_batch_data(data_set, "T")
-                        return_arr, g_total_cnt = self.train_run(x_batch, y_batch, return_arr, g_total_cnt)
-                input_data.next()
+            save_path = self.model_path + "/" + self.modelname
+
+            with tf.Session() as sess:
+                try:
+                    last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
+                    saver = tf.train.Saver()
+                    saver.restore(sess, save_path=last_chk_path)
+                    println("Train Restored checkpoint from:" + last_chk_path)
+                except:
+                    println("None to restore checkpoint. Initializing variables instead.")
+                    sess.run(tf.initialize_all_variables())
+
+                while (input_data.has_next()):
+                    for i in range(self.epoch):
+                        for i in range(0, input_data.size(), self.batchsize):
+                            data_set = input_data[i:i + self.batchsize]
+                            x_batch, y_batch, n_batch = self.get_batch_data(data_set, "T")
+
+                            result = ["Trainning .................................................."]
+                            return_arr.append(result)
+
+                            for i in range(self.train_cnt):
+                                feed_dict_train = {self.X: x_batch, self.Y: y_batch}
+
+                                i_global, _ = sess.run([self.global_step, self.optimizer], feed_dict=feed_dict_train)
+                                g_total_cnt += 1
+                                println("Train Count=" + str(g_total_cnt))
+                                # Print status to screen every 10 iterations (and last).
+                                if (i_global % 10 == 0) or (i == self.train_cnt - 1):
+                                    # Calculate the accuracy on the training-batch.
+                                    batch_acc = sess.run(self.accuracy, feed_dict=feed_dict_train)
+                                    msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
+                                    println(msg.format(i_global, batch_acc))
+                                    batch_accR = round(batch_acc * 100, 2)
+                                    result = [
+                                        "Global Step:     " + str(i_global) + ", Training Batch Accuracy:  " + str(
+                                            batch_accR) + "%"]
+                                    return_arr.append(result)
+
+                                # Save a checkpoint to disk every 100 iterations (and last).
+                                if (i_global % 100 == 0) or (i == self.train_cnt - 1):
+                                    saver.save(sess, save_path=save_path, global_step=self.global_step)
+                                    self.model_file_delete()
+
+                            result = ''
+                            return_arr.append(result)
+
+                    input_data.next()
         except Exception as e:
             println("Error[400] ..............................................")
             println(e)
 
         return return_arr
 
-    def train_run(self, x_batch, y_batch, return_arr, g_total_cnt):
-        save_path = self.model_path + "/" + self.modelname
-        result = ["Trainning .................................................."]
-        return_arr.append(result)
-        with tf.Session() as sess:
-            try:
-                last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
-                saver = tf.train.Saver()
-                saver.restore(sess, save_path=last_chk_path)
-                println("Train Restored checkpoint from:" + last_chk_path)
-            except:
-                println("None to restore checkpoint. Initializing variables instead.")
-                sess.run(tf.initialize_all_variables())
-
-            for i in range(self.train_cnt):
-                feed_dict_train = {self.X: x_batch, self.Y: y_batch}
-
-                i_global, _ = sess.run([self.global_step, self.optimizer], feed_dict=feed_dict_train)
-                g_total_cnt += 1
-                println("Train Count=" + str(g_total_cnt))
-                # Print status to screen every 10 iterations (and last).
-                if (i_global % 10 == 0) or (i == self.train_cnt - 1):
-                    # Calculate the accuracy on the training-batch.
-                    batch_acc = sess.run(self.accuracy, feed_dict=feed_dict_train)
-                    msg = "Global Step: {0:>6}, Training Batch Accuracy: {1:>6.1%}"
-                    println(msg.format(i_global, batch_acc))
-                    batch_acc = round(batch_acc * 100, 2)
-                    result = [
-                        "Global Step:     " + str(i_global) + ", Training Batch Accuracy:  " + str(batch_acc) + "%"]
-                    return_arr.append(result)
-
-                # Save a checkpoint to disk every 100 iterations (and last).
-                if (i_global % 100 == 0) or (i == self.train_cnt - 1):
-                    model_checkpoint_path = saver.save(sess, save_path=save_path, global_step=self.global_step)
-                    self.model_file_delete()
-
-        result = ''
-        return_arr.append(result)
-
-        return return_arr, g_total_cnt
+    # def train_run(self, sess, saver, x_batch, y_batch, return_arr, g_total_cnt):
+    #
+    #
+    #     return return_arr, g_total_cnt
     ########################################################################
     def eval(self, node_id, conf_data, data=None, result=None):
         println("run NeuralNetNodeCnn eval")
@@ -352,8 +363,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
         while (input_data.has_next()):
             for i in range(0, input_data.size(), self.batchsize):
                 data_set = input_data[i:i + self.batchsize]
-                x_batch, y_batch = self.get_batch_data(data_set, "E")
-                t_cnt_arr, f_cnt_arr, eval_data = self.eval_run(x_batch, y_batch, t_cnt_arr, f_cnt_arr, eval_data)
+                x_batch, y_batch, n_batch = self.get_batch_data(data_set, "E")
+                t_cnt_arr, f_cnt_arr, eval_data = self.eval_run(x_batch, y_batch, n_batch, t_cnt_arr, f_cnt_arr, eval_data)
             input_data.next()
 
         println("####################################################################################################")
@@ -390,7 +401,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         println("###################################################################################################")
         return eval_data
 
-    def eval_run(self, x_batch, y_batch, t_cnt_arr, f_cnt_arr, eval_data):
+    def eval_run(self, x_batch, y_batch, n_batch, t_cnt_arr, f_cnt_arr, eval_data):
         with tf.Session() as sess:
             try:
                 last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
@@ -403,8 +414,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                 for i in range(len(logits)):
                     true_name = y_batch[i]
+                    file_name = n_batch[i]
                     pred_name = self.labels[y_pred_true[i]]
-                    print("True Category=" + true_name + " Predict Category=" + pred_name)
+                    print(file_name+" True Category=" + true_name + " Predict Category=" + pred_name)
                     idx = self.labels.index(true_name)
                     if true_name == pred_name:
                         t_cnt_arr[idx] = t_cnt_arr[idx] + 1

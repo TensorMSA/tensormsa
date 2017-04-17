@@ -29,7 +29,7 @@ wf_ver_id = str(wf_ver_id)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch":0
+                         "param":{"epoch":1
                                   ,"traincnt": 10
                                   ,"batch_size":25000
                                   ,"predictcnt": 10

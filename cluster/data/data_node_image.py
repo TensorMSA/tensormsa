@@ -57,6 +57,7 @@ class DataNodeImage(DataNode):
             image_arr = []
             lable_arr = []
             shape_arr = []
+            name_arr = []
             processcnt = 1
             createcnt = 1
 
@@ -73,16 +74,18 @@ class DataNodeImage(DataNode):
                         image_arr.append(image)
                         shape_arr.append(image.shape)
                         lable_arr.append(forder.encode('utf8'))
+                        name_arr.append(filename.encode('utf8'))
                         filecnt += 1
 
                         if filecnt >= filesize :
                             output_path_sub = output_path+"_"+str(createcnt)
-                            hdf_create(self, output_path_sub, filecnt, channel, image_arr, shape_arr, lable_arr)
+                            hdf_create(self, output_path_sub, filecnt, channel, image_arr, shape_arr, lable_arr, name_arr)
 
                             filecnt = 0
                             image_arr = []
                             lable_arr = []
                             shape_arr = []
+                            name_arr = []
                             createcnt += 1
 
                         print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
@@ -97,7 +100,7 @@ class DataNodeImage(DataNode):
 
             if filecnt > 0:
                 output_path_sub = output_path + "_" + str(createcnt)
-                hdf_create(self, output_path_sub, filecnt, channel, image_arr, shape_arr, lable_arr)
+                hdf_create(self, output_path_sub, filecnt, channel, image_arr, shape_arr, lable_arr, name_arr)
 
             netconf["labels"] = labels
             WorkFlowDataImage().put_step_source_ori(net_conf_id, netconf)
