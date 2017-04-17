@@ -127,7 +127,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def predict(self, node_id, parm = {"input_data" : {}, "num" : 0}):
+    def predict(self, node_id, parm = {"input_data" : {}, "num" : 0, "clean_ans": True}):
         """
 
         :param node_id:
@@ -142,7 +142,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         # create session
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
-        result = self._run_predict(sess, parm['input_data'], predict_num=parm.get("num") if parm.get("num") != None else 0)
+        result = self._run_predict(sess, parm['input_data'],
+                                   predict_num=parm.get("num") if parm.get("num") != None else 0,
+                                   clean_ans = parm.get("clean_ans") if parm.get("clean_ans") != None else True)
         sess.close()
         return result
 
