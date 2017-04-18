@@ -1,5 +1,6 @@
+from chatbot.common.chat_share_data import ShareData
 
-class ResponseGenerator():
+class ResponseGenerator(ShareData):
     """
 
     """
