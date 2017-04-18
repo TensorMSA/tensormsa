@@ -4,7 +4,7 @@ from chatbot.common.chat_share_data import ShareData
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
 from chatbot.services.service_provider import ServiceProvider
-from chatbot.story.story_manager import StoryBoardManager
+from chatbot.story.story_board_manager import StoryBoardManager
 from chatbot.decision.decision_maker import DecisionMaker
 from chatbot.nlp.response_generator import ResponseGenerator
 from chatbot.nlp.syntax_analyzer import Syntaxanalyzer
@@ -42,13 +42,14 @@ class ServiceManager:
             # 2. nlp process
             # TODO : kim seung woo
             share_ctx = self.entity_analyzer.parse(share_ctx)
-            share_ctx = self.intent_analyzer.parse(share_ctx)
+
+            if(share_ctx.get_intent_id == "" )  :
+                share_ctx = self.intent_analyzer.parse(share_ctx)
 
             # 3. decision maker
             # TODO : kim su sang
-            share_ctx = self.decision_maker.run(share_ctx,
-                                                self.story_board,
-                                                self.service_provider)
+            share_ctx = self.decision_maker.run(share_ctx)
+
             # 4. return result as json
             return share_ctx.to_json()
         except Exception as e :
