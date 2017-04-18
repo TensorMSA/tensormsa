@@ -35,6 +35,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             print("activation_function : " + str(self.activation_function))
             print("batch_size : " + str(self.batch_size))
             print("epoch : " + str(self.epoch))
+            print("model_type : " + str(self.model_type))
 
             #self.get_node_name("d")
 
@@ -43,7 +44,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             # make wide & deep model
             wdnn = NeuralCommonWdnn()
-            wdnn_model = wdnn.wdnn_build('wdnn', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
+            wdnn_model = wdnn.wdnn_build('regression', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
 
             #feed
             # TODO file이 여러개면 어떻하지?
@@ -246,6 +247,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.activation_function = wf_net_conf.activation_function
         self.batch_size = wf_net_conf.batch_size
         self.epoch = wf_net_conf.epoch
+        self.model_type = wf_net_conf.model_type
         #Todo 어떻게 꺼내는지 승우씨한테 물어볼것
         _wf_data_conf = wf_data_conf(key.split('_')[0]+'_'+key.split('_')[1]+'_'+'dataconf_node')
         self.data_conf = _wf_data_conf.conf

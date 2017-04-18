@@ -21,7 +21,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
 
             # prepare net conf
-            self._set_weight_vectors()
+            tf.reset_default_graph()
             self._set_train_model()
 
             # create session
@@ -34,8 +34,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             for self.epoch in range(self.num_epochs):
                 # run train
                 while(train_data_set.has_next()) :
-                    for i in range(0, train_data_set.data_size(), self.num_batches):
-                        data_set = train_data_set[i:i + self.num_batches]
+                    for i in range(0, train_data_set.data_size(), self.batch_size):
+                        data_set = train_data_set[i:i + self.batch_size]
+                        if(len(data_set[0]) != self.batch_size) : break
                         targets = self._get_dict_id(data_set[1])
                         decode_batch = self._word_embed_data(data_set[1])
                         encode_batch = self._word_embed_data(data_set[0])
@@ -45,20 +46,12 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             # save model and close session
             saver.save(sess, ''.join([self.md_store_path, '/']))
-            # close session
             sess.close()
         except Exception as e :
             raise Exception (e)
-
-    def _set_weight_vectors(self):
-        """
-        set weight vecotrs seperatly for sharing weight with preidicts logic
-        :return:
-        """
-        # Weigths
-        with tf.variable_scope('rnnlm'):
-            self.softmax_w = tf.Variable(tf.random_normal([self.cell_size, self.vocab_size], stddev=0.35), name="softmax_w")
-            self.softmax_b = tf.Variable(tf.random_normal([self.vocab_size], stddev=0.35), name="softmax_b")
+        finally :
+            if (self.word_embed_type == 'onehot'):
+                self.wf_conf.set_vocab_list(self.onehot_encoder.dics())
 
     def _init_node_parm(self, node_id):
         """
@@ -68,6 +61,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         """
         try :
             try :
+                self.wf_conf = WfNetconfSeq2Seq(node_id)
                 wf_conf = WfNetconfSeq2Seq(node_id)
                 self.md_store_path = wf_conf.get_model_store_path()
                 self.cell_type = wf_conf.get_cell_type()
@@ -77,25 +71,28 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 self.encoder_num_layers = wf_conf.get_encoder_depth()
                 self.encoder_seq_length = wf_conf.get_encoder_len()
                 self.word_embed_type = wf_conf.get_word_embed_type()
-                self.word_embed_id = wf_conf.get_word_embed_id()
                 self.cell_size = wf_conf.get_cell_size()
-
                 if(self.word_embed_type == 'w2v') :
                     self.word_vector_size = self._get_w2v_vector_size(self.word_embed_id)
-
-                if(wf_conf.get_vocab_size() != None and wf_conf.get_vocab_size() == self._get_vocab_size()) :
+                    self.word_embed_id = wf_conf.get_word_embed_id()
+                    if (wf_conf.get_vocab_size() != None and wf_conf.get_vocab_size() == self._get_vocab_size()):
+                        self.vocab_size = wf_conf.get_vocab_size() + 4
+                    else:
+                        del_filepaths(self.md_store_path)
+                        wf_conf.set_vocab_size(self._get_vocab_size())
+                        self.vocab_size = self._get_vocab_size() + 4
+                elif (self.word_embed_type == 'onehot'):
+                    self.word_vector_size = wf_conf.get_vocab_size() + 4
                     self.vocab_size = wf_conf.get_vocab_size() + 4
-                else :
-                    del_filepaths(self.md_store_path)
-                    wf_conf.set_vocab_size(self._get_vocab_size())
-                    self.vocab_size = self._get_vocab_size() + 4
-
+                    self.onehot_encoder = OneHotEncoder(self.word_vector_size)
+                    if (wf_conf.get_vocab_list()) :
+                        self.onehot_encoder.restore(wf_conf.get_vocab_list())
                 self.grad_clip = 5.
                 self.learning_rate = wf_conf.get_learn_rate()
                 self.decay_rate = wf_conf.get_learn_rate()
                 self.num_epochs = wf_conf.get_iter_size()
-                self.batch_size = 1
-                self.num_batches = 1
+                self.batch_size = wf_conf.get_batch_size()
+                self.predict_batch = 1
             except Exception as e :
                 raise Exception ("seq2seq netconf parms not set")
 
@@ -130,7 +127,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def predict(self, node_id, parm = {"input_data" : {}}):
+    def predict(self, node_id, parm = {"input_data" : {}, "num" : 0, "clean_ans": True}):
         """
 
         :param node_id:
@@ -140,11 +137,14 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         # set init params
         self._init_node_parm(node_id)
         # prepare net conf
+        tf.reset_default_graph()
         self._set_predict_model()
         # create session
         sess = tf.Session()
         sess.run(tf.initialize_all_variables())
-        result = self._run_predict(sess, parm['input_data'])
+        result = self._run_predict(sess, parm['input_data'],
+                                   predict_num=parm.get("num") if parm.get("num") != None else 0,
+                                   clean_ans = parm.get("clean_ans") if parm.get("clean_ans") != None else True)
         sess.close()
         return result
 
@@ -163,8 +163,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         self._set_predict_model()
 
         while (data.has_next()):
-            for i in range(0, data.data_size(), self.num_batches):
-                data_set = data[i:i + self.num_batches]
+            for i in range(0, data.data_size(), self.predict_batch):
+                data_set = data[i:i + self.predict_batch]
+                if (len(data_set[0]) != self.predict_batch): break
                 predict = self._run_predict(sess, data_set[0][0], type='pre', clean_ans=False)
                 result.set_result_info(' '.join(data_set[1][0]), ' '.join(predict), input=' '.join(data_set[0][0]), acc=None)
             data.next()
@@ -177,12 +178,19 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param input_data:
         :return:
         """
+        return_arr = []
         if(self.word_embed_type == 'w2v'):
-            return_arr = []
             for data in input_data :
                 parm =  {"type" : "train", "val_1" : {}, "val_2" : []}
                 parm['val_1'] = data
                 return_arr.append(PredictNetW2V().run(self.word_embed_id, parm))
+            return return_arr
+        elif(self.word_embed_type == 'onehot') :
+            for data in input_data:
+                row_arr = []
+                for row in data :
+                    row_arr.append(self.onehot_encoder.get_vector(row))
+                return_arr.append(row_arr)
             return return_arr
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
@@ -193,12 +201,19 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param input_data:
         :return:
         """
-        if(self.word_embed_type == 'w2v'):
-            return_arr = []
+        return_arr = []
+        if(self.word_embed_type == 'w2v') :
             for data in input_data :
                 parm =  {"type" : "dict", "val_1" : {}, "val_2" : []}
                 parm['val_1'] = data
                 return_arr.append(PredictNetW2V().run(self.word_embed_id, parm))
+            return return_arr
+        elif(self.word_embed_type == 'onehot') :
+            for data in input_data:
+                row_arr = []
+                for row in data:
+                    row_arr.append(self.onehot_encoder.get_idx(row))
+                return_arr.append(row_arr)
             return return_arr
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
@@ -209,8 +224,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param input_data:
         :return:
         """
+        return_arr = []
         if(self.word_embed_type == 'w2v'):
-            return_arr = []
             for data in input_data :
                 parm =  {"type" : "vec2word", "val_1" : {}, "val_2" : []}
                 parm['val_1'] = data
@@ -219,18 +234,25 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
 
-    def _get_index2vocab(self, input_data):
+    def _get_index2vocab(self, input_data, prob_idx = 0):
         """
         change word to vector
         :param input_data:
         :return:
         """
+        return_arr = []
         if(self.word_embed_type == 'w2v'):
-            return_arr = []
             for data in input_data :
-                parm =  {"type" : "povb2vocab", "val_1" : {}, "val_2" : []}
+                parm =  {"type" : "povb2vocab", "val_1" : {}, "val_2" : [], "prob_idx" :  prob_idx}
                 parm['val_1'] = data
                 return_arr.append(PredictNetW2V().run(self.word_embed_id, parm))
+            return return_arr
+        elif (self.word_embed_type == 'onehot'):
+            for data in input_data:
+                row_arr = []
+                for row in data:
+                    row_arr.append(self.onehot_encoder.get_vocab(row, prob_idx = prob_idx))
+                return_arr.append(row_arr)
             return return_arr
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
@@ -247,6 +269,16 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
 
+    def _set_weight_vectors(self):
+        """
+        set weight vecotrs seperatly for sharing weight with preidicts logic
+        :return:
+        """
+        # Weigths
+        with tf.variable_scope('rnnlm') as scope:
+            self.softmax_w = tf.get_variable("softmax_w", [self.cell_size, self.vocab_size])
+            self.softmax_b = tf.get_variable("softmax_b", [self.vocab_size])
+
     def _set_train_model(self):
         """
         set tensorflow seq2seq model for train and predict
@@ -254,15 +286,18 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         """
         try :
             # Construct RNN model
-            unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
-            dropcell = tf.contrib.rnn.DropoutWrapper(unitcell,
-                                                     input_keep_prob = 1.0,
-                                                     output_keep_prob = self.drop_out)
-            cell = tf.contrib.rnn.MultiRNNCell([dropcell] * self.encoder_num_layers)
+            cells = []
+            for _ in range(self.encoder_num_layers) :
+                unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
+                dropcell = tf.contrib.rnn.DropoutWrapper(unitcell,
+                                                         input_keep_prob=1.0,
+                                                         output_keep_prob=self.drop_out)
+                cells.append(dropcell)
+            mul_cell = tf.contrib.rnn.MultiRNNCell(cells)
             self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
             self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
             self.targets = tf.placeholder(tf.int32, [self.batch_size, self.decoder_seq_length])
-            self.istate = cell.zero_state(self.batch_size, tf.float32)
+            self.istate = mul_cell.zero_state(self.batch_size, tf.float32)
 
             # set weight vectors
             self._set_weight_vectors()
@@ -275,7 +310,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             self.outputs, last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
                                                                                    outputs,
-                                                                                   cell,
+                                                                                   mul_cell,
                                                                                    dtype=tf.float32,
                                                                                    scope='rnnlm')
 
@@ -327,17 +362,20 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
 
     def _set_predict_model(self):
-        """
+        """prob_idx
         set tensorflow seq2seq model for train and predict
         :return:
         """
         try :
             # Construct RNN model
-            unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
-            self.cell = tf.contrib.rnn.MultiRNNCell([unitcell] * self.encoder_num_layers)
-            self.input_data = tf.placeholder(tf.float32, [self.batch_size, self.encoder_seq_length, self.word_vector_size])
-            self.output_data = tf.placeholder(tf.float32, [self.batch_size, self.decoder_seq_length, self.word_vector_size])
-            self.istate = self.cell.zero_state(self.batch_size, tf.float32)
+            cells = []
+            for _ in range(self.encoder_num_layers) :
+                unitcell = tf.contrib.rnn.BasicLSTMCell(self.cell_size)
+                cells.append(unitcell)
+            self.mul_cell = tf.contrib.rnn.MultiRNNCell(cells)
+            self.input_data = tf.placeholder(tf.float32, [self.predict_batch, self.encoder_seq_length, self.word_vector_size])
+            self.output_data = tf.placeholder(tf.float32, [self.predict_batch, self.decoder_seq_length, self.word_vector_size])
+            self.istate = self.mul_cell.zero_state(self.predict_batch, tf.float32)
 
             # set weight vectors
             self._set_weight_vectors()
@@ -350,7 +388,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             self.outputs, self.last_state = tf.contrib.legacy_seq2seq.basic_rnn_seq2seq(inputs,
                                                                                    outputs,
-                                                                                   self.cell,
+                                                                                   self.mul_cell,
                                                                                    dtype=tf.float32,
                                                                                    scope='rnnlm')
 
@@ -361,7 +399,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         except Exception as e :
             raise Exception (e)
 
-    def _run_predict(self, sess, x_input, type='raw', clean_ans=True):
+    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0):
         """
 
         :return:
@@ -385,29 +423,31 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             # run predict
             output = ['@'] + [''] * (self.decoder_seq_length - 1)
-            respone = None
-            state = sess.run(self.cell.zero_state(1, tf.float32))
+            responses = []
+            state = sess.run(self.mul_cell.zero_state(1, tf.float32))
             outputs, probs, state = sess.run([self.outputs, self.probs, self.last_state] ,
                                      feed_dict={self.input_data: self._word_embed_data(np.array(word_list)),
                                                 self.output_data: self._word_embed_data(np.array([output])),
                                                 self.istate: state})
-            if(clean_ans) :
-                #prepare clean answer
-                respone = ""
-                start_flag = False
-                for i in range(0,self.decoder_seq_length) :
-                    word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
-                    resp, flag, start_flag = self._clean_predict_result(word, respone, start_flag)
-                    respone = respone + resp
-                    if(flag == False) :
-                        break
-            else :
-                #return vector
-                respone = []
-                for i in range(0, self.decoder_seq_length):
-                    word = self._get_index2vocab(np.array([[probs[i]]]))[0][0]
-                    respone.append(word)
-            return respone
+            for idx in range(0, predict_num + 1) :
+                response = None
+                if(clean_ans) :
+                    #prepare clean answer
+                    response = ""
+                    start_flag = False
+                    for i in range(0,self.decoder_seq_length) :
+                        word = self._get_index2vocab(np.array([[probs[i]]]), prob_idx = idx)[0][0]
+                        response, flag, start_flag = self._clean_predict_result(word, response, start_flag)
+                        if(flag == False) :
+                            break
+                else :
+                    #return vector
+                    response = []
+                    for i in range(0, self.decoder_seq_length):
+                        word = self._get_index2vocab(np.array([[probs[i]]]), prob_idx = idx)[0][0]
+                        response.append(word)
+                responses.append(response)
+            return responses
         except Exception as e :
             raise Exception(e)
 
@@ -418,9 +458,11 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param input_tuple:
         :return:
         """
-        pad_size = self.encoder_seq_length - len(input_tuple) - 1
-        if(pad_size > 0 ) :
-            input_tuple = pad_size * [('#', '')] + input_tuple + [('SF', '')]
+        pad_size = self.encoder_seq_length - (len(input_tuple) + 1)
+        if(pad_size >= 0 ) :
+            input_tuple = pad_size * [('#', '')] + input_tuple[0: self.encoder_seq_length-1] + [('SF', '')]
+        else :
+            input_tuple = input_tuple[0: self.encoder_seq_length-1] + [('SF', '')]
         return input_tuple
 
     def _pos_tag_predict_data(self, x_input):
@@ -445,9 +487,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param word:
         :return:
         """
-        if (word in ['START']):
+        if (word in ['START', '@']):
             start_flag = True
-        if (word not in ['PAD', 'UNKNOWN', 'START'] and start_flag == True and len(word) > 0):
+        if (word not in ['PAD', 'UNKNOWN', 'START', '#', '@', 'SF', '.'] and start_flag == True and len(word) > 0):
             if ('/' in word):
                 return respone + ' ' + word.split('/')[0] , True, start_flag
             if ('/' not in word):

@@ -1,6 +1,8 @@
 from cluster.preprocess.pre_node_feed import PreNodeFeed
 from master.workflow.preprocess.workflow_feed_fr2seq import WorkflowFeedFr2Seq
 import pandas as pd
+import warnings
+import numpy as np
 
 class PreNodeFeedFr2Seq(PreNodeFeed):
     """
@@ -24,7 +26,8 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             wf_conf = WorkflowFeedFr2Seq(node_id)
             self.encode_col = wf_conf.get_encode_column()
             self.decode_col = wf_conf.get_decode_column()
-            self.sent_max_len = wf_conf.get_sent_max_len()
+            self.encode_len = wf_conf.get_encode_len()
+            self.decode_len = wf_conf.get_decode_len()
             self.preprocess_type = wf_conf.get_preprocess_type()
         except Exception as e:
             raise Exception(e)
@@ -41,10 +44,14 @@ class PreNodeFeedFr2Seq(PreNodeFeed):
             chunk = store.select('table1',
                                start=index.start,
                                stop=index.stop)
-            encode = self.encode_pad(self._preprocess(chunk[self.encode_col].values))
-            decode = self.decode_pad(self._preprocess(chunk[self.decode_col].values))
-
-            return encode, decode
+            count = index.stop - index.start
+            if(self.encode_col in chunk and self.decode_col in chunk) :
+                encode = self.encode_pad(self._preprocess(chunk[self.encode_col].values)[0:count], max_len=self.encode_len)
+                decode = self.decode_pad(self._preprocess(chunk[self.decode_col].values)[0:count], max_len=self.decode_len)
+                return encode, decode
+            else :
+                warnings.warn("not exists column names requested !!")
+                return [['#'] * self.encode_len], [['#'] * self.decode_len]
         except Exception as e :
             raise Exception (e)
         finally:

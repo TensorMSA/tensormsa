@@ -44,6 +44,14 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         return self.conf['epoch']
 
 
+    @property
+    def model_type(self):
+        """
+        getter for preprocess
+        """
+        return self.conf['model_type']
+
+
     def __init__(self, key = None):
         """
         init key variable
@@ -114,6 +122,7 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
                 config_data['activation_function'] = input_data['activation_function']
                 config_data['batch_size'] = input_data['batch_size']
                 config_data['epoch'] = input_data['epoch']
+                config_data['model_type'] = input_data['model_type']
                 # config_data['source_parse_type'] = form
                 # config_data['source_server'] = input_data['source_server']
                 # config_data['source_sql'] = input_data['source_sql']

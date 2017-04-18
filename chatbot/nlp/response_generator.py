@@ -1,6 +1,6 @@
-from chatbot.renponse.response_selection import ResponseSelection
+from chatbot.common.chat_share_data import ShareData
 
-class ResponseGenerator(ResponseSelection):
+class ResponseGenerator(ShareData):
     """
 
     """

@@ -125,13 +125,13 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
         """
         for key in parm['val_1']:
             if key in ['#']:
-                return_val.append([-1] * self.vector_size)
+                return_val.append([0.0005] * self.vector_size)
             elif key in ['@']:
-                return_val.append([-2] * self.vector_size)
+                return_val.append([0.0009] * self.vector_size)
             elif key in model:
                 return_val.append(model[key])
             else:
-                return_val.append([-0.1] * self.vector_size)
+                return_val.append([0.0002] * self.vector_size)
         return return_val
 
     def _predict_sim(self, parm, return_val, model):
@@ -200,8 +200,12 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             filter_index = []
             for idx in filter_index:
                 key[idx] = 0.0
+            if 'prob_idx' in parm :
+                sorted_list = sorted(key, reverse=True)
+                index = key.index(sorted_list[parm.get['prob_idx']])
+            else :
+                index = key.argmax(axis=0)
 
-            index = key.argmax(axis=0)
             if len(model.wv.index2word) > index:
                 return_val.append(model.wv.index2word[index])
             elif len(model.wv.index2word) == index:

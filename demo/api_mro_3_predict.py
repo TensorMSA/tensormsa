@@ -45,7 +45,7 @@ resp = requests.post(restURL,
                      files=files
                      )
 data = json.loads(resp.json())
-print(data)
+# print(data)
 for train in data:
     print("FileName = "+train)
     print(data[train]['key'])
