@@ -15,6 +15,9 @@ import operator
 from PIL import Image
 from cluster.data.data_node_image import DataNodeImage
 from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
+from keras.optimizers import SGD
+from keras.applications.resnet50 import preprocess_input
+from keras.preprocessing import image
 
 class NeuralNetNodeReNet(NeuralNetNode):
     """
@@ -31,6 +34,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
             # get prev node for load data
             feed_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
             train_data_set = self.cls_pool[feed_node_name[0]]
+            test_data_node = self.cls_pool['nn00006_1_evaldata']
+            test_data = self.cls_pool['nn00006_1_pre_feed_img2renet_eval']
             data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'data')
 
             """
@@ -69,78 +74,96 @@ class NeuralNetNodeReNet(NeuralNetNode):
                 model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
             while (train_data_set.has_next()):
-                for i in range(0, train_data_set.data_size(), batch_size):
-                    data_set = train_data_set[i:i + batch_size]
-                    X_train = data_set[0]
-                    targets = data_set[1]
-                    targets_conv = []
-                    len = 0
-                    if data_set[0].size < batch_size:
-                        len = data_set[0].size
-                    else:
-                        len = i + batch_size
-                    rawdata_conv = np.zeros((X_train.size, X_train[0].size))
-                    for j in range(i, len, 1):
-                        targets_conv.append(labels.index(str(targets[j], 'utf-8')))
-                    r = 0
-                    for j in X_train:
-                        j = j.tolist()
-                        rawdata_conv[r] = j
-                        r += 1
-                    rawdata_conv = np.reshape(rawdata_conv, (-1, img_rows, img_cols, img_channels))
-                    y_train = targets_conv[i:i + batch_size]
+                #for i in range(0, train_data_set.data_size(), batch_size):
+                data_set = train_data_set[0:train_data_set.data_size()]
+                #test_data_node.run(conf_data)
+                test_data.run(conf_data)
+                test_data_set = test_data[0:test_data.data_size()]
+                X_train = data_set[0]
+                X_test = test_data_set[0]
+                targets = data_set[1]
+                test_targets = test_data_set[1]
+                targets_conv = []
+                test_targets_conv = []
+                # len = 0
+                # if data_set[0].size < batch_size:
+                #     len = data_set[0].size
+                # else:
+                #     len = i + batch_size
+                rawdata_conv = np.zeros((X_train.size, X_train[0].size))
+                test_rawdata_conv = np.zeros((X_test.size, X_test[0].size))
+                for j in range(0, data_set[0].size, 1):
+                    targets_conv.append(labels.index(str(targets[j], 'utf-8')))
+                for j in range(0, test_data_set[0].size, 1):
+                    test_targets_conv.append(labels.index(str(test_targets[j], 'utf-8')))
+                r = 0
+                for j in X_train:
+                    j = j.tolist()
+                    rawdata_conv[r] = j
+                    r += 1
+                r = 0
+                for j in X_test:
+                    j = j.tolist()
+                    test_rawdata_conv[r] = j
+                    r += 1
+                rawdata_conv = np.reshape(rawdata_conv, (-1, img_rows, img_cols, img_channels))
+                test_rawdata_conv = np.reshape(test_rawdata_conv, (-1, img_rows, img_cols, img_channels))
+                y_train = targets_conv#[i:i + batch_size]
+                y_test = test_targets_conv
 
-                    # Convert class vectors to binary class matrices.
-                    Y_train = np_utils.to_categorical(y_train, nb_classes)
-                    #Y_test = np_utils.to_categorical(y_test, nb_classes)
+                # Convert class vectors to binary class matrices.
+                Y_train = np_utils.to_categorical(y_train, nb_classes)
+                Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-                    X_train = rawdata_conv.astype('float32')
-                    #X_test = X_test.astype('float32')
+                X_train = rawdata_conv.astype('float32')
+                X_test = test_rawdata_conv.astype('float32')
+                #X_train = x_train.astype('float32')
+                #X_test = X_test.astype('float32')
 
-                    # subtract mean and normalize
-                    mean_image = np.mean(X_train, axis=0)
-                    X_train -= mean_image
-                    #X_test -= mean_image
-                    X_train /= 128.
-                    #X_test /= 128.
+                # subtract mean and normalize
+                mean_image = np.mean(X_train, axis=0)
+                X_train -= mean_image
+                X_test -= mean_image
+                X_train /= 128.
+                X_test /= 128.
 
-                    model.compile(loss='categorical_crossentropy',
-                                  optimizer='adam',
-                                  metrics=['accuracy'])
+                model.compile(loss='categorical_crossentropy',
+                              optimizer='adam',
+                              metrics=['accuracy'])
 
-                    if not data_augmentation:
-                        print('Not using data augmentation.')
-                        model.fit(X_train, Y_train,
-                                  batch_size=batch_size,
-                                  nb_epoch=nb_epoch,
-                                  validation_data=None,#(X_train, Y_train),
-                                  shuffle=True,
-                                  callbacks=None)#[lr_reducer], early_stopper, csv_logger])
-                    else:
-                        print('Using real-time data augmentation.')
-                        # This will do preprocessing and realtime data augmentation:
-                        datagen = ImageDataGenerator(
-                            featurewise_center=False,  # set input mean to 0 over the dataset
-                            samplewise_center=False,  # set each sample mean to 0
-                            featurewise_std_normalization=False,  # divide inputs by std of the dataset
-                            samplewise_std_normalization=False,  # divide each input by its std
-                            zca_whitening=False,  # apply ZCA whitening
-                            rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-                            width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-                            height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
-                            horizontal_flip=True,  # randomly flip images
-                            vertical_flip=False)  # randomly flip images
+                if not data_augmentation:
+                    print('Not using data augmentation.')
+                    model.fit(X_train, Y_train,
+                              batch_size=batch_size,
+                              nb_epoch=nb_epoch,
+                              validation_data=(X_test, Y_test),
+                              shuffle=True,
+                              callbacks=[lr_reducer, early_stopper, csv_logger])
+                else:
+                    print('Using real-time data augmentation.')
+                    # This will do preprocessing and realtime data augmentation:
+                    datagen = ImageDataGenerator(
+                        featurewise_center=False,  # set input mean to 0 over the dataset
+                        samplewise_center=False,  # set each sample mean to 0
+                        featurewise_std_normalization=False,  # divide inputs by std of the dataset
+                        samplewise_std_normalization=False,  # divide each input by its std
+                        zca_whitening=False,  # apply ZCA whitening
+                        rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+                        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
+                        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+                        horizontal_flip=True,  # randomly flip images
+                        vertical_flip=False)  # randomly flip images
 
-                        # Compute quantities required for featurewise normalization
-                        # (std, mean, and principal components if ZCA whitening is applied).
-                        datagen.fit(X_train)
+                    # Compute quantities required for featurewise normalization
+                    # (std, mean, and principal components if ZCA whitening is applied).
+                    datagen.fit(X_train)
 
-                        # Fit the model on the batches generated by datagen.flow().
-                        model.fit_generator(datagen.flow(X_train, Y_train, batch_size=batch_size),
-                                            samples_per_epoch=X_train.shape[0]//batch_size,
-                                            #validation_data=(X_test, Y_test),
-                                            nb_epoch=nb_epoch, verbose=1, max_q_size=100,
-                                            callbacks=[lr_reducer, early_stopper, csv_logger])
+                    # Fit the model on the batches generated by datagen.flow().
+                    model.fit_generator(datagen.flow(X_train, Y_train, batch_size=batch_size),
+                                        steps_per_epoch=X_train.shape[0] // batch_size,
+                                        validation_data=(X_train, Y_train),
+                                        epochs=nb_epoch, verbose=1, max_q_size=100,
+                                        callbacks=[lr_reducer, early_stopper, csv_logger])
                 train_data_set.next()
 
             os.makedirs(self.md_store_path, exist_ok=True)
@@ -185,21 +208,30 @@ class NeuralNetNodeReNet(NeuralNetNode):
                         channel = preprocess['channel']
 
                         im = Image.open(value)
-                        image = np.array(DataNodeImage()._resize_file_image(im, preprocess))
-                        image = image.transpose(2, 0, 1)
-                        image = image.flatten()
-                        rawdata_conv = np.zeros((image.size, image[0].size))
-                        r = 0
-                        for j in image:
-                            j = j.tolist()
-                            rawdata_conv[r] = j
-                            r += 1
-                        rawdata_conv = np.reshape(rawdata_conv, (-1, x_size, y_size, channel))
-                        image = rawdata_conv.astype('float32')
-                        mean_image = np.mean(image, axis=0)
-                        image -= mean_image
-                        image /= 128.
-                        return_value = model.predict(image, batch_size, 0)
+                        #image = np.array(DataNodeImage()._resize_file_image(im, preprocess))
+                        #image = np.array(im.resize((x_size, y_size), Image.ANTIALIAS))
+                        #image = image.transpose(2, 0, 1)
+                        # image = image.reshape([-1, x_size, y_size, channel])
+                        # image = image.flatten()
+                        # rawdata_conv = np.zeros((image.size, image[0].size))
+                        # r = 0
+                        # for j in image:
+                        #     j = j.tolist()
+                        #     rawdata_conv[r] = j
+                        #     r += 1
+                        # rawdata_conv = np.reshape(rawdata_conv, (-1, x_size, y_size, channel))
+                        # image = rawdata_conv.astype('float32')
+                        # mean_image = np.mean(image, axis=0)
+                        # image -= mean_image
+                        #image /= 128.
+                        #return_value = model.predict(image, batch_size, 0)
+
+                        img = image.load_img(value, target_size=(32, 32))
+                        x = image.img_to_array(img)
+                        x = np.expand_dims(x, axis=0)
+                        x = preprocess_input(x)
+                        return_value = model.predict(x)
+
                         one = np.zeros((len(labels), 2))
                         for i in range(len(labels)):
                             one[i][0] = i
@@ -232,7 +264,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             data_node_name = data_node[0].get_node_name()
             data_config_data = WorkFlowDataImage().get_step_source(data_node_name)
             labels = data_config_data["labels"]
-            config = {"type" : eval_config_data["type"], "labels" : labels}
+            config = {"type" : eval_config_data["type"], "labels" : labels, "nn_id" : parm["nn_id"], "nn_wf_ver_id" : parm["wf_ver"]}
             train = TrainSummaryInfo(conf=config)
             self.cls_pool = parm['cls_pool']
             eval_node = self.cls_pool[node_id]
@@ -288,7 +320,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
                     mean_image = np.mean(X_train, axis=0)
                     X_train -= mean_image
                     # X_test -= mean_image
-                    X_train /= 128.
+                    #X_train /= 128.
                     # X_test /= 128.
                     #result = model.evaluate(X_train, Y_train,1,None)
                     return_value = labels[np.argmax(model.predict(X_train, batch_size, 0))]
