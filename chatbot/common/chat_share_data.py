@@ -16,6 +16,8 @@ class ShareData(ChatBotConfManager):
         self.unique_id = ""             # mobile device unique id
         self.package_id = ""            # mobile app package id
         self.input_data = None          # prediction requested data
+        self.convert_data = None        # convert data
+        self.output_data = None         # output data
         self.intent_history = []        # intent change history (changes on intent model)
         self.request_type = ""          # text, image, voice
         self.intent_id = ""             # current intent id
@@ -25,7 +27,7 @@ class ShareData(ChatBotConfManager):
         self.story_req_entity = []      # required key list
         self.story_set_entity = {}      # key : val
         self.opt_sel_list = {}          # intent option list when intent anl result is not clear
-        self.ontology_id = ""     # current working ontology id
+        self.ontology_id = ""           # current working ontology id
         self.ontology_req_parms = {}    # key : val
         self.ontology_set_parms = {}    # key : val
 
@@ -34,7 +36,7 @@ class ShareData(ChatBotConfManager):
         convert data object to json
         :return:
         """
-        return json.dumps(self.__dict__)
+        return json.dumps(self.__dict__, ensure_ascii=False)
 
     def load_json(self, object):
         """
@@ -166,6 +168,38 @@ class ShareData(ChatBotConfManager):
         :return:
         """
         return self.input_data
+
+    def set_convert_data(self, data):
+        """
+        intent id
+        :param intent_id:
+        :return:
+        """
+        self.convert_data = data
+
+    def get_convert_data(self):
+        """
+        intent id
+        :param intent_id:
+        :return:
+        """
+        return self.convert_data
+
+    def set_output_data(self, data):
+        """
+        intent id
+        :param intent_id:
+        :return:
+        """
+        self.output_data = data
+
+    def get_output_data(self):
+        """
+        intent id
+        :param intent_id:
+        :return:
+        """
+        return self.output_data
 
     def set_intent_history(self, intent_id):
         """
