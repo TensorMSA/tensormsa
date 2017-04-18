@@ -16,8 +16,6 @@ class ServiceProvider(ShareData):
         return share_data
 
     def _external_service_call(self, share_data) :
-
-        # service_type?? ?? (Legacy app? ?? - ???? ?)
         service_type = ShareData.get_service_type()
 
         if(service_type):
