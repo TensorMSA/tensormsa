@@ -14,7 +14,7 @@ class IntendAnalyzer(ShareData):
         """
         init global variables
         """
-        self.nn_id = ""
+        self.nn_id = nn_id
         self.seq2seq_model = PredictNetSeq2Seq()
 
     def parse(self, share_data):
@@ -23,6 +23,8 @@ class IntendAnalyzer(ShareData):
         :param context:
         :return:
         """
-
+        convert_data =  share_data.get_convert_data()
+        result = self.seq2seq_model.run(self.nn_id , {"input_data": convert_data, "num": 0, "clean_ans": False})
+        share_data.set_intent_id(result[0][1][0])
         return share_data
 

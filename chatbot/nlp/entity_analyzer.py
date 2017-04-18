@@ -62,9 +62,10 @@ class EntityAnalyzer(ShareData):
                     word = pos_tags[i][0]
                     if(word == val) :
                         pos_tags[i] = (''.join(['[' , key, ']']), '')
+                        share_data.set_story_entity(key, val)
                         break
             return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
-        share_data.set_request_data(return_msg)
+        share_data.set_convert_data(return_msg)
         return share_data
 
     def _pos_tagger(self, input, type ='mecab'):
