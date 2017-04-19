@@ -23,6 +23,7 @@ class DecisionMaker(ShareData):
                 elif (self.story_set_entity["타입"] == "안녕"):
                     share_data.set_intent_id("")
                     share_data.set_story_id("")
+                    share_data.initialize_story_entity()
                     share_data.set_output_data("무엇이 궁금한가요?")
                     return share_data
 

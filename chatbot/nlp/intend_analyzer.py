@@ -23,7 +23,7 @@ class IntendAnalyzer(ShareData):
         :param context:
         :return:
         """
-        if (share_data.get_intent_id() != "") :
+        if (share_data.get_story_id() != "") :
             return share_data
 
         convert_data =  share_data.get_convert_data()
