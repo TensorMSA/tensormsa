@@ -338,8 +338,9 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                     pre_list.extend(list(data_set['predict_label']))
 
                     # model fitting
-                    print(data_set)
-                    print("model fitting h5 " + str(data_set))
+                    print(ori_list)
+                    print(pre_list)
+                    #print("model fitting h5 " + str(data_set))
                 # #Select Next file
                 train_data_set.next()
 
@@ -347,6 +348,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             results['pre'] = pre_list
             train.set_result_info(ori_list, pre_list)
         except Exception as e:
+            print("eval error")
             raise Exception(e)
 
 
