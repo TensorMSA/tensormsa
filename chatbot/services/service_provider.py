@@ -24,6 +24,15 @@ class ServiceProvider(ShareData):
         elif(service_type):
             return None
 
+        # service_type
+        service_type = ShareData.get_service_type()
+
+        if(service_type):
+
+            return None
+        elif(service_type):
+            return None
+
         try:
             #TODO : api call to external rest service and return
             return None

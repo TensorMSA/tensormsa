@@ -245,10 +245,13 @@ class DataNodeFrame(DataNode):
         :param data_path:
         :return:data_path
         """
-        df_csv_read = pd.read_csv(tf.gfile.Open(data_path),
-                                  skipinitialspace=True,
-                                  engine="python")
-        return df_csv_read
+        try :
+            df_csv_read = pd.read_csv(tf.gfile.Open(data_path),
+                                      skipinitialspace=True,
+                                      engine="python")
+            return df_csv_read
+        except Exception as e :
+            raise Exception (e)
 
     def make_column_types (self, df, node_id):
         """
