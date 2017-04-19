@@ -26,7 +26,8 @@ class ResultManagerDefault(APIView):
             return_data = result_man.get_view_obj(self,nnid,ver)
             #result_man
             #return_data = ""
-            return Response(json.dumps(return_data))
+            convert_data = return_data[0].get('fields').get('result_info')
+            return Response(json.dumps(convert_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
