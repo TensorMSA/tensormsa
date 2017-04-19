@@ -27,6 +27,10 @@ class DecisionMaker(ShareData):
 
     def _get_story_board(self, share_data) :
         try :
+            # TODO: temp logic will be move to decistion maker
+            if(share_data.get_request_type() == 'image') :
+                share_data.set_intent_id('4')
+
             # TODO : Intent and Story ID is in DB
             if(self.intent_id == "1") :
                 share_data.set_story_id("1")

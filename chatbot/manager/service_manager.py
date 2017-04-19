@@ -42,9 +42,7 @@ class ServiceManager:
             # 2. nlp process
             # TODO : kim seung woo
             share_ctx = self.entity_analyzer.parse(share_ctx)
-
-            if(share_ctx.get_intent_id == "" )  :
-                share_ctx = self.intent_analyzer.parse(share_ctx)
+            share_ctx = self.intent_analyzer.parse(share_ctx)
 
             # 3. decision maker
             # TODO : kim su sang

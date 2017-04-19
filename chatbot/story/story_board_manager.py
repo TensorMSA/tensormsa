@@ -15,7 +15,12 @@ class StoryBoardManager(ShareData):
     def run(self, share_data):
         try:
             #Check Essential Entity
-            if (self._check_essential_entity(share_data.get_story_entity().keys(), share_data)) :
+            if (share_data.get_service_type() == "find_image") :
+                share_data = self._call_service_provider(share_data)
+                #initailize after service called
+                share_data.set_story_id("")
+                share_data.set_intent_id("")
+            elif (self._check_essential_entity(share_data.get_story_entity().keys(), share_data)) :
                 share_data = self._call_service_provider(share_data)
                 #initailize after service called
                 share_data.set_story_id("")
@@ -23,7 +28,8 @@ class StoryBoardManager(ShareData):
             else :
                 if (share_data.get_output_data() == ""):
                     share_data = share_data.set_output_data("자세히 말씀해 주세요")
-
+                    share_data.set_story_id("")
+                    share_data.set_intent_id("")
             return share_data
         except Exception as e:
             raise Exception(e)
