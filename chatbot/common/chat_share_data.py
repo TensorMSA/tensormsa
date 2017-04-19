@@ -300,6 +300,9 @@ class ShareData(ChatBotConfManager):
         else :
             return self.story_set_entity
 
+    def initialize_story_entity(self):
+        self.story_set_entity = {}
+
     def set_intent_option_list(self, key, val):
         """
         return option list when intend is not clear
