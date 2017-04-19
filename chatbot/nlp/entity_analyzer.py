@@ -52,6 +52,9 @@ class EntityAnalyzer(ShareData):
         :param share_data:
         :return:
         """
+        if (share_data.get_request_type() == 'image') :
+            return share_data
+
         input_data = share_data.get_request_data()
         pos_tags = self._pos_tagger(input_data)
         return_msg = ""

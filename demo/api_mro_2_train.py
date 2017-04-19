@@ -9,19 +9,22 @@ from common.utils import *
 # rabbitmqctl set_user_tags tensormsa administrator
 # rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
+# ./manage.py runserver 2fb1ece74beb:8000 --noreload
 
 println("S")
 url = gUrl
-nn_id = "nn00004"
+nn_id = "nn00009"
+wf_ver_id = 0
 
 # get workflow version
-resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
-data = json.loads(resp.json())
+if wf_ver_id == 0:
+    resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
+    data = json.loads(resp.json())
 
-wf_ver_id = 0
-for i in data:
-    if i["pk"] > wf_ver_id:
-        wf_ver_id = i["pk"]
+    # get Max workflow version
+    for config in data:
+        if config["fields"]["nn_wf_ver_id"] > wf_ver_id:
+            wf_ver_id = config["fields"]["nn_wf_ver_id"]
 
 wf_ver_id = str(wf_ver_id)
 # CNN Network WorkFlow Node : Network Config Setup
@@ -29,8 +32,8 @@ wf_ver_id = str(wf_ver_id)
 node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch":1
-                                  ,"traincnt": 10
+                         "param":{"epoch": 1
+                                  ,"traincnt": 5
                                   ,"batch_size":25000
                                   ,"predictcnt": 10
                          },
