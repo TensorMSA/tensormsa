@@ -258,7 +258,9 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
         config = {"type": self.model_type, "labels": self.label, "nn_id":conf_data.get('nn_id'), "nn_wf_ver_id":conf_data.get('wf_ver')}
         train = TrainSummaryInfo(conf=config)
+        print(config)
 
+        #print(train)
 
         for _k, _v in self.cls_pool_all.items():
             if 'test' in _k:
@@ -349,6 +351,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             train.set_result_info(ori_list, pre_list)
         except Exception as e:
             print("eval error")
+            print(e)
             raise Exception(e)
 
 
