@@ -22,6 +22,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
     def run(self, conf_data):
         print("NeuralNetNodeWdnn Run called")
+        return None
         #return None
         """
                 Wide & Deep Network Training
