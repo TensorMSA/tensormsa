@@ -1,4 +1,12 @@
 from master.result.result_manager import ResultManager
+from django.core import serializers as serial
+from django.db.models import Max
+from master import models
+from master import serializers
+from django.db import connection
+from common.utils import dictfetchall
+import json
+
 
 class ResultManagerDefault(ResultManager) :
     """
@@ -7,14 +15,20 @@ class ResultManagerDefault(ResultManager) :
     2. table
 
     """
-    def get_view_obj(self):
+    def get_view_obj(self,nnid, wf_id):
         """
         get view data for net config
         :return:
         """
-        pass
 
-    def set_view_obj(self, obj):
+        try:
+            query_set = models.TRAIN_SUMMARY_RESULT_INFO.objects.filter(nn_id=nnid, nn_wf_ver_id =wf_id )
+            query_set = serial.serialize("json", query_set)
+            return json.loads(query_set)
+        except Exception as e:
+            raise Exception(e)
+
+    def set_view_obj(self,nnid, wf_id):
         """
         set net config data edited on view
         :param obj:
