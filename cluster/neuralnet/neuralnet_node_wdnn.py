@@ -22,106 +22,107 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
     def run(self, conf_data):
         print("NeuralNetNodeWdnn Run called")
-        # """
-        #         Wide & Deep Network Training
-        #         :param nnid : network id in tfmsacore_nninfo
-        #         :return: acturacy
-        # """
-        # try:
-        #     self._init_node_parm(conf_data['node_id'])
-        #     self.cls_pool = conf_data['cls_pool'] # Data feeder
-        #
-        #     print("model_path : " + str(self.model_path))
-        #     print("hidden_layers : " + str(self.hidden_layers))
-        #     print("activation_function : " + str(self.activation_function))
-        #     print("batch_size : " + str(self.batch_size))
-        #     print("epoch : " + str(self.epoch))
-        #     print("model_type : " + str(self.model_type))
-        #
-        #     #self.get_node_name("d")
-        #
-        #     #data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
-        #     data_conf_info = self.data_conf
-        #
-        #     # make wide & deep model
-        #     wdnn = NeuralCommonWdnn()
-        #     wdnn_model = wdnn.wdnn_build('regression', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
-        #
-        #     #feed
-        #     # TODO file이 여러개면 어떻하지?
-        #     # get prev node for load data
-        #     data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
-        #     train_data_set = self.cls_pool[data_node_name[0]] #get filename
-        #     file_queue  = str(train_data_set.input_paths[0]) #get file_name
-        #
-        #     #file을 돌면서 최대 Row를 전부 들고 옴 tfrecord 총 record갯수 가져오는 방법필요
-        #
-        #     _batch_size = self.batch_size
-        #     _num_tfrecords_files = 0
-        #
-        #     #multi Feeder modified
-        #     multi_read_flag = self.multi_read_flag
-        #     if multi_read_flag == True:
-        #         for index, fn in enumerate(train_data_set.input_paths):
-        #             _num_tfrecords_files += self.generator_len(
-        #                 tf.python_io.tf_record_iterator(fn))  # get length of generators
-        #         print("total loop " + str(math.ceil(_num_tfrecords_files/_batch_size)) )
-        #
-        #         for index in range(int(math.ceil(_num_tfrecords_files/_batch_size))):
-        #             print("number of for loop " + str(index))
-        #             wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=200)
-        #
-        #         results = wdnn_model.evaluate(
-        #             input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, _batch_size),
-        #             steps=1)
-        #     else:
-        #         #Todo H5
-        #         # train per files in folder h5용
-        #         #if multi_file flag = no이면 기본이 h5임
-        #         while(train_data_set.has_next()) :
-        #             print("h5")
-        #             #파일이 하나 돌때마다
-        #             #for 배치사이즈와 파일의 총갯수를 가져다가 돌린다. -> 마지막에 뭐가 있을지 구분한다.
-        #              #파일에 iter를 넣으면 배치만큼 가져오는 fn이 있음 그걸 __itemd에 넣고
-        #             # Input 펑션에서 multi를 vk판단해서 col와 ca를 구분한다.(이걸 배치마다 할 필요가 있나?)
-        #             # -> 그러면서 피팅
-        #             #
-        #             # # Iteration is to improve for Model Accuracy
-        #
-        #                 # Per Line in file
-        #             for i in range(0, train_data_set.data_size(), self.batch_size):
-        #
-        #                 data_set = train_data_set[i:i + self.batch_size]
-        #                 if i == 0:
-        #                     eval_data_Set = data_set
-        #                 #input_fn2(self, mode, data_file, df, nnid, dataconf):
-        #                 wdnn_model.fit(
-        #                     input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
-        #                                                               data_set,data_conf_info), steps=200)
-        #                 #model fitting
-        #                 print( "model fitting h5 " + str(data_set))
-        #             # #Select Next file
-        #             train_data_set.next()
-        #         results = dict()
-        #
-        #         #results = wdnn_model.evaluate(
-        #         #input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
-        #         #                                         eval_data_Set, data_conf_info), steps=200)
-        #
-        #
-        #     for key in sorted(results):
-        #         print("%s: %s" % (key, results[key]))
-        #
-        #     #feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
-        #     print("end")
-        #     #with tf.Session() as sess:
-        #
-        # except Exception as e:
-        #     print ("Error Message : {0}".format(e))
-        #     raise Exception(e)
-        #
-        #
-        # return None
+        #return None
+        """
+                Wide & Deep Network Training
+                :param nnid : network id in tfmsacore_nninfo
+                :return: acturacy
+        """
+        try:
+            self._init_node_parm(conf_data['node_id'])
+            self.cls_pool = conf_data['cls_pool'] # Data feeder
+
+            print("model_path : " + str(self.model_path))
+            print("hidden_layers : " + str(self.hidden_layers))
+            print("activation_function : " + str(self.activation_function))
+            print("batch_size : " + str(self.batch_size))
+            print("epoch : " + str(self.epoch))
+            print("model_type : " + str(self.model_type))
+
+            #self.get_node_name("d")
+
+            #data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
+            data_conf_info = self.data_conf
+
+            # make wide & deep model
+            wdnn = NeuralCommonWdnn()
+            wdnn_model = wdnn.wdnn_build('regression', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
+
+            #feed
+            # TODO file이 여러개면 어떻하지?
+            # get prev node for load data
+            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
+            train_data_set = self.cls_pool[data_node_name[0]] #get filename
+            file_queue  = str(train_data_set.input_paths[0]) #get file_name
+
+            #file을 돌면서 최대 Row를 전부 들고 옴 tfrecord 총 record갯수 가져오는 방법필요
+
+            _batch_size = self.batch_size
+            _num_tfrecords_files = 0
+
+            #multi Feeder modified
+            multi_read_flag = self.multi_read_flag
+            if multi_read_flag == True:
+                for index, fn in enumerate(train_data_set.input_paths):
+                    _num_tfrecords_files += self.generator_len(
+                        tf.python_io.tf_record_iterator(fn))  # get length of generators
+                print("total loop " + str(math.ceil(_num_tfrecords_files/_batch_size)) )
+
+                for index in range(int(math.ceil(_num_tfrecords_files/_batch_size))):
+                    print("number of for loop " + str(index))
+                    wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=200)
+
+                results = wdnn_model.evaluate(
+                    input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, _batch_size),
+                    steps=1)
+            else:
+                #Todo H5
+                # train per files in folder h5용
+                #if multi_file flag = no이면 기본이 h5임
+                while(train_data_set.has_next()) :
+                    print("h5")
+                    #파일이 하나 돌때마다
+                    #for 배치사이즈와 파일의 총갯수를 가져다가 돌린다. -> 마지막에 뭐가 있을지 구분한다.
+                     #파일에 iter를 넣으면 배치만큼 가져오는 fn이 있음 그걸 __itemd에 넣고
+                    # Input 펑션에서 multi를 vk판단해서 col와 ca를 구분한다.(이걸 배치마다 할 필요가 있나?)
+                    # -> 그러면서 피팅
+                    #
+                    # # Iteration is to improve for Model Accuracy
+
+                        # Per Line in file
+                    for i in range(0, train_data_set.data_size(), self.batch_size):
+
+                        data_set = train_data_set[i:i + self.batch_size]
+                        if i == 0:
+                            eval_data_Set = data_set
+                        #input_fn2(self, mode, data_file, df, nnid, dataconf):
+                        wdnn_model.fit(
+                            input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
+                                                                      data_set,data_conf_info), steps=200)
+                        #model fitting
+                        print( "model fitting h5 " + str(data_set))
+                    # #Select Next file
+                    train_data_set.next()
+                results = dict()
+
+                #results = wdnn_model.evaluate(
+                #input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
+                #                                         eval_data_Set, data_conf_info), steps=200)
+
+
+            for key in sorted(results):
+                print("%s: %s" % (key, results[key]))
+
+            #feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
+            print("end")
+            #with tf.Session() as sess:
+
+        except Exception as e:
+            print ("Error Message : {0}".format(e))
+            raise Exception(e)
+
+
+        return None
 
     def generator_len(self, it):
         """
