@@ -61,10 +61,10 @@ class TrainSummaryInfo:
     def set_result_info(self, label, predict, input=None, acc=None, coord_x=None, coord_y=None):
         if self.type == 'regression':
             labels = self.result_info["labels"]
-            labels.append(label)
+            labels.extend(label)
             self.result_info["labels"] = labels
             predicts = self.result_info["predicts"]
-            predicts.append(predict)
+            predicts.extend(predict)
             self.result_info["predicts"] = predicts
         elif self.type == 'category':
             i = self.labels.index(label)

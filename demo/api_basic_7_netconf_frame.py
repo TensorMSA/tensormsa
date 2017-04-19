@@ -13,7 +13,7 @@ try:
                             "hidden_layers": [100,50],
                             "activation_function": "Relu",
                             "batch_size" : 9000,
-                            "epoch" : 200,
+                            "epoch" : 1,
                             "model_type" : "regression"
                         })
     data = json.loads(resp.json())

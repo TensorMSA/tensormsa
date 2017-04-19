@@ -4,6 +4,7 @@ import pandas as pd
 from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame as wf_data_conf
 from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_data_frame
 from common import utils
+from sklearn.preprocessing import LabelEncoder
 
 class PreNodeFeedFr2Wdnn(PreNodeFeed):
     """
@@ -14,13 +15,17 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         override init class
         """
         #전 노드중 dataconf를 찾아 온다 wdnn만 가능
-        data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
-        self._init_node_parm(data_dfconf_list[0].node_name)
+        #전체 노드중 data_conf를 넣어서 만든다. 1개 밖에 없음
+
+        #data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
+
+        data_conf_node_name = self.node_name.split('_')[0] + "_" + self.node_name.split('_')[1] +"_dataconf_node"
+        self._init_node_parm(data_conf_node_name)
         super(PreNodeFeedFr2Wdnn, self).run(conf_data)
         #input_features = self.create_feature_columns()
 
-        #test
-        self.multi_queue(self.input_paths[0])
+        #testself.node_name.split('_')[1]
+        self.multi_queue_and_h5_print(self.input_paths[0])
 
     def _convert_data_format(self, obj, index):
         pass
@@ -151,6 +156,9 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             #self.df_validation(df, dataconf)
 
             # remove NaN elements
+            _label = self.label
+            _label_calues = self.label_values
+
             df = df.dropna(how='any', axis=0)
             # df_test = df_test.dropna(how='any', axis=0)
 
@@ -160,6 +168,9 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             ##Get datadesc Continuous and Categorical infomation from Postgres nninfo
             # json_string = self.get_json_by_nnid(nnid) # DATACONF
             # json_object = json_string
+
+            le = LabelEncoder()
+            le.fit(_label_calues)
 
             #Todo 트레이닝 하기 위해서 바꿔야함
 
@@ -197,11 +208,18 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             if len(CATEGORICAL_COLUMNS) > 0:
                 feature_cols.update(categorical_cols)
 
-
+            feature_cols.pop(_label)
             # dataconf
-            LABEL_COLUMN = 'label'
-            df[LABEL_COLUMN] = (df['income_bracket'].apply(lambda x: '>50K' in x)).astype(int)
-
+            #LABEL_COLUMN = 'label'
+            #df[LABEL_COLUMN] = (df['income_bracket'].apply(lambda x: '>50K' in x)).astype(int)
+            if self.label_type == "CONTINUOUS":
+                df["label"] = df[_label].astype(int)
+            else:
+                #trans = le.transform([value])[0]  # 무조껀 0번째임
+                #example.features.feature['label'].int64_list.value.extend([int(trans)])
+                lable_encoder_func = lambda x: le.transform([x])
+                df["label"] = df[_label].map(lable_encoder_func).astype(int)
+                #label_encode = le.transform(label_list)
 
 
 
@@ -307,7 +325,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         #         CATEGORICAL_COLUMNS.append(type_columne)
         return conti_list, cate_list
 
-    def multi_queue(self, file_name):
+    def multi_queue_and_h5_print(self, file_name):
         #filename = 'adult_data.tfrecords'
 
         # Queue 는 이런식으로 설정 여기서는 쓰지 않음
@@ -315,61 +333,65 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         #    [filename], num_epochs=1)
 
         # 꼭 local variable initial  해야함
-        init_op = tf.local_variables_initializer()
+        if self.multi_node_flag == True:
+            init_op = tf.local_variables_initializer()
 
-        #file_name = "adult_data.tfrecords"
+            # Multi Thread로 들고옴
+            feature_map, target = self.input_fn(tf.contrib.learn.ModeKeys.EVAL, file_name, 128)
 
-        #iterrrrr = tf.python_io.tf_record_iterator(file_name)
-        #print("tfrecord count " + str(ilen(iterrrrr)))
-        # for s_example in tf.python_io.tf_record_iterator(file_name):
-        #     example = tf.parse_single_example(s_example, features=features)
-        #     data.append(tf.expand_dims(example['x'], 0))
+            with tf.Session() as sess:
+                # Start populating the filename queue.
+                sess.run(init_op)
+                coord = tf.train.Coordinator()
+                threads = tf.train.start_queue_runners(coord=coord)
 
-        # reader = tf.TFRecordReader()
-        # index, row = reader.read(filename_queue)
+                tfrecord_list_row = list()  # 출력을 위한 List
+                print_column = True
 
-        # Multi Thread로 들고옴
-        feature_map, target = self.input_fn(tf.contrib.learn.ModeKeys.EVAL, file_name, 128)
+                for i in range(3):
+                    # Multi Thread에서 넣을것을 Session으로 실행
+                    example, label = sess.run([feature_map, target])
 
-        with tf.Session() as sess:
-            # Start populating the filename queue.
-            sess.run(init_op)
-            coord = tf.train.Coordinator()
-            threads = tf.train.start_queue_runners(coord=coord)
+                    _row = ""
+                    if print_column == True:  # Header를 위한 Column Key 설정 첫줄만
+                        tfrecord_list_key = [col for col in example.keys()]
+                        tfrecord_list_key.append('label')
+                        print_column = False
+                        tfrecord_list_row.append(tfrecord_list_key)
 
-            tfrecord_list_row = list()  # 출력을 위한 List
-            print_column = True
+                    for i in range(len(example[list(example.keys())[0]])):  # Row를 들고 오기 뭔가 지저분함
 
-            for i in range(3):
-                # Multi Thread에서 넣을것을 Session으로 실행
-                example, label = sess.run([feature_map, target])
+                        tfrecord_list_col = list()
+                        for _k in example.keys():
+                            if str(type(example[_k])).find('Sparse') > -1:  # Sparse는 Bytes로 나와서 Bytes를 String 으로 처리
+                                tfrecord_list_col.append(str(example[_k].values[i].decode()))
+                            else:
+                                # numpy도 ndarray로 나와서 [0]을 붙여 정리함
+                                tfrecord_list_col.append(str(example[_k][i][0]))
+                        tfrecord_list_col.append(str(label[i][0]))
+                        columns_value = tfrecord_list_col
+                        tfrecord_list_row.append(columns_value)
 
-                _row = ""
-                if print_column == True:  # Header를 위한 Column Key 설정 첫줄만
-                    tfrecord_list_key = [col for col in example.keys()]
-                    tfrecord_list_key.append('label')
-                    print_column = False
-                    tfrecord_list_row.append(tfrecord_list_key)
+                    # 이쁘게 출력하기 위해 Print 함수 설정
+                    for item in tfrecord_list_row:
+                        print(str(item[0:])[1:-1])
 
-                for i in range(len(example[list(example.keys())[0]])):  # Row를 들고 오기 뭔가 지저분함
+                coord.request_stop()
+                coord.join(threads)
+        else:
+            # Todo 할때마다 계속 파일을 읽는게 올바른 것인가?
+            try:
+                store = pd.HDFStore(file_name)
+                nrows = store.get_storer('table1').nrows
+                chunksize = 100
 
-                    tfrecord_list_col = list()
-                    for _k in example.keys():
-                        if str(type(example[_k])).find('Sparse') > -1:  # Sparse는 Bytes로 나와서 Bytes를 String 으로 처리
-                            tfrecord_list_col.append(str(example[_k].values[i].decode()))
-                        else:
-                            # numpy도 ndarray로 나와서 [0]을 붙여 정리함
-                            tfrecord_list_col.append(str(example[_k][i][0]))
-                    tfrecord_list_col.append(str(label[i][0]))
-                    columns_value = tfrecord_list_col
-                    tfrecord_list_row.append(columns_value)
-
-                # 이쁘게 출력하기 위해 Print 함수 설정
-                for item in tfrecord_list_row:
-                    print(str(item[0:])[1:-1])
-
-            coord.request_stop()
-            coord.join(threads)
+                # for i in range(nrows // chunksize + 1):
+                chunk = store.select('table1')
+                print(chunk)
+            except Exception as e:
+                raise Exception(e)
+            finally:
+                store.close()
 
     def _init_node_parm(self, key):
         """
@@ -383,8 +405,14 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             self.cross_cell = _wf_data_conf.cross_cell
             self.extend_cell_feature = _wf_data_conf.extend_cell_feature
             self.label_values = _wf_data_conf.label_values
-            _wf_data_conf = wf_data_frame(key.split('_')[0]+'_'+key.split('_')[1]+'_'+'data_node')
-            self.multi_node_flag = _wf_data_conf.multi_node_flag
+            self.label_type = _wf_data_conf.label_type
+
+            if 'test' in self.node_name:
+                _wf_data_conf = wf_data_frame(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'evaldata')
+                self.multi_node_flag = _wf_data_conf.multi_node_flag
+            else :
+                _wf_data_conf = wf_data_frame(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
+                self.multi_node_flag = _wf_data_conf.multi_node_flag
 
         except Exception as e :
             raise Exception ("WorkFlowDataFrame parms are not set " + str(e))
