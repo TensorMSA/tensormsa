@@ -61,7 +61,13 @@ class DataNodeFrame(DataNode):
 
                     #Todo 뽑아서 함수화 시킬것
                     #for wdnn
-                    data_dfconf_list = self.get_linked_next_node_with_type('data_dfconf')
+
+
+                    if ('evaldata' in self.node_name):
+                        data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
+                    else:
+                        data_dfconf_list = self.get_linked_next_node_with_type('data_dfconf')
+
                     #Wdnn인경우 data_dfconf가 무조껀 한개만 존재 하므로 아래와 같은 로직이 가능
                     if len(data_dfconf_list) > 0:
                         _key = data_dfconf_list[0].node_name
@@ -175,6 +181,7 @@ class DataNodeFrame(DataNode):
             except Exception as e:
                 raise Exception(e)
 
+            # tfrecord는 여기서 Label을 변경한다. 나중에 꺼낼때 답이 없음 Tensor 객체로 추출되기 때문에 그러나 H5는 feeder에서 변환해주자
             le = LabelEncoder()
             le.fit(self.combined_label_list)
 
