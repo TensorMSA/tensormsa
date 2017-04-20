@@ -24,6 +24,7 @@ class IntendAnalyzer(ShareData):
         :return:
         """
         if (share_data.get_story_id() != "") :
+            print("■■■■■■■■■■ 의도 존재 : " + share_data.get_story_id())
             return share_data
 
         convert_data =  share_data.get_convert_data()
