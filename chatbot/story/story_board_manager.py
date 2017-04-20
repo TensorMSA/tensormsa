@@ -17,7 +17,7 @@ class StoryBoardManager(ShareData):
             if (share_data.get_service_type() == "find_image") :
                 share_data = self._call_service_provider(share_data)
                 #initailize after service called
-                share_data._initailize_story()
+                #share_data.initailize_story()
             #Check Essential Entity
             elif (self._check_essential_entity(share_data.get_story_entity().keys(), share_data)) :
                 share_data = self._call_service_provider(share_data)
