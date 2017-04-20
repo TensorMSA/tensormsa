@@ -29,7 +29,7 @@ class ChatBotConfManager:
         self.pos_type = "mecab"
         self.entity_key_list = ['이름', '직급', '직책', '타입', '실', 'Grade', '그룹', '근무조', '부', '업무', '날짜']
         self.word_embed_model = "nn00002"
-        self.intent_anal_model = "nn000996"
+        self.intent_anal_model = "nn000995"
         self.syntax_anal_model = ""
         self.resp_gen_model = ""
         self.ton_gen_model = ""

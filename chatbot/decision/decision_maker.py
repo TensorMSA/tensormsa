@@ -23,6 +23,7 @@ class DecisionMaker(ShareData):
                 #Initialize
                 elif (self.story_set_entity["타입"] in ["안녕","하이"]):
                     self.initialize_story()
+                    print ("ICT봇입니다 무엇이 궁금한가요?")
                     share_data.set_output_data("ICT봇입니다 무엇이 궁금한가요?")
                     return share_data
 

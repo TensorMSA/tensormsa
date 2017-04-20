@@ -77,7 +77,7 @@ class OneHotEncoder :
         """
         sorted_list = sorted(vector, reverse=True)
         idx = np.where(vector==sorted_list[prob_idx])[0][0]
-
+        print("■■■■■■■■■■ Seq2Seq Accuracy 출력 : " + vector[idx] )
         if(vector[idx] > min_prob) :
             return self.dict_list[idx]
         else :
