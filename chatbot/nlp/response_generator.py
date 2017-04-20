@@ -24,7 +24,8 @@ class ResponseGenerator(ShareData):
                 response = self.get_unknown_response()
             print("■■■■■■■■■■ 챗봇 응답 메세지 결과 : " + response)
             self.set_output_data(response)
-            share_data = self._initailize_story(share_data)
+            #share_data = self._initailize_story(share_data)
+            self.initialize_story()
             share_data.__dict__ =  self.__dict__
 
             return share_data
