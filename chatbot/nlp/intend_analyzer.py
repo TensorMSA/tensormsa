@@ -23,11 +23,12 @@ class IntendAnalyzer(ShareData):
         :param context:
         :return:
         """
-        if (share_data.get_request_type() == 'image') :
+        if (share_data.get_story_id() != "") :
             return share_data
 
         convert_data =  share_data.get_convert_data()
         result = self.seq2seq_model.run(self.nn_id , {"input_data": convert_data, "num": 0, "clean_ans": False})
+        print ("■■■■■■■■■■ 의도 분석 결과 : " + result[0][1][0])
         share_data.set_intent_id(result[0][1][0])
         share_data.set_intent_history(result[0][1][0])
         return share_data

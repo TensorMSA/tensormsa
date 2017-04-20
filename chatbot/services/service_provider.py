@@ -1,4 +1,5 @@
 from chatbot.common.chat_share_data import ShareData
+from chatbot.nlp.response_generator import ResponseGenerator
 from cluster.service.service_predict_cnn import PredictNetCnn
 from django.http.request import MultiValueDict
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -14,8 +15,13 @@ class ServiceProvider(ShareData):
         :param share_data:
         :return:
         """
-        if(share_data.get_service_type() =='find_image') :
+        print("■■■■■■■■■■ 서비스 호출 대상 판단 : " + share_data.get_story_id() )
+
+        if(share_data.get_service_type() == "find_image") :
             self._internal_service_call(share_data)
+        elif(share_data.get_story_id() != '99') :
+            share_data = ResponseGenerator().select_response(share_data)
+
             return share_data
 
     def _external_service_call(self, share_data) :
@@ -45,6 +51,8 @@ class ServiceProvider(ShareData):
     def _internal_service_call(self, share_data) :
         try:
             # internal : IMAGE
+            print("■■■■■■■■■■ 이미지 분석 결과 분석 시작 ■■■■■■■■■■ ")
+
             temp = {}
             request_type = share_data.get_request_type()
             decode_text = base64.decodebytes(str.encode(share_data.get_request_data()))
@@ -55,6 +63,10 @@ class ServiceProvider(ShareData):
             if(request_type == "image"):
                 return_val = PredictNetCnn().run('nn00004', '0',ml)
                 share_data.set_output_data(return_val['test.jpg']['key'][0])
+                print("■■■■■■■■■■ 이미지 분석 결과 분석 결과 : " + return_val['test.jpg']['key'][0])
+            else :
+                share_data.set_output_data("이미지 분석 결과가 없습니다")
+
             return share_data
         except Exception as e:
             raise Exception(e)

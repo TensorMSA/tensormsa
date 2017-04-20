@@ -73,8 +73,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 self.word_embed_type = wf_conf.get_word_embed_type()
                 self.cell_size = wf_conf.get_cell_size()
                 if(self.word_embed_type == 'w2v') :
-                    self.word_vector_size = self._get_w2v_vector_size(self.word_embed_id)
                     self.word_embed_id = wf_conf.get_word_embed_id()
+                    self.word_vector_size = self._get_w2v_vector_size(self.word_embed_id)
                     if (wf_conf.get_vocab_size() != None and wf_conf.get_vocab_size() == self._get_vocab_size()):
                         self.vocab_size = wf_conf.get_vocab_size() + 4
                     else:
