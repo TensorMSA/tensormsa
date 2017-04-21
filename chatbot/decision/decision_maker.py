@@ -25,11 +25,19 @@ class DecisionMaker(ShareData):
                     self.initialize_story()
                     print ("ICT봇입니다 무엇이 궁금한가요?")
                     share_data.set_output_data("ICT봇입니다 무엇이 궁금한가요?")
+                    share_data.__dict__ = self.__dict__
                     return share_data
-
+                elif (self.story_set_entity["타입"] in ["채홍","김채홍"]):
+                    self.initialize_story()
+                    share_data.set_output_data("사업부장님이시내요 안녕하세요?")
+                    share_data.__dict__ = self.__dict__
+                    return share_data
+                elif (self.story_set_entity["타입"] in ["영식","김영식"]):
+                    self.initialize_story()
+                    share_data.set_output_data("MES Leader이시군요 고생이 많으시내요")
+                    share_data.__dict__ = self.__dict__
+                    return share_data
             #Story Exist
-
-
             if (self.story_board_id != "") :
                 StoryBoardManager(self.story_board_id).run(share_data)
             #First Story
