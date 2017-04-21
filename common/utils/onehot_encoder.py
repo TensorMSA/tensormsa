@@ -13,6 +13,23 @@ class OneHotEncoder :
         self.pad = 0.
         self.bucket = np.zeros((self.bucket_size), dtype=data_type)
         self.dict_list = ['@','#','UNKNOWN']
+        self.add_flag = True
+
+    def off_edit_mode(self):
+        """
+        off add dict mode
+        :param dict_list:
+        :return:
+        """
+        self.add_flag = False
+
+    def on_edit_mode(self):
+        """
+        on add dict mode
+        :param dict_list:
+        :return:
+        """
+        self.add_flag = True
 
     def restore(self, dict_list):
         """
@@ -36,6 +53,8 @@ class OneHotEncoder :
         :param item:
         :return:
         """
+        if (self.add_flag == False) :
+            return None
         if item not in self.dict_list :
             if(self.bucket_size > len(self.dict_list)) :
                 self.dict_list.append(item)
