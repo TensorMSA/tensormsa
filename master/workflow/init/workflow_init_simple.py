@@ -5,20 +5,38 @@ from django.db import connection
 from common.utils import dictfetchall
 import json
 from common.utils import *
-from common.utils import *
 import os
 
 class WorkFlowSimpleManager :
     """
 
     """
-    def _set_node_name(self):
+
+    def __init__(self):
         self.train_node = "netconf_node"
         self.train_data_node = "datasrc"
         self.train_feed_node = "data_src_feeder"
         self.eval_node = "eval_node"
         self.eval_data_node = "evaldata"
         self.eval_feed_node = "data_eval_feeder"
+
+    def get_train_node(self):
+        return self.train_node
+
+    def get_train_data_node(self):
+        return self.train_data_node
+
+    def get_train_feed_node(self):
+        return self.train_feed_node
+
+    def get_eval_node(self):
+        return self.eval_node
+
+    def get_eval_data_node(self):
+        return self.eval_data_node
+
+    def get_eval_feed_node(self):
+        return self.eval_feed_node
 
     def _create_path_folder(self, nn_id, wf_ver):
         model_path = get_model_path(nn_id, wf_ver, self.train_node)
@@ -41,7 +59,6 @@ class WorkFlowSimpleManager :
         state_id = self._create_workflow_state(input_data)
 
         # create nodes fit to requested type (img, text, frame)
-        self._set_node_name()
         if(type == 'cnn'):
             self._create_predefined_nodes_cnn(state_id)
             self._create_path_folder(nn_id, wf_ver)
@@ -219,6 +236,12 @@ class WorkFlowSimpleManager :
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_' + self.eval_feed_node
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_' + self.eval_node
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_' + self.eval_feed_node
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_' + self.train_node
             self.__put_nn_wf_node_relation(input_data)
 
         except Exception as e:
