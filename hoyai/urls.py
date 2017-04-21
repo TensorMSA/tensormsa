@@ -130,7 +130,7 @@ urlpatterns = [
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
 
     # summary
-    url(r'^api/v1/type/result/nnid/{nnid}/ver/{ver}/',
+    url(r'^api/v1/type/result/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.ResultManagerDefault.as_view())),
 
     # service

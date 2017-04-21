@@ -36,6 +36,8 @@ class ServiceManager:
         :return:
         """
         try :
+            print("■■■■■■■■■■ 챗봇 시작 ■■■■■■■■■■")
+
             # 1. set parms from client
             share_ctx = self.chat_share_data.load_json(req_ctx)
 
@@ -47,7 +49,7 @@ class ServiceManager:
             # 3. decision maker
             # TODO : kim su sang
             share_ctx = self.decision_maker.run(share_ctx)
-
+            print("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
             # 4. return result as json
             return share_ctx.to_json()
         except Exception as e :
