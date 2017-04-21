@@ -66,7 +66,10 @@ class DataNodeImage(DataNode):
                 filelist = os.listdir(directory + '/' + forder)
                 for filename in filelist:
                     try:
-                        image = Image.open(directory + '/' + forder + '/' + filename)
+                        if channel == 3:
+                            image = Image.open(directory + '/' + forder + '/' + filename)
+                        else:
+                            image = Image.open(directory + '/' + forder + '/' + filename).convert('L')
                         image = image.resize((x_size, y_size), Image.ANTIALIAS)
                         image = np.array(image)
 
