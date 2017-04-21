@@ -14,12 +14,12 @@ class WorkFlowNetConfReNet(WorkFlowNetConf):
         self._set_key_parms([])
         self._set_prhb_parms([])
 
-    def get_model_store_path(self):
-        """
-
-        :param node_id:
-        :return:
-        """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['model_path']
+    # def get_model_store_path(self):
+    #     """
+    #
+    #     :param node_id:
+    #     :return:
+    #     """
+    #     if('conf' not in self.__dict__) :
+    #         self.conf = self.get_view_obj(self.key)
+    #     return self.conf['model_path']
