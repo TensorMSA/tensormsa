@@ -92,9 +92,9 @@ class DataNodeImage(DataNode):
                             name_arr = []
                             createcnt += 1
 
-                        print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
+                        print("Processcnt="+ str(processcnt) + " File=" + directory + " forder=" + forder + "  name=" + filename)
                     except:
-                        print("Processcnt="+str(processcnt)+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                        print("Processcnt="+ str(processcnt) + " ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
                     processcnt += 1
                 shutil.rmtree(directory + "/" + forder)
                 try:
