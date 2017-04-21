@@ -570,7 +570,7 @@ class WorkFlowCommonNode :
     def load_data(self, node_id, parm = 'all'):
         pass
 
-    def _find_netconf_node_id(self, nn_id):
+    def _find_netconf_node_id(self, nn_id, wf_ver = None):
         """
         return node id of netconf
         :param nn_id:
@@ -584,7 +584,10 @@ class WorkFlowCommonNode :
         query_list.append("FROM MASTER_NN_VER_WFLIST_INFO WV JOIN MASTER_NN_WF_STATE_INFO WS   ")
         query_list.append("     ON WV.NN_WF_VER_ID =  WS.NN_WF_VER_ID_ID    ")
         query_list.append("     AND WV.NN_ID_ID = WS.NN_ID    ")
-        query_list.append("     AND WV.ACTIVE_FLAG = 'Y'    ")
+        if wf_ver == None:
+            query_list.append("     AND WV.ACTIVE_FLAG = 'Y'    ")
+        else:
+            query_list.append("     AND WV.NN_WF_VER_ID = "+str(wf_ver)+"    ")
         query_list.append("     AND WV.NN_ID_ID = %s    ")
         query_list.append("     JOIN MASTER_NN_WF_NODE_INFO NI    ")
         query_list.append("     ON WS.WF_STATE_ID = NI.WF_STATE_ID_ID    ")

@@ -17,7 +17,8 @@ class DataNodeImage(DataNode):
             println("run DataNodeImage")
             nnid = conf_data['nn_id']
             node_id = conf_data['node_id']
-            net_conf_id = self._find_netconf_node_id(nnid)
+            wf_ver = conf_data['wf_ver']
+            net_conf_id = self._find_netconf_node_id(nnid, wf_ver = wf_ver)
             netconf = WorkFlowDataImage().get_step_source(net_conf_id)
             dataconf = WorkFlowDataImage().get_step_source(node_id)
             if dataconf == {}:
