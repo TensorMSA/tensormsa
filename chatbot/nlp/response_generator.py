@@ -14,7 +14,7 @@ class ResponseGenerator(ShareData):
                 response = self.story_set_entity["이름"] + "의 전화번호는 031-723-1234입니다."
             elif (self.story_board_id == '3'):
                 name = self.story_set_entity["업무"]
-                business = {"출하" : "김승우", "야드" : "김수상", "설비" : "박성찬", "매출" : "백지현", "공정" : "이상현", "원가" : "김영재"}
+                business = {"출하" : "김승우", "야드" : "김수상", "설비" : "박성찬", "매출" : "백지현", "공정" : "이상현", "원가" : "김영재", "메일" : "이태영"}
                 response = self.story_set_entity["업무"] + "업무 담당자는" + business[name] + "입니다"
             elif (self.story_board_id == '4'):
                 response = self.story_set_entity["이름"] + "은 " + self.story_set_entity["날짜"] + " 휴가입니다."
