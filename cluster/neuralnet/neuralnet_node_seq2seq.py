@@ -367,6 +367,10 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :return:
         """
         try :
+            # off onehot to add dict on predict time
+            if (self.word_embed_type == 'onehot'):
+                self.onehot_encoder.off_edit_mode()
+
             # Construct RNN model
             cells = []
             for _ in range(self.encoder_num_layers) :
