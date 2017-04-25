@@ -1,6 +1,7 @@
 from cluster.service.service_predict_cnn import PredictNetCnn
 from chatbot.common.chat_conf_manager import ChatBotConfManager
 from chatbot.common.chat_share_data import ShareData
+from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
 from chatbot.services.service_provider import ServiceProvider
@@ -23,12 +24,13 @@ class ServiceManager:
         # TODO : need to use cache for better rsponse time
         self.cb_id = cb_id
         self.chatbot_conf = ChatBotConfManager(cb_id)
+        self.chat_knowledge_data_dict = ChatKnowledgeDataDict(cb_id)
         self.chat_share_data = ShareData()
-        self.entity_analyzer = EntityAnalyzer(self.chatbot_conf.get_entity_list())
+        self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_entity_keys(cb_id), self.chat_knowledge_data_dict.get_entity_types(cb_id))
         self.intent_analyzer = IntendAnalyzer(self.chatbot_conf.get_intent_model())
         self.decision_maker = DecisionMaker()
         self.service_provider = ServiceProvider()
-        self.story_board = StoryBoardManager(self.chatbot_conf.get_story_board())
+        self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
 
     def run_chatbot(self, req_ctx):
         """

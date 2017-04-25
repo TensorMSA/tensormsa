@@ -13,7 +13,7 @@ from common.utils import *
 
 println("S")
 url = gUrl
-nn_id = "nn00009"
+nn_id = "nn00011"
 wf_ver_id = 0
 
 # get workflow version
@@ -114,50 +114,57 @@ def spaceprint(val, cnt):
     restr = restr+str(val)
     return restr
 
-for train in data:
-    if train != None and train != "" and train != {} and train != "status" and train != "result":
-        try:
-            for tr in train["TrainResult"]:
-                print(tr)
-        except:
-            maxcnt = 0
-            line = ""
-            for label in train["labels"]:
-                if maxcnt<len(label)+2:
-                    maxcnt = len(label)+2
+if data == None:
+    print(data)
+else:
+    try:
+        if data["status"] == "404":
+            print(data["result"])
+    except:
+        for train in data:
+            if train != None and train != "" and train != {} and train != "status" and train != "result":
+                try:
+                    for tr in train["TrainResult"]:
+                        print(tr)
+                except:
+                    maxcnt = 0
+                    line = ""
+                    for label in train["labels"]:
+                        if maxcnt<len(label)+2:
+                            maxcnt = len(label)+2
 
-            for i in range(len(train["labels"])):
-                for j in range(maxcnt+4):
-                    line += "="
+                    for i in range(len(train["labels"])):
+                        for j in range(maxcnt+4):
+                            line += "="
 
-            label_sub = []
-            for label in train["labels"]:
-                label = spaceprint(label,maxcnt)
-                label_sub.append(label)
+                    label_sub = []
+                    for label in train["labels"]:
+                        label = spaceprint(label,maxcnt)
+                        label_sub.append(label)
 
-            space = ""
-            for s in range(maxcnt):
-                space +=" "
+                    space = ""
+                    for s in range(maxcnt):
+                        space +=" "
 
-            print(space, label_sub)
-            print(space, line)
-            for i in range(len(train["labels"])):
-                truecnt = 0
-                totcnt = 0
-                predict_sub = []
-                for j in range(len(train["predicts"][i])):
-                    pred = spaceprint(train["predicts"][i][j],maxcnt)
+                    print(space, label_sub)
+                    print(space, line)
+                    for i in range(len(train["labels"])):
+                        truecnt = 0
+                        totcnt = 0
+                        predict_sub = []
+                        for j in range(len(train["predicts"][i])):
+                            pred = spaceprint(train["predicts"][i][j],maxcnt)
 
-                    predict_sub.append(pred)
-                    totcnt += int(pred)
-                    # print(train["labels"].index(train["labels"][i]))
-                    if train["labels"].index(train["labels"][i]) == j:
-                        truecnt = int(pred)
-                if totcnt == 0:
-                    percent = 0
-                else:
-                    percent = round(truecnt/totcnt*100,2)
-                print(spaceprint(train["labels"][i],maxcnt), predict_sub, str(percent)+"%")
+                            predict_sub.append(pred)
+                            totcnt += int(pred)
+                            # print(train["labels"].index(train["labels"][i]))
+                            if train["labels"].index(train["labels"][i]) == j:
+                                truecnt = int(pred)
+                        if totcnt == 0:
+                            percent = 0
+                        else:
+                            percent = round(truecnt/totcnt*100,2)
+                        print(spaceprint(train["labels"][i],maxcnt), predict_sub, str(percent)+"%")
 
 
 println("E")

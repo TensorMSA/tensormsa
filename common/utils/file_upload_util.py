@@ -36,8 +36,7 @@ def hdf_create(self, output_path, filecnt, channel, image_arr, shape_arr, lable_
     h5file = h5py.File(output_path, mode='w')
     dtype = h5py.special_dtype(vlen=np.dtype('uint8'))
     hdf_features = h5file.create_dataset('image_features', (filecnt,), dtype=dtype)
-    hdf_shapes = h5file.create_dataset('image_features_shapes', (filecnt, channel),
-                                       dtype='int32')
+    hdf_shapes = h5file.create_dataset('image_features_shapes', (filecnt, channel),dtype='int32')
     hdf_labels = h5file.create_dataset('targets', (filecnt,), dtype='S240')
     hdf_names = h5file.create_dataset('names', (filecnt,), dtype='S240')
 
@@ -45,8 +44,7 @@ def hdf_create(self, output_path, filecnt, channel, image_arr, shape_arr, lable_
     hdf_features.dims.create_scale(hdf_shapes, 'shapes')
     hdf_features.dims[0].attach_scale(hdf_shapes)
 
-    hdf_shapes_labels = h5file.create_dataset('image_features_shapes_labels', (channel,),
-                                              dtype='S7')
+    hdf_shapes_labels = h5file.create_dataset('image_features_shapes_labels', (3,), dtype='S7')
     hdf_shapes_labels[...] = ['channel'.encode('utf8'),
                               'height'.encode('utf8'),
                               'width'.encode('utf8')]

@@ -17,7 +17,8 @@ class DataNodeImage(DataNode):
             println("run DataNodeImage")
             nnid = conf_data['nn_id']
             node_id = conf_data['node_id']
-            net_conf_id = self._find_netconf_node_id(nnid)
+            wf_ver = conf_data['wf_ver']
+            net_conf_id = self._find_netconf_node_id(nnid, wf_ver = wf_ver)
             netconf = WorkFlowDataImage().get_step_source(net_conf_id)
             dataconf = WorkFlowDataImage().get_step_source(node_id)
             if dataconf == {}:
@@ -65,7 +66,10 @@ class DataNodeImage(DataNode):
                 filelist = os.listdir(directory + '/' + forder)
                 for filename in filelist:
                     try:
-                        image = Image.open(directory + '/' + forder + '/' + filename)
+                        if channel == 3:
+                            image = Image.open(directory + '/' + forder + '/' + filename)
+                        else:
+                            image = Image.open(directory + '/' + forder + '/' + filename).convert('L')
                         image = image.resize((x_size, y_size), Image.ANTIALIAS)
                         image = np.array(image)
 
@@ -88,9 +92,9 @@ class DataNodeImage(DataNode):
                             name_arr = []
                             createcnt += 1
 
-                        print("Processcnt="+str(processcnt)+" File=" + directory + " forder=" + forder + "  name=" + filename)
+                        print("Processcnt="+ str(processcnt) + " File=" + directory + " forder=" + forder + "  name=" + filename)
                     except:
-                        print("Processcnt="+str(processcnt)+" ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
+                        print("Processcnt="+ str(processcnt) + " ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
                     processcnt += 1
                 shutil.rmtree(directory + "/" + forder)
                 try:
