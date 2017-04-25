@@ -69,3 +69,11 @@ class TRAIN_SUMMARY_RESULT_INFO_Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.TRAIN_SUMMARY_RESULT_INFO
         fields = ('nn_id', 'nn_wf_ver_id', 'nn_batch_ver_id', 'result_info')
+
+class NN_VER_BATCHLIST_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : NN_VER_BATCHLIST_INFO
+    """
+    class Meta:
+        model = models.NN_VER_BATCHLIST_INFO
+        fields = ('nn_batch_ver_id', 'active_flag', 'nn_wf_ver_id')

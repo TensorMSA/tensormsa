@@ -12,10 +12,7 @@ from cluster.neuralnet import resnet
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
 from cluster.common.train_summary_info import TrainSummaryInfo
 import operator
-from PIL import Image
-from cluster.data.data_node_image import DataNodeImage
 from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
-from keras.optimizers import SGD
 from keras.applications.resnet50 import preprocess_input
 from keras.preprocessing import image
 
@@ -30,6 +27,11 @@ class NeuralNetNodeReNet(NeuralNetNode):
             # init parms
             self._init_node_parm(conf_data['node_id'])
             self.cls_pool = conf_data['cls_pool']
+            self.train_batch, self.batch = self.make_batch(conf_data['node_id'])
+            if self.train_batch == None :
+                path = ''.join([self.md_store_path+'/'+self.batch,'/model.bin'])
+            else :
+                path = ''.join([self.md_store_path + '/' + self.train_batch, '/model.bin'])
 
             train_data_set = self.cls_pool[self.wf_state_id + '_' + self.train_feed_node]
             test_data = self.cls_pool[self.wf_state_id + '_' + self.eval_feed_node]
@@ -48,8 +50,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
             img_channels = preprocess['channel']
 
             # load model for train
-            if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
-                model = keras.models.load_model(''.join([self.md_store_path, '/model.bin']))
+            if (os.path.exists(path) == True):
+                model = keras.models.load_model(path)
             else:
                 model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), self.nb_classes)
 
@@ -136,8 +138,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
                                         callbacks=[lr_reducer, early_stopper, csv_logger])
                 train_data_set.next()
 
-            os.makedirs(self.md_store_path, exist_ok=True)
-            keras.models.save_model(model,''.join([self.md_store_path, '/model.bin']))
+            os.makedirs(self.md_store_path+'/'+self.batch, exist_ok=True)
+            keras.models.save_model(model,''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
         except Exception as e:
             raise Exception(e)
         finally:
@@ -165,41 +167,48 @@ class NeuralNetNodeReNet(NeuralNetNode):
         try:
             # init parms
             self._init_node_parm(node_id)
+            self.batch = self.get_active_batch(node_id)
 
-            if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
-                    model = keras.models.load_model(''.join([self.md_store_path, '/model.bin']))
-                    filelist = sorted(parm.items(), key=operator.itemgetter(0))
-                    data = {}
+            if (os.path.exists(''.join([self.md_store_path+'/'+self.batch, '/model.bin'])) == True):
+                model = keras.models.load_model(''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
+                filelist = sorted(parm.items(), key=operator.itemgetter(0))
+                data = {}
+                data_sub = {}
+                for file in filelist:
+                    value = file[1]
+                    filename = file[1].name
+                    data_node_name = self._get_backward_node_with_type(node_id, 'data')
+                    data_config = WorkFlowDataImage().get_step_source(data_node_name[0])
+                    preprocess = data_config['preprocess']
+
+                    # input image dimensions
+                    x_size, y_size = preprocess['x_size'], preprocess['y_size']
+
+                    img = image.load_img(value, target_size=(x_size, y_size))
+                    x = image.img_to_array(img)
+                    x = np.expand_dims(x, axis=0)
+                    x = preprocess_input(x)
+                    return_value = model.predict(x)
+
+                    one = np.zeros((len(self.labels), 2))
+                    for i in range(len(self.labels)):
+                        one[i][0] = i
+                        one[i][1] = return_value[0][i]
+                    onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
                     data_sub = {}
-                    for file in filelist:
-                        value = file[1]
-                        filename = file[1].name
-                        data_node_name = self._get_backward_node_with_type(node_id, 'data')
-                        data_config = WorkFlowDataImage().get_step_source(data_node_name[0])
-                        preprocess = data_config['preprocess']
-
-                        # input image dimensions
-                        x_size, y_size = preprocess['x_size'], preprocess['y_size']
-
-                        img = image.load_img(value, target_size=(x_size, y_size))
-                        x = image.img_to_array(img)
-                        x = np.expand_dims(x, axis=0)
-                        x = preprocess_input(x)
-                        return_value = model.predict(x)
-
-                        one = np.zeros((len(self.labels), 2))
-                        for i in range(len(self.labels)):
-                            one[i][0] = i
-                            one[i][1] = return_value[0][i]
-                        onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
-                        for i in range(self.pred_cnt):
-                            key = str(i) + "key"
-                            val = str(i) + "val"
-                            data_sub[key] = self.labels[int(onesort[i][0])]
-                            data_sub[val] = onesort[i][1]
-                        data[filename] = data_sub
-                    keras.backend.clear_session()
-                    return data
+                    data_sub_key = []
+                    data_sub_val = []
+                    for i in range(self.pred_cnt):
+                        data_sub_key.append(self.labels[int(onesort[i][0])])
+                        val = round(onesort[i][1], 8) * 100
+                        if val < 0:
+                            val = 0
+                        data_sub_val.append(val)
+                    data_sub["key"] = data_sub_key
+                    data_sub["val"] = data_sub_val
+                    data[filename] = data_sub
+                keras.backend.clear_session()
+                return data
             else:
                 raise Exception('No Model')
         except Exception as e:
@@ -212,7 +221,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
         :param parm:
         :return:
         """
-        print('nneval')
         try:
             eval_config_data = WorkFlowEvalConfig().get_view_obj(node_id)
             data_node = self.get_linked_prev_node_with_grp('data')
@@ -224,8 +232,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
             config = {"type": eval_config_data["type"], "labels": self.labels, "nn_id": parm["nn_id"],
                       "nn_wf_ver_id": parm["wf_ver"]}
             train = TrainSummaryInfo(conf=config)
-            if (os.path.exists(''.join([self.md_store_path, '/model.bin'])) == True):
-                model = keras.models.load_model(''.join([self.md_store_path, '/model.bin']))
+            self.batch = self.get_eval_batch(node_id)
+            if (os.path.exists(''.join([self.md_store_path+'/'+self.batch, '/model.bin'])) == True):
+                model = keras.models.load_model(''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
             else:
                 raise Exception('No Model')
             preprocess = data_config_data['preprocess']
