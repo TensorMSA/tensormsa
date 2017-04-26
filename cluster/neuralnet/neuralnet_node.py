@@ -58,9 +58,11 @@ class NeuralNetNode(WorkFlowCommonNode):
             train_batch = None
         elif train_batch_count == 1 :
             train_batch = models.NN_VER_BATCHLIST_INFO.objects.get(nn_wf_ver_id=ver_id, train_flag='Y').nn_batch_ver_id
-        eval_batch = models.NN_VER_BATCHLIST_INFO.objects.get(nn_wf_ver_id=ver_id, eval_flag='Y')
-        setattr(eval_batch, 'eval_flag', 'N')
-        eval_batch.save()
+        eval_batch_count = len(models.NN_VER_BATCHLIST_INFO.objects.filter(nn_wf_ver_id=ver_id, eval_flag='Y'))
+        if eval_batch_count != 0 :
+            eval_batch = models.NN_VER_BATCHLIST_INFO.objects.get(nn_wf_ver_id=ver_id, eval_flag='Y')
+            setattr(eval_batch, 'eval_flag', 'N')
+            eval_batch.save()
         input_data = {}
         input_data['nn_wf_ver_id'] = ver_id
         count = len(models.NN_VER_BATCHLIST_INFO.objects.filter(nn_wf_ver_id=ver_id))
