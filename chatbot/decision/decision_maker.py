@@ -23,18 +23,13 @@ class DecisionMaker(ShareData):
                 #Initialize
                 elif (self.story_set_entity["타입"] in ["안녕","하이"]):
                     self.initialize_story()
-                    print ("ICT봇입니다 무엇이 궁금한가요?")
-                    share_data.set_output_data("ICT봇입니다 무엇이 궁금한가요?")
+                    share_data.set_output_data("포스코 AI봇입니다 무엇이 궁금한가요?")
                     share_data.__dict__ = self.__dict__
                     return share_data
-                elif (self.story_set_entity["타입"] in ["채홍","김채홍"]):
+
+                elif (self.story_set_entity["타입"] in ["저장"]):
                     self.initialize_story()
-                    share_data.set_output_data("사업부장님이시내요 안녕하세요?")
-                    share_data.__dict__ = self.__dict__
-                    return share_data
-                elif (self.story_set_entity["타입"] in ["영식","김영식"]):
-                    self.initialize_story()
-                    share_data.set_output_data("MES Leader이시군요 고생이 많으시내요")
+                    share_data.set_output_data("현재까지 대화 기록은 모델 정합성 향상에 사용됩니다")
                     share_data.__dict__ = self.__dict__
                     return share_data
             #Story Exist
@@ -72,7 +67,7 @@ class DecisionMaker(ShareData):
             elif(self.intent_id == "4") :
                 share_data.set_story_id("4")
                 StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
-                share_data.set_service_type("find_attendance")
+                share_data.set_service_type("find_biz")
             elif(self.intent_id == "5") :
                 share_data.set_story_id("5")
                 StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
@@ -81,6 +76,10 @@ class DecisionMaker(ShareData):
                 share_data.set_story_id("6")
                 StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
                 share_data.set_service_type("find_leader")
+            elif(self.intent_id == "7") :
+                share_data.set_story_id("7")
+                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                share_data.set_service_type("find_meeting")
             #Set Image Parameter
             elif(self.intent_id == "90") :
                 share_data.set_intent_id("1")
