@@ -1,9 +1,6 @@
 from cluster.eval.eval_node import EvalNode
-from cluster.neuralnet.neuralnet_node_cnn import NeuralNetNodeCnn
-from master import models
 from cluster.common.train_summary_info import TrainSummaryInfo
 from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
-from common.utils import *
 from master import serializers
 
 class EvalNodeExtra(EvalNode):
