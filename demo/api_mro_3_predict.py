@@ -14,8 +14,8 @@ println("S")
 # ./manage.py runserver [HOST]:8000
 url = gUrl
 typeStr = "cnn"
-nn_id = "nn00009"
-wf_ver_id = 5
+nn_id = "nn00011"
+wf_ver_id = 0
 # get workflow version info
 if wf_ver_id == 0:
     resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
@@ -23,7 +23,7 @@ if wf_ver_id == 0:
 
     for config in data:
         if config["fields"]["active_flag"] == "Y":
-            wf_ver_id = config["pk"]
+            wf_ver_id = config["fields"]["nn_wf_ver_id"]
 
 wf_ver_id = str(wf_ver_id)
 
@@ -39,8 +39,8 @@ files = {
         # ,'files000009':  open('/home/dev/hoyai/demo/data/motor/1motor.jpg','rb')
         # ,'files000010':  open('/home/dev/hoyai/demo/data/motor/2motor.jpg','rb')
 
- 'files000001':  open('/hoya_src_root/nn00004/21/personData/PSC/20170418_094849.jpg','rb')
-    ,'files000002':  open('/hoya_src_root/nn00004/21/personData/PJH/20170418_094144.jpg','rb')
+ 'files000001':  open('/hoya_src_root/nn00011/7/170419_personData/LSH//20170419_091459.jpg','rb')
+    ,'files000002':  open('/hoya_src_root/nn00011/7/170419_personData/PSC/20170419_091031.jpg','rb')
 # ,'files000003':  open('/hoya_src_root/nn00004/21/personData/LSH/20170418_094624.jpg','rb')
 
  #  'files000004':  open('/hoya_src_root/nn00004/21/personDataTest/PSC/20170417_180614.jpg','rb')
@@ -55,12 +55,15 @@ resp = requests.post(restURL,
                      files=files
                      )
 data = json.loads(resp.json())
-# print(data)
-for train in data:
-    print("FileName = "+train)
-    print(data[train]['key'])
-    print(data[train]['val'])
-    print('')
+try:
+    if data["status"] == "404":
+        print(data["result"])
+except:
+    for train in data:
+        print("FileName = "+train)
+        print(data[train]['key'])
+        print(data[train]['val'])
+        print('')
 
 println("E")
 

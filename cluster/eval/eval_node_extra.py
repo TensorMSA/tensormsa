@@ -1,9 +1,6 @@
 from cluster.eval.eval_node import EvalNode
-from cluster.neuralnet.neuralnet_node_cnn import NeuralNetNodeCnn
-from master import models
 from cluster.common.train_summary_info import TrainSummaryInfo
 from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
-from common.utils import *
 from master import serializers
 
 class EvalNodeExtra(EvalNode):
@@ -23,7 +20,6 @@ class EvalNodeExtra(EvalNode):
             self._init_node_parm(conf_data['node_id'])
             result = TrainSummaryInfo(type=self.eval_result_type)
             result = net_node[0].eval(conf_data['node_id'], conf_data, data=data_node[0], result=result)
-            print(result.get_result_info())
             input_data = {}
             input_data['nn_id'] = result.get_nn_id()
             input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
@@ -34,7 +30,6 @@ class EvalNodeExtra(EvalNode):
                 serializer.save()
             return input_data['result_info']
         except Exception as e:
-            print("insert  error result manager")
             print(result.get_result_info())
             raise Exception(e)
 

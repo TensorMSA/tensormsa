@@ -3,7 +3,7 @@ import json, os
 from common.utils import *
 url = gUrl
 
-nn_id = "nn00009"
+nn_id = "nn00011"
 biz_cate = "ERP"
 biz_sub_cate = "MRO"
 nn_title = "MRO Image Classification"

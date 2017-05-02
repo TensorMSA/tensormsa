@@ -61,7 +61,7 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
 
     def get_learn_rate(self):
         """
-
+        get learning rate of autoencoder
         :param node_id:
         :return:
         """
@@ -71,7 +71,7 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
 
     def get_n_input(self):
         """
-
+        number of autoencoder input vecotr size
         :param node_id:
         :return:
         """
@@ -81,10 +81,38 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
 
     def get_n_hidden(self):
         """
-
+        number of autoencoder hidden layer size
         :param node_id:
         :return:
         """
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
         return self.conf.get('n_hidden')
+
+    def get_vocab_size(self):
+        """
+        get vocab size for onhot encoder
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('vocab_size')
+
+    def get_embed_type(self):
+        """
+        get vector embed type
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('embed_type')
+
+    def get_vocab_list(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('vocab_list')

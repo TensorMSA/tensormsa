@@ -5,20 +5,38 @@ from django.db import connection
 from common.utils import dictfetchall
 import json
 from common.utils import *
-from common.utils import *
 import os
 
 class WorkFlowSimpleManager :
     """
 
     """
-    def _set_node_name(self):
+
+    def __init__(self):
         self.train_node = "netconf_node"
         self.train_data_node = "datasrc"
         self.train_feed_node = "data_src_feeder"
         self.eval_node = "eval_node"
         self.eval_data_node = "evaldata"
         self.eval_feed_node = "data_eval_feeder"
+
+    def get_train_node(self):
+        return self.train_node
+
+    def get_train_data_node(self):
+        return self.train_data_node
+
+    def get_train_feed_node(self):
+        return self.train_feed_node
+
+    def get_eval_node(self):
+        return self.eval_node
+
+    def get_eval_data_node(self):
+        return self.eval_data_node
+
+    def get_eval_feed_node(self):
+        return self.eval_feed_node
 
     def _create_path_folder(self, nn_id, wf_ver):
         model_path = get_model_path(nn_id, wf_ver, self.train_node)
@@ -41,7 +59,6 @@ class WorkFlowSimpleManager :
         state_id = self._create_workflow_state(input_data)
 
         # create nodes fit to requested type (img, text, frame)
-        self._set_node_name()
         if(type == 'cnn'):
             self._create_predefined_nodes_cnn(state_id)
             self._create_path_folder(nn_id, wf_ver)
@@ -57,8 +74,10 @@ class WorkFlowSimpleManager :
             self._create_predefined_nodes_seq2seq(state_id)
         elif(type == 'seq2seq_csv') :
             self._create_predefined_nodes_seq2seq_csv(state_id)
-        elif(type == 'autoencoder'):
-            self._create_predefined_nodes_autoencoder(state_id)
+        elif(type == 'autoencoder_img'):
+            self._create_predefined_nodes_autoencoder_img(state_id)
+        elif(type == 'autoencoder_csv'):
+            self._create_predefined_nodes_autoencoder_csv(state_id)
         elif(type == 'word2vec_frame'):
             self._create_predefined_nodes_word2vec_frame(state_id)
         else :
@@ -221,6 +240,12 @@ class WorkFlowSimpleManager :
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_' + self.eval_node
             self.__put_nn_wf_node_relation(input_data)
 
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_' + self.eval_feed_node
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_' + self.train_node
+            self.__put_nn_wf_node_relation(input_data)
+
         except Exception as e:
             raise Exception(e)
         finally:
@@ -260,7 +285,7 @@ class WorkFlowSimpleManager :
             # feed node
             input_data = {}
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_pre_feed_img2renet_train'
-            input_data['nn_wf_node_name'] = 'pre_feed_img2renet'
+            input_data['nn_wf_node_name'] = 'pre_feed_img2renet_train'
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['wf_task_submenu_id'] = 'pre_feed_img2renet'
             input_data['wf_node_status'] = 0
@@ -320,14 +345,20 @@ class WorkFlowSimpleManager :
 
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_netconf_node'
-            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_evaldata'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_pre_feed_img2renet_eval'
             self.__put_nn_wf_node_relation(input_data)
 
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
-            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_evaldata'
-            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_pre_feed_img2renet_eval'
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_pre_feed_img2renet_eval'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_eval_node'
             self.__put_nn_wf_node_relation(input_data)
 
             input_data = {}
@@ -948,7 +979,7 @@ class WorkFlowSimpleManager :
         finally:
             return True
 
-    def _create_predefined_nodes_autoencoder(self, wf_state_id):
+    def _create_predefined_nodes_autoencoder_img(self, wf_state_id):
         """
 
         :return:
@@ -969,7 +1000,7 @@ class WorkFlowSimpleManager :
             # feed node
             input_data = {}
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_feed_img2auto_train'
-            input_data['nn_wf_node_name'] = '_feed_img2auto_train'
+            input_data['nn_wf_node_name'] = 'feed_img2auto_train'
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['wf_task_submenu_id'] = 'pre_feed_img2auto'
             input_data['wf_node_status'] = 0
@@ -999,6 +1030,65 @@ class WorkFlowSimpleManager :
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_feed_img2auto_train'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
+            self.__put_nn_wf_node_relation(input_data)
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
+
+    def _create_predefined_nodes_autoencoder_csv(self, wf_state_id):
+        """
+
+        :return:
+        """
+        try:
+            # data node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_name'] = 'datasrc'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'data_frame'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # feed node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_feed_train'
+            input_data['nn_wf_node_name'] = 'feed_train'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'pre_feed_fr2auto'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # net conf node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_name'] = 'netconf_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'autoencoder'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_feed_train'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_feed_train'
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
             self.__put_nn_wf_node_relation(input_data)
 

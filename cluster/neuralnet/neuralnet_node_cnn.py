@@ -1,6 +1,7 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from common.utils import *
 from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
+from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
 import tensorflow as tf
 import numpy as np
 import os
@@ -17,6 +18,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
     """
     def _init_node_parm(self):
         self.conf_data = None
+        self.train_feed_name = None
+        self.eval_feed_name = None
         self.node_id = self.get_node_name()
         self.node = self.get_node_def()
         self.model = None
@@ -234,32 +237,34 @@ class NeuralNetNodeCnn(NeuralNetNode):
     ########################################################################
     def run(self, conf_data):
         println("run NeuralNetNodeCnn Train")
-        nn_id = conf_data['nn_id']
-        wfver = conf_data['wf_ver']
-        self.conf_data = conf_data
-
         self._init_node_parm()
+        self.conf_data = conf_data
+        self.nn_id = conf_data['nn_id']
+        self.wfver = conf_data['wf_ver']
+        self.train_feed_name = self.nn_id+"_"+self.wfver+"_"+WorkFlowSimpleManager().get_train_feed_node()
+        self.eval_feed_name = self.nn_id+"_"+self.wfver+"_"+WorkFlowSimpleManager().get_eval_feed_node()
+
         netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
-        netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(nn_id, wfver, self.node, self.node_id, netconf)
+        netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(self.nn_id, self.wfver, self.node, self.node_id, netconf)
         self._set_netconf_parm(netconf)
 
         feed_node = self.get_prev_node()
         return_data = {}
+        return_arr = []
         for feed in feed_node:
             feed_name = feed.get_node_name()
-            data_node = feed.get_prev_node()
-            for data in data_node:
-                data_name = data.get_node_name()
-                dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
-                self._set_dataconf_parm(dataconf)
+            if feed_name == self.train_feed_name:
+                data_node = feed.get_prev_node()
+                for data in data_node:
+                    data_name = data.get_node_name()
+                    dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
+                    self._set_dataconf_parm(dataconf)
+                    self.get_model(netconf, "T")
+                    cls_pool = conf_data['cls_pool']
+                    input_data = cls_pool[feed_name]
+                    return_arr = self.train_run(input_data)
 
-                self.get_model(netconf, "T")
-
-                cls_pool = conf_data['cls_pool']
-                input_data = cls_pool[feed_name]
-                return_arr = self.train_run(input_data)
-
-        return_data["TrainResult"] = return_arr
+            return_data["TrainResult"] = return_arr
 
         return return_data
 
@@ -292,26 +297,24 @@ class NeuralNetNodeCnn(NeuralNetNode):
                                 feed_dict_train = {self.X: x_batch, self.Y: y_batch}
 
                                 i_global, _, i_cost, batch_acc = sess.run([self.global_step, self.optimizer, self.cost, self.accuracy], feed_dict=feed_dict_train)
-                                # i_global, _ = sess.run([self.global_step, self.optimizer], feed_dict=feed_dict_train)
                                 g_total_cnt += 1
                                 println("Train Count=" + str(g_total_cnt))
                                 # Print status to screen every 10 iterations (and last).
-                                if (i_global % 10 == 0) or (i == self.train_cnt - 1):
-                                    # Calculate the accuracy on the training-batch.
-                                    # batch_acc = sess.run(self.accuracy, feed_dict=feed_dict_train)
+                                saveCnt = 100
+                                if saveCnt > self.train_cnt:
+                                    saveCnt = self.train_cnt
+                                # Save a checkpoint to disk every 100 iterations (and last).
+                                if (g_total_cnt % saveCnt == 0):
                                     batch_accR = round(batch_acc * 100, 2)
-                                    msg = "Global Step: " + str(i_global) + ", Training Batch Accuracy: " + str(batch_accR) + "%"+", Cost: "+ str(i_cost)
-                                    # msg = "Global Step: " + str(i_global) + ", Training Batch Accuracy: " + str(batch_accR) + "%"
+                                    msg = "Global Step: " + str(i_global) + ", Training Batch Accuracy: " + str(batch_accR) + "%" + ", Cost: " + str(i_cost)
                                     println(msg)
                                     result = [msg]
                                     return_arr.append(result)
 
-                                    # eval(self, self.node_id, self.conf_data, data=None, result=None)
-
-                                # Save a checkpoint to disk every 100 iterations (and last).
-                                if (i_global % 100 == 0) or (i == self.train_cnt - 1):
                                     saver.save(sess, save_path=save_path, global_step=self.global_step)
                                     self.model_file_delete()
+
+                                    eval_data = self.eval(self.node_id, self.conf_data, None, None)
 
                             result = ''
                             return_arr.append(result)
@@ -328,30 +331,27 @@ class NeuralNetNodeCnn(NeuralNetNode):
         println("run NeuralNetNodeCnn eval")
         nn_id = conf_data['nn_id']
         wfver = conf_data['wf_ver']
-
-        eval_node = self.get_next_node()
-
-        for eval in eval_node:
-            eval_feed = eval.get_prev_node(grp='preprocess')
-
-        for feed in eval_feed:
+        eval_data = None
+        feed_node = self.get_prev_node()
+        for feed in feed_node:
             feed_name = feed.get_node_name()
-            data_node = feed.get_prev_node()
-            for data in data_node:
-                data_name = data.get_node_name()
-                dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
-                self._set_dataconf_parm(dataconf)
+            if feed_name == self.eval_feed_name:
+                data_node = feed.get_prev_node()
+                for data in data_node:
+                    data_name = data.get_node_name()
+                    dataconf = WorkFlowNetConfCNN().get_view_obj(data_name)
+                    self._set_dataconf_parm(dataconf)
 
-                config = {"type": self.eval_type, "labels": self.labels}
-                eval_data = TrainSummaryInfo(conf=config)
-                eval_data.set_nn_id(nn_id)
-                eval_data.set_nn_wf_ver_id(wfver)
+                    config = {"type": self.eval_type, "labels": self.labels}
+                    eval_data = TrainSummaryInfo(conf=config)
+                    eval_data.set_nn_id(nn_id)
+                    eval_data.set_nn_wf_ver_id(wfver)
 
-                cls_pool = conf_data['cls_pool']
+                    cls_pool = conf_data['cls_pool']
 
-                if feed_name.find("eval") > 0:
-                    input_data = cls_pool[feed_name]
-                    eval_data = self.eval_run(input_data, eval_data)
+                    if feed_name.find("eval") > 0:
+                        input_data = cls_pool[feed_name]
+                        eval_data = self.eval_run(input_data, eval_data)
 
         return eval_data
 
@@ -362,6 +362,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             t_cnt_arr.append(0)
             f_cnt_arr.append(0)
         with tf.Session() as sess:
+            input_data.pointer = 0
             while (input_data.has_next()):
                 for i in range(0, input_data.size(), self.batchsize):
                     data_set = input_data[i:i + self.batchsize]
@@ -380,7 +381,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                             true_name = y_batch[i]
                             file_name = n_batch[i]
                             pred_name = self.labels[y_pred_true[i]]
-                            print(self.spaceprint(file_name, 30) + " True Category=" + true_name + " Predict Category=" + pred_name)
+                            # print(self.spaceprint(file_name, 30) + " True Category=" + true_name + " Predict Category=" + pred_name)
                             idx = self.labels.index(true_name)
                             if true_name == pred_name:
                                 t_cnt_arr[idx] = t_cnt_arr[idx] + 1
@@ -414,17 +415,16 @@ class NeuralNetNodeCnn(NeuralNetNode):
             fCnt += f_cnt_arr[i]
             println(strResult)
             result.append(strResult)
-
+        strResult = "---------------------------------------------------------------------------------------------------"
+        println(strResult)
         strResult = "Total Category=" + self.spaceprint(str(len(self.labels)), 11) + " "
         strResult += "TotalCnt=" + self.spaceprint(str(totCnt), 8) + " "
         strResult += "TrueCnt=" + self.spaceprint(str(tCnt), 8) + " "
         strResult += "FalseCnt=" + self.spaceprint(str(fCnt), 8) + " "
         if totCnt != 0:
             strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(tCnt / totCnt * 100)) + "%"
-
+        println(strResult)
         result.append(strResult)
-        # println(result)
-        return_arr = result
         println("###################################################################################################")
         return eval_data
 

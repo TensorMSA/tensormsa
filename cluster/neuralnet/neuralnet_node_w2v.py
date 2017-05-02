@@ -24,7 +24,6 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                 model = word2vec.Word2Vec.load(self._get_model_path())
                 update_flag = True
 
-
             # build vocab first by batch size
             while(train_data_set.has_next()) :
                 # Iteration is to improve for Model Accuracy
@@ -129,7 +128,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             elif key in ['@']:
                 return_val.append([0.0009] * self.vector_size)
             elif key in model:
-                return_val.append(model[key])
+                return_val.append(model[key].tolist())
             else:
                 return_val.append([0.0002] * self.vector_size)
         return return_val
@@ -245,11 +244,12 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                 return_arr.append("{0}/{1}".format(word, tag))
         return return_arr
 
-    def eval(self, node_id, parm={}):
+    def eval(self, node_id, conf, data=None, result=None):
         """
 
         :param node_id:
         :param parm:
         :return:
         """
-        pass
+        result.set_result_data_format({})
+        return result

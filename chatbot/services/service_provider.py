@@ -16,13 +16,14 @@ class ServiceProvider(ShareData):
         :return:
         """
         print("■■■■■■■■■■ 서비스 호출 대상 판단 : " + share_data.get_story_id() )
-
+        #Call Image Reconize
         if(share_data.get_service_type() == "find_image") :
-            self._internal_service_call(share_data)
+            share_data = self._internal_service_call(share_data)
+        #Exist Story Response
         elif(share_data.get_story_id() != '99') :
             share_data = ResponseGenerator().select_response(share_data)
 
-            return share_data
+        return share_data
 
     def _external_service_call(self, share_data) :
         service_type = ShareData.get_service_type()
@@ -49,12 +50,15 @@ class ServiceProvider(ShareData):
             decode_text = base64.decodebytes(str.encode(share_data.get_request_data()))
             temp['test'] = [InMemoryUploadedFile(io.BytesIO(decode_text), None, 'test.jpg', 'image/jpeg', len(decode_text), None)]
             ml = MultiValueDict(temp)
-
+            # fp = open("/hoya_src_root/nn00004/1/test1.jpg", 'wb')
+            # fp.write(decode_text)
+            # fp.close()
             # CNN Prediction
             if(request_type == "image"):
-                return_val = PredictNetCnn().run('nn00004', '0',ml)
-                share_data.set_output_data(return_val['test.jpg']['key'][0])
+                return_val = PredictNetCnn().run('nn00004', None, ml )
+                name_tag = {"KYJ" : "김영재", "KSW" : "김승우", "LTY" : "이태영", "LSH" : "이상현", "PJH" : "백지현", "KSS" : "김수상", "PSC" : "박성찬"}
                 print("■■■■■■■■■■ 이미지 분석 결과 분석 결과 : " + return_val['test.jpg']['key'][0])
+                share_data.set_output_data(name_tag[return_val['test.jpg']['key'][0]] + "인거 같은데 맞나요?")
             else :
                 share_data.set_output_data("이미지 분석 결과가 없습니다")
 

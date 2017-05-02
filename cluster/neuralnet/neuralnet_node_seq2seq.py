@@ -14,7 +14,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
     def run(self, conf_data):
         try :
             # init parms for word2vec node
-            self._init_node_parm(conf_data['node_id'])
+            node_id = conf_data['node_id']
+            self._init_node_parm(node_id)
             self.cls_pool = conf_data['cls_pool']
 
             # get prev node for load data
@@ -28,8 +29,10 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             sess = tf.Session()
             sess.run(tf.initialize_all_variables())
             saver = tf.train.Saver(tf.all_variables())
-            if (len(get_filepaths(self.md_store_path)) > 0):
-                saver.restore(sess, ''.join([self.md_store_path, '/']))
+            if (self.check_batch_exist(conf_data['node_id'])):
+                path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+                set_filepaths(path)
+                saver.restore(sess, path)
 
             for self.epoch in range(self.num_epochs):
                 # run train
@@ -45,7 +48,9 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 train_data_set.reset_pointer()
 
             # save model and close session
-            saver.save(sess, ''.join([self.md_store_path, '/']))
+            path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
+            set_filepaths(path)
+            saver.save(sess, path)
             sess.close()
         except Exception as e :
             raise Exception (e)
@@ -135,7 +140,8 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :return:
         """
         # set init params
-        self._init_node_parm(node_id)
+        self.node_id = node_id
+        self._init_node_parm(self.node_id)
         # prepare net conf
         tf.reset_default_graph()
         self._set_predict_model()
@@ -161,13 +167,14 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         sess.run(tf.initialize_all_variables())
         # prepare net conf
         self._set_predict_model()
+        self.node_id = node_id
 
         while (data.has_next()):
             for i in range(0, data.data_size(), self.predict_batch):
                 data_set = data[i:i + self.predict_batch]
                 if (len(data_set[0]) != self.predict_batch): break
                 predict = self._run_predict(sess, data_set[0][0], type='pre', clean_ans=False)
-                result.set_result_info(' '.join(data_set[1][0]), ' '.join(predict), input=' '.join(data_set[0][0]), acc=None)
+                result.set_result_info(' '.join(data_set[1][0]), ' '.join(predict[0]), input=' '.join(data_set[0][0]), acc=None)
             data.next()
         sess.close()
         return result
@@ -367,6 +374,10 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :return:
         """
         try :
+            # off onehot to add dict on predict time
+            if (self.word_embed_type == 'onehot'):
+                self.onehot_encoder.off_edit_mode()
+
             # Construct RNN model
             cells = []
             for _ in range(self.encoder_num_layers) :
@@ -399,16 +410,21 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         except Exception as e :
             raise Exception (e)
 
-    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0):
+    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0, batch_ver='eval'):
         """
-
+        run actual predict
         :return:
         """
         try :
             #restore model
             saver = tf.train.Saver(tf.all_variables())
-            if (len(get_filepaths(self.md_store_path)) > 0):
-                saver.restore(sess, ''.join([self.md_store_path , '/']))
+            if (batch_ver == 'eval') :
+                batch_ver_name = self.get_eval_batch(self.node_id)
+            else :
+                batch_ver_name = self.get_active_batch(self.node_id)
+
+            if (self.check_batch_exist(self.node_id)):
+                saver.restore(sess, ''.join([self.md_store_path , '/', batch_ver_name, '/']))
             else :
                 raise Exception ("error : no pretrained model exist")
 
