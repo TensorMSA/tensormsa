@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import platform
 
-host = os.environ['HOSTNAME']
-
+#host = os.environ['HOSTNAME']
+host = platform.uname()[1]
 #CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
 #CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c:5672//52.79.201.93'
 CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@'+host+'//'
@@ -102,7 +103,24 @@ DATABASES = {
     }
 }
 
-
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
