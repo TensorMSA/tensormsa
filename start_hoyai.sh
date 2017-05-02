@@ -11,6 +11,8 @@ if [ "$#" -eq 0 ]; then
    echo "                  3 : restart postgres"
    echo "                  4 : stop postgres"
    echo "                  5 : stop django"
+   echo "                  6 : uwsgi start"
+   echo "                  7 : uwsgi stop"
    exit 1
 fi
 
@@ -46,4 +48,22 @@ if [ "$type" = "5" ]; then
   echo "Stoping Django"
 
   kill $(ps aux | grep 'manage.py'|grep -v grep| awk '{print $2}')
+fi
+if [ "$type" = "6" ]; then
+
+  echo "Starting nginx uwsgi django"
+  pkill uwsgi -9
+  pkill nginx 
+
+  uwsgi /home/dev/uwsgi/hoyai.ini --emperor /home/dev/hoyai &
+  /usr/sbin/nginx
+  sudo chmod 777 /home/dev/hoyai/hoyai.sock
+  kill $(ps aux | grep 'manage.py'|grep -v grep| awk '{print $2}')
+fi
+if [ "$type" = "7" ]; then
+
+  echo "Stoping nginx uwsgi django"
+  pkill uwsgi -9
+  pkill nginx 
+
 fi
