@@ -3,10 +3,12 @@ import os
 
 gLogFloag = "Y"
 gUserId = "-1"
-gUrl = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+#gUrl = "{0}:{1}".format(os.environ['HOSTNAME'], "8000")
 gConpg = "dbname='tensormsa' user='tfmsauser' host='localhost' password='1234'"
 
 def println(printStr):
+
+
     if gLogFloag == "Y":
         conn = psycopg2.connect(gConpg)
         cur = conn.cursor()
