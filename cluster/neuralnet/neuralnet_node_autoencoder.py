@@ -15,13 +15,16 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
 
     def run(self, conf_data):
         try:
-            # init parms
-            node_id = conf_data['node_id']
-            self._init_node_parm(conf_data['node_id'])
-            self.cls_pool = conf_data['cls_pool']
 
-            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'preprocess')
-            train_data_set = self.cls_pool[data_node_name[0]]
+            node_id = conf_data['node_id']
+            # get prev node for load data
+            train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
+
+            # copy data feeder's parm to netconf
+            self._copy_node_parms(train_data_set, self)
+
+            # init parms
+            self._init_node_parm(conf_data['node_id'])
 
             # set autoencoder graph
             self._set_train_model()
@@ -51,49 +54,84 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             set_filepaths(path)
             saver.save(sess, path)
             sess.close()
-            return True
+            return node_id
         except Exception as e:
             raise Exception(e)
-        finally :
-            if (self.embed_type == 'onehot'):
-                self.wf_conf.set_vocab_list(self.onehot_encoder.dics())
 
     def _set_train_model(self):
         """
         set train model for autoencoder
         :return:
         """
-        self.x = tf.placeholder(tf.float32, shape=[self.batch_size, self.n_input], name='x')
-        self.y = self.x
-        W_encode = tf.Variable(tf.random_normal([self.n_input, self.n_hidden]))
-        b_encode = tf.Variable(tf.random_normal([self.n_hidden]))
+        try :
+            self.x = tf.placeholder(tf.float32, shape=[self.batch_size, self.n_input], name='x')
+            self.y = self.x
+            W_encode = {}
+            b_encode = {}
+            W_decode = {}
+            b_decode = {}
+            encoder = {}
+            decoder = {}
 
-        W_decode = tf.Variable(tf.random_normal([self.n_hidden, self.n_input]))
-        b_decode = tf.Variable(tf.random_normal([self.n_input]))
+            self.n_hidden = [self.n_input] + self.n_hidden
+            encoder_input = self.x
+            for cnt in range(len(self.n_hidden)) :
+                if(len(self.n_hidden) > cnt+1) :
+                    W_encode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt], self.n_hidden[cnt+1]]))
+                    b_encode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt+1]]))
+                    encoder[cnt] = tf.nn.sigmoid(tf.add(tf.matmul(encoder_input, W_encode[cnt]), b_encode[cnt]))
+                    encoder_input = encoder[cnt]
+                    decoder_input = encoder[cnt]
 
-        # TODO:need to make activation func able to be changed with parms
-        encoder = tf.nn.sigmoid(tf.add(tf.matmul(self.x, W_encode), b_encode))
-        decoder = tf.nn.sigmoid(tf.add(tf.matmul(encoder, W_decode), b_decode))
+            for cnt in reversed(range(len(self.n_hidden))):
+                if (cnt - 1 >= 0):
+                    W_decode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt], self.n_hidden[cnt-1]]))
+                    b_decode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt-1]]))
+                    decoder[cnt] = tf.nn.sigmoid(tf.add(tf.matmul(decoder_input, W_decode[cnt]), b_decode[cnt]))
+                    decoder_input = decoder[cnt]
 
-        self.cost = tf.reduce_mean(tf.pow(self.y - decoder, 2))
-        self.optimizer = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.cost)
+            self.cost = tf.reduce_mean(tf.pow(self.y - decoder[1], 2))
+            self.optimizer = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.cost)
+        except Exception as e :
+            raise Exception ("error on build autoencoder train graph")
 
     def _set_predict_model(self):
         """
         set train model for autoencoder
         :return:
         """
-        self.x = tf.placeholder(tf.float32, shape=[1, self.n_input], name='x')
-        self.y = self.x
-        W_encode = tf.Variable(tf.random_normal([self.n_input, self.n_hidden]))
-        b_encode = tf.Variable(tf.random_normal([self.n_hidden]))
+        try :
+            self.x = tf.placeholder(tf.float32, shape=[1, self.n_input], name='x')
+            self.y = self.x
+            W_encode = {}
+            b_encode = {}
+            W_decode = {}
+            b_decode = {}
+            encoder = {}
+            decoder = {}
 
-        W_decode = tf.Variable(tf.random_normal([self.n_hidden, self.n_input]))
-        b_decode = tf.Variable(tf.random_normal([self.n_input]))
+            self.n_hidden = [self.n_input] + self.n_hidden
+            encoder_input = self.x
+            for cnt in range(len(self.n_hidden)) :
+                if(len(self.n_hidden) > cnt+1) :
+                    W_encode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt], self.n_hidden[cnt+1]]))
+                    b_encode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt+1]]))
+                    encoder[cnt] = tf.nn.sigmoid(tf.add(tf.matmul(encoder_input, W_encode[cnt]), b_encode[cnt]))
+                    encoder_input = encoder[cnt]
+                    decoder_input = encoder[cnt]
 
-        # TODO:need to make activation func able to be changed with parms
-        self.encoder = tf.nn.sigmoid(tf.add(tf.matmul(self.x, W_encode), b_encode))
-        self.decoder = tf.nn.sigmoid(tf.add(tf.matmul(self.encoder, W_decode), b_decode))
+            for cnt in reversed(range(len(self.n_hidden))):
+                if (cnt - 1 >= 0):
+                    W_decode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt], self.n_hidden[cnt-1]]))
+                    b_decode[cnt] = tf.Variable(tf.random_normal([self.n_hidden[cnt-1]]))
+                    decoder[cnt] = tf.nn.sigmoid(tf.add(tf.matmul(decoder_input, W_decode[cnt]), b_decode[cnt]))
+                    decoder_input = decoder[cnt]
+
+            self.comp_vec = encoder[len(self.n_hidden)-2]
+            self.recov_vec = decoder[1]
+
+        except Exception as e :
+            raise Exception ("error on build autoencoder train graph")
 
     def _run_train(self, sess, data_set):
         """
@@ -103,11 +141,18 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         try :
             for epoch in range(self.iter_size):
                 total_cost = 0
-                _, cost_val = sess.run([self.optimizer, self.cost], feed_dict={self.x: self._word_embed_data(data_set)})
+                _, cost_val = sess.run([self.optimizer, self.cost], feed_dict={self.x: data_set})
                 total_cost += cost_val
                 print('Epoch:', '%04d' % (epoch + 1), 'Avg. cost =', '{:.6f}'.format(total_cost / self.n_input))
         except Exception as e :
             raise Exception ('autoencoder run_train step error : {0}'.foramt(e) )
+
+    def _get_node_parm(self, node_id):
+        """
+        return conf master class
+        :return:
+        """
+        return WFNetConfAuto(node_id)
 
     def _init_node_parm(self, node_id):
         """
@@ -122,14 +167,19 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             self.iter_size = wf_conf.get_iter_size()
             self.batch_size = wf_conf.get_batch_size()
             self.learning_rate = wf_conf.get_learn_rate()
-            self.n_hidden = wf_conf.get_n_hidden()
-            self.n_input = wf_conf.get_n_input()
-            self.word_len = int(self.n_input/wf_conf.get_vocab_size())
             self.embed_type = wf_conf.get_embed_type()
-            self.word_vector_size = wf_conf.get_vocab_size() + 4
+            if(self.embed_type == 'onehot') :
+                self.word_len = wf_conf.get_encode_len()
+                self.word_vector_size = wf_conf.get_vocab_size() + 4
+                self.n_input = int(self.word_len) * (self.word_vector_size)
             self.onehot_encoder = OneHotEncoder(self.word_vector_size)
             if (wf_conf.get_vocab_list()):
                 self.onehot_encoder.restore(wf_conf.get_vocab_list())
+
+            self.n_hidden = wf_conf.get_n_hidden()
+            if(wf_conf.get_n_input()) :
+                self.n_input = wf_conf.get_n_input()
+
         except Exception as e :
             raise Exception (e)
 
@@ -148,6 +198,9 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             # off onehot to add dict on predict time
             if (self.embed_type == 'onehot'):
                 self.onehot_encoder.off_edit_mode()
+                input_arr = [self._pos_tag_predict_data(parm['input_data'], self.word_len)]
+            else :
+                raise Exception ("AutoEncoder : Unknown embed type error ")
 
             # create tensorflow session
             init = tf.global_variables_initializer()
@@ -161,66 +214,19 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 set_filepaths(path)
                 saver.restore(sess, path)
             else:
-                raise Exception("error : no pretrained model exist")
+                raise Exception("Autoencoder error : no pretrained model exist")
 
-            word_list = [self._pos_tag_predict_data(parm['input_data'])]
             if (parm['type'] == 'encoder'):
-                result = sess.run(self.encoder, feed_dict={self.x: self._word_embed_data(np.array(word_list))})
+                result = sess.run(self.comp_vec, feed_dict={self.x: self._word_embed_data(self.embed_type,
+                                                                                          np.array(input_arr))})
             if (parm['type'] == 'decoder'):
-                result = sess.run(self.decoder, feed_dict={self.x: self._word_embed_data(np.array(word_list))})
+                result = sess.run(self.recov_vec, feed_dict={self.x: self._word_embed_data(self.embed_type,
+                                                                                           np.array(input_arr))})
             return result.tolist()
         except Exception as e :
             raise Exception (e)
         finally :
             sess.close()
-
-    def _word_embed_data(self, input_data):
-        """
-        change word to vector
-        :param input_data:
-        :return:
-        """
-        return_arr = []
-        if(self.embed_type == 'onehot'):
-            for data in input_data:
-                row_arr = []
-                for row in data :
-                    row_arr = row_arr + self.onehot_encoder.get_vector(row).tolist()
-                return_arr.append(row_arr)
-            return return_arr
-        elif(self.embed_type == None) :
-            return []
-        else :
-            raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(self.word_embed_type))
-
-    def _pos_tag_predict_data(self, x_input):
-        """
-
-        :param x_input:
-        :return:
-        """
-        word_list = []
-        mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
-        for word_tuple in self._pad_predict_input(mecab.pos(x_input)):
-            if (len(word_tuple[1]) > 0):
-                word = ''.join([word_tuple[0], "/", word_tuple[1]])
-            else:
-                word = word_tuple[0]
-            word_list.append(word)
-        return word_list
-
-    def _pad_predict_input(self, input_tuple):
-        """
-        pad chars for prediction
-        :param input_tuple:
-        :return:
-        """
-        pad_size = self.word_len - (len(input_tuple) + 1)
-        if(pad_size >= 0 ) :
-            input_tuple = pad_size * [('#', '')] + input_tuple[0: self.word_len -1] + [('SF', '')]
-        else :
-            input_tuple = input_tuple[0: self.word_len-1] + [('SF', '')]
-        return input_tuple
 
     def _set_progress_state(self):
         return None
