@@ -1,4 +1,5 @@
 from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
+from master import models
 
 class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
     """
@@ -89,6 +90,57 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
             self.conf = self.get_view_obj(self.key)
         return self.conf.get('n_hidden')
 
+    def get_encode_column(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['encode_column']
+
+    def get_encode_len(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['encode_len']
+
+    def get_preprocess_type(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf['preprocess']
+
+    def set_vocab_list(self, data):
+        """
+
+        :param node_id:
+        :return:
+        """
+        obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
+        config_data = getattr(obj, 'node_config_data')
+        config_data['vocab_list'] = data
+        obj.save()
+
+    def get_vocab_list(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('vocab_list')
+
     def get_vocab_size(self):
         """
         get vocab size for onhot encoder
@@ -106,13 +158,3 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
         return self.conf.get('embed_type')
-
-    def get_vocab_list(self):
-        """
-
-        :param node_id:
-        :return:
-        """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('vocab_list')

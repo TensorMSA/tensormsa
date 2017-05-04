@@ -38,6 +38,23 @@ class WorkFlowCommon:
             raise Exception(e)
         return None
 
+    def update_view_obj(self, node_id, input_data):
+        """
+        set net config data edited on view
+        :param obj:
+        :return:
+        """
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            data_set = getattr(obj, "node_config_data")
+            data_set.update(input_data)
+            setattr(obj, "node_config_data", data_set)
+            obj.save()
+            return input_data
+        except Exception as e:
+            raise Exception(e)
+        return None
+
     def get_state_id(self, node_id):
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)

@@ -606,3 +606,70 @@ class WorkFlowCommonNode :
             return row[0]['nn_wf_node_id']
         else :
             raise Exception ("No Active version Exist for predict service !")
+
+    def _word_embed_data(self, embed_type, input_data):
+        """
+        change word to vector
+        :param input_data:
+        :return:
+        """
+        return_arr = []
+        if(embed_type == 'onehot'):
+            for data in input_data:
+                row_arr = []
+                for row in data :
+                    row_arr = row_arr + self.onehot_encoder.get_vector(row).tolist()
+                return_arr.append(row_arr)
+            return return_arr
+        elif(embed_type == None) :
+            return input_data
+        else :
+            raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(embed_type))
+
+    def _pos_tag_predict_data(self, x_input, word_len):
+        """
+
+        :param x_input:
+        :return:
+        """
+        word_list = []
+        mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
+        for word_tuple in self._pad_predict_input(mecab.pos(x_input), word_len):
+            if (len(word_tuple[1]) > 0):
+                word = ''.join([word_tuple[0], "/", word_tuple[1]])
+            else:
+                word = word_tuple[0]
+            word_list.append(word)
+        return word_list
+
+    def _pad_predict_input(self, input_tuple, word_len):
+        """
+        pad chars for prediction
+        :param input_tuple:
+        :return:
+        """
+        pad_size = word_len - (len(input_tuple) + 1)
+        if(pad_size >= 0 ) :
+            input_tuple = pad_size * [('#', '')] + input_tuple[0: word_len -1] + [('SF', '')]
+        else :
+            input_tuple = input_tuple[0: word_len-1] + [('SF', '')]
+        return input_tuple
+
+    def _copy_node_parms(self, from_node, to_node):
+        """
+        copy node parm from a to b and save
+        :param from_node:
+        :param to_node:
+        :return:
+        """
+        f_id = from_node.get_node_name()
+        t_id = to_node.get_node_name()
+        from_node_dict = from_node._get_node_parm(f_id)
+        to_node_dict = to_node._get_node_parm(t_id)
+        input_dict = {}
+        for key in from_node_dict.get_view_obj(f_id).keys():
+            if(key not in to_node_dict.get_view_obj(t_id).keys()) :
+                input_dict[key] = from_node_dict.get_view_obj(f_id)[key]
+        to_node_dict.update_view_obj(t_id, input_dict)
+    def _get_node_parm(self):
+        return self.wf_conf
