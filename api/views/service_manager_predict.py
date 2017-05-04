@@ -8,6 +8,7 @@ from cluster.service.service_predict_renet import PredictNetRenet
 from cluster.service.service_predict_wdnn import PredictNetWdnn
 from cluster.service.service_predict_seq2seq import PredictNetSeq2Seq
 from cluster.service.service_predict_autoencoder import PredictNetAutoEncoder
+from cluster.service.service_predict_anomaly import PredictNetAnomaly
 from common.utils import *
 
 class ServiceManagerPredict(APIView):
@@ -37,6 +38,8 @@ class ServiceManagerPredict(APIView):
                     #return_data = PredictNetRenet().run(nnid, ver, request.FILES)
                     # TO-DO : need to create PredictNetRenet class first
                     raise Exception("on developing now !")
+                elif (type == "anomaly"):
+                    return_data = PredictNetAnomaly().run(nnid, request.data)
                 else :
                     raise Exception ("Not defined type error")
             else :

@@ -2,6 +2,7 @@ from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from master.workflow.netconf.workflow_netconf_autoencoder import WorkFlowNetConfAutoEncoder as WFNetConfAuto
 import tensorflow as tf
 import numpy as np
+from scipy import spatial
 from common.utils import *
 from konlpy.tag import Mecab
 
@@ -42,12 +43,14 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 saver.restore(sess, path)
 
             # feed data and train
-            while (train_data_set.has_next()):
-                for i in range(0, train_data_set.data_size(), self.batch_size):
-                    data_set = train_data_set[i:i + self.batch_size]
-                    if(len(data_set) >= self.batch_size) :
-                        self._run_train(sess, data_set)
-                train_data_set.next()
+            for _ in range(self.iter_size) :
+                while (train_data_set.has_next()):
+                    for i in range(0, train_data_set.data_size(), self.batch_size):
+                        data_set = train_data_set[i:i + self.batch_size]
+                        if(len(data_set) >= self.batch_size) :
+                            self._run_train(sess, data_set)
+                    train_data_set.next()
+                train_data_set.reset_pointer()
 
             # save model and close session
             path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
@@ -139,11 +142,8 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         :return:
         """
         try :
-            for epoch in range(self.iter_size):
-                total_cost = 0
-                _, cost_val = sess.run([self.optimizer, self.cost], feed_dict={self.x: data_set})
-                total_cost += cost_val
-                print('Epoch:', '%04d' % (epoch + 1), 'Avg. cost =', '{:.6f}'.format(total_cost / self.n_input))
+            _, cost_val = sess.run([self.optimizer, self.cost], feed_dict={self.x: data_set})
+            print('Avg. cost =', '{:.6f}'.format(cost_val / self.n_input))
         except Exception as e :
             raise Exception ('autoencoder run_train step error : {0}'.foramt(e) )
 
@@ -183,7 +183,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         except Exception as e :
             raise Exception (e)
 
-    def predict(self, node_id, parm = {"input_data" : {}, "type": "encoder"}):
+    def predict(self, node_id, parm = {"input_data" : {}, "type": "encoder"}, internal=False):
         """
 
         :param node_id:
@@ -199,6 +199,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             if (self.embed_type == 'onehot'):
                 self.onehot_encoder.off_edit_mode()
                 input_arr = [self._pos_tag_predict_data(parm['input_data'], self.word_len)]
+                input_arr = self._word_embed_data(self.embed_type, np.array(input_arr))
             else :
                 raise Exception ("AutoEncoder : Unknown embed type error ")
 
@@ -217,16 +218,33 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 raise Exception("Autoencoder error : no pretrained model exist")
 
             if (parm['type'] == 'encoder'):
-                result = sess.run(self.comp_vec, feed_dict={self.x: self._word_embed_data(self.embed_type,
-                                                                                          np.array(input_arr))})
+                result = sess.run(self.comp_vec, feed_dict={self.x: input_arr})
             if (parm['type'] == 'decoder'):
-                result = sess.run(self.recov_vec, feed_dict={self.x: self._word_embed_data(self.embed_type,
-                                                                                           np.array(input_arr))})
-            return result.tolist()
+                result = sess.run(self.recov_vec, feed_dict={self.x: input_arr})
+
+            if (internal) :
+                return result.tolist(), input_arr
+            else :
+                return result.tolist()
         except Exception as e :
             raise Exception (e)
         finally :
             sess.close()
+
+    def anomaly_detection(self, node_id, parm = {"input_data" : {}, "type": "encoder"}):
+        """
+        this is a function that judge requested data is out lier of not
+        :param node_id: string
+        :param parm: dict (include input data)
+        :return: boolean
+        """
+        try :
+            parm['type'] = 'decoder'
+            out_data, in_data = self.predict(node_id, parm,  internal=True)
+            dist = 1 - spatial.distance.cosine(in_data[0], out_data[0])
+            return dist
+        except Exception as e :
+            raise Exception ("error on anomaly detection : {0}".format(e))
 
     def _set_progress_state(self):
         return None
