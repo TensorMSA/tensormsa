@@ -102,24 +102,82 @@ DATABASES = {
         'PORT': '',
     }
 }
+""" How to Logging
 
+    log types :
+        log level debug -> debug, info, error, critical
+        log level info -> info, error, critical
+        log level error -> error, critical
+        log level critical -> critical
+    log file path :
+        /root/main_debug.log
+    usages :
+        import logging
+        logging.debug("log leval : {0}".format('debug'))
+        logging.info("log leval : {0}".format('info'))
+        logging.error("log leval : {0}".format('error'))
+        logging.critical("log leval : {0}".format('critical'))
+"""
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
         },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue'
+        }
+    },
+    'formatters': {
+        'main_formatter': {
+            'format': '%(levelname)s:%(name)s: %(message)s '
+                      '(%(asctime)s; %(filename)s:%(lineno)d)',
+            'datefmt': "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'main_formatter',
+        },
+        'production_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/root/main.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 7,
+            'formatter': 'main_formatter',
+            'filters': ['require_debug_false'],
+        },
+        'debug_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/root/main_debug.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 7,
+            'formatter': 'main_formatter',
+            'filters': ['require_debug_true'],
+        }
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
+        'django.request': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'ERROR',
             'propagate': True,
         },
-    },
+        '': {
+            'handlers': ['console', 'production_file', 'debug_file'],
+            'level': "INFO",
+        },
+    }
 }
 
 # Password validation
