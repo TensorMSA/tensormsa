@@ -25,6 +25,11 @@ CELERY_TASK_SERIALIZER = 'json'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+#memcache server setting
+#apt-get install memcached
+#apt-get install python-memcache
+#/etc/init.d/memcached start
+CACHE_BACKEND = 'memcached://' + host + ':11211/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/

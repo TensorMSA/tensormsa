@@ -39,5 +39,6 @@ class CodeRuleManager:
 
         :return:
         """
-        # self._get_all_code_rule
-        # cache.set("key", "value", "time")
+        #sample uses memcache with django.core.cache
+        cache.set("test_sample", "value")
+        cache.get("test_sample")
