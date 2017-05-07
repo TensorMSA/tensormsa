@@ -6,6 +6,9 @@ from scipy import spatial
 from common.utils import *
 from konlpy.tag import Mecab
 
+class NeuralNetAutoEncoderModel :
+    init = None
+
 class NeuralNetNodeAutoEncoder(NeuralNetNode):
     """
     this is a network class for Autoencoder
@@ -132,7 +135,6 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
 
             self.comp_vec = encoder[len(self.n_hidden)-2]
             self.recov_vec = decoder[1]
-
         except Exception as e :
             raise Exception ("error on build autoencoder train graph")
 
@@ -204,7 +206,12 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 raise Exception ("AutoEncoder : Unknown embed type error ")
 
             # create tensorflow session
-            init = tf.global_variables_initializer()
+            if(NeuralNetAutoEncoderModel.init) :
+                init = tf.variables_initializer(NeuralNetAutoEncoderModel.init.inputs)
+            else :
+                init = tf.global_variables_initializer()
+                NeuralNetAutoEncoderModel.init = init
+
             sess = tf.Session()
             sess.run(init)
             saver = tf.train.Saver(tf.all_variables())
