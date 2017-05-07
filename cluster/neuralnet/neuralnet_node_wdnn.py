@@ -14,6 +14,10 @@ import math
 from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame as wf_data_conf
 from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_data_node
 from cluster.common.train_summary_info import TrainSummaryInfo
+#from tensorflow.python.platform import tf_logging as logging
+import logging
+import random
+import shutil, errno
 
 class NeuralNetNodeWdnn(NeuralNetNode):
     """
@@ -21,8 +25,8 @@ class NeuralNetNodeWdnn(NeuralNetNode):
     """
 
     def run(self, conf_data):
-        print("NeuralNetNodeWdnn Run called")
-        return None
+        logging.info("NeuralNetNodeWdnn Run called")
+        #return None
         #return None
         """
                 Wide & Deep Network Training
@@ -33,12 +37,60 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             self._init_node_parm(conf_data['node_id'])
             self.cls_pool = conf_data['cls_pool'] # Data feeder
 
-            print("model_path : " + str(self.model_path))
-            print("hidden_layers : " + str(self.hidden_layers))
-            print("activation_function : " + str(self.activation_function))
-            print("batch_size : " + str(self.batch_size))
-            print("epoch : " + str(self.epoch))
-            print("model_type : " + str(self.model_type))
+            self.train_batch, self.batch = self.make_batch(conf_data['node_id']) #makebatch
+
+            self.before_train_batch = self.get_before_make_batch(conf_data['node_id'], self.batch)  #before train batch
+            self.model_train_before_path = ''.join([self.model_path+'/'+str(self.before_train_batch.nn_batch_ver_id)])
+
+
+
+
+
+            if self.train_batch == None :
+                self.model_train_path = ''.join([self.model_path+'/'+self.batch])
+            else :
+                self.model_train_path = ''.join([self.model_path + '/' + self.train_batch])
+
+
+            #model file copy
+            src = self.model_train_before_path
+            dst =  self.model_train_path
+            utils.copy_all(src, dst)
+
+            # try:
+            #     shutil.copytree(src, dst)
+            #     logging.info("copytree source({0}) to dest ({1})".format(src,dst))
+            # except OSError as exc:  # python >2.5
+            #     if exc.errno == errno.ENOTDIR:
+            #         shutil.copy(src, dst)
+            #         logging.info("copy source({0}) to dest ({1})".format(src, dst))
+            #     else:
+            #         raise
+
+            # for filename in dirfiles:
+            #     shutil.copy(os.path.join(src, filename), dst)
+            #     logging.info("model file copy : {0}".format(filename))
+
+            # import shutil, errno
+            #
+            # def copyanything(src, dst):
+            #     try:
+            #         shutil.copytree(src, dst)
+            #     except OSError as exc:  # python >2.5
+            #         if exc.errno == errno.ENOTDIR:
+            #             shutil.copy(src, dst)
+            #         else:
+            #             raise
+
+
+            logging.info("model_path : {0} ".format(self.model_path))
+            logging.info("hidden_layers : {0} ".format(self.hidden_layers))
+            logging.info("activation_function : {0} ".format(self.activation_function))
+            logging.info("batch_size : {0} ".format(self.batch_size))
+            logging.info("epoch : {0} ".format(self.epoch))
+            logging.info("model_type : {0} ".format(self.model_type))
+
+
 
             #self.get_node_name("d")
 
@@ -47,7 +99,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             # make wide & deep model
             wdnn = NeuralCommonWdnn()
-            wdnn_model = wdnn.wdnn_build('regression', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_path))
+            wdnn_model = wdnn.wdnn_build('regression', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_train_path))
 
             #feed
             # TODO file이 여러개면 어떻하지?
@@ -119,7 +171,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #with tf.Session() as sess:
 
         except Exception as e:
-            print ("Error Message : {0}".format(e))
+            logging.error("Error Message : {0}".format(e))
             raise Exception(e)
 
 
@@ -251,7 +303,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         :param parm:
         :return:
         """
-        print("eval_data")
+        logging.info("eval_data")
 
         self._init_node_parm(node_id.split('_')[0] + "_" + node_id.split('_')[1]+ "_" + "netconf_node")
         self.cls_pool_all = conf_data['cls_pool']  # Data feeder
@@ -259,8 +311,10 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         config = {"type": self.model_type, "labels": self.label, "nn_id":conf_data.get('nn_id'), "nn_wf_ver_id":conf_data.get('wf_ver')}
         train = TrainSummaryInfo(conf=config)
         print(config)
-
+        self.batch = self.get_eval_batch(node_id)
         #print(train)
+        self.model_eval_path = ''.join([self.model_path + '/' + self.batch])
+
 
         for _k, _v in self.cls_pool_all.items():
             if 'test' in _k:
@@ -282,8 +336,8 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
         # make wide & deep model
         wdnn = NeuralCommonWdnn()
-        wdnn_model = wdnn.wdnn_build('regression', conf_data['node_id'], self.hidden_layers,
-                                     str(self.activation_function), data_conf_info, str(self.model_path))
+        wdnn_model = wdnn.wdnn_build(self.model_type, conf_data['node_id'], self.hidden_layers,
+                                     str(self.activation_function), data_conf_info, str(self.model_eval_path))
 
         # feed
         # TODO file이 여러개면 어떻하지?
@@ -320,6 +374,8 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 # # Iteration is to improve for Model Accuracy
 
                 # Per Line in file
+                # eval should be one line predict
+                #self.batch_size = 1
 
                 for i in range(0, train_data_set.data_size(), self.batch_size):
 
@@ -331,7 +387,16 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                         input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                                                                   data_set, data_conf_info))
 
-                    data_set['predict_label'] = list(predict_value)
+                    data_set_count = len(data_set.index)
+                    predict_val_list = [_pv for _pv in predict_value]
+                    predict_val_count = len(predict_val_list)
+
+                    if (data_set_count != predict_val_count):
+                        logging.error("wdnn eval error check : dataframe count({0}) predict count({1})".format(data_set_count, predict_val_count))
+                        raise ValueError(
+                            'eval data validation check error : dataframe and predict count is different(neuralnet_node_wdnn.eval)')
+
+                    data_set['predict_label'] = predict_val_list #list(predict_value)
                     #_predict = list(predict_value)
                     predict_y = list(data_set['predict_label'])
 
@@ -340,8 +405,13 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                     pre_list.extend(list(data_set['predict_label']))
 
                     # model fitting
-                    print(ori_list)
-                    print(pre_list)
+                    print(len(ori_list))
+                    print(len(pre_list))
+                    #logging.error("wdnn eval ori list  : {0}".format(ori_list) )
+                    logging.error("wdnn eval ori list  : {0}".format(len(ori_list)) )
+                    #logging.info("wdnn eval ori list  : {0}".format('info'))
+                    #logging.debug("wdnn eval ori list  : {0}".format('debug'))
+                    #logging.critical("wdnn eval ori list  : {0}".format('critical'))
                     #print("model fitting h5 " + str(data_set))
                 # #Select Next file
                 train_data_set.next()

@@ -13,3 +13,4 @@ from .path_util import del_filepaths
 from .common_util import get_combine_label_list
 from .onehot_encoder import OneHotEncoder
 from .path_util import set_filepaths
+from .common_util import copy_all

@@ -122,3 +122,20 @@ class NeuralNetNode(WorkFlowCommonNode):
             return True
         else :
             return False
+
+    def get_before_make_batch(self, node_id, nn_batch_ver_id):
+        """
+        find a batch version for eval, train
+        :param node_id:
+        :return:
+        """
+        netnode = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+        nn_id = netnode.wf_state_id.nn_id
+        nn_wf_ver_id = netnode.wf_state_id.nn_wf_ver_id.nn_wf_ver_id
+        ver_id = models.NN_VER_WFLIST_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=nn_wf_ver_id).id
+        _before_batch_ver_id = nn_batch_ver_id.split('_')[-1]
+        for _i in range(int(_before_batch_ver_id)-1,1,-1): #find maximun version before current batch version
+            before_batch_ver_id = '_'.join([nn_id,str(nn_wf_ver_id),str(_i)])
+            if(models.NN_VER_BATCHLIST_INFO.objects.filter(nn_batch_ver_id=before_batch_ver_id).exists()):
+                return models.NN_VER_BATCHLIST_INFO.objects.get(nn_batch_ver_id=before_batch_ver_id)
+        return None

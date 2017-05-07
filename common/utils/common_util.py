@@ -1,5 +1,7 @@
 import psycopg2
 import os
+import shutil, errno
+import logging
 
 gLogFloag = "Y"
 gUserId = "-1"
@@ -93,3 +95,33 @@ def get_combine_label_list(origin_list, compare_list):
     _origin_list.extend(_diff_values)
 
     return _origin_list
+
+def copy_all(src, dst):
+    """ 디렉토리 안에 파일을 전부 복사 하는 유틸
+         The util that anything(file, directories...) in directory to destination dirctory
+
+    Args:
+      params:
+        * src : source directory
+        * dst: distination directory
+
+    Returns:
+        None
+
+    Raises:
+
+    Example
+        src = /hoya_model_root/nn00001/1/netconf_node/nn00001_1_19
+        dst =/hoya_model_root/nn00001/1/netconf_node/nn00001_1_20
+    """
+
+    try:
+        shutil.copytree(src, dst)
+        logging.info("copytree source({0}) to dest ({1})".format(src, dst))
+    except OSError as exc:  # python >2.5
+        if exc.errno == errno.ENOTDIR:
+            shutil.copy(src, dst)
+            logging.info("copy source({0}) to dest ({1})".format(src, dst))
+        else:
+            logging.error("copy error source({0}) to dest ({1})".format(src, dst))
+            raise exc

@@ -180,7 +180,7 @@ LOGGING = {
         },
         '': {
             'handlers': ['console', 'production_file', 'debug_file'],
-            'level': "INFO",
+            'level': "DEBUG",
         },
     }
 }
