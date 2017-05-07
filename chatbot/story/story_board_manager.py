@@ -18,11 +18,10 @@ class StoryBoardManager(ShareData):
         try:
             if (share_data.get_service_type() == "find_image") :
                 share_data = self._call_service_provider(share_data)
-                #initailize after service called
-                #share_data.initailize_story()
             #Check Essential Entity
             elif (self._check_essential_entity(share_data.get_story_entity().keys(), share_data)) :
                 share_data = self._call_service_provider(share_data)
+            #no match service
             elif (self.story_board_id  == "99"):
                 return share_data
             else :
@@ -40,12 +39,10 @@ class StoryBoardManager(ShareData):
     def _check_essential_entity(self, entity_list, share_data):
         check_value = True
         for entity in self.essential_entity :
-            #if(list(entity_list).count(entity) == 0) :
             if (entity in entity_list):
                 pass
             else :
                 share_data.set_output_data(entity + " 값을 입력해 주세요")
                 check_value = False
                 break
-
         return check_value
