@@ -211,7 +211,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 raise Exception ("AutoEncoder : Unknown embed type error ")
 
             # create tensorflow session
-            if(NeuralNetModel.variable.get(unique_key)) :
+            if(NeuralNetModel.tf.get(unique_key)) :
                 # case1 : cache reuse step
                 m_tf = NeuralNetModel.tf.get(unique_key)
                 init = m_tf.global_variables_initializer()
