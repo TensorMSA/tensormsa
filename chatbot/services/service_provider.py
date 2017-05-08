@@ -22,28 +22,15 @@ class ServiceProvider(ShareData):
         #Exist Story Response
         elif(share_data.get_story_id() != '99') :
             share_data = ResponseGenerator().select_response(share_data)
-
         return share_data
 
     def _external_service_call(self, share_data) :
-        service_type = ShareData.get_service_type()
-
-        if(service_type):
-
-            return None
-        elif(service_type):
-            return None
-
-        # service_type
-        service_type = ShareData.get_service_type()
-
-        if(service_type):
-
-            return None
-        elif(service_type):
-            return None
-
         try:
+            service_type = ShareData.get_service_type()
+            if(service_type):
+                return share_data
+            elif(service_type):
+                return share_data
             #TODO : api call to external rest service and return
             return None
         except Exception as e:

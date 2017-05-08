@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.preprocess.workflow_feed_fr2seq import WorkflowFeedFr2Seq
 from master.workflow.preprocess.workflow_feed_fr2wv import WorkflowFeedFr2Wv
+from master.workflow.preprocess.workflow_feed_fr2auto import WorkflowFeedFr2Auto
 class WorkFlowPreFeeder(APIView) :
     """
 
@@ -17,6 +18,8 @@ class WorkFlowPreFeeder(APIView) :
                 return_data = WorkflowFeedFr2Seq().set_view_obj(nodeid , request.data)
             elif(src == 'frame' and net == 'word2vec') :
                 return_data = WorkflowFeedFr2Wv().set_view_obj(nodeid, request.data)
+            elif (src == 'frame' and net == 'autoencoder'):
+                return_data = WorkflowFeedFr2Auto().set_view_obj(nodeid, request.data)
             else :
                 raise Exception("not supported converting type")
             return Response(json.dumps(return_data))
@@ -45,6 +48,8 @@ class WorkFlowPreFeeder(APIView) :
                 return_data = WorkflowFeedFr2Seq().set_view_obj(nodeid , request.data)
             elif (src == 'frame' and net == 'word2vec'):
                 return_data = WorkflowFeedFr2Wv(nodeid).set_view_obj(nodeid, request.data)
+            elif (src == 'frame' and net == 'autoencoder'):
+                return_data = WorkflowFeedFr2Auto().set_view_obj(nodeid, request.data)
             else :
                 raise Exception("not supported converting type")
             return Response(json.dumps(return_data))

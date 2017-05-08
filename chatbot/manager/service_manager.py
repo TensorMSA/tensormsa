@@ -44,12 +44,10 @@ class ServiceManager:
             share_ctx = self.chat_share_data.load_json(req_ctx)
 
             # 2. nlp process
-            # TODO : kim seung woo
             share_ctx = self.entity_analyzer.parse(share_ctx)
             share_ctx = self.intent_analyzer.parse(share_ctx)
 
             # 3. decision maker
-            # TODO : kim su sang
             share_ctx = self.decision_maker.run(share_ctx)
             print("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
             # 4. return result as json

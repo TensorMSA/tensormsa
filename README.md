@@ -26,8 +26,8 @@
    - version 0.1 target date : 2017.5
 
 <b>4. Stack </b></br>
-   - FE : React(ES6), SVG, D3, Pure CSS
-   - BE : Django & Rest F/W, Tensorflow, PostgreSQL, Spark, Celery, RabbitMQ, HDF5
+   - FE(not supported this version) : React(ES6), SVG, D3, Pure CSS, Mobile(for Chatbot FW)
+   - BE : Django(Python 3.5), Restful Service(Micro Service Architecture), Tensorflow(v1.2), PostgreSQL, Memcache, Celery, Spqrk QL, HDF5, Ngix, Gensim, Konlpy
 
 <b>5. Methodology </b></br>
    - Agile (CI, TDD, Pair programming and Cloud)

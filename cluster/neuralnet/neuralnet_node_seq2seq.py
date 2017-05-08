@@ -16,7 +16,6 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             # init parms for word2vec node
             node_id = conf_data['node_id']
             self._init_node_parm(node_id)
-            self.cls_pool = conf_data['cls_pool']
 
             # get prev node for load data
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]

@@ -74,8 +74,10 @@ class WorkFlowSimpleManager :
             self._create_predefined_nodes_seq2seq(state_id)
         elif(type == 'seq2seq_csv') :
             self._create_predefined_nodes_seq2seq_csv(state_id)
-        elif(type == 'autoencoder'):
-            self._create_predefined_nodes_autoencoder(state_id)
+        elif(type == 'autoencoder_img'):
+            self._create_predefined_nodes_autoencoder_img(state_id)
+        elif(type == 'autoencoder_csv'):
+            self._create_predefined_nodes_autoencoder_csv(state_id)
         elif(type == 'word2vec_frame'):
             self._create_predefined_nodes_word2vec_frame(state_id)
         else :
@@ -977,7 +979,7 @@ class WorkFlowSimpleManager :
         finally:
             return True
 
-    def _create_predefined_nodes_autoencoder(self, wf_state_id):
+    def _create_predefined_nodes_autoencoder_img(self, wf_state_id):
         """
 
         :return:
@@ -998,7 +1000,7 @@ class WorkFlowSimpleManager :
             # feed node
             input_data = {}
             input_data['nn_wf_node_id'] = str(wf_state_id) + '_feed_img2auto_train'
-            input_data['nn_wf_node_name'] = '_feed_img2auto_train'
+            input_data['nn_wf_node_name'] = 'feed_img2auto_train'
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['wf_task_submenu_id'] = 'pre_feed_img2auto'
             input_data['wf_node_status'] = 0
@@ -1028,6 +1030,65 @@ class WorkFlowSimpleManager :
             input_data = {}
             input_data['wf_state_id'] = str(wf_state_id)
             input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_feed_img2auto_train'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
+            self.__put_nn_wf_node_relation(input_data)
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
+
+    def _create_predefined_nodes_autoencoder_csv(self, wf_state_id):
+        """
+
+        :return:
+        """
+        try:
+            # data node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_name'] = 'datasrc'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'data_frame'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # feed node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_feed_train'
+            input_data['nn_wf_node_name'] = 'feed_train'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'pre_feed_fr2auto'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            # net conf node
+            input_data = {}
+            input_data['nn_wf_node_id'] = str(wf_state_id) + '_netconf_node'
+            input_data['nn_wf_node_name'] = 'netconf_node'
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['wf_task_submenu_id'] = 'autoencoder'
+            input_data['wf_node_status'] = 0
+            input_data['node_config_data'] = {}
+            input_data['node_draw_x'] = 0
+            input_data['node_draw_y'] = 0
+            self.__put_nn_wf_node_info(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_datasrc'
+            input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_feed_train'
+            self.__put_nn_wf_node_relation(input_data)
+
+            input_data = {}
+            input_data['wf_state_id'] = str(wf_state_id)
+            input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_feed_train'
             input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_netconf_node'
             self.__put_nn_wf_node_relation(input_data)
 

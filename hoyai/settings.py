@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import platform
 
-host = os.environ['HOSTNAME']
-
+#host = os.environ['HOSTNAME']
+host = platform.uname()[1]
 #CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
 #CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c:5672//52.79.201.93'
 CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@'+host+'//'
@@ -24,6 +25,11 @@ CELERY_TASK_SERIALIZER = 'json'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+#memcache server setting
+#apt-get install memcached
+#apt-get install python-memcache
+#/etc/init.d/memcached start
+CACHE_BACKEND = 'memcached://' + host + ':11211/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -54,6 +60,7 @@ INSTALLED_APPS = [
     'common.apps.CommonConfig',
     'gui.apps.GuiConfig',
     'master.apps.MasterConfig',
+    'chatbot.apps.ChatbotConfig',
 ]
 
 MIDDLEWARE = [
@@ -101,8 +108,83 @@ DATABASES = {
         'PORT': '',
     }
 }
+""" How to Logging
 
-
+    log types :
+        log level debug -> debug, info, error, critical
+        log level info -> info, error, critical
+        log level error -> error, critical
+        log level critical -> critical
+    log file path :
+        /root/main_debug.log
+    usages :
+        import logging
+        logging.debug("log leval : {0}".format('debug'))
+        logging.info("log leval : {0}".format('info'))
+        logging.error("log leval : {0}".format('error'))
+        logging.critical("log leval : {0}".format('critical'))
+"""
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue'
+        }
+    },
+    'formatters': {
+        'main_formatter': {
+            'format': '%(levelname)s:%(name)s: %(message)s '
+                      '(%(asctime)s; %(filename)s:%(lineno)d)',
+            'datefmt': "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'main_formatter',
+        },
+        'production_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/root/main.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 7,
+            'formatter': 'main_formatter',
+            'filters': ['require_debug_false'],
+        },
+        'debug_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/root/main_debug.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 7,
+            'formatter': 'main_formatter',
+            'filters': ['require_debug_true'],
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        '': {
+            'handlers': ['console', 'production_file', 'debug_file'],
+            'level': "DEBUG",
+        },
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
