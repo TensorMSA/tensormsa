@@ -5,9 +5,7 @@ import numpy as np
 from scipy import spatial
 from common.utils import *
 from konlpy.tag import Mecab
-
-class NeuralNetAutoEncoderModel :
-    init = None
+from common.graph.nn_graph_manager import NeuralNetModel
 
 class NeuralNetNodeAutoEncoder(NeuralNetNode):
     """
@@ -193,9 +191,16 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         :return:
         """
         try :
+            # get unique key
+            unique_key = '_'.join([node_id , self.get_eval_batch(node_id)])
+
             # set init params
             self._init_node_parm(node_id)
-            self._set_predict_model()
+            if (NeuralNetModel.dict.get(unique_key)):
+                self.__dict__ = NeuralNetModel.dict
+            else :
+                self._set_predict_model()
+                NeuralNetModel.dict = self.__dict__
 
             # off onehot to add dict on predict time
             if (self.embed_type == 'onehot'):
@@ -206,19 +211,24 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 raise Exception ("AutoEncoder : Unknown embed type error ")
 
             # create tensorflow session
-            if(NeuralNetAutoEncoderModel.init) :
-                init = tf.variables_initializer(NeuralNetAutoEncoderModel.init.inputs)
+            if(NeuralNetModel.variable.get(unique_key)) :
+                # case1 : cache reuse step
+                m_tf = NeuralNetModel.tf.get(unique_key)
+                init = m_tf.global_variables_initializer()
+                sess = m_tf.Session()
+                sess.run(init)
+                saver = m_tf.train.Saver(m_tf.all_variables())
             else :
+                # case2 : initialize step
                 init = tf.global_variables_initializer()
-                NeuralNetAutoEncoderModel.init = init
-
-            sess = tf.Session()
-            sess.run(init)
-            saver = tf.train.Saver(tf.all_variables())
+                sess = tf.Session()
+                sess.run(init)
+                saver = tf.train.Saver(tf.all_variables())
+                NeuralNetModel.tf[unique_key] = tf
 
             # load trained model
             if (self.check_batch_exist(self.node_id)):
-                path = ''.join([self.md_store_path, '/', self.get_eval_batch(self.node_id), '/'])
+                path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
                 set_filepaths(path)
                 saver.restore(sess, path)
             else:
