@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'common.apps.CommonConfig',
     'gui.apps.GuiConfig',
     'master.apps.MasterConfig',
-    'chatbot.apps.ChatbotConfig'
+    'chatbot.apps.ChatbotConfig',
 ]
 
 MIDDLEWARE = [

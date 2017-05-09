@@ -153,6 +153,22 @@ class ShareData(ChatBotConfManager):
         """
         return self.intent_name
 
+    def set_input_data(self, data):
+        """
+
+        :param data:
+        :return:
+        """
+        self.input_data = data
+
+    def get_input_data(self):
+        """
+
+        :param data:
+        :return:
+        """
+        return self.input_data
+
     def set_request_data(self, data):
         """
         intent id

@@ -26,7 +26,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
     def run(self, conf_data):
         logging.info("NeuralNetNodeWdnn Run called")
-        #return None
+        return None
         #return None
         """
                 Wide & Deep Network Training
@@ -40,7 +40,9 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             self.train_batch, self.batch = self.make_batch(conf_data['node_id']) #makebatch
 
             self.before_train_batch = self.get_before_make_batch(conf_data['node_id'], self.batch)  #before train batch
-            self.model_train_before_path = ''.join([self.model_path+'/'+str(self.before_train_batch.nn_batch_ver_id)])
+
+            if self.before_train_batch != None:
+                self.model_train_before_path = ''.join([self.model_path+'/'+str(self.before_train_batch.nn_batch_ver_id)])
 
 
 
@@ -53,9 +55,10 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
 
             #model file copy
-            src = self.model_train_before_path
-            dst =  self.model_train_path
-            utils.copy_all(src, dst)
+            if self.before_train_batch != None:
+                src = self.model_train_before_path
+                dst =  self.model_train_path
+                utils.copy_all(src, dst)
 
             # try:
             #     shutil.copytree(src, dst)
@@ -408,7 +411,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                     print(len(ori_list))
                     print(len(pre_list))
                     #logging.error("wdnn eval ori list  : {0}".format(ori_list) )
-                    logging.error("wdnn eval ori list  : {0}".format(len(ori_list)) )
+                    logging.info("wdnn eval ori list  : {0}".format(len(ori_list)) )
                     #logging.info("wdnn eval ori list  : {0}".format('info'))
                     #logging.debug("wdnn eval ori list  : {0}".format('debug'))
                     #logging.critical("wdnn eval ori list  : {0}".format('critical'))
@@ -419,22 +422,14 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             results['ori'] = ori_list
             results['pre'] = pre_list
             train.set_result_info(ori_list, pre_list)
+            train.set_nn_batch_ver_id(self.batch)
+            #return self.batch
         except Exception as e:
             print("eval error")
             print(e)
             raise Exception(e)
 
-
-
-            # results = wdnn_model.evaluate(
-            # input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
-            #                                         eval_data_Set, data_conf_info), steps=200)
-
-        #for key in sorted(results):
-        #    print("%s: %s" % (key, results[key]))
-
-        # feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
-        print("end")
+        logging.info("eval end")
         return train
         # with tf.Session() as sess:
 
