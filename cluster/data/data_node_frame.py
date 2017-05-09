@@ -14,6 +14,9 @@ from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFra
 from common import utils
 import csv
 from sklearn.preprocessing import LabelEncoder
+import logging
+from common.utils import *
+import shutil
 
 class DataNodeFrame(DataNode):
     """
@@ -94,6 +97,13 @@ class DataNodeFrame(DataNode):
                                 # Todo Have to remove if production
                                 self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read,_label, _labe_type)
 
+                    dir = self.data_src_path+"/backup"
+                    if not os.path.exists(dir):
+                        os.makedirs(dir)
+                        #os.mkdir(self.data_src_path+"/backup")
+
+                    file_name_bk = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".csvbk"
+                    shutil.copy(file_path,self.data_src_path+"/backup/"+file_name_bk )
                     os.remove(file_path) #승우씨것
             except Exception as e:
                 raise Exception(e)
@@ -189,8 +199,12 @@ class DataNodeFrame(DataNode):
                 #print(col)
                 #print(value)
                 if col in _CATEGORICAL_COLUMNS:
+                    if isnan(value):
+                        value = ""
                     example.features.feature[col].bytes_list.value.extend([str.encode(value)])
                 elif col in _CONTINUOUS_COLUMNS:
+                    if isnan(value):
+                        value = 0
                     example.features.feature[col].int64_list.value.extend([int(value)])
                 #'income_bracket'
                 #'fnlwgt'
@@ -214,6 +228,8 @@ class DataNodeFrame(DataNode):
 
             return example
         except Exception as e:
+            logging.error("make tfrecord column {0} value {0}".format(col,value))
+            logging.error("make tfrecord rows {0}".format(row))
             raise Exception(e)
 
 

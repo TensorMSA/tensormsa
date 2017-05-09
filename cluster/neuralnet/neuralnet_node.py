@@ -134,7 +134,7 @@ class NeuralNetNode(WorkFlowCommonNode):
         nn_wf_ver_id = netnode.wf_state_id.nn_wf_ver_id.nn_wf_ver_id
         ver_id = models.NN_VER_WFLIST_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=nn_wf_ver_id).id
         _before_batch_ver_id = nn_batch_ver_id.split('_')[-1]
-        for _i in range(int(_before_batch_ver_id)-1,1,-1): #find maximun version before current batch version
+        for _i in range(int(_before_batch_ver_id)-1,0,-1): #find maximun version before current batch version
             before_batch_ver_id = '_'.join([nn_id,str(nn_wf_ver_id),str(_i)])
             if(models.NN_VER_BATCHLIST_INFO.objects.filter(nn_batch_ver_id=before_batch_ver_id).exists()):
                 return models.NN_VER_BATCHLIST_INFO.objects.get(nn_batch_ver_id=before_batch_ver_id)

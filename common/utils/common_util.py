@@ -2,6 +2,7 @@ import psycopg2
 import os
 import shutil, errno
 import logging
+import math
 
 gLogFloag = "Y"
 gUserId = "-1"
@@ -125,3 +126,27 @@ def copy_all(src, dst):
         else:
             logging.error("copy error source({0}) to dest ({1})".format(src, dst))
             raise exc
+
+def isnan(value):
+    """ Pandas에서 Nan 검사하는 유틸
+         The function is Nan Check in pandas
+  
+    Args:
+      params:
+        * value : anything
+  
+    Returns:
+        True / False
+  
+    Raises:
+  
+    Example
+        isnan('hello') == False
+        isnan('NaN') == True
+        isnan(100) == False
+        isnan(float('nan')) = True
+    """
+    try:
+      return math.isnan(float(value))
+    except:
+      return False
