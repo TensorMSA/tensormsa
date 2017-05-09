@@ -27,32 +27,39 @@ class CB_STORYBOARD_LIST_INFO(models.Model):
     story_desc = models.CharField(max_length=50, blank=True)
 
 class CB_ENTITY_LIST_INFO(models.Model):
-    cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    intent_id = models.ForeignKey(CB_INTENT_LIST_INFO, on_delete=models.CASCADE)
+    story_id = models.ForeignKey(CB_STORYBOARD_LIST_INFO, on_delete=models.CASCADE)
     entity_type = models.CharField(max_length=10, blank=False)
     entity_list = JSONField()
 
 class CB_MODEL_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     nn_id = models.CharField(max_length=10, blank=False)
+    nn_purpose = models.CharField(max_length=10, blank=False)
     nn_type = models.CharField(max_length=10, blank=False)
     nn_desc = models.CharField(max_length=50, blank=False)
 
 class CB_SERVICE_LIST_INFO(models.Model):
     story_id = models.ForeignKey(CB_STORYBOARD_LIST_INFO, on_delete=models.CASCADE)
     service_type = models.CharField(max_length=10, blank=True)
+    service_name = models.CharField(max_length=10, blank=True)
     service_model = models.CharField(max_length=10, blank=True)
     service_url = models.CharField(max_length=100, blank=True)
     nn_id = models.CharField(max_length=10, blank=True)
 
 class CB_RESPONSE_LIST_INFO(models.Model):
     story_id = models.ForeignKey(CB_STORYBOARD_LIST_INFO, on_delete=models.CASCADE)
+    response_type = models.CharField(max_length=10, blank=True)
     output_entity = JSONField()
     output_data = models.CharField(max_length=50, blank=True)
+    nn_id = models.CharField(max_length=10, blank=True)
 
 class CB_NLP_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    nlp_type = models.CharField(max_length=10, blank=True)
+    pos_type = models.CharField(max_length=10, blank=True)
     custom_data = models.CharField(max_length=50, blank=True)
 
+class CB_ONTOLOGY_INFO(models.Model):
+    cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
+    ontology_id = models.CharField(max_length=10, blank=True)
+    ontology_desc = models.CharField(max_length=50, blank=True)
 
