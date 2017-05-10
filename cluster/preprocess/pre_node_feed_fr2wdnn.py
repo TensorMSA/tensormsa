@@ -159,8 +159,8 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             _label = self.label
             _label_calues = self.label_values
 
-            df = df.dropna(how='any', axis=0)
-            # df_test = df_test.dropna(how='any', axis=0)
+            #df = df.dropna(how='any', axis=0)
+            df_test = df.dropna(how='any', axis=0)
 
             ##Make List for Continuous, Categorical Columns
             CONTINUOUS_COLUMNS = []
@@ -187,8 +187,8 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             # Check Continuous Column is exsist?
             if len(CONTINUOUS_COLUMNS) > 0:
                 # print(CONTINUOUS_COLUMNS)
-
-                continuous_cols = {k: tf.constant(df[k].values) for k in CONTINUOUS_COLUMNS}
+                #null 값 처리를 위해서 fillna사용
+                continuous_cols = {k: tf.constant(df[k].fillna(0).values) for k in CONTINUOUS_COLUMNS}
             # Check Categorical Column is exsist?
             if len(CATEGORICAL_COLUMNS) > 0:
 
@@ -197,7 +197,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
                 categorical_cols = {k: tf.SparseTensor(
                     indices=[[i, 0] for i in range(df[k].size)],
-                    values=df[k].values,
+                    values=df[k].replace(['nan','Nan'],'').values,
                     dense_shape=[df[k].size, 1])
                                     for k in CATEGORICAL_COLUMNS}
 

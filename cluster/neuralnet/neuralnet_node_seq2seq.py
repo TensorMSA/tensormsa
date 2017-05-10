@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 from common.utils import *
 from konlpy.tag import Mecab
+from common.graph.nn_graph_manager import NeuralNetModel
 
 class NeuralNetNodeSeq2Seq(NeuralNetNode):
     """
@@ -16,7 +17,6 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             # init parms for word2vec node
             node_id = conf_data['node_id']
             self._init_node_parm(node_id)
-            self.cls_pool = conf_data['cls_pool']
 
             # get prev node for load data
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
@@ -139,20 +139,49 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param parm:
         :return:
         """
-        # set init params
-        self.node_id = node_id
-        self._init_node_parm(self.node_id)
-        # prepare net conf
-        tf.reset_default_graph()
-        self._set_predict_model()
-        # create session
-        sess = tf.Session()
-        sess.run(tf.initialize_all_variables())
-        result = self._run_predict(sess, parm['input_data'],
-                                   predict_num=parm.get("num") if parm.get("num") != None else 0,
-                                   clean_ans = parm.get("clean_ans") if parm.get("clean_ans") != None else True)
-        sess.close()
-        return result
+        try :
+            # get unique key
+            unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
+
+            # set init params
+            self.node_id = node_id
+            self._init_node_parm(self.node_id)
+
+            # prepare net conf
+            tf.reset_default_graph()
+
+            ## create tensorflow graph
+            if (NeuralNetModel.dict.get(unique_key)):
+                self.__dict__ = NeuralNetModel.dict
+            else :
+                self._set_predict_model()
+                NeuralNetModel.dict = self.__dict__
+
+            # create session
+            if (NeuralNetModel.tf.get(unique_key)):
+                # case1 : cache reuse step
+                m_tf = NeuralNetModel.tf.get(unique_key)
+                init = m_tf.global_variables_initializer()
+                sess = m_tf.Session()
+                sess.run(init)
+                temp_tf = m_tf
+            else:
+                # case2 : initialize step
+                init = tf.global_variables_initializer()
+                sess = tf.Session()
+                sess.run(init)
+                NeuralNetModel.tf[unique_key] = tf
+                temp_tf = tf
+
+            result = self._run_predict(sess, parm['input_data'],
+                                       predict_num=parm.get("num") if parm.get("num") != None else 0,
+                                       clean_ans = parm.get("clean_ans") if parm.get("clean_ans") != None else True,
+                                       tf = temp_tf)
+            return result
+        except Exception as e :
+            raise Exception ("seq2seq predict error : {0}".format(e))
+        finally:
+            sess.close()
 
     def eval(self, node_id, conf, data=None, result=None):
         """
@@ -410,7 +439,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         except Exception as e :
             raise Exception (e)
 
-    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0, batch_ver='eval'):
+    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0, batch_ver='eval', tf = None):
         """
         run actual predict
         :return:

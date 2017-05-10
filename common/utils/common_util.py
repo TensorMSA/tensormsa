@@ -1,12 +1,17 @@
 import psycopg2
 import os
+import shutil, errno
+import logging
+import math
 
 gLogFloag = "Y"
 gUserId = "-1"
-gUrl = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+#gUrl = "{0}:{1}".format(os.environ['HOSTNAME'], "8000")
 gConpg = "dbname='tensormsa' user='tfmsauser' host='localhost' password='1234'"
 
 def println(printStr):
+
+
     if gLogFloag == "Y":
         conn = psycopg2.connect(gConpg)
         cur = conn.cursor()
@@ -91,3 +96,57 @@ def get_combine_label_list(origin_list, compare_list):
     _origin_list.extend(_diff_values)
 
     return _origin_list
+
+def copy_all(src, dst):
+    """ 디렉토리 안에 파일을 전부 복사 하는 유틸
+         The util that anything(file, directories...) in directory to destination dirctory
+
+    Args:
+      params:
+        * src : source directory
+        * dst: distination directory
+
+    Returns:
+        None
+
+    Raises:
+
+    Example
+        src = /hoya_model_root/nn00001/1/netconf_node/nn00001_1_19
+        dst =/hoya_model_root/nn00001/1/netconf_node/nn00001_1_20
+    """
+
+    try:
+        shutil.copytree(src, dst)
+        logging.info("copytree source({0}) to dest ({1})".format(src, dst))
+    except OSError as exc:  # python >2.5
+        if exc.errno == errno.ENOTDIR:
+            shutil.copy(src, dst)
+            logging.info("copy source({0}) to dest ({1})".format(src, dst))
+        else:
+            logging.error("copy error source({0}) to dest ({1})".format(src, dst))
+            raise exc
+
+def isnan(value):
+    """ Pandas에서 Nan 검사하는 유틸
+         The function is Nan Check in pandas
+  
+    Args:
+      params:
+        * value : anything
+  
+    Returns:
+        True / False
+  
+    Raises:
+  
+    Example
+        isnan('hello') == False
+        isnan('NaN') == True
+        isnan(100) == False
+        isnan(float('nan')) = True
+    """
+    try:
+      return math.isnan(float(value))
+    except:
+      return False

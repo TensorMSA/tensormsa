@@ -2,6 +2,7 @@ from cluster.eval.eval_node import EvalNode
 from cluster.common.train_summary_info import TrainSummaryInfo
 from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
 from master import serializers
+import logging
 
 class EvalNodeExtra(EvalNode):
     """
@@ -30,7 +31,8 @@ class EvalNodeExtra(EvalNode):
                 serializer.save()
             return input_data['result_info']
         except Exception as e:
-            print(result.get_result_info())
+            #print(result.get_result_info())
+            logging.error(e)
             raise Exception(e)
 
     def _init_node_parm(self, node_id):
