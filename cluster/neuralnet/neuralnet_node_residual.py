@@ -15,6 +15,16 @@ import operator
 from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
 from keras.applications.resnet50 import preprocess_input
 from keras.preprocessing import image
+from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
+
+class History(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.losses = []
+        self.acc = []
+
+    def on_batch_end(self, batch, logs={}):
+        self.losses.append(str(logs.get('loss')))
+        self.acc.append(str(logs.get('acc')))
 
 class NeuralNetNodeReNet(NeuralNetNode):
     """
@@ -40,6 +50,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
             early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
             csv_logger = CSVLogger('resnet18_cifar10.csv')
+            history = History()
 
             data_config = WorkFlowDataImage().get_step_source(data_node_name[0])
             preprocess = data_config['preprocess']
@@ -110,7 +121,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
                               nb_epoch=self.nb_epoch,
                               validation_data=(X_test, Y_test),
                               shuffle=True,
-                              callbacks=[lr_reducer, early_stopper, csv_logger])
+                              callbacks=[lr_reducer, early_stopper, csv_logger, history])
                 else:
                     print('Using real-time data augmentation.')
                     # This will do preprocessing and realtime data augmentation:
@@ -140,6 +151,12 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
             os.makedirs(self.md_store_path+'/'+self.batch, exist_ok=True)
             keras.models.save_model(model,''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
+            config = {"nn_id": conf_data["nn_id"],
+                      "nn_wf_ver_id": conf_data["wf_ver"], "nn_batch_ver_id": self.batch}
+            result = TrainSummaryAccLossInfo(config)
+            result.loss_info["loss"] = history.losses
+            result.acc_info["acc"] = history.acc
+            self.save_accloss_info(result)
         except Exception as e:
             raise Exception(e)
         finally:
