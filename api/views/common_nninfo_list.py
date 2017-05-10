@@ -2,6 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.network.nn_common_manager import NNCommonManager
+import logging
 
 class CommonNNInfoList(APIView):
     """
@@ -24,8 +25,11 @@ class CommonNNInfoList(APIView):
         - desc : get cnn configuration data
         """
         try:
+            logging.info("% called")
             condition = {}
             condition['nn_id'] = nnid
+            if str(nnid).lower() == 'all':
+                condition['nn_id'] = '%'
             return_data = NNCommonManager().get_nn_info(condition)
             return Response(json.dumps(return_data))
         except Exception as e:
