@@ -38,7 +38,7 @@ Bellow is the pratice version of hoya which shows the concept of our project wel
 
 # Overview - ChatBot Frame Work
 We are working on chatbot F/W based on stroy board and ontology. Benefit of this chatbot F/W is it uses neural networks created on Hoyai neural network management system. This means you can reuse various kind of AI models (※ CNN,ReNet, Wdnn, Seq2Seq, Word2Vec, Doc2Vec, Autoencode) on this chat bot F/W.   
-[![HOYA ChatBot ver0.1](https://github.com/TensorMSA/TensorMSA/blob/master/chat_bot_alpha.jpg?raw=true)](https://youtu.be/x9bvkXJ-JeQ "HOYA ChatBot ver0.1 - Click to Watch!")
+[![HOYA ChatBot ver0.1](https://github.com/TensorMSA/TensorMSA/blob/master/chat_bot_alpha.jpg?raw=true)](https://youtu.be/TZsLuGv6_bU "HOYA ChatBot ver0.1 - Click to Watch!")
 
 # Set Development & Run Env with Docker  *[(Link)](https://github.com/TensorMSA/hoyai_docker)*
 <b>1.Download Docker Images </b> </br>
