@@ -70,6 +70,14 @@ class TRAIN_SUMMARY_RESULT_INFO_Serializer(serializers.ModelSerializer):
         model = models.TRAIN_SUMMARY_RESULT_INFO
         fields = ('nn_id', 'nn_wf_ver_id', 'nn_batch_ver_id', 'result_info')
 
+class TRAIN_SUMMARY_ACCLOSS_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : TRAIN_SUMMARY_ACCLOSS_INFO
+    """
+    class Meta:
+        model = models.TRAIN_SUMMARY_ACCLOSS_INFO
+        fields = ('nn_id', 'nn_wf_ver_id', 'nn_batch_ver_id', 'acc_info', 'loss_info')
+
 class NN_VER_BATCHLIST_INFO_Serializer(serializers.ModelSerializer):
     """
     Table : NN_VER_BATCHLIST_INFO

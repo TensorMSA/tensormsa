@@ -23,7 +23,7 @@ class EvalNodeExtra(EvalNode):
             input_data = {}
             input_data['nn_id'] = result.get_nn_id()
             input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
-            input_data['nn_batch_ver_id'] = 1
+            input_data['nn_batch_ver_id'] = result.get_nn_batch_ver_id()
             input_data['result_info'] = result.get_result_info()
             serializer = serializers.TRAIN_SUMMARY_RESULT_INFO_Serializer(data=input_data)
             if serializer.is_valid():

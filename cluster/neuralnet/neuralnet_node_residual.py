@@ -229,10 +229,10 @@ class NeuralNetNodeReNet(NeuralNetNode):
             self.cls_pool = parm['cls_pool']
             self._init_node_parm(self.get_node_name())
             eval_data_set = self.cls_pool[self.wf_state_id + '_' + self.eval_feed_node]
-            config = {"type": eval_config_data["type"], "labels": self.labels, "nn_id": parm["nn_id"],
-                      "nn_wf_ver_id": parm["wf_ver"]}
-            train = TrainSummaryInfo(conf=config)
             self.batch = self.get_eval_batch(node_id)
+            config = {"type": eval_config_data["type"], "labels": self.labels, "nn_id": parm["nn_id"],
+                      "nn_wf_ver_id": parm["wf_ver"], "nn_batch_ver_id" : self.batch}
+            train = TrainSummaryInfo(conf=config)
             if (os.path.exists(''.join([self.md_store_path+'/'+self.batch, '/model.bin'])) == True):
                 model = keras.models.load_model(''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
             else:

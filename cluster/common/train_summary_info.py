@@ -16,6 +16,7 @@ class TrainSummaryInfo:
             self.set_result_data_format(conf)
             self.nn_id = conf.get('nn_id')
             self.nn_wf_ver_id = conf.get('nn_wf_ver_id')
+            self.nn_batch_ver_id = conf.get('nn_batch_ver_id')
 
     def set_result_data_format(self, config):
         """

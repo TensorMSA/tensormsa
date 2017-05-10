@@ -122,3 +122,19 @@ class NeuralNetNode(WorkFlowCommonNode):
             return True
         else :
             return False
+
+    def save_accloss_info(self, result):
+        try:
+            input_data = {}
+            input_data['nn_id'] = result.get_nn_id()
+            input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
+            input_data['nn_batch_ver_id'] = result.get_nn_batch_ver_id()
+            input_data['acc_info'] = result.get_acc_info()
+            input_data['loss_info'] = result.get_loss_info()
+            serializer = serializers.TRAIN_SUMMARY_ACCLOSS_INFO_Serializer(data=input_data)
+            if serializer.is_valid():
+                serializer.save()
+            return input_data
+        except Exception as e:
+            print(result)
+            raise Exception(e)
