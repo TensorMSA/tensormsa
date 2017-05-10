@@ -25,14 +25,13 @@ class CommonNNInfoList(APIView):
         - desc : get cnn configuration data
         """
         try:
-            logging.info("% called")
             condition = {}
             condition['nn_id'] = nnid
             if str(nnid).lower() == 'all':
                 condition['nn_id'] = '%'
             return_data = NNCommonManager().get_nn_info(condition)
             logging.info(return_data)
-            return Response(json.dumps(return_data))
+            return Response(json.dumps(return_data, cls=DjangoJSONEncoder))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data, cls=DjangoJSONEncoder))
