@@ -1,15 +1,16 @@
 import requests
 import json, os
 from common.utils import *
-url = gUrl
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
-nn_id = "nn00011"
+nn_id = "mro001"
 biz_cate = "ERP"
 biz_sub_cate = "MRO"
 nn_title = "MRO Image Classification"
 nn_desc = "MRO Image Classification"
 nn_wf_ver_info = "MRO Image Classification"
 network_type = "cnn"
+# network_type = "renet"
 
 # CNN Network : Create
 # (CNN Network를 생성해 준다. ID가 같은 CNN Network가 있으면 재 생성 하지 않는다.)

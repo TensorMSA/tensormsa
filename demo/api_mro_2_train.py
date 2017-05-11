@@ -12,8 +12,8 @@ from common.utils import *
 # ./manage.py runserver 2fb1ece74beb:8000 --noreload
 
 println("S")
-url = gUrl
-nn_id = "nn00011"
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+nn_id = "mro001"
 wf_ver_id = 0
 
 # get workflow version
@@ -33,17 +33,18 @@ node = "netconf_node"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                          "param":{"epoch": 1
-                                  ,"traincnt": 5
+                                  ,"traincnt": 1
                                   ,"batch_size":25000
                                   ,"predictcnt": 10
                          },
                          "config": {"num_classes":10,
                                     "learnrate": 0.001,
-                                     "layeroutputs":32,
-                                     "type":"category"
+                                    "layeroutputs":32,
+                                    "net_type":"cnn",
+                                    "eval_type":"category",
+                                    "optimizer":"AdamOptimizer" #RMSPropOptimizer
                                      }
-                         ,"layer1": {"type": "cnn",
-                                     "active": "relu",
+                         ,"layer1": {"active": "relu",
                                      "cnnfilter": [3, 3],
                                      "cnnstride": [1, 1],
                                      "maxpoolmatrix": [2, 2],
@@ -52,11 +53,10 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                      "droprate": "0.8",
                                      "layercnt":2
                                     }
-                         ,"layer2": {"type": "cnn",
-                                     "active": "relu",
+                         ,"layer2": {"active": "relu",
                                      "cnnfilter": [3, 3],
                                      "cnnstride": [1, 1],
-                                     "maxpoolmatrix": [2, 2],
+                                     "maxpoolmatrix": [1, 1],
                                      "maxpoolstride": [2, 2],
                                      "padding": "SAME",
                                      "droprate": "0.8",

@@ -66,17 +66,26 @@ class DataNodeImage(DataNode):
                 filelist = os.listdir(directory + '/' + forder)
                 for filename in filelist:
                     try:
-                        if channel == 3:
-                            image = Image.open(directory + '/' + forder + '/' + filename)
-                        else:
-                            image = Image.open(directory + '/' + forder + '/' + filename).convert('L')
-                        image = image.resize((x_size, y_size), Image.ANTIALIAS)
-                        image = np.array(image)
+                        #PNG -> JPEG
+                        img = Image.open(directory + '/' + forder + '/' + filename)
+                        pngidx = str(type(img)).find("PngImageFile")
+                        if pngidx > -1:
+                            img = img.convert("RGBA")
+                            bg = Image.new("RGBA", img.size, (255, 255, 255))
+                            bg.paste(img, (0, 0), img)
+                            filename = "Conv_" + str(filename)
+                            bg.save(directory + '/' + forder + '/' + filename)
 
-                        image = image.reshape([-1, x_size, y_size, channel])
-                        image = image.flatten()
-                        image_arr.append(image)
-                        shape_arr.append(image.shape)
+                        if channel == 1:
+                            img = img.convert('L')
+
+                        img = img.resize((x_size, y_size), Image.ANTIALIAS)
+                        img = np.array(img)
+
+                        img = img.reshape([-1, x_size, y_size, channel])
+                        img = img.flatten()
+                        image_arr.append(img)
+                        shape_arr.append(img.shape)
                         lable_arr.append(forder.encode('utf8'))
                         name_arr.append(filename.encode('utf8'))
                         filecnt += 1
