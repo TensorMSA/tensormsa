@@ -67,12 +67,9 @@ class NeuralCommonWdnn():
             featureDeepEmbedding = {key:tf.contrib.layers.embedding_column(value, dimension=8) for key, value in featureColumnCategorical.items()}
 
 
-
-
             # Json에서 Continuous Colums 가져옴
             featureColumnContinuous = {cn:tf.contrib.layers.real_valued_column(cn)
                                     for cn, c_value in j_feature.items() if c_value["column_type"] == "CONTINUOUS"}
-
 
 
             if _label in featureColumnContinuous:
