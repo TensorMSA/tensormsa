@@ -26,7 +26,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
     def run(self, conf_data):
         logging.info("NeuralNetNodeWdnn Run called")
-        return None
+        #return None
         #return None
         """
                 Wide & Deep Network Training
@@ -168,6 +168,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             for key in sorted(results):
                 print("%s: %s" % (key, results[key]))
+                logging.info("train data eval result : {0} : {1}".format(key, results[key]))
 
             #feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
             print("end")
