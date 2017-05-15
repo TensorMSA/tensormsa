@@ -39,17 +39,45 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 #                            })
 # data = json.loads(resp.json())
 
+#
+# resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
+#                      json={"label": "AT"
+#                             , "Transformations":{}
+#                             , "cross_cell":{}
+#                             , "cell_feature":{}
+#                             , "extend_cell_feature" :{}
+#                             , "label_values" : []
+#                             , "label_type" : "CONTINUOUS"
+#                            })
+# data = json.loads(resp.json())
+#
+# print("evaluation result : {0}".format(data))
+#
+#
+
+# resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
+#                      json={"label": "SUCCESSFUL_BID_PRICE"
+#                             , "Transformations":{}
+#                             , "cross_cell":{}
+#                             , "cell_feature":{}
+#                             , "extend_cell_feature" :{}
+#                             , "label_values" : []
+#                             , "label_type" : "CONTINUOUS"
+#                            })
+# data = json.loads(resp.json())
+
+
 
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
-                     json={"label": "SUCESSFUL_BID_PRICE"
+                     json={"label": "SLAB_SUR_MAIN_DEF_CD2"
                             , "Transformations":{}
                             , "cross_cell":{}
                             , "cell_feature":{}
                             , "extend_cell_feature" :{}
-                           ,"label_values" : []
-                           ,"label_type" : "CONTINUOUS"
+                            , "label_values" : []
+                            , "label_type" : "CATEGORICAL"
                            })
 data = json.loads(resp.json())
 
+
 print("evaluation result : {0}".format(data))
-#

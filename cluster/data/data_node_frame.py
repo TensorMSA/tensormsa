@@ -226,7 +226,7 @@ class DataNodeFrame(DataNode):
                     else:
                         trans = le.transform([value])[0] # 무조껀 0번째임
                         example.features.feature['label'].int64_list.value.extend([int(trans)])
-                    #inverse_label = le.inverse_transform([trans])
+                        #inverse_label = le.inverse_transform([trans])
 
                     #print(value + " ori : " + str(ori) + "    convert label convert :" + str(trans) + "    inverse label :" + str(inverse_label))
 
@@ -390,7 +390,7 @@ class DataNodeFrame(DataNode):
 
         label_values = dict()
 
-        label_values = pd.unique(df[label].values.ravel().astype(int)).tolist()
+        label_values = pd.unique(df[label].values.ravel().astype('str')).tolist()
         # DATACONF_FRAME_CALL
         #wf_data_config.put_step_source(node_id, label_values)
         return label_values
