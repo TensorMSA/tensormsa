@@ -112,6 +112,8 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfSeq2Seq.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/renet/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfRenet.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/wcnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfWcnn.as_view())),
 
     # workflow - test APIs
     url(r'^api/v1/type/wf/state/eval/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',

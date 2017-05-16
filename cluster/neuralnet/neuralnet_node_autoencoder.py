@@ -22,9 +22,6 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             # get prev node for load data
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
 
-            # copy data feeder's parm to netconf
-            self._copy_node_parms(train_data_set, self)
-
             # init parms
             self._init_node_parm(conf_data['node_id'])
 
@@ -33,34 +30,36 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
 
             # create tensorflow session
             init = tf.global_variables_initializer()
-            sess = tf.Session()
-            sess.run(init)
-            saver = tf.train.Saver(tf.all_variables())
+            with  tf.Session() as sess :
+                sess.run(init)
+                saver = tf.train.Saver(tf.all_variables())
 
-            # load trained model
-            if (self.check_batch_exist(conf_data['node_id'])):
-                path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+                # load trained model
+                if (self.check_batch_exist(conf_data['node_id'])):
+                    path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+                    set_filepaths(path)
+                    saver.restore(sess, path)
+
+                # feed data and train
+                for _ in range(self.iter_size) :
+                    while (train_data_set.has_next()):
+                        for i in range(0, train_data_set.data_size(), self.batch_size):
+                            data_set = train_data_set[i:i + self.batch_size]
+                            if(len(data_set) >= self.batch_size) :
+                                self._run_train(sess, data_set)
+                        train_data_set.next()
+                    train_data_set.reset_pointer()
+
+                # save model and close session
+                path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
                 set_filepaths(path)
-                saver.restore(sess, path)
-
-            # feed data and train
-            for _ in range(self.iter_size) :
-                while (train_data_set.has_next()):
-                    for i in range(0, train_data_set.data_size(), self.batch_size):
-                        data_set = train_data_set[i:i + self.batch_size]
-                        if(len(data_set) >= self.batch_size) :
-                            self._run_train(sess, data_set)
-                    train_data_set.next()
-                train_data_set.reset_pointer()
-
-            # save model and close session
-            path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
-            set_filepaths(path)
-            saver.save(sess, path)
-            sess.close()
+                saver.save(sess, path)
             return node_id
         except Exception as e:
             raise Exception(e)
+        finally :
+            # copy data feeder's parm to netconf
+            self._copy_node_parms(train_data_set, self)
 
     def _set_train_model(self):
         """
