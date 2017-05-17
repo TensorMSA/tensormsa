@@ -10,7 +10,7 @@ from common.utils import *
 import shutil
 import tensorflow as tf
 from third_party.yolo.yolo.net.yolo_tiny_net import YoloTinyNet
-import cv2
+# import cv2
 
 
 class DataNodeImage(DataNode):
@@ -157,26 +157,26 @@ class DataNodeImage(DataNode):
 
                             img = img.resize((self.x_size, self.y_size), Image.ANTIALIAS)
                             img = np.array(img)
-                            try:
-                                if yolo == "Y" or yolo == "y":
-                                    resized_img = cv2.resize(img, (self.x_size, self.y_size))
-
-                                    y_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2RGB)
-                                    y_img = y_img.astype(np.float32)
-                                    y_img = y_img / 255.0 * 2 - 1
-                                    y_img = np.reshape(y_img, (1, self.x_size, self.y_size, self.channel))
-                                    np_predict = sess.run(predicts, feed_dict={img_ph: y_img})
-                                    xmin, ymin, xmax, ymax, class_num = self.process_predicts(np_predict)
-                                    resized_img = resized_img[int(ymin):int(ymax), int(xmin):int(xmax)]
-
-                                    if yolo == "y":
-                                        set_filepaths(self.output_yolo+ '/' + forder)
-                                        np_img = Image.fromarray(resized_img)
-                                        np_img.save(self.output_yolo + '/' + forder + '/' + filename)
-                                        img = cv2.resize(resized_img, (self.x_size, self.y_size))
-                            except Exception as e:
-                                print("yolo file save error......................................." + str(filename))
-                                print(e)
+                            # try:
+                            #     if yolo == "Y" or yolo == "y":
+                            #         resized_img = cv2.resize(img, (self.x_size, self.y_size))
+                            #
+                            #         y_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2RGB)
+                            #         y_img = y_img.astype(np.float32)
+                            #         y_img = y_img / 255.0 * 2 - 1
+                            #         y_img = np.reshape(y_img, (1, self.x_size, self.y_size, self.channel))
+                            #         np_predict = sess.run(predicts, feed_dict={img_ph: y_img})
+                            #         xmin, ymin, xmax, ymax, class_num = self.process_predicts(np_predict)
+                            #         resized_img = resized_img[int(ymin):int(ymax), int(xmin):int(xmax)]
+                            #
+                            #         if yolo == "y":
+                            #             set_filepaths(self.output_yolo+ '/' + forder)
+                            #             np_img = Image.fromarray(resized_img)
+                            #             np_img.save(self.output_yolo + '/' + forder + '/' + filename)
+                            #             img = cv2.resize(resized_img, (self.x_size, self.y_size))
+                            # except Exception as e:
+                            #     print("yolo file save error......................................." + str(filename))
+                            #     print(e)
 
                             img = img.reshape([-1, self.x_size, self.y_size, self.channel])
                             img = img.flatten()
