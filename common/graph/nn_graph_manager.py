@@ -4,3 +4,5 @@ class NeuralNetModel :
     graph = {}
     sess = {}
     tf = {}
+    init = {}
+    saver = {}

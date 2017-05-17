@@ -1,5 +1,6 @@
 from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
 from master import models
+from common.utils import *
 
 class WorkFlowNetConfWideCnn(WorkFlowNetConf):
     """
@@ -147,3 +148,122 @@ class WorkFlowNetConfWideCnn(WorkFlowNetConf):
         """
         return self.conf.get("vocab_list")
 
+    @property
+    def encode_column(self):
+        """
+        getter for WorkflowFeedFr2Wcnn conf
+        :param node_id:
+        :return:
+        """
+        return self.conf['encode_column']
+
+    @property
+    def encode_channel(self):
+        """
+        getter for WorkflowFeedFr2Wcnn conf
+        :param node_id:
+        :return:
+        """
+        return self.conf['channel']
+
+    @property
+    def get_decode_column(self):
+        """
+        getter for WorkflowFeedFr2Wcnn conf
+        :param node_id:
+        :return:
+        """
+        return self.conf['decode_column']
+
+    @property
+    def lable_size(self):
+        """
+        getter for WorkflowFeedFr2Wcnn conf
+        :param node_id:
+        :return:
+        """
+        return self.conf['lable_size']
+
+    @property
+    def get_preprocess_type(self):
+        """
+        getter for WorkflowFeedFr2Wcnn conf
+        :param node_id:
+        :return:
+        """
+        return self.conf['preprocess']
+
+    @property
+    def get_vocab_size(self):
+        """
+        get vocab size for onhot encoder
+        :return:
+        """
+        return self.conf.get('vocab_size')
+
+    @property
+    def word_vector_size(self):
+        """
+        get vocab size for onhot encoder
+        :return:
+        """
+        return int(self.conf.get('vocab_size')) + 4
+
+    @property
+    def encode_len(self):
+        """
+        getter for WorkflowFeedFr2Wcnn conf
+        :param node_id:
+        :return:
+        """
+        return self.conf['encode_len']
+
+    @property
+    def embed_type(self):
+        """
+        get vector embed type
+        :return:
+        """
+        return self.conf.get('embed_type')
+
+    @property
+    def get_vocab_list(self):
+        """
+        get vector embed type
+        :param node_id:
+        :return:
+        """
+        return self.conf.get("vocab_list")
+
+    @property
+    def get_lable_list(self):
+        """
+        get vector embed type
+        :param node_id:
+        :return:
+        """
+        return self.conf.get("lable_list")
+
+    @property
+    def lable_onehot(self):
+        """
+        get vector embed type
+        :param node_id:
+        :return:
+        """
+        lable_onehot = OneHotEncoder(self.lable_size)
+        if (self.get_lable_list):
+            lable_onehot.restore(self.get_lable_list)
+        return lable_onehot
+
+    @property
+    def input_onehot(self):
+        """
+        get vector embed type
+        :param node_id:
+        :return:
+        """
+        input_onehot = OneHotEncoder(self.word_vector_size)
+        if (self.get_vocab_list):
+            input_onehot.restore(self.get_vocab_list)
+        return input_onehot

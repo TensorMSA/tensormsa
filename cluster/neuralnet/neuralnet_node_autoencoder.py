@@ -22,6 +22,9 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             # get prev node for load data
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
 
+            # copy data feeder's parm to netconf
+            self._copy_node_parms(train_data_set, self)
+
             # init parms
             self._init_node_parm(conf_data['node_id'])
 
@@ -132,6 +135,8 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
 
             self.comp_vec = encoder[len(self.n_hidden)-2]
             self.recov_vec = decoder[1]
+            self.init_val = tf.initialize_all_variables()
+            self.saver = tf.train.Saver(tf.all_variables())
         except Exception as e :
             raise Exception ("error on build autoencoder train graph")
 
@@ -195,11 +200,15 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
 
             # set init params
             self._init_node_parm(node_id)
+            ## create tensorflow graph
             if (NeuralNetModel.dict.get(unique_key)):
-                self.__dict__ = NeuralNetModel.dict
-            else :
+                self = NeuralNetModel.dict.get(unique_key)
+                graph = NeuralNetModel.graph.get(unique_key)
+            else:
                 self._set_predict_model()
-                NeuralNetModel.dict = self.__dict__
+                NeuralNetModel.dict[unique_key] = self
+                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+                graph = tf.get_default_graph()
 
             # off onehot to add dict on predict time
             if (self.embed_type == 'onehot'):
@@ -209,39 +218,27 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             else :
                 raise Exception ("AutoEncoder : Unknown embed type error ")
 
-            # create tensorflow session
-            if(NeuralNetModel.tf.get(unique_key)) :
-                # case1 : cache reuse step
-                m_tf = NeuralNetModel.tf.get(unique_key)
-                init = m_tf.global_variables_initializer()
-                sess = m_tf.Session()
-                sess.run(init)
-                saver = m_tf.train.Saver(m_tf.all_variables())
-            else :
-                # case2 : initialize step
-                init = tf.global_variables_initializer()
-                sess = tf.Session()
-                sess.run(init)
-                saver = tf.train.Saver(tf.all_variables())
-                NeuralNetModel.tf[unique_key] = tf
+            with tf.Session(graph=graph) as sess :
+                sess.run(self.init_val)
+                # load trained model
+                if (self.check_batch_exist(self.node_id)):
+                    path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+                    set_filepaths(path)
+                    self.saver.restore(sess, path)
+                else:
+                    raise Exception("Autoencoder error : no pretrained model exist")
 
-            # load trained model
-            if (self.check_batch_exist(self.node_id)):
-                path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
-                set_filepaths(path)
-                saver.restore(sess, path)
-            else:
-                raise Exception("Autoencoder error : no pretrained model exist")
+                # decide which layer to return
+                if (parm['type'] == 'encoder'):
+                    result = sess.run(self.comp_vec, feed_dict={self.x: input_arr})
+                if (parm['type'] == 'decoder'):
+                    result = sess.run(self.recov_vec, feed_dict={self.x: input_arr})
 
-            if (parm['type'] == 'encoder'):
-                result = sess.run(self.comp_vec, feed_dict={self.x: input_arr})
-            if (parm['type'] == 'decoder'):
-                result = sess.run(self.recov_vec, feed_dict={self.x: input_arr})
-
-            if (internal) :
-                return result.tolist(), input_arr
-            else :
-                return result.tolist()
+                # for eval purpose return original data together
+                if (internal) :
+                    return result.tolist(), input_arr
+                else :
+                    return result.tolist()
         except Exception as e :
             raise Exception (e)
         finally :

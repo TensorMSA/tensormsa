@@ -5,6 +5,7 @@ import tensorflow as tf
 import io, logging
 from cluster.common.train_summary_info import TrainSummaryInfo
 from common.graph.nn_graph_manager import NeuralNetModel
+import numpy as np
 
 class NeuralNetNodeWideCnn(NeuralNetNode):
     """
@@ -55,15 +56,18 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         :param self:
         :return:
         """
-        # set data parm
-        self.dataconf = dataconf
-        self.x_size = dataconf.word_vector_size
-        self.y_size = dataconf.encode_len
-        self.channel = dataconf.encode_channel
-        self.num_classes = dataconf.lable_size
-        self.embed_type = dataconf.embed_type
-        self.lable_onehot = dataconf.lable_onehot
-        self.input_onehot = dataconf.input_onehot
+        try :
+            # set data parm
+            self.dataconf = dataconf
+            self.x_size = dataconf.word_vector_size
+            self.y_size = dataconf.encode_len
+            self.channel = dataconf.encode_channel
+            self.num_classes = dataconf.lable_size
+            self.embed_type = dataconf.embed_type
+            self.lable_onehot = dataconf.lable_onehot
+            self.input_onehot = dataconf.input_onehot
+        except Exception as e :
+            raise Exception ("error on set up data conf : {0}".format(e))
 
     def _get_node_parm(self, node_id):
         """
@@ -102,10 +106,10 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             # create session and run train
             with tf.Session() as sess:
                 # initialize session
-                sess.run(tf.initialize_all_variables())
+                sess.run(self.init_val)
 
                 # restore saved model
-                saver = tf.train.Saver(tf.all_variables())
+                saver = self.saver
                 if (self.check_batch_exist(conf_data['node_id'])):
                     path = ''.join([self.model_path, '/', self.get_eval_batch(self.node_id), '/'])
                     set_filepaths(path)
@@ -141,7 +145,6 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
             X = tf.placeholder(tf.float32, shape=[None, self.x_size, self.y_size, self.channel], name='x')
             Y = tf.placeholder(tf.float32, shape=[None, self.num_classes], name='y')
-            stopper = 1
             model = X
             numoutputs = self.numoutputs
 
@@ -211,7 +214,8 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             self.accuracy = accuracy
             self.global_step = global_step
             self.cost = cost
-
+            self.init_val = tf.initialize_all_variables()
+            self.saver = tf.train.Saver(tf.all_variables())
         except Exception as e:
             raise Exception("WCNN graph prepare error : {0}".format(e))
 
@@ -253,21 +257,20 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             lables =  self.dataconf.wf_conf.get_lable_list
             result.set_result_data_format({"labels":lables})
             tf.reset_default_graph()
+            # prepare net conf
+            self.get_model(self.netconf, "P")
             with tf.Session() as sess :
-                sess.run(tf.initialize_all_variables())
-                # prepare net conf
-                self.get_model(self.netconf, "P")
+                sess.run(self.init_val)
                 self.node_id = node_id
-
                 while (data.has_next()):
                     for i in range(0, data.data_size(), self.predict_batch):
                         data_set = data[i:i + self.predict_batch]
                         if (len(data_set[0]) != self.predict_batch): break
                         predict = self._run_predict(sess,
                                                     data_set[0][0],
-                                                    tf=tf)
+                                                    saver=self.saver)
                         result.set_result_info(lables[data_set[1][0].index(1.0)],
-                                               lables[predict[0][0]])
+                                               lables[predict[0]])
                     data.next()
             return result
         except Exception as e :
@@ -299,33 +302,25 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
 
             ## create tensorflow graph
             if (NeuralNetModel.dict.get(unique_key)):
-                self.__dict__ = NeuralNetModel.dict
+                self = NeuralNetModel.dict.get(unique_key)
+                graph = NeuralNetModel.graph.get(unique_key)
             else:
                 self.get_model(self.netconf, "P")
-                NeuralNetModel.dict = self.__dict__
+                NeuralNetModel.dict[unique_key] = self
+                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+                graph = tf.get_default_graph()
 
-            # create session
-            if (NeuralNetModel.tf.get(unique_key)):
-                # case1 : cache reuse step
-                m_tf = NeuralNetModel.tf.get(unique_key)
-                init = m_tf.global_variables_initializer()
-                sess = m_tf.Session()
-                sess.run(init)
-                temp_tf = m_tf
-            else:
-                # case2 : initialize step
-                init = tf.global_variables_initializer()
-                sess = tf.Session()
-                sess.run(init)
-                NeuralNetModel.tf[unique_key] = tf
-                temp_tf = tf
-            return self._run_predict(sess, parm['input_data'], tf=temp_tf, type='raw')
+            with tf.Session(graph=graph) as sess :
+                sess.run(self.init_val)
+                return self._run_predict(sess,
+                                         parm['input_data'],
+                                         batch_ver='eval',  # TODO : need to manage predict version too
+                                         type='raw',
+                                         saver=self.saver)
         except Exception as e :
             raise Exception ("wcnn predict prepare process error : {0}".format(e))
-        finally :
-            sess.close()
 
-    def _run_predict(self, sess, x_input, tf=None, batch_ver='eval', type='pre'):
+    def _run_predict(self, sess, x_input, batch_ver='eval', type='pre', saver=None):
         """
 
         :param filelist:
@@ -333,7 +328,8 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         """
         try :
             #restore model
-            saver = tf.train.Saver(tf.all_variables())
+            if (saver == None) :
+                tf.train.Saver(tf.all_variables())
             if (batch_ver == 'eval') :
                 batch_ver_name = self.get_eval_batch(self.node_id)
             else :
@@ -347,7 +343,9 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             #preprocess input data if necessary
             word_list = []
             if(type == 'raw') :
-                word_list = [self._pos_tag_predict_data(x_input)]
+                word_list = [self._pos_tag_predict_data(x_input, self.y_size)]
+                word_list = self._word_embed_data('onehot', np.array(word_list), cls=self.input_onehot)
+                word_list = np.array(word_list).reshape([-1, self.x_size, self.y_size, self.channel])
             elif(type=='pre'):
                 word_list = [x_input]
             else :
@@ -356,7 +354,8 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             # run predict
             responses = []
             logits, outputs = sess.run([self.model, self.y_pred_cls], feed_dict={self.X: word_list})
-            responses.append(outputs)
+            responses.append(self.lable_onehot.get_vocab(logits[0]))
+            #responses.append(self.lable_onehot.dict_list[outputs])
             return responses
         except Exception as e :
             raise Exception(e)
