@@ -2,7 +2,7 @@ import requests
 import json, os
 from common.utils import *
 
-# [TEST-Celery]
+# [TEST - Celery]
 # apt-get install rabbitmq-server
 # service rabbitmq-server start
 # rabbitmqctl add_user tensormsa tensormsa
@@ -34,7 +34,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                      json={
                          "param":{"epoch": 1
                                   ,"traincnt": 1
-                                  ,"batch_size":25000
+                                  ,"batch_size":1000000
                                   ,"predictcnt": 10
                          },
                          "config": {"num_classes":10,
@@ -72,13 +72,15 @@ netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
 
 # CNN Network WorkFlow Node :  Data Config Setup
+# yolo min image size 385 and %7 = 0
 node = "datasrc"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                             "preprocess": {"x_size": 32,
                                            "y_size": 32,
                                            "channel":3,
-                                           "filesize": 1000000}
+                                           "filesize": 1000000,
+                                           "yolo": "n"}
                      })
 dataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(dataconf))
@@ -95,7 +97,8 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/f
                             "preprocess": {"x_size": 32,
                                            "y_size": 32,
                                            "channel":3,
-                                           "filesize": 1000000}
+                                           "filesize": 1000000,
+                                           "yolo": "n"}
                      })
 edataconf = json.loads(resp.json())
 
@@ -168,7 +171,6 @@ else:
 
 
 println("E")
-
 
 
 
