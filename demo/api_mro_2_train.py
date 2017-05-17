@@ -68,6 +68,22 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                 }
                          ,"labels":[]
                         })
+# resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+#                      json={
+#                          "param":{"epoch": 1
+#                                   ,"traincnt": 1
+#                                   ,"batch_size":25000
+#                                   ,"predictcnt": 10
+#                          },
+#                          "config": {"num_classes":10,
+#                                     "learnrate": 0.001,
+#                                     "layeroutputs":18,
+#                                     "net_type":"resnet",
+#                                     "eval_type":"",
+#                                     "optimizer":"AdamOptimizer" #RMSPropOptimizer
+#                                      }
+#                          ,"labels":[]
+#                         })
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
 
