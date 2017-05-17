@@ -44,7 +44,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.early_stopper = None
         self.csv_logger = None
         self.data_augmentation = False
-
     ########################################################################
     def _set_netconf_parm(self, netconf):
         self.num_classes = netconf["config"]["num_classes"]

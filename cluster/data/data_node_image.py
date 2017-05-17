@@ -1,7 +1,7 @@
 import os
 import zipfile
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image
 from cluster.data.data_node import DataNode
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
 from time import gmtime, strftime

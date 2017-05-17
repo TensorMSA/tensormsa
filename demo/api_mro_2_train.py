@@ -2,7 +2,7 @@ import requests
 import json, os
 from common.utils import *
 
-# [TEST - Celery]
+# [TEST-Celery]
 # apt-get install rabbitmq-server
 # service rabbitmq-server start
 # rabbitmqctl add_user tensormsa tensormsa
