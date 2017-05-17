@@ -607,18 +607,23 @@ class WorkFlowCommonNode :
         else :
             raise Exception ("No Active version Exist for predict service !")
 
-    def _word_embed_data(self, embed_type, input_data):
+    def _word_embed_data(self, embed_type, input_data, cls=None):
         """
         change word to vector
         :param input_data:
         :return:
         """
         return_arr = []
+        if (cls) :
+            embed_class = cls
+        else :
+            embed_class = self.onehot_encoder
+
         if(embed_type == 'onehot'):
             for data in input_data:
                 row_arr = []
                 for row in data :
-                    row_arr = row_arr + self.onehot_encoder.get_vector(row).tolist()
+                    row_arr = row_arr + embed_class.get_vector(row).tolist()
                 return_arr.append(row_arr)
             return return_arr
         elif(embed_type == None) :
@@ -662,14 +667,18 @@ class WorkFlowCommonNode :
         :param to_node:
         :return:
         """
-        f_id = from_node.get_node_name()
-        t_id = to_node.get_node_name()
-        from_node_dict = from_node._get_node_parm(f_id)
-        to_node_dict = to_node._get_node_parm(t_id)
-        input_dict = {}
-        for key in from_node_dict.get_view_obj(f_id).keys():
-            if(key not in to_node_dict.get_view_obj(t_id).keys()) :
-                input_dict[key] = from_node_dict.get_view_obj(f_id)[key]
-        to_node_dict.update_view_obj(t_id, input_dict)
+        try :
+            f_id = from_node.get_node_name()
+            t_id = to_node.get_node_name()
+            from_node_dict = from_node._get_node_parm(f_id)
+            to_node_dict = to_node._get_node_parm(t_id)
+            input_dict = {}
+            for key in from_node_dict.get_view_obj(f_id).keys():
+                if(key not in to_node_dict.get_view_obj(t_id).keys()) :
+                    input_dict[key] = from_node_dict.get_view_obj(f_id)[key]
+            to_node_dict.update_view_obj(t_id, input_dict)
+        except Exception as e :
+            raise Exception ("error on _copy_node_parms : {0}".format(e))
+
     def _get_node_parm(self):
         return self.wf_conf

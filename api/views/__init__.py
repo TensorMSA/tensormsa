@@ -39,4 +39,5 @@ from .workflow_netconf_d2v import WorkFlowNetConfD2V
 from .workflow_pre_feeder import WorkFlowPreFeeder
 from .workflow_netconf_seq2seq import WorkFlowNetConfSeq2Seq
 from .workflow_netconf_renet import WorkFlowNetConfRenet
-from.chatbot_service_manager import ChatbotServiceManager
+from .chatbot_service_manager import ChatbotServiceManager
+from .workflow_netconf_wcnn import WorkFlowNetConfWcnn

@@ -69,3 +69,12 @@ class EntityAnalyzer(ShareData):
         if(type == 'mecab') :
             mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
             return mecab.pos(str(input))
+
+        elif(type == 'kkma') :
+            kkma = Kkma()
+            return kkma.pos(str(input))
+
+        elif(type == 'twitter') :
+            twitter = Twitter(jvmpath=None)
+            return twitter.pos(str(input))
+

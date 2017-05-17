@@ -26,32 +26,31 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self._set_train_model()
 
             # create session
-            sess = tf.Session()
-            sess.run(tf.initialize_all_variables())
-            saver = tf.train.Saver(tf.all_variables())
-            if (self.check_batch_exist(conf_data['node_id'])):
-                path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+            with tf.Session() as sess:
+                sess.run(tf.initialize_all_variables())
+                saver = tf.train.Saver(tf.all_variables())
+                if (self.check_batch_exist(conf_data['node_id'])):
+                    path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+                    set_filepaths(path)
+                    saver.restore(sess, path)
+
+                for self.epoch in range(self.num_epochs):
+                    # run train
+                    while(train_data_set.has_next()) :
+                        for i in range(0, train_data_set.data_size(), self.batch_size):
+                            data_set = train_data_set[i:i + self.batch_size]
+                            if(len(data_set[0]) != self.batch_size) : break
+                            targets = self._get_dict_id(data_set[1])
+                            decode_batch = self._word_embed_data(data_set[1])
+                            encode_batch = self._word_embed_data(data_set[0])
+                            self._run_train(sess, encode_batch, decode_batch, targets)
+                        train_data_set.next()
+                    train_data_set.reset_pointer()
+
+                # save model and close session
+                path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
                 set_filepaths(path)
-                saver.restore(sess, path)
-
-            for self.epoch in range(self.num_epochs):
-                # run train
-                while(train_data_set.has_next()) :
-                    for i in range(0, train_data_set.data_size(), self.batch_size):
-                        data_set = train_data_set[i:i + self.batch_size]
-                        if(len(data_set[0]) != self.batch_size) : break
-                        targets = self._get_dict_id(data_set[1])
-                        decode_batch = self._word_embed_data(data_set[1])
-                        encode_batch = self._word_embed_data(data_set[0])
-                        self._run_train(sess, encode_batch, decode_batch, targets)
-                    train_data_set.next()
-                train_data_set.reset_pointer()
-
-            # save model and close session
-            path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
-            set_filepaths(path)
-            saver.save(sess, path)
-            sess.close()
+                saver.save(sess, path)
         except Exception as e :
             raise Exception (e)
         finally :
@@ -495,7 +494,6 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             return responses
         except Exception as e :
             raise Exception(e)
-
 
     def _pad_predict_input(self, input_tuple):
         """

@@ -18,6 +18,7 @@ from cluster.common.train_summary_info import TrainSummaryInfo
 import logging
 import random
 import shutil, errno
+from sklearn.preprocessing import LabelEncoder
 
 class NeuralNetNodeWdnn(NeuralNetNode):
     """
@@ -102,7 +103,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             # make wide & deep model
             wdnn = NeuralCommonWdnn()
-            wdnn_model = wdnn.wdnn_build('regression', conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_train_path))
+            wdnn_model = wdnn.wdnn_build(self.model_type, conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_train_path))
 
             #feed
             # TODO file이 여러개면 어떻하지?
@@ -115,6 +116,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             _batch_size = self.batch_size
             _num_tfrecords_files = 0
+            #_batch_size = 2
 
             #multi Feeder modified
             multi_read_flag = self.multi_read_flag
@@ -312,7 +314,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self._init_node_parm(node_id.split('_')[0] + "_" + node_id.split('_')[1]+ "_" + "netconf_node")
         self.cls_pool_all = conf_data['cls_pool']  # Data feeder
 
-        config = {"type": self.model_type, "labels": self.label, "nn_id":conf_data.get('nn_id'), "nn_wf_ver_id":conf_data.get('wf_ver')}
+        config = {"type": self.model_type, "labels": self.label_values, "nn_id":conf_data.get('nn_id'), "nn_wf_ver_id":conf_data.get('wf_ver')}
         train = TrainSummaryInfo(conf=config)
         print(config)
         self.batch = self.get_eval_batch(node_id)
@@ -379,7 +381,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
                 # Per Line in file
                 # eval should be one line predict
-                #self.batch_size = 1
+                #self.batch_size = 2
 
                 for i in range(0, train_data_set.data_size(), self.batch_size):
 
@@ -420,10 +422,21 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 # #Select Next file
                 train_data_set.next()
 
-            results['ori'] = ori_list
-            results['pre'] = pre_list
-            train.set_result_info(ori_list, pre_list)
+            #TODO : 앞으로 옮기자
             train.set_nn_batch_ver_id(self.batch)
+            if self.model_type == "regression":
+                results['ori'] = ori_list
+                results['pre'] = pre_list
+                train.set_result_info(ori_list, pre_list)
+
+            if self.model_type == "category":
+                # tfrecord는 여기서 Label을 변경한다. 나중에 꺼낼때 답이 없음 Tensor 객체로 추출되기 때문에 그러나 H5는 feeder에서 변환해주자
+                le = LabelEncoder()
+                le.fit(self.label_values)
+
+                for _i, _ori in enumerate(ori_list):
+                    #return_value = self.labels[np.argmax(model.predict(X_train))]
+                    train.set_result_info(str(_ori), str(le.inverse_transform(pre_list[_i])))
             #return self.batch
         except Exception as e:
             print("eval error")

@@ -111,7 +111,7 @@ class NeuralCommonWdnn():
 
             deep_columns.extend([embedTensor for key, embedTensor in featureDeepEmbedding.items()])
             #wide_columns = []
-            if model_type == "wdnn":
+            if model_type == "category":
 
                 m = tf.contrib.learn.DNNLinearCombinedClassifier(
                     model_dir=model_dir,

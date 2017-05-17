@@ -250,7 +250,10 @@ class NeuralNetNodeCnn(NeuralNetNode):
             j = j.decode('UTF-8')
             n_batch.append(j)
 
-        x_batch = np.zeros((len(img_data_batch), len(img_data_batch[0])))
+        try:
+            x_batch = np.zeros((len(img_data_batch), len(img_data_batch[0])))
+        except Exception as e:
+            println(e)
         r = 0
         for j in img_data_batch:
             j = j.tolist()
@@ -325,7 +328,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                     self.global_step = tf.Variable(int(step[1]), name='global_step', trainable=False)
                 except:
                     println("None to restore checkpoint. Initializing variables instead.")
-                    sess.run(tf.initialize_all_variables())
+                    sess.run(tf.global_variables_initializer())
 
                 while (input_data.has_next()):
                     for i in range(self.epoch):
@@ -415,7 +418,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                     println("Train Restored checkpoint from:" + last_chk_path)
                 except:
                     println("None to restore checkpoint. Initializing variables instead.")
-                    sess.run(tf.initialize_all_variables())
+                    sess.run(tf.global_variables_initializer())
 
                 while (input_data.has_next()):
                     for i in range(self.epoch):
