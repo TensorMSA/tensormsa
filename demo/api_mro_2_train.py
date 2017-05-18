@@ -14,6 +14,7 @@ from common.utils import *
 println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 nn_id = "mro001"
+net_type = "cnn" # cnn, resnet
 wf_ver_id = 0
 
 # get workflow version
@@ -30,10 +31,12 @@ wf_ver_id = str(wf_ver_id)
 # CNN Network WorkFlow Node : Network Config Setup
 # (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
 node = "netconf_node"
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+
+if net_type == "cnn":
+    resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch": 1
-                                  ,"traincnt": 1
+                         "param":{"epoch": 2
+                                  ,"traincnt": 2
                                   ,"batch_size":1000000
                                   ,"predictcnt": 10
                          },
@@ -68,22 +71,23 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                 }
                          ,"labels":[]
                         })
-# resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
-#                      json={
-#                          "param":{"epoch": 1
-#                                   ,"traincnt": 1
-#                                   ,"batch_size":25000
-#                                   ,"predictcnt": 10
-#                          },
-#                          "config": {"num_classes":10,
-#                                     "learnrate": 0.001,
-#                                     "layeroutputs":18,
-#                                     "net_type":"resnet",
-#                                     "eval_type":"",
-#                                     "optimizer":"AdamOptimizer" #RMSPropOptimizer
-#                                      }
-#                          ,"labels":[]
-#                         })
+else:
+    resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+                     json={
+                         "param":{"epoch": 1
+                                  ,"traincnt": 1
+                                  ,"batch_size":25000
+                                  ,"predictcnt": 10
+                         },
+                         "config": {"num_classes":10,
+                                    "learnrate": 0.001,
+                                    "layeroutputs":18,
+                                    "net_type":"resnet",
+                                    "eval_type":"",
+                                    "optimizer":"AdamOptimizer" #RMSPropOptimizer
+                                     }
+                         ,"labels":[]
+                        })
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
 
@@ -122,7 +126,7 @@ edataconf = json.loads(resp.json())
 # (CNN Network Training을 실행한다 .)
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
-# print(data)
+print(data)
 
 def spaceprint(val, cnt):
     leng = len(str(val))

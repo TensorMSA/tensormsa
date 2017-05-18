@@ -20,17 +20,20 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
 
     def set_num_classes_predcnt(self, nn_id, wfver, node, node_id, netconf):
         self.validation_check(netconf)
-        labels = netconf["labels"]
-        num_classes = netconf["config"]["num_classes"]
-        pred_cnt = netconf["param"]["predictcnt"]
+        try:
+            labels = netconf["labels"]
+            num_classes = netconf["config"]["num_classes"]
+            pred_cnt = netconf["param"]["predictcnt"]
 
-        if len(labels) > num_classes:
-            num_classes = len(labels)
-        if pred_cnt > len(labels):
-            pred_cnt = len(labels)
+            if len(labels) > num_classes:
+                num_classes = len(labels)
+            if pred_cnt > len(labels):
+                pred_cnt = len(labels)
 
-        netconf["config"]["num_classes"]=num_classes
-        netconf["param"]["predictcnt"]=pred_cnt
+            netconf["config"]["num_classes"]=num_classes
+            netconf["param"]["predictcnt"]=pred_cnt
+        except:
+            None
 
         netconf["modelpath"] = get_model_path(nn_id, wfver, node)
         netconf["modelname"] = "model_" + nn_id + "_" + wfver

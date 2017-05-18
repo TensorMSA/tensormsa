@@ -1,6 +1,11 @@
 from cluster.common.common_node import WorkFlowCommonNode
+from master.workflow.common.workflow_common import WorkFlowCommon
 from master import models
 from master import serializers
+import numpy as np
+import operator
+from PIL import Image
+import io
 
 class NeuralNetNode(WorkFlowCommonNode):
     """
@@ -155,3 +160,81 @@ class NeuralNetNode(WorkFlowCommonNode):
             if(models.NN_VER_BATCHLIST_INFO.objects.filter(nn_batch_ver_id=before_batch_ver_id).exists()):
                 return models.NN_VER_BATCHLIST_INFO.objects.get(nn_batch_ver_id=before_batch_ver_id)
         return None
+
+    def get_input_data(self, feed_node, cls_pool, input_feed_name):
+        input_data = None
+        dataconf = None
+
+        for feed in feed_node:
+            feed_name = feed.get_node_name()
+            if feed_name == input_feed_name:
+                data_node = feed.get_prev_node()
+                for data in data_node:
+                    data_name = data.get_node_name()
+                    dataconf = WorkFlowCommon().get_view_obj(data_name)
+                    input_data = cls_pool[feed_name]
+        return input_data, dataconf
+
+
+    def change_predict_fileList(self, filelist, dataconf):
+        x_size = dataconf["preprocess"]["x_size"]
+        y_size = dataconf["preprocess"]["y_size"]
+        channel = dataconf["preprocess"]["channel"]
+
+        filelist = sorted(filelist.items(), key=operator.itemgetter(0))
+        file_name_arr = []
+        file_data_arr = []
+        try:
+            for file in filelist:
+                # println(file)
+                value = file[1]
+                filename = file[1].name
+
+                for img_val in value.chunks():
+                    img = Image.open(io.BytesIO(img_val))
+                    # println(image)
+
+                    img = img.resize((x_size, y_size), Image.ANTIALIAS)
+
+                    img = np.array(img)
+                    img = img.reshape([-1, x_size, y_size, channel])
+
+                    file_name_arr.append(filename)
+                    file_data_arr.append(img)
+        except Exception as e:
+            print("file chagne error."+str(filename))
+            print(e)
+
+        return file_name_arr, file_data_arr
+
+    """
+    :param
+    :labels : ['cat', 'dog']
+    :logits : [[ 0.  1.  0.  0.  0.  0.  0.  0.  0.  0.]]
+    :pred_cnt : return category count
+    :return category, predict result:
+    """
+    def set_predict_return_cnn_img(self, labels, logits, pred_cnt):
+        one = np.zeros((len(labels), 2))
+
+        for i in range(len(labels)):
+            one[i][0] = i
+            one[i][1] = logits[0][i]
+
+        onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
+        # println("############################################")
+        # println(onesort)
+        # print("filename=" + file_name + " predict=" + labels[int(onesort[0][0])])
+        # println(onesort)
+        data_sub = {}
+        data_sub_key = []
+        data_sub_val = []
+        for i in range(pred_cnt):
+            data_sub_key.append(labels[int(onesort[i][0])])
+            val = round(onesort[i][1], 2) * 100
+            if val < 0:
+                val = 0
+            data_sub_val.append(val)
+        data_sub["key"] = data_sub_key
+        data_sub["val"] = data_sub_val
+        return data_sub
