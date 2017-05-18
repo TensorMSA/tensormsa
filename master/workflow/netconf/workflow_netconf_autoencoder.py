@@ -78,7 +78,7 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
         """
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
-        return self.conf.get('n_input')
+        return self.conf.get('input_size')
 
     def get_n_hidden(self):
         """
@@ -158,3 +158,39 @@ class WorkFlowNetConfAutoEncoder(WorkFlowNetConf):
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
         return self.conf.get('embed_type')
+
+    def get_input_len(self):
+        """
+        get vector embed type
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('input_size')
+
+    def get_feeder_pre_type(self):
+        """
+        get vector embed type
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('preprocess_type')
+
+    def get_feeder_column_encoder(self):
+        """
+        get vector embed type
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('encode_onehot')
+
+    def get_encode_dtype(self):
+        """
+        get vector embed type
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('encode_dtype')

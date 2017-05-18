@@ -172,18 +172,32 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             self.batch_size = wf_conf.get_batch_size()
             self.learning_rate = wf_conf.get_learn_rate()
             self.embed_type = wf_conf.get_embed_type()
-            if(self.embed_type == 'onehot') :
-                self.word_len = wf_conf.get_encode_len()
-                self.word_vector_size = wf_conf.get_vocab_size() + 4
-                self.n_input = int(self.word_len) * (self.word_vector_size)
-            self.onehot_encoder = OneHotEncoder(self.word_vector_size)
-            if (wf_conf.get_vocab_list()):
-                self.onehot_encoder.restore(wf_conf.get_vocab_list())
-
+            self.pre_type = wf_conf.get_feeder_pre_type()
             self.n_hidden = wf_conf.get_n_hidden()
-            if(wf_conf.get_n_input()) :
-                self.n_input = wf_conf.get_n_input()
 
+            if (wf_conf.get_n_input()):
+                self.n_input = wf_conf.get_n_input()
+            else :
+                raise Exception ("input number is required! ")
+
+            if(self.pre_type in ['frame']) :
+                if (self.embed_type == 'onehot'):
+                    self.encode_onehot = {}
+                    self.word_vector_size = wf_conf.get_vocab_size() + 4
+                    self.encode_col = wf_conf.get_encode_column()
+                    self.encode_dtype = wf_conf.get_encode_dtype()
+                    if (wf_conf.get_vocab_list()):
+                        encoder_value_list = wf_conf.get_vocab_list()
+                        for col_name in list(encoder_value_list.keys()):
+                            self.encode_onehot[col_name] = OneHotEncoder(self.word_vector_size)
+                            self.encode_onehot[col_name].restore(encoder_value_list.get(col_name))
+            elif(self.pre_type in ['mecab', 'twitter', 'kkma']):
+                if(self.embed_type == 'onehot') :
+                    self.word_len = wf_conf.get_encode_len()
+                    self.word_vector_size = wf_conf.get_vocab_size() + 4
+                    self.onehot_encoder = OneHotEncoder(self.word_vector_size)
+                    if (wf_conf.get_vocab_list()):
+                        self.onehot_encoder.restore(wf_conf.get_vocab_list())
         except Exception as e :
             raise Exception (e)
 
@@ -211,12 +225,24 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 graph = tf.get_default_graph()
 
             # off onehot to add dict on predict time
-            if (self.embed_type == 'onehot'):
-                self.onehot_encoder.off_edit_mode()
-                input_arr = [self._pos_tag_predict_data(parm['input_data'], self.word_len)]
-                input_arr = self._word_embed_data(self.embed_type, np.array(input_arr))
-            else :
-                raise Exception ("AutoEncoder : Unknown embed type error ")
+            if (self.pre_type in ['frame']):
+                input_arr = []
+                if (self.embed_type == 'onehot'):
+                    for col_name  in self.encode_col :
+                        if(self.encode_dtype[col_name] != 'object') :
+                            input_arr = input_arr + [int(parm['input_data'].get(col_name))]
+                        elif(col_name in list(parm['input_data'].keys())) :
+                            input_arr = input_arr + self.encode_onehot[col_name].get_vector(parm['input_data'].get(col_name)).tolist()
+                        else :
+                            input_arr = input_arr + self.encode_onehot[col_name].get_vector('').tolist()
+                input_arr = [input_arr]
+            elif (self.pre_type in ['mecab', 'twitter', 'kkma']):
+                if (self.embed_type == 'onehot'):
+                    self.onehot_encoder.off_edit_mode()
+                    input_arr = [self._pos_tag_predict_data(parm['input_data'], self.word_len)]
+                    input_arr = self._word_embed_data(self.embed_type, np.array(input_arr))
+                else :
+                    raise Exception ("AutoEncoder : Unknown embed type error ")
 
             with tf.Session(graph=graph) as sess :
                 sess.run(self.init_val)
