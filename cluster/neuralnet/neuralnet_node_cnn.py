@@ -71,12 +71,13 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.train_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_train_feed_node()
         self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_eval_feed_node()
         self.feed_node = self.get_prev_node()
-
+    def _init_predict_parm(self, node_id):
+        self.node_id = node_id
+    def _init_value(self):
+        self.g_total_cnt = 0
         # return data
         self.train_return_data = {}
         self.train_return_arr = ["Trainning .................................................."]
-    def _init_predict_parm(self, node_id):
-        self.node_id = node_id
         self.pred_return_data = {}
     ########################################################################
     def _set_netconf_parm(self):
@@ -86,6 +87,12 @@ class NeuralNetNodeCnn(NeuralNetNode):
         except:
             None
         self.netconf = netconf
+
+        #eval
+        config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"]}
+        self.eval_data = TrainSummaryInfo(conf=config)
+        self.eval_data.set_nn_id(self.nn_id)
+        self.eval_data.set_nn_wf_ver_id(self.wf_ver)
     ########################################################################
     def _set_dataconf_parm(self, dataconf):
         self.dataconf = dataconf
@@ -292,11 +299,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
         return sess, saver
     ########################################################################
-    def set_saver_model(self, sess, g_total_cnt):
+    def set_saver_model(self, sess):
         if self.saveCnt > self.train_cnt:
             self.saveCnt = self.train_cnt
 
-        if (g_total_cnt % self.saveCnt == 0):
+        if (self.g_total_cnt % self.saveCnt == 0):
             saver = tf.train.Saver()
             saver.save(sess, save_path=self.save_path)
             self.step_gap = self.step_gap + 10
@@ -305,7 +312,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             self.model_file_delete(self.model_path, self.modelname)
 
             batch_accR = round(self.batch_acc * 100, 2)
-            msg = "Global Step: " + str(g_total_cnt) + ", Training Batch Accuracy: " + str(
+            msg = "Global Step: " + str(self.g_total_cnt) + ", Training Batch Accuracy: " + str(
                 batch_accR) + "%" + ", Cost: " + str(self.i_cost)
             println(msg)
             result = [msg]
@@ -317,7 +324,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         println("run NeuralNetNodeCnn Train")
         # init data setup
         self._init_train_parm(conf_data)
-
+        self._init_value()
         # get data & dataconf
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
         input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
@@ -349,9 +356,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         train_cnt = self.netconf["param"]["traincnt"]
 
         try:
-            return_arr = []
-            g_total_cnt = 0
-
             if not self.data_augmentation:
                 println('Not using data augmentation.')
             else:
@@ -365,9 +369,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                         test_set = test_data[i:i + batch_size]
                         x_tbatch, y_tbatch, n_tbatch = self.get_batch_img_data(test_set, "T")
-
-                        result = ["Trainning .................................................."]
-                        return_arr.append(result)
 
                         for i in range(train_cnt):
                             if not self.data_augmentation:
@@ -404,38 +405,31 @@ class NeuralNetNodeCnn(NeuralNetNode):
                                                     epochs=epoch, verbose=1, max_q_size=100,
                                                     callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
 
-                            g_total_cnt += 1
-                            println("Train Count=" + str(g_total_cnt))
+                            self.g_total_cnt += 1
+                            println("Train Count=" + str(self.g_total_cnt))
                             # Print status to screen every 10 iterations (and last).
                             saveCnt = 100
                             if saveCnt > train_cnt:
                                 saveCnt = train_cnt
                             # Save a checkpoint to disk every 100 iterations (and last).
-                            if (g_total_cnt % saveCnt == 0):
-                                # batch_accR = round(batch_acc * 100, 2)
-                                # msg = "Global Step: " + str(i_global) + ", Training Batch Accuracy: " + str(batch_accR) + "%" + ", Cost: " + str(i_cost)
-                                # println(msg)
-                                # result = [msg]
-                                # return_arr.append(result)
+                            if (self.g_total_cnt % saveCnt == 0):
                                 saver = tf.train.Saver()
                                 saver.save(sess, save_path=self.save_path)
                                 self.model_file_delete(self.model_path, self.modelname)
 
                         result = ''
-                        return_arr.append(result)
+                        self.train_return_arr.append(result)
 
                 input_data.next()
         except Exception as e:
             println("Error[400] ..............................................")
             println(e)
 
-        return return_arr
-
     def train_run_cnn(self, sess, input_data, test_data):
         self.epoch = self.netconf["param"]["epoch"]
         self.batch_size = self.netconf["param"]["batch_size"]
         self.train_cnt = self.netconf["param"]["traincnt"]
-        g_total_cnt = 0
+
         try:
             while (input_data.has_next()):
                 for i in range(self.epoch):
@@ -447,9 +441,10 @@ class NeuralNetNodeCnn(NeuralNetNode):
                             feed_dict_train = {self.X: x_batch, self.Y: y_batch}
 
                             _, self.i_cost, self.batch_acc = sess.run([self.optimizer, self.cost, self.accuracy], feed_dict=feed_dict_train)
-                            g_total_cnt += 1
-                            self.set_saver_model(sess, g_total_cnt)
-                            println("Train Count=" + str(g_total_cnt))
+
+                            self.g_total_cnt += 1
+                            println("Train Count=" + str(self.g_total_cnt))
+                            self.set_saver_model(sess)
 
                 input_data.next()
         except Exception as e:
@@ -462,6 +457,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def eval(self, node_id, conf_data, data=None, result=None):
         println("run NeuralNetNodeCnn eval")
         self._init_train_parm(conf_data)
+
+        if self.netconf["config"]["net_type"] == "resnet":
+            return self.eval_data
 
         # get data & dataconf
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
@@ -479,13 +477,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def eval_run(self, sess, input_data):
         batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]
-        model_path = self.netconf["modelpath"]
-        eval_type = self.netconf["config"]["eval_type"]
-
-        config = {"type": eval_type, "labels": labels}
-        eval_data = TrainSummaryInfo(conf=config)
-        eval_data.set_nn_id(self.nn_id)
-        eval_data.set_nn_wf_ver_id(self.wf_ver)
 
         t_cnt_arr = []
         f_cnt_arr = []
@@ -513,7 +504,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         else:
                             f_cnt_arr[idx] = f_cnt_arr[idx] + 1
 
-                        eval_data.set_result_info(true_name, pred_name)
+                        self.eval_data.set_result_info(true_name, pred_name)
 
                 except Exception as e:
                     println(e)
@@ -521,6 +512,10 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
             input_data.next()
 
+        self.eval_print(labels, t_cnt_arr, f_cnt_arr)
+        return self.eval_data
+
+    def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
         println("####################################################################################################")
         result = []
         strResult = "['Eval ......................................................']"
@@ -552,7 +547,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         println(strResult)
         result.append(strResult)
         println("###################################################################################################")
-        return eval_data
 
     def predict(self, node_id, filelist):
         """
@@ -560,7 +554,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         println("run NeuralNetNodeCnn Predict")
         # init data setup
         self._init_predict_parm(node_id)
-
+        self._init_value()
         # net, data config setup
         data_node_name = self._get_backward_node_with_type(node_id, 'data')
         dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
