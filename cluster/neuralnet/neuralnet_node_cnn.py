@@ -63,8 +63,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.cls_pool = conf_data["cls_pool"]
         self.nn_id = conf_data["nn_id"]
         self.wf_ver = conf_data["wf_ver"]
-        self.node_id = self.get_node_name()
-        self.node = self.get_node_def()
+        self.node_id = conf_data["node_id"]
+        self.node = WorkFlowSimpleManager().get_train_node()
         self.saveCnt = 100
 
         # get feed name
@@ -87,12 +87,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         except:
             None
         self.netconf = netconf
-
-        #eval
-        config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"]}
-        self.eval_data = TrainSummaryInfo(conf=config)
-        self.eval_data.set_nn_id(self.nn_id)
-        self.eval_data.set_nn_wf_ver_id(self.wf_ver)
     ########################################################################
     def _set_dataconf_parm(self, dataconf):
         self.dataconf = dataconf
@@ -318,7 +312,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             result = [msg]
             self.train_return_arr.append(result)
 
-            self.eval(self.node_id, self.conf_data, None, None)
+            # self.eval(self.node_id, self.conf_data, None, None)
 
     def run(self, conf_data):
         println("run NeuralNetNodeCnn Train")
@@ -457,6 +451,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def eval(self, node_id, conf_data, data=None, result=None):
         println("run NeuralNetNodeCnn eval")
         self._init_train_parm(conf_data)
+        #eval
+        config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"]}
+        self.eval_data = TrainSummaryInfo(conf=config)
+        self.eval_data.set_nn_id(self.nn_id)
+        self.eval_data.set_nn_wf_ver_id(self.wf_ver)
 
         if self.netconf["config"]["net_type"] == "resnet":
             return self.eval_data
@@ -464,15 +463,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # get data & dataconf
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
 
-        # set netconf, dataconf
-        self._set_netconf_parm()
-        self._set_dataconf_parm(dataconf)
-
         with tf.Session() as sess:
             sess, saver = self.get_saver_model(sess)
-            return_eval = self.eval_run(sess, test_data)
+            self.eval_run(sess, test_data)
 
-        return return_eval
+        return self.eval_data
 
     def eval_run(self, sess, input_data):
         batch_size = self.netconf["param"]["batch_size"]
@@ -513,7 +508,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
             input_data.next()
 
         self.eval_print(labels, t_cnt_arr, f_cnt_arr)
-        return self.eval_data
 
     def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
         println("####################################################################################################")

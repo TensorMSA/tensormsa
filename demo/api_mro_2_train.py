@@ -14,7 +14,7 @@ from common.utils import *
 println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 nn_id = "mro001"
-net_type = "cnn" # cnn, resnet
+net_type = "cnn" # cnn, resnet, renet
 wf_ver_id = 0
 
 # get workflow version
@@ -35,8 +35,8 @@ node = "netconf_node"
 if net_type == "cnn":
     resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch": 2
-                                  ,"traincnt": 2
+                         "param":{"epoch": 1
+                                  ,"traincnt": 1
                                   ,"batch_size":1000000
                                   ,"predictcnt": 10
                          },
@@ -71,7 +71,7 @@ if net_type == "cnn":
                                 }
                          ,"labels":[]
                         })
-else:
+elif net_type == "resnet":
     resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                          "param":{"epoch": 1
@@ -88,6 +88,24 @@ else:
                                      }
                          ,"labels":[]
                         })
+elif net_type == "renet":
+    resp = requests.put(
+        'http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/' + nn_id + '/ver/' + wf_ver_id + '/node/' + node + '/',
+        json={
+            "param": {"epoch": 1
+                , "traincnt": 1
+                , "batch_size": 25000
+                , "predictcnt": 10
+                      },
+            "config": {"num_classes": 10,
+                       "learnrate": 0.001,
+                       "layeroutputs": 18,
+                       "net_type": "resnet",
+                       "eval_type": "",
+                       "optimizer": "AdamOptimizer"  # RMSPropOptimizer
+                       }
+            , "labels": []
+        })
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
 
