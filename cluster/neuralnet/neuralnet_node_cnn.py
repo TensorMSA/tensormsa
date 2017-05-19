@@ -201,6 +201,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         x_size = self.dataconf["preprocess"]["x_size"]
         y_size = self.dataconf["preprocess"]["y_size"]
         channel = self.dataconf["preprocess"]["channel"]
+        self.data_augmentation = self.dataconf["preprocess"]["augmentation"]
 
         if numoutputs == 18:
             model = resnet.ResnetBuilder.build_resnet_18((channel, x_size, y_size), num_classes)
@@ -220,7 +221,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.lr_reducer = lr_reducer
         self.early_stopper = early_stopper
         self.csv_logger = csv_logger
-        self.data_augmentation = False
     ########################################################################
     def get_batch_img_data(self, data_set, type):
         num_classes = self.netconf["config"]["num_classes"]
@@ -312,7 +312,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             result = [msg]
             self.train_return_arr.append(result)
 
-            # self.eval(self.node_id, self.conf_data, None, None)
+            self.eval(self.node_id, self.conf_data, None, None)
 
     def run(self, conf_data):
         println("run NeuralNetNodeCnn Train")
@@ -350,69 +350,67 @@ class NeuralNetNodeCnn(NeuralNetNode):
         train_cnt = self.netconf["param"]["traincnt"]
 
         try:
-            if not self.data_augmentation:
+            if self.data_augmentation == "N" or self.data_augmentation == "n":
                 println('Not using data augmentation.')
             else:
                 println('Using real-time data augmentation.')
 
             while (input_data.has_next()):
-                for i in range(epoch):
-                    for i in range(0, input_data.size(), batch_size):
-                        data_set = input_data[i:i + batch_size]
-                        x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "T")
+                data_set = input_data[0:input_data.data_size()]
+                x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "T")
 
-                        test_set = test_data[i:i + batch_size]
-                        x_tbatch, y_tbatch, n_tbatch = self.get_batch_img_data(test_set, "T")
+                test_set = test_data[0:test_data.data_size()]
+                x_tbatch, y_tbatch, n_tbatch = self.get_batch_img_data(test_set, "T")
 
-                        for i in range(train_cnt):
-                            if not self.data_augmentation:
-                                self.model.fit(x_batch, y_batch,
-                                               batch_size=batch_size,
-                                               epochs=epoch,
-                                               validation_data=(x_tbatch, y_tbatch),
-                                               shuffle=True,
-                                               callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
-                            else:
-                                # This will do preprocessing and realtime data augmentation:
-                                datagen = ImageDataGenerator(
-                                    featurewise_center=False,  # set input mean to 0 over the dataset
-                                    samplewise_center=False,  # set each sample mean to 0
-                                    featurewise_std_normalization=False,  # divide inputs by std of the dataset
-                                    samplewise_std_normalization=False,  # divide each input by its std
-                                    zca_whitening=False,  # apply ZCA whitening
-                                    rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-                                    width_shift_range=0.1,
-                                    # randomly shift images horizontally (fraction of total width)
-                                    height_shift_range=0.1,
-                                    # randomly shift images vertically (fraction of total height)
-                                    horizontal_flip=True,  # randomly flip images
-                                    vertical_flip=False)  # randomly flip images
+                for i in range(train_cnt):
+                    if self.data_augmentation == "N" or self.data_augmentation == "n":
+                        self.model.fit(x_batch, y_batch,
+                                       batch_size=batch_size,
+                                       epochs=epoch,
+                                       validation_data=(x_tbatch, y_tbatch),
+                                       shuffle=True,
+                                       callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+                    else:
+                        # This will do preprocessing and realtime data augmentation:
+                        datagen = ImageDataGenerator(
+                            featurewise_center=False,  # set input mean to 0 over the dataset
+                            samplewise_center=False,  # set each sample mean to 0
+                            featurewise_std_normalization=False,  # divide inputs by std of the dataset
+                            samplewise_std_normalization=False,  # divide each input by its std
+                            zca_whitening=False,  # apply ZCA whitening
+                            rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+                            width_shift_range=0.1,
+                            # randomly shift images horizontally (fraction of total width)
+                            height_shift_range=0.1,
+                            # randomly shift images vertically (fraction of total height)
+                            horizontal_flip=True,  # randomly flip images
+                            vertical_flip=False)  # randomly flip images
 
-                                # Compute quantities required for featurewise normalization
-                                # (std, mean, and principal components if ZCA whitening is applied).
-                                datagen.fit(x_batch)
+                        # Compute quantities required for featurewise normalization
+                        # (std, mean, and principal components if ZCA whitening is applied).
+                        datagen.fit(x_batch)
 
-                                # Fit the model on the batches generated by datagen.flow().
-                                self.model.fit_generator(datagen.flow(x_batch, y_batch, batch_size=batch_size),
-                                                    steps_per_epoch=x_batch.shape[0] // batch_size,
-                                                    validation_data=(x_tbatch, y_tbatch),
-                                                    epochs=epoch, verbose=1, max_q_size=100,
-                                                    callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+                        # Fit the model on the batches generated by datagen.flow().
+                        self.model.fit_generator(datagen.flow(x_batch, y_batch, batch_size=batch_size),
+                                            steps_per_epoch=x_batch.shape[0] // batch_size,
+                                            validation_data=(x_tbatch, y_tbatch),
+                                            epochs=epoch, verbose=1, max_q_size=100,
+                                            callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
 
-                            self.g_total_cnt += 1
-                            println("Train Count=" + str(self.g_total_cnt))
-                            # Print status to screen every 10 iterations (and last).
-                            saveCnt = 100
-                            if saveCnt > train_cnt:
-                                saveCnt = train_cnt
-                            # Save a checkpoint to disk every 100 iterations (and last).
-                            if (self.g_total_cnt % saveCnt == 0):
-                                saver = tf.train.Saver()
-                                saver.save(sess, save_path=self.save_path)
-                                self.model_file_delete(self.model_path, self.modelname)
+                    self.g_total_cnt += 1
+                    println("Train Count=" + str(self.g_total_cnt))
+                    # Print status to screen every 10 iterations (and last).
+                    saveCnt = 100
+                    if saveCnt > train_cnt:
+                        saveCnt = train_cnt
+                    # Save a checkpoint to disk every 100 iterations (and last).
+                    if (self.g_total_cnt % saveCnt == 0):
+                        saver = tf.train.Saver()
+                        saver.save(sess, save_path=self.save_path)
+                        self.model_file_delete(self.model_path, self.modelname)
 
-                        result = ''
-                        self.train_return_arr.append(result)
+                result = ''
+                self.train_return_arr.append(result)
 
                 input_data.next()
         except Exception as e:
