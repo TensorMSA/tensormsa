@@ -98,6 +98,8 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
 
             self.cost = tf.reduce_mean(tf.pow(self.y - decoder[1], 2))
             self.optimizer = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.cost)
+            # self.init_val = tf.initialize_all_variables()
+            # self.saver = tf.train.Saver(tf.all_variables())
         except Exception as e :
             raise Exception ("error on build autoencoder train graph")
 
@@ -201,7 +203,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         except Exception as e :
             raise Exception (e)
 
-    def predict(self, node_id, parm = {"input_data" : {}, "type": "encoder"}, internal=False):
+    def predict(self, node_id, parm = {"input_data" : {}, "type": "encoder"}, internal=False, raw_flag=False):
         """
 
         :param node_id:
@@ -225,7 +227,9 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 graph = tf.get_default_graph()
 
             # off onehot to add dict on predict time
-            if (self.pre_type in ['frame']):
+            if (raw_flag) :
+                input_arr = parm['input_data']
+            elif (self.pre_type in ['frame']):
                 input_arr = []
                 if (self.embed_type == 'onehot'):
                     for col_name  in self.encode_col :
@@ -270,7 +274,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         finally :
             sess.close()
 
-    def anomaly_detection(self, node_id, parm = {"input_data" : {}, "type": "encoder"}):
+    def anomaly_detection(self, node_id, parm = {"input_data" : {}, "type": "encoder"}, raw_flag=False):
         """
         this is a function that judge requested data is out lier of not
         :param node_id: string
@@ -279,7 +283,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         """
         try :
             parm['type'] = 'decoder'
-            out_data, in_data = self.predict(node_id, parm,  internal=True)
+            out_data, in_data = self.predict(node_id, parm,  internal=True, raw_flag=raw_flag)
             dist = 1 - spatial.distance.cosine(in_data[0], out_data[0])
             return dist
         except Exception as e :
@@ -288,11 +292,29 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def eval(self, node_id, parm={}):
+    def eval(self, node_id, conf_data, data=None, result=None, stand=0.1):
         """
-
+        eval process check if model works well (accuracy with cross table)
         :param node_id:
-        :param parm:
+        :param conf_data:
+        :param data:
+        :param result:
         :return:
         """
-        pass
+        try :
+            node_id = self.get_node_name()
+            result.set_result_data_format(None)
+            result.set_nn_batch_ver_id(self.get_eval_batch(node_id))
+
+            # prepare net conf
+            tf.reset_default_graph()
+            while (data.has_next()):
+                for i in range(0, data.data_size(), 1):
+                    data_set = data[i:i + 1]
+                    parm = {"input_data": data_set, "type": "decoder"}
+                    dist = self.anomaly_detection(node_id, parm, raw_flag=True)
+                    result.set_result_info([str(stand)], [str(dist)])
+                data.next()
+            return result
+        except Exception as e :
+            raise Exception ("error on eval wcnn : {0}".format(e))

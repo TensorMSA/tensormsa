@@ -158,7 +158,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                 cls.set_node_name(node.get('nn_wf_node_id'))
                 cls.set_node_type(node.get('wf_task_submenu_id_id'))
                 cls.set_node_grp(node.get('wf_task_menu_id_id'))
-                cls.set_node_def(node.get('nn_wf_node_name'))
+                cls.set_node_def(node.get('nn_wf_unique_keynode_name'))
 
                 for rel_node in node_rel_list :
                     if(node.get('nn_wf_node_id') == rel_node[0]) :
