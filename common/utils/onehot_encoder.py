@@ -1,4 +1,5 @@
 import numpy as np
+from common.utils.common_util import isnan
 
 class OneHotEncoder :
     """
@@ -57,7 +58,8 @@ class OneHotEncoder :
             return None
         if item not in self.dict_list :
             if(self.bucket_size > len(self.dict_list)) :
-                self.dict_list.append(item)
+                if (isnan(item) == False) :
+                    self.dict_list.append(item)
 
     def get_idx(self, item):
         """

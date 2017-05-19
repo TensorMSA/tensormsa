@@ -35,11 +35,13 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             init = tf.global_variables_initializer()
             with  tf.Session() as sess :
                 sess.run(init)
+
                 saver = tf.train.Saver(tf.all_variables())
 
                 # load trained model
                 if (self.check_batch_exist(conf_data['node_id'])):
                     path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+                    tf.summary.FileWriter(path, graph = tf.get_default_graph())
                     set_filepaths(path)
                     saver.restore(sess, path)
 
@@ -98,8 +100,8 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
 
             self.cost = tf.reduce_mean(tf.pow(self.y - decoder[1], 2))
             self.optimizer = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.cost)
-            # self.init_val = tf.initialize_all_variables()
-            # self.saver = tf.train.Saver(tf.all_variables())
+            self.init_val = tf.initialize_all_variables()
+            self.saver = tf.train.Saver(tf.all_variables())
         except Exception as e :
             raise Exception ("error on build autoencoder train graph")
 

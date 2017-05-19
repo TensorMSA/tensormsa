@@ -84,7 +84,7 @@ class PreNodeFeedFr2Auto(PreNodeFeed):
 
             for col_name in self.encode_col:
                 if (self.encode_len.get(col_name) == None):
-                    if (chunk[col_name].dtype == 'int'):
+                    if (chunk[col_name].dtype in ['int', 'float']):
                         self.encode_len[col_name] = 1
                         self.input_size = self.input_size + 1
                     else:
@@ -141,13 +141,24 @@ class PreNodeFeedFr2Auto(PreNodeFeed):
                     input_vector.append(list(map(lambda x: self.encode_onehot[col_name].get_vector(x),
                                              chunk[col_name][0:count].tolist())))
                 else :
-                    input_vector.append(list(map(lambda x: np.array([x]),
-                                                 chunk[col_name][0:count].tolist())))
+                    input_vector.append(np.array(list(map(lambda x: [self._filter_nan(x)], chunk[col_name][0:count].tolist()))))
             return self._flat_data(input_vector, len(chunk[col_name][0:count].tolist()))
         except Exception as e :
             raise Exception (e)
         finally:
             store.close()
+
+    def _filter_nan(self, x):
+        """
+        map nan to 0
+        :param x:
+        :return:
+        """
+        import math
+        if(math.isnan(x)) :
+            return 0.0
+        else :
+            return x
 
     def _flat_data(self, input_vector, count):
         """
@@ -162,7 +173,7 @@ class PreNodeFeedFr2Auto(PreNodeFeed):
                 for col in input_vector :
                     row = row + col[i].tolist()
                 result.append(row)
-            return np.array(result)
+            return np.array(result, dtype='f')
         except Exception as e :
             raise Exception ("wcnn data prepare flat_data error : {0}".format(e))
 
