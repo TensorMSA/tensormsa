@@ -32,7 +32,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
     """
 
     def run(self, conf_data):
-        return
+        #return
         try:
             # init parms
             self._init_node_parm(conf_data['node_id'])
