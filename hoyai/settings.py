@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'gui.apps.GuiConfig',
     'master.apps.MasterConfig',
     'chatbot.apps.ChatbotConfig',
+        'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'hoyai.urls'
@@ -229,3 +231,5 @@ STATIC_URL = '/dist/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "tfmsaview/static/dist"),
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True

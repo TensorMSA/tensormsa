@@ -449,6 +449,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def eval(self, node_id, conf_data, data=None, result=None):
         println("run NeuralNetNodeCnn eval")
         self._init_train_parm(conf_data)
+        if data == None:
+            self.eval_flag = "T"
+        else:
+            self.eval_flag = "E"
+
         #eval
         config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"]}
         self.eval_data = TrainSummaryInfo(conf=config)
@@ -470,7 +475,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def eval_run(self, sess, input_data):
         batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]
-
+        pred_cnt = self.netconf["param"]["predictcnt"]
+        println(labels)
         t_cnt_arr = []
         f_cnt_arr = []
         for i in range(len(labels)):
@@ -490,12 +496,24 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         true_name = y_batch[i]
                         file_name = n_batch[i]
                         pred_name = labels[y_pred_true[i]]
+                        logit = []
+                        logit.append(logits[i])
                         # print(self.spaceprint(file_name, 30) + " True Category=" + true_name + " Predict Category=" + pred_name)
                         idx = labels.index(true_name)
-                        if true_name == pred_name:
-                            t_cnt_arr[idx] = t_cnt_arr[idx] + 1
+                        if self.eval_flag == "E":
+                            if true_name == pred_name:
+                                t_cnt_arr[idx] = t_cnt_arr[idx] + 1
+                            else:
+                                f_cnt_arr[idx] = f_cnt_arr[idx] + 1
                         else:
-                            f_cnt_arr[idx] = f_cnt_arr[idx] + 1
+                            retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
+                            println(true_name)
+                            println(retrun_data["key"])
+                            try:
+                                listTF = retrun_data["key"].index(true_name)
+                                t_cnt_arr[idx] = t_cnt_arr[idx] + 1
+                            except:
+                                f_cnt_arr[idx] = f_cnt_arr[idx] + 1
 
                         self.eval_data.set_result_info(true_name, pred_name)
 
@@ -572,5 +590,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 pred_cnt = self.netconf["param"]["predictcnt"]
                 retrun_data = self.set_predict_return_cnn_img(labels, logits, pred_cnt)
                 self.pred_return_data[file_name] = retrun_data
+                println("Return Data.......................................")
+                println(self.pred_return_data)
         return self.pred_return_data
 
