@@ -39,8 +39,8 @@ class DecisionMaker(ShareData):
             else :
                 share_data = self._get_story_board(share_data)
             share_data.__dict__ = self.__dict__
-
             return share_data
+
         except Exception as e:
             raise Exception(e)
 
