@@ -507,8 +507,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
                                 f_cnt_arr[idx] = f_cnt_arr[idx] + 1
                         else:
                             retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
-                            println(true_name)
-                            println(retrun_data["key"])
+                            # println(true_name)
+                            # println(retrun_data["key"])
                             try:
                                 listTF = retrun_data["key"].index(true_name)
                                 t_cnt_arr[idx] = t_cnt_arr[idx] + 1

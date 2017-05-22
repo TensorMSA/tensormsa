@@ -54,7 +54,7 @@ if net_type == "cnn":
                                      "maxpoolstride": [2, 2],
                                      "padding": "SAME",
                                      "droprate": "0.8",
-                                     "layercnt":2
+                                     "layercnt":4
                                     }
                          ,"layer2": {"active": "relu",
                                      "cnnfilter": [3, 3],
