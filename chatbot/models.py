@@ -4,14 +4,14 @@ from django.db import models
 # Create your models here.
 class CB_DEF_LIST_INFO(models.Model):
     cb_id = models.CharField(max_length=50, blank=False, primary_key=True)
-    chat_cate = models.CharField(max_length=10, blank=False)
-    chat_sub_cate = models.CharField(max_length=10, blank=False)
+    chat_cate = models.CharField(max_length=10, blank=True)
+    chat_sub_cate = models.CharField(max_length=10, blank=True)
     cb_title = models.CharField(max_length=100, blank=True)
     cb_desc = models.CharField(max_length=5000, blank=True, default='')
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update_date = models.DateTimeField(auto_now=True)
-    created_by =  models.CharField(max_length=10, blank=False)
-    last_updated_by = models.IntegerField(default=0)
+    creation_date = models.DateTimeField(blank=True)
+    last_update_date = models.DateTimeField(blank=True)
+    created_by =  models.CharField(max_length=10, blank=True)
+    last_updated_by = models.CharField(max_length=10, blank=True)
 
 class CB_INTENT_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)

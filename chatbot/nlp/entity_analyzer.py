@@ -41,23 +41,23 @@ class EntityAnalyzer(ShareData):
         :return:
         """
         if (share_data.get_request_type() == 'image') :
-            return share_data
-
-        input_data = share_data.get_request_data()
-        pos_tags = self._pos_tagger(input_data)
-        print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
-        return_msg = ""
-        for i in range(0, len(pos_tags)):
-            for key in self.entity_key_list:
-                for val in self.entity[key] :
-                    word = pos_tags[i][0]
-                    if(word == val) :
-                        pos_tags[i] = (''.join(['[' , key, ']']), '')
-                        share_data.set_story_entity(key, val)
-                        break
-            return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
-        print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
-        share_data.set_convert_data(return_msg)
+            pass
+        else :
+            input_data = share_data.get_request_data()
+            pos_tags = self._pos_tagger(input_data)
+            print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
+            return_msg = ""
+            for i in range(0, len(pos_tags)):
+                for key in self.entity_key_list:
+                    for val in self.entity[key] :
+                        word = pos_tags[i][0]
+                        if(word == val) :
+                            pos_tags[i] = (''.join(['[' , key, ']']), '')
+                            share_data.set_story_entity(key, val)
+                            break
+                return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
+            print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
+            share_data.set_convert_data(return_msg)
         return share_data
 
     def _pos_tagger(self, input, type ='mecab'):

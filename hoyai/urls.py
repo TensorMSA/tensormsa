@@ -142,4 +142,6 @@ urlpatterns = [
         csrf_exempt(rest_view.ServiceManagerPredict.as_view())),
     url(r'^api/v1/type/service/chatbot/(?P<cbid>.*)/',
         csrf_exempt(rest_view.ChatbotServiceManager.as_view())),
+    url(r'^api/v1/type/service/botbuilder/',
+        csrf_exempt(rest_view.ChatbotBuildManager.as_view())),
 ]
