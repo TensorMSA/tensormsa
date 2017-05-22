@@ -24,7 +24,7 @@ class WorkflowFeedFr2Auto(WorkFlowPre):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['encode_column']
+        return self.conf.get('encode_column')
 
     def get_encode_len(self):
         """
@@ -34,7 +34,7 @@ class WorkflowFeedFr2Auto(WorkFlowPre):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['encode_len']
+        return self.conf.get('encode_len')
 
     def get_preprocess_type(self):
         """
@@ -44,7 +44,7 @@ class WorkflowFeedFr2Auto(WorkFlowPre):
         """
         if('conf' not in self.__dict__) :
             self.conf = self.get_view_obj(self.key)
-        return self.conf['preprocess']
+        return self.conf.get('preprocess')
 
     def set_vocab_list(self, data):
         """

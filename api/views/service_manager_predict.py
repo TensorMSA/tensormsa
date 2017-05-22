@@ -9,6 +9,7 @@ from cluster.service.service_predict_wdnn import PredictNetWdnn
 from cluster.service.service_predict_seq2seq import PredictNetSeq2Seq
 from cluster.service.service_predict_autoencoder import PredictNetAutoEncoder
 from cluster.service.service_predict_anomaly import PredictNetAnomaly
+from cluster.service.service_predict_wcnn import PredictNetWcnn
 from common.utils import *
 
 class ServiceManagerPredict(APIView):
@@ -19,7 +20,8 @@ class ServiceManagerPredict(APIView):
         - desc : insert cnn configuration data
         """
         try:
-
+            println("1. ServiceManagerPredict Start >>>>>>>>>>")
+            println(request)
             if(ver == 'active') :
                 if(type == 'w2v') :
                     return_data = PredictNetW2V().run(nnid, request.data)
@@ -40,6 +42,8 @@ class ServiceManagerPredict(APIView):
                     raise Exception("on developing now !")
                 elif (type == "anomaly"):
                     return_data = PredictNetAnomaly().run(nnid, request.data)
+                elif (type == "wcnn"):
+                    return_data = PredictNetWcnn().run(nnid, request.data)
                 else :
                     raise Exception ("Not defined type error")
             else :

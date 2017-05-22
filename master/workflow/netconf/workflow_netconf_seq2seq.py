@@ -208,7 +208,7 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         config_data['vocab_size'] = data
         obj.save()
 
-    def set_vocab_list(self, data):
+    def set_vocab_list(self, data, id='vocab_list'):
         """
 
         :param node_id:
@@ -216,10 +216,10 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
         config_data = getattr(obj, 'node_config_data')
-        config_data['vocab_list'] = data
+        config_data[id] = data
         obj.save()
 
-    def get_vocab_list(self):
+    def get_vocab_list(self, id='vocab_list'):
         """
 
         :param node_id:
@@ -227,4 +227,4 @@ class WorkFlowNetConfSeq2Seq(WorkFlowNetConf):
         """
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
-        return self.conf.get('vocab_list')
+        return self.conf.get(id)

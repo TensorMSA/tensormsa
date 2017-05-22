@@ -61,9 +61,9 @@ class PreNodeFeedFr2Wv(PreNodeFeed):
         if(self.preprocess_type == 'mecab') :
             return self._mecab_parse(input_data)
         elif (self.preprocess_type == 'kkma'):
-            return self._mecab_parse(input_data)
+            return self._kkma_parse(input_data)
         elif (self.preprocess_type == 'twitter'):
-            return self._mecab_parse(input_data)
+            return self._twitter_parse(input_data)
         else :
             return input_data
 

@@ -5,6 +5,7 @@ from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFra
 from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_data_frame
 from common import utils
 from sklearn.preprocessing import LabelEncoder
+import logging
 
 class PreNodeFeedFr2Wdnn(PreNodeFeed):
     """
@@ -17,15 +18,17 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         #전 노드중 dataconf를 찾아 온다 wdnn만 가능
         #전체 노드중 data_conf를 넣어서 만든다. 1개 밖에 없음
 
-        #data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
+        try:
+            data_conf_node_name = self.node_name.split('_')[0] + "_" + self.node_name.split('_')[1] +"_dataconf_node"
+            self._init_node_parm(data_conf_node_name)
+            super(PreNodeFeedFr2Wdnn, self).run(conf_data)
+            #input_features = self.create_feature_columns()
 
-        data_conf_node_name = self.node_name.split('_')[0] + "_" + self.node_name.split('_')[1] +"_dataconf_node"
-        self._init_node_parm(data_conf_node_name)
-        super(PreNodeFeedFr2Wdnn, self).run(conf_data)
-        #input_features = self.create_feature_columns()
-
-        #testself.node_name.split('_')[1]
-        self.multi_queue_and_h5_print(self.input_paths[0])
+            #testself.node_name.split('_')[1]
+            self.multi_queue_and_h5_print(self.input_paths[0])
+        except Exception as e:
+            logging.error("fidder error {0}".format(e))
+            raise e
 
     def _convert_data_format(self, obj, index):
         pass
@@ -54,7 +57,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         for cate_item in CALCULATED_CATEGORICAL_COLUMNS:
             category_tensor[cate_item] = tf.contrib.layers.sparse_column_with_hash_bucket(cate_item, hash_bucket_size=1000)
         for conti_item in CALCULATED_CONTINUOUS_COLUMNS:
-            continuous_tensor[conti_item] = tf.contrib.layers.real_valued_column(conti_item, dtype=tf.int64)
+            continuous_tensor[conti_item] = tf.contrib.layers.real_valued_column(conti_item, dtype=tf.float32)
         #NONE은 다 처리 되었고
         #KEY를 처리 할려면
         for key_item, value in _extend_cell_feature.items():
@@ -189,6 +192,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
                 # print(CONTINUOUS_COLUMNS)
                 #null 값 처리를 위해서 fillna사용
                 continuous_cols = {k: tf.constant(df[k].fillna(0).values) for k in CONTINUOUS_COLUMNS}
+                #continuous_cols = {k: tf.float32(df[k].fillna(0.).values) for k in CONTINUOUS_COLUMNS}
             # Check Categorical Column is exsist?
             if len(CATEGORICAL_COLUMNS) > 0:
 
@@ -333,65 +337,68 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         #    [filename], num_epochs=1)
 
         # 꼭 local variable initial  해야함
-        if self.multi_node_flag == True:
-            init_op = tf.local_variables_initializer()
+        try:
+            if self.multi_node_flag == True:
+                init_op = tf.local_variables_initializer()
 
-            # Multi Thread로 들고옴
-            feature_map, target = self.input_fn(tf.contrib.learn.ModeKeys.EVAL, file_name, 128)
+                # Multi Thread로 들고옴
+                feature_map, target = self.input_fn(tf.contrib.learn.ModeKeys.EVAL, file_name, 128)
 
-            with tf.Session() as sess:
-                # Start populating the filename queue.
-                sess.run(init_op)
-                coord = tf.train.Coordinator()
-                threads = tf.train.start_queue_runners(coord=coord)
+                with tf.Session() as sess:
+                    # Start populating the filename queue.
+                    sess.run(init_op)
+                    coord = tf.train.Coordinator()
+                    threads = tf.train.start_queue_runners(coord=coord)
 
-                tfrecord_list_row = list()  # 출력을 위한 List
-                print_column = True
+                    tfrecord_list_row = list()  # 출력을 위한 List
+                    print_column = True
 
-                for i in range(3):
-                    # Multi Thread에서 넣을것을 Session으로 실행
-                    example, label = sess.run([feature_map, target])
+                    for i in range(3):
+                        # Multi Thread에서 넣을것을 Session으로 실행
+                        example, label = sess.run([feature_map, target])
 
-                    _row = ""
-                    if print_column == True:  # Header를 위한 Column Key 설정 첫줄만
-                        tfrecord_list_key = [col for col in example.keys()]
-                        tfrecord_list_key.append('label')
-                        print_column = False
-                        tfrecord_list_row.append(tfrecord_list_key)
+                        _row = ""
+                        if print_column == True:  # Header를 위한 Column Key 설정 첫줄만
+                            tfrecord_list_key = [col for col in example.keys()]
+                            tfrecord_list_key.append('label')
+                            print_column = False
+                            tfrecord_list_row.append(tfrecord_list_key)
 
-                    for i in range(len(example[list(example.keys())[0]])):  # Row를 들고 오기 뭔가 지저분함
+                        for i in range(len(example[list(example.keys())[0]])):  # Row를 들고 오기 뭔가 지저분함
 
-                        tfrecord_list_col = list()
-                        for _k in example.keys():
-                            if str(type(example[_k])).find('Sparse') > -1:  # Sparse는 Bytes로 나와서 Bytes를 String 으로 처리
-                                tfrecord_list_col.append(str(example[_k].values[i].decode()))
-                            else:
-                                # numpy도 ndarray로 나와서 [0]을 붙여 정리함
-                                tfrecord_list_col.append(str(example[_k][i][0]))
-                        tfrecord_list_col.append(str(label[i][0]))
-                        columns_value = tfrecord_list_col
-                        tfrecord_list_row.append(columns_value)
+                            tfrecord_list_col = list()
+                            for _k in example.keys():
+                                if str(type(example[_k])).find('Sparse') > -1:  # Sparse는 Bytes로 나와서 Bytes를 String 으로 처리
+                                    tfrecord_list_col.append(str(example[_k].values[i].decode()))
+                                else:
+                                    # numpy도 ndarray로 나와서 [0]을 붙여 정리함
+                                    tfrecord_list_col.append(str(example[_k][i][0]))
+                            tfrecord_list_col.append(str(label[i][0]))
+                            columns_value = tfrecord_list_col
+                            tfrecord_list_row.append(columns_value)
 
-                    # 이쁘게 출력하기 위해 Print 함수 설정
-                    for item in tfrecord_list_row:
-                        print(str(item[0:])[1:-1])
+                        # 이쁘게 출력하기 위해 Print 함수 설정
+                        for item in tfrecord_list_row:
+                            print(str(item[0:])[1:-1])
 
-                coord.request_stop()
-                coord.join(threads)
-        else:
-            # Todo 할때마다 계속 파일을 읽는게 올바른 것인가?
-            try:
-                store = pd.HDFStore(file_name)
-                nrows = store.get_storer('table1').nrows
-                chunksize = 100
+                    coord.request_stop()
+                    coord.join(threads)
+            else:
+                # Todo 할때마다 계속 파일을 읽는게 올바른 것인가?
+                try:
+                    store = pd.HDFStore(file_name)
+                    nrows = store.get_storer('table1').nrows
+                    chunksize = 100
 
-                # for i in range(nrows // chunksize + 1):
-                chunk = store.select('table1')
-                print(chunk)
-            except Exception as e:
-                raise Exception(e)
-            finally:
-                store.close()
+                    # for i in range(nrows // chunksize + 1):
+                    chunk = store.select('table1')
+                    print(chunk)
+                except Exception as e:
+                    raise Exception(e)
+                finally:
+                    store.close()
+        except Exception as e:
+            logging.error("feed just show data {0}".format(e))
 
     def _init_node_parm(self, key):
         """

@@ -12,9 +12,9 @@ println("S")
 # rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
-url = gUrl
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 typeStr = "cnn"
-nn_id = "nn00011"
+nn_id = "mro001"
 wf_ver_id = 0
 # get workflow version info
 if wf_ver_id == 0:
@@ -51,8 +51,11 @@ files = {
 
 restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/'+typeStr+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
 
-resp = requests.post(restURL,
-                     files=files
+resp = requests.post(restURL, files=files, json={
+                         "config": {"net_type":"cnn" #"resnet", "cnn"
+                                     }
+                         ,"labels":[]
+                        }
                      )
 data = json.loads(resp.json())
 try:

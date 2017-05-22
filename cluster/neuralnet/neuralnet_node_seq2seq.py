@@ -26,32 +26,31 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self._set_train_model()
 
             # create session
-            sess = tf.Session()
-            sess.run(tf.initialize_all_variables())
-            saver = tf.train.Saver(tf.all_variables())
-            if (self.check_batch_exist(conf_data['node_id'])):
-                path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+            with tf.Session() as sess:
+                sess.run(tf.initialize_all_variables())
+                saver = tf.train.Saver(tf.all_variables())
+                if (self.check_batch_exist(conf_data['node_id'])):
+                    path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+                    set_filepaths(path)
+                    saver.restore(sess, path)
+
+                for self.epoch in range(self.num_epochs):
+                    # run train
+                    while(train_data_set.has_next()) :
+                        for i in range(0, train_data_set.data_size(), self.batch_size):
+                            data_set = train_data_set[i:i + self.batch_size]
+                            if(len(data_set[0]) != self.batch_size) : break
+                            targets = self._get_dict_id(data_set[1])
+                            decode_batch = self._word_embed_data(data_set[1])
+                            encode_batch = self._word_embed_data(data_set[0])
+                            self._run_train(sess, encode_batch, decode_batch, targets)
+                        train_data_set.next()
+                    train_data_set.reset_pointer()
+
+                # save model and close session
+                path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
                 set_filepaths(path)
-                saver.restore(sess, path)
-
-            for self.epoch in range(self.num_epochs):
-                # run train
-                while(train_data_set.has_next()) :
-                    for i in range(0, train_data_set.data_size(), self.batch_size):
-                        data_set = train_data_set[i:i + self.batch_size]
-                        if(len(data_set[0]) != self.batch_size) : break
-                        targets = self._get_dict_id(data_set[1])
-                        decode_batch = self._word_embed_data(data_set[1])
-                        encode_batch = self._word_embed_data(data_set[0])
-                        self._run_train(sess, encode_batch, decode_batch, targets)
-                    train_data_set.next()
-                train_data_set.reset_pointer()
-
-            # save model and close session
-            path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
-            set_filepaths(path)
-            saver.save(sess, path)
-            sess.close()
+                saver.save(sess, path)
         except Exception as e :
             raise Exception (e)
         finally :
@@ -152,31 +151,21 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
             ## create tensorflow graph
             if (NeuralNetModel.dict.get(unique_key)):
-                self.__dict__ = NeuralNetModel.dict
-            else :
-                self._set_predict_model()
-                NeuralNetModel.dict = self.__dict__
-
-            # create session
-            if (NeuralNetModel.tf.get(unique_key)):
-                # case1 : cache reuse step
-                m_tf = NeuralNetModel.tf.get(unique_key)
-                init = m_tf.global_variables_initializer()
-                sess = m_tf.Session()
-                sess.run(init)
-                temp_tf = m_tf
+                self = NeuralNetModel.dict.get(unique_key)
+                graph = NeuralNetModel.graph.get(unique_key)
             else:
-                # case2 : initialize step
-                init = tf.global_variables_initializer()
-                sess = tf.Session()
-                sess.run(init)
-                NeuralNetModel.tf[unique_key] = tf
-                temp_tf = tf
+                self._set_predict_model()
+                NeuralNetModel.dict[unique_key] = self
+                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+                graph = tf.get_default_graph()
 
-            result = self._run_predict(sess, parm['input_data'],
-                                       predict_num=parm.get("num") if parm.get("num") != None else 0,
-                                       clean_ans = parm.get("clean_ans") if parm.get("clean_ans") != None else True,
-                                       tf = temp_tf)
+            with tf.Session(graph=graph) as sess :
+                sess.run(self.init_val)
+                result = self._run_predict(sess, parm['input_data'],
+                                           predict_num=parm.get("num") if parm.get("num") != None else 0,
+                                           clean_ans = parm.get("clean_ans") if parm.get("clean_ans") != None else True,
+                                           batch_ver='eval', # TODO : need to be predict version
+                                           saver=self.saver)
             return result
         except Exception as e :
             raise Exception ("seq2seq predict error : {0}".format(e))
@@ -190,23 +179,27 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
         :param parm:
         :return:
         """
-        result.set_result_data_format({})
-        tf.reset_default_graph()
-        sess = tf.Session()
-        sess.run(tf.initialize_all_variables())
-        # prepare net conf
-        self._set_predict_model()
-        self.node_id = node_id
+        try :
+            result.set_result_data_format({})
+            tf.reset_default_graph()
+            sess = tf.Session()
+            sess.run(tf.initialize_all_variables())
+            # prepare net conf
+            self._set_predict_model()
+            self.node_id = node_id
 
-        while (data.has_next()):
-            for i in range(0, data.data_size(), self.predict_batch):
-                data_set = data[i:i + self.predict_batch]
-                if (len(data_set[0]) != self.predict_batch): break
-                predict = self._run_predict(sess, data_set[0][0], type='pre', clean_ans=False)
-                result.set_result_info(' '.join(data_set[1][0]), ' '.join(predict[0]), input=' '.join(data_set[0][0]), acc=None)
-            data.next()
-        sess.close()
-        return result
+            while (data.has_next()):
+                for i in range(0, data.data_size(), self.predict_batch):
+                    data_set = data[i:i + self.predict_batch]
+                    if (len(data_set[0]) != self.predict_batch): break
+                    predict = self._run_predict(sess, data_set[0][0], type='pre', clean_ans=False)
+                    result.set_result_info(' '.join(data_set[1][0]), ' '.join(predict[0]), input=' '.join(data_set[0][0]), acc=None)
+                data.next()
+            return result
+        except Exception as e :
+            raise Exception("seq2seq eval error : {0}".format(e))
+        finally:
+            sess.close()
 
     def _word_embed_data(self, input_data):
         """
@@ -435,18 +428,20 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self.output = tf.reshape(tf.concat(self.outputs, 1), [-1, self.cell_size])
             self.logits = tf.nn.xw_plus_b(self.output, self.softmax_w, self.softmax_b)
             self.probs = tf.nn.softmax(self.logits)
-
+            self.init_val = tf.initialize_all_variables()
+            self.saver = tf.train.Saver(tf.all_variables())
         except Exception as e :
             raise Exception (e)
 
-    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0, batch_ver='eval', tf = None):
+    def _run_predict(self, sess, x_input, type='raw', clean_ans=True, predict_num=0, batch_ver='eval', saver=None):
         """
         run actual predict
         :return:
         """
         try :
             #restore model
-            saver = tf.train.Saver(tf.all_variables())
+            if(saver == None) :
+                saver = tf.train.Saver(tf.all_variables())
             if (batch_ver == 'eval') :
                 batch_ver_name = self.get_eval_batch(self.node_id)
             else :
@@ -495,7 +490,6 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             return responses
         except Exception as e :
             raise Exception(e)
-
 
     def _pad_predict_input(self, input_tuple):
         """

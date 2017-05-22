@@ -1,7 +1,8 @@
-import json
+from django.core.serializers.json import json, DjangoJSONEncoder
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.network.nn_common_manager import NNCommonManager
+import logging
 
 class CommonNNInfoList(APIView):
     """
@@ -26,11 +27,14 @@ class CommonNNInfoList(APIView):
         try:
             condition = {}
             condition['nn_id'] = nnid
+            if str(nnid).lower() == 'all':
+                condition['nn_id'] = '%'
             return_data = NNCommonManager().get_nn_info(condition)
-            return Response(json.dumps(return_data))
+            logging.info(return_data)
+            return Response(json.dumps(return_data, cls=DjangoJSONEncoder))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
+            return Response(json.dumps(return_data, cls=DjangoJSONEncoder))
 
     def put(self, request, nnid):
         """

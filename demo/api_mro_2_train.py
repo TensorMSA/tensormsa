@@ -12,8 +12,9 @@ from common.utils import *
 # ./manage.py runserver 2fb1ece74beb:8000 --noreload
 
 println("S")
-url = gUrl
-nn_id = "nn00011"
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+nn_id = "mro001"
+net_type = "resnet" # cnn, resnet, renet
 wf_ver_id = 0
 
 # get workflow version
@@ -30,20 +31,23 @@ wf_ver_id = str(wf_ver_id)
 # CNN Network WorkFlow Node : Network Config Setup
 # (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
 node = "netconf_node"
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+
+if net_type == "cnn":
+    resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch": 1
-                                  ,"traincnt": 5
-                                  ,"batch_size":25000
+                         "param":{"epoch": 2
+                                  ,"traincnt": 2
+                                  ,"batch_size":1000000
                                   ,"predictcnt": 10
                          },
                          "config": {"num_classes":10,
                                     "learnrate": 0.001,
-                                     "layeroutputs":32,
-                                     "type":"category"
+                                    "layeroutputs":32,
+                                    "net_type":"cnn",
+                                    "eval_type":"category",
+                                    "optimizer":"AdamOptimizer" #RMSPropOptimizer
                                      }
-                         ,"layer1": {"type": "cnn",
-                                     "active": "relu",
+                         ,"layer1": {"active": "relu",
                                      "cnnfilter": [3, 3],
                                      "cnnstride": [1, 1],
                                      "maxpoolmatrix": [2, 2],
@@ -52,11 +56,10 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                      "droprate": "0.8",
                                      "layercnt":2
                                     }
-                         ,"layer2": {"type": "cnn",
-                                     "active": "relu",
+                         ,"layer2": {"active": "relu",
                                      "cnnfilter": [3, 3],
                                      "cnnstride": [1, 1],
-                                     "maxpoolmatrix": [2, 2],
+                                     "maxpoolmatrix": [1, 1],
                                      "maxpoolstride": [2, 2],
                                      "padding": "SAME",
                                      "droprate": "0.8",
@@ -68,17 +71,37 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                 }
                          ,"labels":[]
                         })
+elif net_type == "resnet":
+    resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+                     json={
+                         "param":{"epoch": 1
+                                  ,"traincnt": 1
+                                  ,"batch_size":25000
+                                  ,"predictcnt": 10
+                         },
+                         "config": {"num_classes":10,
+                                    "learnrate": 0.001,
+                                    "layeroutputs":18,
+                                    "net_type":"resnet",
+                                    "eval_type":"",
+                                    "optimizer":"AdamOptimizer" #RMSPropOptimizer
+                                     }
+                         ,"labels":[]
+                        })
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
 
 # CNN Network WorkFlow Node :  Data Config Setup
+# yolo min image size 385 and %7 = 0
 node = "datasrc"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
                             "preprocess": {"x_size": 32,
                                            "y_size": 32,
                                            "channel":3,
-                                           "filesize": 1000000}
+                                           "filesize": 1000000,
+                                           "yolo": "n",
+                                           "augmentation":"N"}
                      })
 dataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(dataconf))
@@ -95,7 +118,9 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/f
                             "preprocess": {"x_size": 32,
                                            "y_size": 32,
                                            "channel":3,
-                                           "filesize": 1000000}
+                                           "filesize": 1000000,
+                                           "yolo": "n",
+                                           "augmentation":"N"}
                      })
 edataconf = json.loads(resp.json())
 
@@ -103,7 +128,7 @@ edataconf = json.loads(resp.json())
 # (CNN Network Training을 실행한다 .)
 resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
 data = json.loads(resp.json())
-# print(data)
+print(data)
 
 def spaceprint(val, cnt):
     leng = len(str(val))
@@ -168,7 +193,6 @@ else:
 
 
 println("E")
-
 
 
 

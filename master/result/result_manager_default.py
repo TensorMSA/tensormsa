@@ -22,7 +22,8 @@ class ResultManagerDefault(ResultManager) :
         """
 
         try:
-            query_set = models.TRAIN_SUMMARY_RESULT_INFO.objects.filter(nn_id=nnid, nn_wf_ver_id =wf_id )
+            #query_set = models.TRAIN_SUMMARY_RESULT_INFO.objects.select_related(models.NN_VER_BATCHLIST_INFO).filter(nn_id=nnid, nn_wf_ver_id =wf_id)
+            query_set = models.TRAIN_SUMMARY_RESULT_INFO.objects.select_related('nn_batch_ver_id').filter(nn_id=nnid, nn_wf_ver_id = wf_id, nn_batch_ver_id__eval_flag='Y')
             query_set = serial.serialize("json", query_set)
             return json.loads(query_set)
         except Exception as e:

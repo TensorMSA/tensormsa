@@ -17,6 +17,8 @@ class PredictNetCnn(PredictNet):
         :param parm:
         :return:
         """
+        println("2. PredictNetCnn Start >>>>>>>>>>")
+        println(parm)
         return NeuralNetNodeCnn().predict(self._find_netconf_node_id(nn_id, ver), parm)
 
     def _valid_check(self, parm):

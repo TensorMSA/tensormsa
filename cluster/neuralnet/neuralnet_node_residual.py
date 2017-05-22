@@ -265,6 +265,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
                     data_set = eval_data_set[i:i+1]
                     X_train = data_set[0]
                     targets = data_set[1]
+                    names = data_set[2]
                     rawdata_conv = np.zeros((X_train.size, X_train[0].size))
                     r = 0
                     for j in X_train:
@@ -290,6 +291,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
                     return_value = self.labels[np.argmax(return_values)]
                     train.set_result_info(str(targets[0],'UTF-8'),return_value)
+                    if str(targets[0],'UTF-8') != return_value:
+                        print(str(targets[0],'UTF-8') + '/' + str(names[0]))
                 eval_data_set.next()
             print("Accuracy : " + str(true_cnt / total_cnt * 100))
             return train

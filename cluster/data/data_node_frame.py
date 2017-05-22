@@ -60,6 +60,7 @@ class DataNodeFrame(DataNode):
                 for file_path in fp_list:
                     df_csv_read = self.load_csv_by_pandas(file_path)
                     self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id']) # make columns type of csv
+                    #self.make_unique_value_each_column(df_csv_read,conf_data['node_id'])
                     self.create_hdf5(self.data_store_path, df_csv_read)
 
                     #Todo 뽑아서 함수화 시킬것
@@ -106,6 +107,7 @@ class DataNodeFrame(DataNode):
                     shutil.copy(file_path,self.data_src_path+"/backup/"+file_name_bk )
                     os.remove(file_path) #승우씨것
             except Exception as e:
+                logging.error("Datanode making h5 or tfrecord error".format(e))
                 raise Exception(e)
             return None
         except Exception as e:
@@ -191,6 +193,7 @@ class DataNodeFrame(DataNode):
             except Exception as e:
                 raise Exception(e)
 
+            #TODO: extende cell feature를 여기서 체크할 필요가 있을듯 함
             # tfrecord는 여기서 Label을 변경한다. 나중에 꺼낼때 답이 없음 Tensor 객체로 추출되기 때문에 그러나 H5는 feeder에서 변환해주자
             le = LabelEncoder()
             le.fit(self.combined_label_list)
@@ -204,8 +207,11 @@ class DataNodeFrame(DataNode):
                     example.features.feature[col].bytes_list.value.extend([str.encode(value)])
                 elif col in _CONTINUOUS_COLUMNS:
                     if isnan(value):
-                        value = 0
-                    example.features.feature[col].int64_list.value.extend([int(value)])
+                        value = 0.0
+                    #example.features.feature[col].int64_list.value.extend([int(value)])
+                    example.features.feature[col].float_list.value.extend([float(value)])
+
+                    #example.features.feature[col].flo
                 #'income_bracket'
                 #'fnlwgt'
                 if col == label:
@@ -220,7 +226,7 @@ class DataNodeFrame(DataNode):
                     else:
                         trans = le.transform([value])[0] # 무조껀 0번째임
                         example.features.feature['label'].int64_list.value.extend([int(trans)])
-                    #inverse_label = le.inverse_transform([trans])
+                        #inverse_label = le.inverse_transform([trans])
 
                     #print(value + " ori : " + str(ori) + "    convert label convert :" + str(trans) + "    inverse label :" + str(inverse_label))
 
@@ -283,17 +289,50 @@ class DataNodeFrame(DataNode):
         :param conf_data:
         """
         try:
+
             data_conf=self.set_dataconf_for_checktype(df, node_id )
             #self.data_conf = self.set_dataconf_for_checktype(df, node_id )
+            data_conf_unique_cnt = self.make_unique_value_each_column(df,node_id)
+            data_conf.update(data_conf_unique_cnt)
             dataconf_nodes = self._get_forward_node_with_type(node_id, 'dataconf')
             if(len(dataconf_nodes) > 0 ) :
                 wf_data_conf_node = wf_data_conf(dataconf_nodes[0])
                 if(len(wf_data_conf_node.cell_feature) == 0 or 'conf' not in wf_data_conf_node.__dict__):
-                #if ('conf' not in wf_data_conf_node.__dict__):
                     self.set_default_dataconf_from_csv(wf_data_conf_node, node_id,data_conf)
+                    self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf_unique_cnt)
             return data_conf
         except Exception as e:
             raise Exception(e)
+
+    def make_unique_value_each_column (self, df, node_id):
+        """ Dataframe중 범주형 데이터를 찾아서 유일한 값의 갯수를 반환한다 
+            Unique Value return in Dataframe
+
+        Args:
+          params:
+            * df : dataframe
+            * node_id: nnid
+
+        Returns:
+            json
+
+        Raises:
+        """
+        try:
+            data_conf = dict()
+            column_cate_unique = dict()
+            numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+            for i, v in df.dtypes.iteritems():
+                if (str(v) not in numerics):  # maybe need float
+                    column_cate_unique[i] = df[i].unique().size
+            data_conf['unique_cell_feature'] = column_cate_unique
+            data_conf_json_str = json.dumps(data_conf)
+            data_conf_json = json.loads(data_conf_json_str)
+            return data_conf_json
+        except Exception as e:
+            logging.error("make_unique_value_each_column error : {0}, {1}".format(i,v))
+            raise e
+
 
     def set_default_dataconf_from_csv(self,wf_data_config, node_id, data_conf):
         """
@@ -303,25 +342,6 @@ class DataNodeFrame(DataNode):
         tfrecord 때문에 항상 타입을 체크하고 필요할때만 저장
         """
         # #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
-        # data_conf = dict()
-        # data_conf_col_type = dict()
-        # #data_conf_label = dict()
-        # for i, v in df.dtypes.iteritems():
-        #     # label
-        #     column_dtypes = dict()
-        #     col_type = ''
-        #     if (str(v) == "int64"):  # maybe need float
-        #         col_type = 'CONTINUOUS'
-        #     else:
-        #         col_type = 'CATEGORICAL'
-        #     column_dtypes['column_type'] = col_type
-        #     data_conf_col_type[i] = column_dtypes
-        # data_conf['cell_feature'] = data_conf_col_type
-        # data_conf_json_str = json.dumps(data_conf)
-        # data_conf_json = json.loads(data_conf_json_str)
-
-        # DATACONF_FRAME_CALL
-        #self, nnid, ver, node, input_data):
         nnid = node_id.split('_')[0]
         ver = node_id.split('_')[1]
         data_node = "dataconf_node"
@@ -370,7 +390,7 @@ class DataNodeFrame(DataNode):
 
         label_values = dict()
 
-        label_values = pd.unique(df[label].values.ravel().astype(int)).tolist()
+        label_values = pd.unique(df[label].values.ravel().astype('str')).tolist()
         # DATACONF_FRAME_CALL
         #wf_data_config.put_step_source(node_id, label_values)
         return label_values
