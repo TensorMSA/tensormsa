@@ -2,6 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.netconf.workflow_netconf_renet import WorkFlowNetConfReNet
+from master import models
 
 class WorkFlowNetConfRenet(APIView) :
     """
@@ -37,6 +38,9 @@ class WorkFlowNetConfRenet(APIView) :
         try:
             input_data = request.data
             node_id = ''.join([nnid, '_', ver , '_', node])
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+            old_config_data = getattr(obj, 'node_config_data')
+            input_data["labels"] = old_config_data["labels"]
             return_data = WorkFlowNetConfReNet().set_view_obj(node_id, input_data)
             return Response(json.dumps(return_data))
         except Exception as e:

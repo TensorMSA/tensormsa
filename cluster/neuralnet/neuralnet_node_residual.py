@@ -32,7 +32,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
     """
 
     def run(self, conf_data):
-        #return
+        return
         try:
             # init parms
             self._init_node_parm(conf_data['node_id'])
@@ -190,7 +190,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
                 model = keras.models.load_model(''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
                 filelist = sorted(parm.items(), key=operator.itemgetter(0))
                 data = {}
-                data_sub = {}
                 for file in filelist:
                     value = file[1]
                     filename = file[1].name
@@ -246,6 +245,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             self.cls_pool = parm['cls_pool']
             self._init_node_parm(self.get_node_name())
             eval_data_set = self.cls_pool[self.wf_state_id + '_' + self.eval_feed_node]
+            total_cnt = eval_data_set.data_size()
             self.batch = self.get_eval_batch(node_id)
             config = {"type": eval_config_data["type"], "labels": self.labels, "nn_id": parm["nn_id"],
                       "nn_wf_ver_id": parm["wf_ver"], "nn_batch_ver_id" : self.batch}
@@ -259,6 +259,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             img_rows, img_cols = preprocess['x_size'], preprocess['y_size']
             # The CIFAR10 images are RGB.
             img_channels = preprocess['channel']
+            true_cnt = 0
             while (eval_data_set.has_next()):
                 for i in range(0, eval_data_set.data_size(), 1):
                     data_set = eval_data_set[i:i+1]
@@ -274,9 +275,23 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
                     X_train = preprocess_input(rawdata_conv)
 
-                    return_value = self.labels[np.argmax(model.predict(X_train))]
+                    return_values = model.predict(X_train)
+
+                    one = np.zeros((len(self.labels), 2))
+                    for i in range(len(self.labels)):
+                        one[i][0] = i
+                        one[i][1] = return_values[0][i]
+                    onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
+                    data_sub_key = []
+                    for i in range(self.pred_cnt):
+                        data_sub_key.append(self.labels[int(onesort[i][0])])
+                    if str(targets[0],'UTF-8') in data_sub_key:
+                        true_cnt = true_cnt + 1
+
+                    return_value = self.labels[np.argmax(return_values)]
                     train.set_result_info(str(targets[0],'UTF-8'),return_value)
                 eval_data_set.next()
+            print("Accuracy : " + str(true_cnt / total_cnt * 100))
             return train
         except Exception as e:
             raise Exception(e)
