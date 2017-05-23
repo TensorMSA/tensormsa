@@ -11,14 +11,17 @@ class ChatbotBuildManager(APIView):
         try:
             result = BotBuilder().run_builder(request.data)
             return Response(json.dumps(result))
+
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
     def put(self, request):
+
         try:
             result = BotBuilder().run_chatbot(request.data)
             return Response(json.dumps(result))
+
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))

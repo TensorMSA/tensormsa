@@ -7,7 +7,7 @@ class CB_DEF_LIST_INFO(models.Model):
     chat_cate = models.CharField(max_length=10, blank=True)
     chat_sub_cate = models.CharField(max_length=10, blank=True)
     cb_title = models.CharField(max_length=100, blank=True)
-    cb_desc = models.CharField(max_length=5000, blank=True, default='')
+    cb_desc = models.CharField(max_length=5000, blank=True)
     creation_date = models.DateTimeField(blank=True)
     last_update_date = models.DateTimeField(blank=True)
     created_by =  models.CharField(max_length=10, blank=True)
@@ -15,8 +15,8 @@ class CB_DEF_LIST_INFO(models.Model):
 
 class CB_INTENT_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    intent_id = models.CharField(max_length=10, blank=False, primary_key=True)
-    intent_type = models.CharField(max_length=10, blank=True)
+    intent_id = models.CharField(max_length=10, blank=False,  primary_key=True)
+    intent_type = models.CharField(max_length=10, blank=False) #model/custom
     intent_desc = models.CharField(max_length=50, blank=True)
     nn_id = models.CharField(max_length=10, blank=True)
     nn_type = models.CharField(max_length=10, blank=True)
@@ -33,10 +33,10 @@ class CB_ENTITY_LIST_INFO(models.Model):
 
 class CB_MODEL_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    nn_id = models.CharField(max_length=10, blank=False)
-    nn_purpose = models.CharField(max_length=10, blank=False)
-    nn_type = models.CharField(max_length=10, blank=False)
-    nn_desc = models.CharField(max_length=50, blank=False)
+    nn_id = models.CharField(max_length=10, blank=True)
+    nn_purpose = models.CharField(max_length=10, blank=True)
+    nn_type = models.CharField(max_length=10, blank=True)
+    nn_desc = models.CharField(max_length=50, blank=True)
 
 class CB_SERVICE_LIST_INFO(models.Model):
     story_id = models.ForeignKey(CB_STORYBOARD_LIST_INFO, on_delete=models.CASCADE)
