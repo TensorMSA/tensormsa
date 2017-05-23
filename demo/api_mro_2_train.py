@@ -35,7 +35,7 @@ node = "netconf_node"
 if net_type == "cnn":
     resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch": 1
+                         "param":{"epoch": 0
                                   ,"traincnt": 1
                                   ,"batch_size":1000000
                                   ,"predictcnt": 3

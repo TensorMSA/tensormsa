@@ -342,6 +342,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
             self.train_return_data["TrainResult"] = self.train_return_arr
 
+        epoch = self.netconf["param"]["epoch"]
+        train_cnt = self.netconf["param"]["traincnt"]
+        if epoch == 0 or train_cnt == 0:
+            self.eval(self.node_id, self.conf_data, None, None)
+
         return self.train_return_data
 
     def train_run_resnet(self, sess, input_data, test_data):
@@ -476,7 +481,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]
         pred_cnt = self.netconf["param"]["predictcnt"]
-        println(labels)
+        # println(labels)
         t_cnt_arr = []
         f_cnt_arr = []
         for i in range(len(labels)):
