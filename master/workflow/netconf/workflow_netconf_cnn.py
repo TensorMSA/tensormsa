@@ -54,7 +54,8 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
         try:
             old_config_data = getattr(obj, 'node_config_data')
-            input_data["labels"] = old_config_data["labels"]
+            if len(input_data["labels"]) == 0:
+                input_data["labels"] = old_config_data["labels"]
         except:
             None
 

@@ -114,6 +114,7 @@ class DataNodeImage(DataNode):
                     os.remove(self.directory + "/" + zipname)
 
             forderlist = os.listdir(self.directory)
+            forderlist.sort()
 
             filecnt = 0
             image_arr = []

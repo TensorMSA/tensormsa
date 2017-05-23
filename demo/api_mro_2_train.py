@@ -38,7 +38,7 @@ if net_type == "cnn":
                          "param":{"epoch": 0
                                   ,"traincnt": 1
                                   ,"batch_size":1000000
-                                  ,"predictcnt": 3
+                                  ,"predictcnt": 10
                          },
                          "config": {"num_classes":10,
                                     "learnrate": 0.001,
