@@ -70,6 +70,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def _init_predict_parm(self, node_id):
         self.node_id = node_id
     def _init_value(self):
+        self.g_ffile_print = "N"
         self.g_train_cnt = 0
         self.g_epoch_cnt = 0
         # return data
@@ -351,6 +352,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         if self.epoch == 0 or self.train_cnt == 0:
             self.eval(self.node_id, self.conf_data, None, None)
+            self.g_ffile_print = "Y"
 
         return self.train_return_data
 
@@ -498,10 +500,14 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                         logit = []
                         logit.append(logits[i])
-                        # print(self.spaceprint(file_name, 30) + " True Category=" + true_name + " Predict Category=" + pred_name)
+                        #
                         idx = labels.index(true_name)
                         retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
                         pred_name =  retrun_data["key"][0]
+
+                        if self.g_ffile_print == "Y" and true_name != pred_name:
+                            print("True=" + true_name + " FileName="+file_name)
+                            print(retrun_data["key"])
 
                         if self.eval_flag == "E":
                             if true_name == pred_name:
