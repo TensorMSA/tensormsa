@@ -35,8 +35,8 @@ node = "netconf_node"
 if net_type == "cnn":
     resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch": 2
-                                  ,"traincnt": 2
+                         "param":{"traincnt": 3
+                                  ,"epoch": 2
                                   ,"batch_size":1000000
                                   ,"predictcnt": 3
                          },
@@ -74,8 +74,8 @@ if net_type == "cnn":
 elif net_type == "resnet":
     resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch": 1
-                                  ,"traincnt": 1
+                         "param":{"traincnt": 3
+                                  ,"epoch": 2
                                   ,"batch_size":25000
                                   ,"predictcnt": 10
                          },

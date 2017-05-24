@@ -62,7 +62,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.wf_ver = conf_data["wf_ver"]
         self.node_id = conf_data["node_id"]
         self.node = WorkFlowSimpleManager().get_train_node()
-        self.saveCnt = 100
 
         # get feed name
         self.train_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_train_feed_node()
@@ -71,7 +70,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def _init_predict_parm(self, node_id):
         self.node_id = node_id
     def _init_value(self):
-        self.g_total_cnt = 0
+        self.g_train_cnt = 0
+        self.g_epoch_cnt = 0
         # return data
         self.train_return_data = {}
         self.train_return_arr = ["Trainning .................................................."]
@@ -291,35 +291,31 @@ class NeuralNetNodeCnn(NeuralNetNode):
         return sess, saver
     ########################################################################
     def set_saver_model(self, sess):
-        if self.saveCnt > self.train_cnt:
-            self.saveCnt = self.train_cnt
+        saver = tf.train.Saver()
+        saver.save(sess, save_path=self.save_path)
+        self.step_gap = self.step_gap + 10
+        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
 
-        if (self.g_total_cnt % self.saveCnt == 0):
-            saver = tf.train.Saver()
-            saver.save(sess, save_path=self.save_path)
-            self.step_gap = self.step_gap + 10
-            self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
+        self.model_file_delete(self.model_path, self.modelname)
 
-            self.model_file_delete(self.model_path, self.modelname)
+        if self.net_type == "resnet":
+            loss = round(self.loss * 100, 2)
+            accR = round(self.acc * 100, 2)
+            val_loss = round(self.val_loss * 100, 2)
+            val_acc = round(self.val_acc * 100, 2)
+            msg = "Global Step: " + str(self.step_gap)
+            msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
+            msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
+            println(msg)
+        else:
+            batch_accR = round(self.batch_acc * 100, 2)
+            msg = "Global Step: " + str(self.step_gap) + ", Training Batch Accuracy: " + str(
+                batch_accR) + "%" + ", Cost: " + str(self.i_cost)
+            println(msg)
+        result = [msg]
+        self.train_return_arr.append(result)
 
-            if self.net_type == "resnet":
-                loss = round(self.loss * 100, 2)
-                accR = round(self.acc * 100, 2)
-                val_loss = round(self.val_loss * 100, 2)
-                val_acc = round(self.val_acc * 100, 2)
-                msg = "Global Step: " + str(self.g_total_cnt)
-                msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
-                msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
-                println(msg)
-            else:
-                batch_accR = round(self.batch_acc * 100, 2)
-                msg = "Global Step: " + str(self.g_total_cnt) + ", Training Batch Accuracy: " + str(
-                    batch_accR) + "%" + ", Cost: " + str(self.i_cost)
-                println(msg)
-            result = [msg]
-            self.train_return_arr.append(result)
-
-            self.eval(self.node_id, self.conf_data, None, None)
+        self.eval(self.node_id, self.conf_data, None, None)
 
     def run(self, conf_data):
         println("run NeuralNetNodeCnn Train")
@@ -336,13 +332,16 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         self.net_type = self.netconf["config"]["net_type"]
         self.train_cnt = self.netconf["param"]["traincnt"]
+        self.epoch = self.netconf["param"]["epoch"]
+        self.train_cnt = self.netconf["param"]["traincnt"]
+        self.batch_size = self.netconf["param"]["batch_size"]
 
         # train
         with tf.Session() as sess:
             if self.net_type == "resnet":
                 self.get_model_resnet("T")
                 sess, saver = self.get_saver_model(sess)
-                self.return_arr = self.train_run_resnet(sess, input_data, test_data)
+                self.train_run_resnet(sess, input_data, test_data)
             else:
                 self.get_model_cnn("T")
                 sess, saver = self.get_saver_model(sess)
@@ -350,18 +349,12 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
             self.train_return_data["TrainResult"] = self.train_return_arr
 
-        epoch = self.netconf["param"]["epoch"]
-        train_cnt = self.netconf["param"]["traincnt"]
-        if epoch == 0 or train_cnt == 0:
+        if self.epoch == 0 or self.train_cnt == 0:
             self.eval(self.node_id, self.conf_data, None, None)
 
         return self.train_return_data
 
     def train_run_resnet(self, sess, input_data, test_data):
-        epoch = self.netconf["param"]["epoch"]
-        batch_size = self.netconf["param"]["batch_size"]
-        train_cnt = self.netconf["param"]["traincnt"]
-
         try:
             if self.data_augmentation == "N" or self.data_augmentation == "n":
                 println('Not using data augmentation.')
@@ -375,11 +368,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 test_set = test_data[0:test_data.data_size()]
                 x_tbatch, y_tbatch, n_tbatch = self.get_batch_img_data(test_set, "T")
 
-                for i in range(train_cnt):
+                for i in range(self.train_cnt):
                     if self.data_augmentation == "N" or self.data_augmentation == "n":
                         history = self.model.fit(x_batch, y_batch,
-                                       batch_size=batch_size,
-                                       epochs=epoch,
+                                       batch_size=self.batch_size,
+                                       epochs=self.epoch,
                                        validation_data=(x_tbatch, y_tbatch),
                                        shuffle=True,
                                        callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
@@ -409,14 +402,14 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         datagen.fit(x_batch)
 
                         # Fit the model on the batches generated by datagen.flow().
-                        self.model.fit_generator(datagen.flow(x_batch, y_batch, batch_size=batch_size),
-                                            steps_per_epoch=x_batch.shape[0] // batch_size,
+                        self.model.fit_generator(datagen.flow(x_batch, y_batch, batch_size=self.batch_size),
+                                            steps_per_epoch=x_batch.shape[0] // self.batch_size,
                                             validation_data=(x_tbatch, y_tbatch),
-                                            epochs=epoch, verbose=1, max_q_size=100,
+                                            epochs=self.epoch, verbose=1, max_q_size=100,
                                             callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
 
-                    self.g_total_cnt += 1
-                    println("Train Count=" + str(self.g_total_cnt))
+                    self.g_train_cnt += 1
+                    println("Save Train Count=" + str(self.g_train_cnt))
                     self.set_saver_model(sess)
 
                 input_data.next()
@@ -425,24 +418,24 @@ class NeuralNetNodeCnn(NeuralNetNode):
             println(e)
 
     def train_run_cnn(self, sess, input_data, test_data):
-        self.epoch = self.netconf["param"]["epoch"]
-        self.batch_size = self.netconf["param"]["batch_size"]
-
         try:
             while (input_data.has_next()):
-                for i in range(self.epoch):
+                for i in range(self.train_cnt):
                     for i in range(0, input_data.size(), self.batch_size):
                         data_set = input_data[i:i + self.batch_size]
                         x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "T")
 
-                        for i in range(self.train_cnt):
+                        for i in range(self.epoch):
                             feed_dict_train = {self.X: x_batch, self.Y: y_batch}
 
                             _, self.i_cost, self.batch_acc = sess.run([self.optimizer, self.cost, self.accuracy], feed_dict=feed_dict_train)
 
-                            self.g_total_cnt += 1
-                            println("Train Count=" + str(self.g_total_cnt))
-                            self.set_saver_model(sess)
+                            self.g_epoch_cnt += 1
+                            println("Epoch Count=" + str(self.g_epoch_cnt))
+
+                        self.g_train_cnt += 1
+                        println("Save Train Count=" + str(self.g_train_cnt))
+                        self.set_saver_model(sess)
 
                 input_data.next()
         except Exception as e:
@@ -476,7 +469,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         return self.eval_data
 
     def eval_run(self, sess, input_data):
-        batch_size = self.netconf["param"]["batch_size"]
+        self.batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]
         pred_cnt = self.netconf["param"]["predictcnt"]
         # println(labels)
@@ -488,8 +481,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         input_data.pointer = 0
         while (input_data.has_next()):
-            for i in range(0, input_data.size(), batch_size):
-                data_set = input_data[i:i + batch_size]
+            for i in range(0, input_data.size(), self.batch_size):
+                data_set = input_data[i:i + self.batch_size]
                 x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "E")
 
                 try:
