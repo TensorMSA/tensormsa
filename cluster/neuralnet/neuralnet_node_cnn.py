@@ -7,9 +7,6 @@ import numpy as np
 import os
 import operator
 import datetime
-from PIL import Image
-Image.LOAD_TRUNCATED_IMAGES = True
-import io
 from cluster.common.train_summary_info import TrainSummaryInfo
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -305,10 +302,20 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
             self.model_file_delete(self.model_path, self.modelname)
 
-            batch_accR = round(self.batch_acc * 100, 2)
-            msg = "Global Step: " + str(self.g_total_cnt) + ", Training Batch Accuracy: " + str(
-                batch_accR) + "%" + ", Cost: " + str(self.i_cost)
-            println(msg)
+            if self.net_type == "resnet":
+                loss = round(self.loss * 100, 2)
+                accR = round(self.acc * 100, 2)
+                val_loss = round(self.val_loss * 100, 2)
+                val_acc = round(self.val_acc * 100, 2)
+                msg = "Global Step: " + str(self.g_total_cnt)
+                msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
+                msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
+                println(msg)
+            else:
+                batch_accR = round(self.batch_acc * 100, 2)
+                msg = "Global Step: " + str(self.g_total_cnt) + ", Training Batch Accuracy: " + str(
+                    batch_accR) + "%" + ", Cost: " + str(self.i_cost)
+                println(msg)
             result = [msg]
             self.train_return_arr.append(result)
 
@@ -327,11 +334,12 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self._set_netconf_parm()
         self._set_dataconf_parm(dataconf)
 
-        net_type = self.netconf["config"]["net_type"]
+        self.net_type = self.netconf["config"]["net_type"]
+        self.train_cnt = self.netconf["param"]["traincnt"]
 
         # train
         with tf.Session() as sess:
-            if net_type == "resnet":
+            if self.net_type == "resnet":
                 self.get_model_resnet("T")
                 sess, saver = self.get_saver_model(sess)
                 self.return_arr = self.train_run_resnet(sess, input_data, test_data)
@@ -369,12 +377,17 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                 for i in range(train_cnt):
                     if self.data_augmentation == "N" or self.data_augmentation == "n":
-                        self.model.fit(x_batch, y_batch,
+                        history = self.model.fit(x_batch, y_batch,
                                        batch_size=batch_size,
                                        epochs=epoch,
                                        validation_data=(x_tbatch, y_tbatch),
                                        shuffle=True,
                                        callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+                        # println(history["history"])
+                        self.loss = history.history["loss"][0]
+                        self.acc = history.history["acc"][0]
+                        self.val_loss = history.history["val_loss"][0]
+                        self.val_acc = history.history["val_acc"][0]
                     else:
                         # This will do preprocessing and realtime data augmentation:
                         datagen = ImageDataGenerator(
@@ -404,18 +417,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                     self.g_total_cnt += 1
                     println("Train Count=" + str(self.g_total_cnt))
-                    # Print status to screen every 10 iterations (and last).
-                    saveCnt = 100
-                    if saveCnt > train_cnt:
-                        saveCnt = train_cnt
-                    # Save a checkpoint to disk every 100 iterations (and last).
-                    if (self.g_total_cnt % saveCnt == 0):
-                        saver = tf.train.Saver()
-                        saver.save(sess, save_path=self.save_path)
-                        self.model_file_delete(self.model_path, self.modelname)
-
-                result = ''
-                self.train_return_arr.append(result)
+                    self.set_saver_model(sess)
 
                 input_data.next()
         except Exception as e:
@@ -425,7 +427,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def train_run_cnn(self, sess, input_data, test_data):
         self.epoch = self.netconf["param"]["epoch"]
         self.batch_size = self.netconf["param"]["batch_size"]
-        self.train_cnt = self.netconf["param"]["traincnt"]
 
         try:
             while (input_data.has_next()):
@@ -465,9 +466,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.eval_data.set_nn_id(self.nn_id)
         self.eval_data.set_nn_wf_ver_id(self.wf_ver)
 
-        if self.netconf["config"]["net_type"] == "resnet":
-            return self.eval_data
-
         # get data & dataconf
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
 
@@ -495,23 +493,29 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "E")
 
                 try:
-                    logits, y_pred_true = sess.run([self.model, self.y_pred_cls], feed_dict={self.X: x_batch})
+                    if self.net_type == "cnn":
+                        logits = sess.run([self.model], feed_dict={self.X: x_batch})
+                        logits = logits[0]
+                    elif self.net_type == "resnet":
+                        logits = self.model.predict(x_batch)
 
                     for i in range(len(logits)):
                         true_name = y_batch[i]
                         file_name = n_batch[i]
-                        pred_name = labels[y_pred_true[i]]
+
                         logit = []
                         logit.append(logits[i])
                         # print(self.spaceprint(file_name, 30) + " True Category=" + true_name + " Predict Category=" + pred_name)
                         idx = labels.index(true_name)
+                        retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
+                        pred_name =  retrun_data["key"][0]
+
                         if self.eval_flag == "E":
                             if true_name == pred_name:
                                 t_cnt_arr[idx] = t_cnt_arr[idx] + 1
                             else:
                                 f_cnt_arr[idx] = f_cnt_arr[idx] + 1
                         else:
-                            retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
                             # println(true_name)
                             # println(retrun_data["key"])
                             try:
@@ -575,21 +579,29 @@ class NeuralNetNodeCnn(NeuralNetNode):
         dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
         self._set_netconf_parm()
         self._set_dataconf_parm(dataconf)
+        self.net_type = self.netconf["config"]["net_type"]
 
         # data shape change MultiValuDict -> nd array
         filename_arr, filedata_arr = self.change_predict_fileList(filelist, dataconf)
 
-        # get variable values
-        self.get_model_cnn("P")
-
         # predict
         with tf.Session() as sess:
-            sess, saver = self.get_saver_model(sess)
+
             for i in range(len(filename_arr)):
                 file_name = filename_arr[i]
                 file_data = filedata_arr[i]
 
-                logits, y_pred_true = sess.run([self.model, self.y_pred_cls], feed_dict={self.X: file_data})
+                if self.net_type == "cnn":
+                    # get variable values
+                    self.get_model_cnn("P")
+                    sess, saver = self.get_saver_model(sess)
+                    logits = sess.run([self.model], feed_dict={self.X: file_data})
+                    logits = logits[0]
+                elif self.net_type == "resnet":
+                    # get variable values
+                    self.get_model_resnet("P")
+                    sess, saver = self.get_saver_model(sess)
+                    logits = self.model.predict(file_data)
 
                 labels = self.netconf["labels"]
                 pred_cnt = self.netconf["param"]["predictcnt"]

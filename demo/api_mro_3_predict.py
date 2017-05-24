@@ -13,7 +13,6 @@ println("S")
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
-typeStr = "cnn"
 nn_id = "mro001"
 wf_ver_id = 0
 # get workflow version info
@@ -39,8 +38,8 @@ files = {
         # ,'files000009':  open('/home/dev/hoyai/demo/data/motor/1motor.jpg','rb')
         # ,'files000010':  open('/home/dev/hoyai/demo/data/motor/2motor.jpg','rb')
 
- 'files000001':  open('/hoya_src_root/nn00011/7/170419_personData/LSH//20170419_091459.jpg','rb')
-    ,'files000002':  open('/hoya_src_root/nn00011/7/170419_personData/PSC/20170419_091031.jpg','rb')
+ 'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
+    ,'files000002':  open('/home/dev/hoyai/demo/data/airplane/2air.jpg','rb')
 # ,'files000003':  open('/hoya_src_root/nn00004/21/personData/LSH/20170418_094624.jpg','rb')
 
  #  'files000004':  open('/hoya_src_root/nn00004/21/personDataTest/PSC/20170417_180614.jpg','rb')
@@ -49,10 +48,10 @@ files = {
 
         }
 
-restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/'+typeStr+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
+restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
 
 resp = requests.post(restURL, files=files, json={
-                         "config": {"net_type":"cnn" #"resnet", "cnn"
+                         "config": {"net_type":"cnn"
                                      }
                          ,"labels":[]
                         }

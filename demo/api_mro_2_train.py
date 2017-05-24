@@ -14,7 +14,7 @@ from common.utils import *
 println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 nn_id = "mro001"
-net_type = "cnn" # cnn, resnet, renet
+net_type = "cnn" # cnn, resnet
 wf_ver_id = 0
 
 # get workflow version
@@ -35,10 +35,10 @@ node = "netconf_node"
 if net_type == "cnn":
     resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"epoch": 0
-                                  ,"traincnt": 1
+                         "param":{"epoch": 2
+                                  ,"traincnt": 2
                                   ,"batch_size":1000000
-                                  ,"predictcnt": 10
+                                  ,"predictcnt": 3
                          },
                          "config": {"num_classes":10,
                                     "learnrate": 0.001,
@@ -81,9 +81,9 @@ elif net_type == "resnet":
                          },
                          "config": {"num_classes":10,
                                     "learnrate": 0.001,
-                                    "layeroutputs":18,
+                                    "layeroutputs":18, #18, 34, 50, 101, 152, 200
                                     "net_type":"resnet",
-                                    "eval_type":"",
+                                    "eval_type":"category",
                                     "optimizer":"AdamOptimizer" #RMSPropOptimizer
                                      }
                          ,"labels":[]
