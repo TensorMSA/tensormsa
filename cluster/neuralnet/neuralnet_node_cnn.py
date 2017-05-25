@@ -281,11 +281,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
             saver = tf.train.Saver()
             saver.restore(sess, save_path=last_chk_path)
             step = last_chk_path.split("-")
-            self.step_gap = int(step[1])+10
+            self.step_gap = int(step[1])+1
             println("Train Restored checkpoint from:" + last_chk_path)
         except:
             sess.run(tf.global_variables_initializer())
-            self.step_gap = 10
+            self.step_gap = 1
             println("None to restore checkpoint. Initializing variables instead.")
 
         self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
@@ -294,7 +294,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def set_saver_model(self, sess):
         saver = tf.train.Saver()
         saver.save(sess, save_path=self.save_path)
-        self.step_gap = self.step_gap + 10
+        self.step_gap = self.step_gap + self.g_epoch_cnt
         self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
 
         self.model_file_delete(self.model_path, self.modelname)
@@ -411,6 +411,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                                             callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
 
                     self.g_train_cnt += 1
+                    self.g_epoch_cnt = self.g_train_cnt
                     println("Save Train Count=" + str(self.g_train_cnt))
                     self.set_saver_model(sess)
 

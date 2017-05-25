@@ -10,21 +10,39 @@ from common.utils import *
 import shutil
 import tensorflow as tf
 from third_party.yolo.yolo.net.yolo_tiny_net import YoloTinyNet
-# import cv2
-
+import cv2
+import requests
 
 class DataNodeImage(DataNode):
     """
     """
+    # yolo
+    def get_confirm_token(self, response):
+        for key, value in response.cookies.items():
+            if key.startswith('download_warning'):
+                return value
 
-    def _set_dataconf_parm(self, dataconf):
-        self.x_size = dataconf["preprocess"]["x_size"]
-        self.y_size = dataconf["preprocess"]["y_size"]
-        self.channel = dataconf["preprocess"]["channel"]
-        self.directory = dataconf["source_path"]
-        self.output_directory = dataconf["store_path"]
-        self.output_yolo = dataconf["source_path"]+"_yolo"
-        self.model_yolo = "/home/dev/hoyai/third_party/yolo/models/pretrain"
+        return None
+
+    def save_response_content(self, response, destination):
+        CHUNK_SIZE = 32768
+
+        with open(destination, "wb") as f:
+            for chunk in response.iter_content(CHUNK_SIZE):
+                if chunk:  # filter out keep-alive new chunks
+                    f.write(chunk)
+
+    def download_file_from_google_drive(self, URL, destination):
+        session = requests.Session()
+
+        response = session.get(URL, params={'id': 1}, stream=True)
+        token = self.get_confirm_token(response)
+
+        if token:
+            params = {'id': 1, 'confirm': token}
+            response = session.get(URL, params=params, stream=True)
+
+        self.save_response_content(response, destination)
 
     def process_predicts(self, predicts):
         p_classes = predicts[0, :, :, 0:20]
@@ -78,6 +96,98 @@ class DataNodeImage(DataNode):
         saver = tf.train.Saver(net.trainable_collection)
         return saver, predicts, img
 
+    def image_convert(self, sess, dataconf, img, filename, forder=None):
+        set_flag = "N"
+        if forder == None:# forder None = predict call
+            set_flag = "Y"
+            forder = "tmp"
+        else:# forder exist = make hdf5
+            if self.set_flag == "N":
+                self.set_flag = "Y"
+                set_flag = "Y"
+
+        if set_flag == "Y":
+            # tf.reset_default_graph()
+            self.x_size = dataconf["preprocess"]["x_size"]
+            self.y_size = dataconf["preprocess"]["y_size"]
+            self.channel = dataconf["preprocess"]["channel"]
+            self.directory = dataconf["source_path"]
+            self.output_yolo = dataconf["source_path"] + "_yolo"
+            self.model_yolo = get_yolo_path()
+            self.yolo_tiny = self.model_yolo + '/yolo_tiny.ckpt'
+            self.yolo_face = self.model_yolo + '/YOLO_face.tar.gz'
+            self.yolo_model = self.yolo_tiny
+            self.tiny_url = 'https://drive.google.com/uc?id=0B-yiAeTLLamRekxqVE01Yi1RRlk&export=download'
+            self.face_url = "https://drive.google.com/uc?id=0B2JbaJSrWLpzMzR5eURGN2dMTk0&export=download"
+            try:
+                self.yolo = dataconf["preprocess"]["yolo"]
+                if self.yolo == "Y" or self.yolo == "y":
+                    if os.path.isfile(self.yolo_model):
+                        None
+                    else:  # yolo_tiny down :
+                        try:
+                            self.download_file_from_google_drive(self.tiny_url, self.yolo_tiny)
+                            self.download_file_from_google_drive(self.face_url, self.yolo_face)
+
+                            # gzlist = os.listdir(self.model_yolo)
+                            # for gzname in gzlist:
+                            #     if gzname.find(".gz") > -1:
+                            #         print("gz=" + gzname)
+                        except:
+                            println("Error : yolo_tiny,ckpt down.")
+
+                    saver, self.predicts, self.img_ph = self.yolo_detection()
+                    saver.restore(sess, self.yolo_model)
+            except:
+                self.yolo = "N"
+
+        pngidx = str(type(img)).find("PngImageFile")
+        if pngidx > -1:
+            img = img.convert("RGBA")
+            bg = Image.new("RGBA", img.size, (255, 255, 255))
+            bg.paste(img, (0, 0), img)
+            filename = "Conv_" + str(filename)
+            bg.save(self.directory + '/' + forder + '/' + filename)
+            img = Image.open(self.directory + '/' + forder + '/' + filename)
+
+        if self.channel == 1:
+            img = img.convert('L')
+
+        img = img.resize((self.x_size, self.y_size), Image.ANTIALIAS)
+        img = np.array(img)
+
+        if self.yolo == "Y" or self.yolo == "y":
+            if self.x_size<385 or self.y_size<385:
+                println("Error : The Yolo x_size or y_size must be greater than 385 pixel")
+
+            else:
+                try:
+                    resized_img = cv2.resize(img, (self.x_size, self.y_size))
+                    img = np.array(img)
+
+                    y_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2RGB)
+                    y_img = y_img.astype(np.float32)
+                    y_img = y_img / 255.0 * 2 - 1
+                    y_img = np.reshape(y_img, (1, self.x_size, self.y_size, self.channel))
+                    np_predict = sess.run(self.predicts, feed_dict={self.img_ph: y_img})
+                    xmin, ymin, xmax, ymax, class_num = self.process_predicts(np_predict)
+                    resized_img = resized_img[int(ymin):int(ymax), int(xmin):int(xmax)]
+
+                    if self.yolo == "y":
+                        set_filepaths(self.output_yolo + '/' + forder)
+                        np_img = Image.fromarray(resized_img)
+                        np_img.save(self.output_yolo + '/' + forder + '/' + filename)
+                        img = cv2.resize(resized_img, (self.x_size, self.y_size))
+                except Exception as e:
+                    print("yolo file save error......................................." + str(filename))
+                    print(e)
+        else:
+            img = img.resize((self.x_size, self.y_size), Image.ANTIALIAS)
+            img = np.array(img)
+
+
+        return sess, img
+
     def run(self, conf_data):
         try:
             println("run DataNodeImage")
@@ -92,10 +202,13 @@ class DataNodeImage(DataNode):
                 return
             else:
                 println(node_id)
-            self._set_dataconf_parm(dataconf)
+
+            directory = dataconf["source_path"]
+            output_directory = dataconf["store_path"]
+            self.set_flag = "N"
 
             output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-            output_path = os.path.join(self.output_directory, output_filename)
+            output_path = os.path.join(output_directory, output_filename)
 
             labels = netconf['labels']
             try:
@@ -104,16 +217,16 @@ class DataNodeImage(DataNode):
                 filesize = 1000000
 
             # unzip & remove zip
-            ziplist = os.listdir(self.directory)
+            ziplist = os.listdir(directory)
             for zipname in ziplist:
                 if zipname.find(".zip") > -1:
                     print("Zip=" + zipname)
-                    fantasy_zip = zipfile.ZipFile(self.directory + '/' + zipname)
-                    fantasy_zip.extractall(self.directory)
+                    fantasy_zip = zipfile.ZipFile(directory + '/' + zipname)
+                    fantasy_zip.extractall(directory)
                     fantasy_zip.close()
-                    os.remove(self.directory + "/" + zipname)
+                    os.remove(directory + "/" + zipname)
 
-            forderlist = os.listdir(self.directory)
+            forderlist = os.listdir(directory)
             forderlist.sort()
 
             filecnt = 0
@@ -124,19 +237,11 @@ class DataNodeImage(DataNode):
             processcnt = 1
             createcnt = 1
             tf.reset_default_graph()
-            with tf.Session() as sess:
-                try:
-                    yolo = dataconf["preprocess"]["yolo"]
-                    if yolo == "Y" or yolo == "y":
-                        yolo_model = self.model_yolo+'/yolo_tiny.ckpt'
-                        saver, predicts, img_ph = self.yolo_detection()
-                        saver.restore(sess, yolo_model)
-                except:
-                    yolo = "N"
 
+            with tf.Session() as sess:
                 for forder in forderlist:
                     try:
-                        filelist = os.listdir(self.directory + '/' + forder)
+                        filelist = os.listdir(directory + '/' + forder)
                     except Exception as e:
                         println(e)
                         continue
@@ -144,43 +249,13 @@ class DataNodeImage(DataNode):
                     for filename in filelist:
                         try:
                             #PNG -> JPEG
-                            img = Image.open(self.directory + '/' + forder + '/' + filename)
-                            pngidx = str(type(img)).find("PngImageFile")
-                            if pngidx > -1:
-                                img = img.convert("RGBA")
-                                bg = Image.new("RGBA", img.size, (255, 255, 255))
-                                bg.paste(img, (0, 0), img)
-                                filename = "Conv_" + str(filename)
-                                bg.save(self.directory + '/' + forder + '/' + filename)
+                            img = Image.open(directory + '/' + forder + '/' + filename)
+                            sess, img = self.image_convert(sess, dataconf, img, filename, forder)
 
-                            if self.channel == 1:
-                                img = img.convert('L')
-
-                            img = img.resize((self.x_size, self.y_size), Image.ANTIALIAS)
-                            img = np.array(img)
-                            # try:
-                            #     if yolo == "Y" or yolo == "y":
-                            #         resized_img = cv2.resize(img, (self.x_size, self.y_size))
-                            #
-                            #         y_img = cv2.cvtColor(resized_img, cv2.COLOR_BGR2RGB)
-                            #         y_img = y_img.astype(np.float32)
-                            #         y_img = y_img / 255.0 * 2 - 1
-                            #         y_img = np.reshape(y_img, (1, self.x_size, self.y_size, self.channel))
-                            #         np_predict = sess.run(predicts, feed_dict={img_ph: y_img})
-                            #         xmin, ymin, xmax, ymax, class_num = self.process_predicts(np_predict)
-                            #         resized_img = resized_img[int(ymin):int(ymax), int(xmin):int(xmax)]
-                            #
-                            #         if yolo == "y":
-                            #             set_filepaths(self.output_yolo+ '/' + forder)
-                            #             np_img = Image.fromarray(resized_img)
-                            #             np_img.save(self.output_yolo + '/' + forder + '/' + filename)
-                            #             img = cv2.resize(resized_img, (self.x_size, self.y_size))
-                            # except Exception as e:
-                            #     print("yolo file save error......................................." + str(filename))
-                            #     print(e)
 
                             img = img.reshape([-1, self.x_size, self.y_size, self.channel])
                             img = img.flatten()
+
                             image_arr.append(img)
                             shape_arr.append(img.shape)
                             lable_arr.append(forder.encode('utf8'))
@@ -198,9 +273,9 @@ class DataNodeImage(DataNode):
                                 name_arr = []
                                 createcnt += 1
 
-                            print("Processcnt="+ str(processcnt) + " File=" + self.directory + " forder=" + forder + "  name=" + filename)
+                            print("Processcnt="+ str(processcnt) + " File=" + directory + " forder=" + forder + "  name=" + filename)
                         except:
-                            print("Processcnt="+ str(processcnt) + " ErrorFile=" + self.directory + " forder=" + forder + "  name=" + filename)
+                            print("Processcnt="+ str(processcnt) + " ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
                         processcnt += 1
                     shutil.rmtree(self.directory + "/" + forder)
                     try:

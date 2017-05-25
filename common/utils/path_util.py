@@ -32,6 +32,11 @@ def get_model_path(nn_id, wf_ver, name) :
     set_filepaths(path)
     return path
 
+def get_yolo_path() :
+    path = "/home/dev/hoyai/third_party/yolo/models/pretrain"
+    set_filepaths(path)
+    return path
+
 def get_filepaths(directory, file_type = "*"):
     """
     utils return file paths under directory
