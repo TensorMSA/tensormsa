@@ -352,7 +352,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         if self.epoch == 0 or self.train_cnt == 0:
             self.eval(self.node_id, self.conf_data, None, None)
-            self.g_ffile_print = "Y"
 
         return self.train_return_data
 
@@ -475,6 +474,10 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]
         pred_cnt = self.netconf["param"]["predictcnt"]
+        try:
+            predlog = self.netconf["param"]["predlog"]
+        except:
+            predlog = "N"
         # println(labels)
         t_cnt_arr = []
         f_cnt_arr = []
@@ -506,9 +509,24 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
                         pred_name =  retrun_data["key"][0]
 
-                        if self.g_ffile_print == "Y" and true_name != pred_name:
-                            print("True=" + true_name + " FileName="+file_name)
+                        if (predlog == "T" or predlog =="t") and true_name == pred_name:
+                            strLog = "[True] : "
+                            print(strLog + true_name + " FileName="+file_name)
                             print(retrun_data["key"])
+                            print(retrun_data["val"])
+                        elif (predlog == "F" or predlog =="f") and true_name != pred_name:
+                            strLog = "[False] : "
+                            print(strLog + true_name + " FileName=" + file_name)
+                            print(retrun_data["key"])
+                            print(retrun_data["val"])
+                        elif (predlog == "A" or predlog =="a"):
+                            if true_name == pred_name:
+                                strLog = "[True] : "
+                            else:
+                                strLog = "[False] : "
+                            print(strLog + true_name + " FileName=" + file_name)
+                            print(retrun_data["key"])
+                            print(retrun_data["val"])
 
                         if self.eval_flag == "E":
                             if true_name == pred_name:
