@@ -181,10 +181,6 @@ class DataNodeImage(DataNode):
                 except Exception as e:
                     print("yolo file save error......................................." + str(filename))
                     print(e)
-        else:
-            img = img.resize((self.x_size, self.y_size), Image.ANTIALIAS)
-            img = np.array(img)
-
 
         return sess, img
 
