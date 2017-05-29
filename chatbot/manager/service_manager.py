@@ -4,6 +4,7 @@ from chatbot.common.chat_share_data import ShareData
 from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
+from chatbot.nlp.entity_recognizer import EntityRecognizer
 from chatbot.services.service_provider import ServiceProvider
 from chatbot.story.story_board_manager import StoryBoardManager
 from chatbot.decision.decision_maker import DecisionMaker
@@ -28,6 +29,7 @@ class ServiceManager:
         self.chat_share_data = ShareData()
         self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_entity_keys(cb_id), self.chat_knowledge_data_dict.get_entity_types(cb_id))
         self.intent_analyzer = IntendAnalyzer(self.chatbot_conf.get_intent_model())
+        self.entity_recognizer = EntityRecognizer(cb_id)
         self.decision_maker = DecisionMaker()
         self.service_provider = ServiceProvider()
         self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
@@ -39,13 +41,13 @@ class ServiceManager:
         """
         try :
             print("■■■■■■■■■■ 챗봇 시작 ■■■■■■■■■■")
-
             # 1. set parms from client
             share_ctx = self.chat_share_data.load_json(req_ctx)
 
             # 2. nlp process
             share_ctx = self.entity_analyzer.parse(share_ctx)
             share_ctx = self.intent_analyzer.parse(share_ctx)
+            share_ctx = self.entity_recognizer.parse(share_ctx)
 
             # 3. decision maker
             share_ctx = self.decision_maker.run(share_ctx)

@@ -77,5 +77,4 @@ class EntityAnalyzer(ShareData):
         elif(type == 'twitter') :
             twitter = Twitter(jvmpath=None)
             return twitter.pos(str(input))
-    # TODO : call entity using by seq2seq (나는 식당에 간다 -> [나] [식당] )
 
