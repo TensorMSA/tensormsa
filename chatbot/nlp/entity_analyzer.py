@@ -48,13 +48,14 @@ class EntityAnalyzer(ShareData):
             print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
             return_msg = ""
             for i in range(0, len(pos_tags)):
-                for key in self.entity_key_list:
-                    for val in self.entity[key] :
-                        word = pos_tags[i][0]
-                        if(word == val) :
-                            pos_tags[i] = (''.join(['[' , key, ']']), '')
-                            share_data.set_story_entity(key, val)
-                            break
+                if(pos_tags[i][1] in ['NNG','NNP']):
+                    for key in self.entity_key_list:
+                        for val in self.entity[key]:
+                            word = pos_tags[i][0]
+                            if(word == val):
+                                pos_tags[i] = (''.join(['[' , key, ']']), '')
+                                share_data.set_story_entity(key, val)
+                                break
                 return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
             print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
             share_data.set_convert_data(return_msg)
@@ -77,5 +78,4 @@ class EntityAnalyzer(ShareData):
         elif(type == 'twitter') :
             twitter = Twitter(jvmpath=None)
             return twitter.pos(str(input))
-    # TODO : call entity using by seq2seq (나는 식당에 간다 -> [나] [식당] )
 

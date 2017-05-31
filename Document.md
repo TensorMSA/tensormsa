@@ -90,3 +90,10 @@ vi jupyter_notebook_config.py
 c.NotebookApp.ip = '*'
 Find in vi - /ip n N
 ```
+
+## Add Corpus (Mecab)
+- mecab-0.996-ko-0.9.2.tar.gz (2017.06 recent)
+- mecab-ko-dic-2.0.1-20150920.tar.gz (2017.06 recent)
+- go to dic directory and userdic
+- add csv(1 line : 김수상,,,,NNP,*,F,김수상,*,*,*,*)
+- run mecab-ko-dic-2.0.1-20150920/tools/add-userdic.sh
