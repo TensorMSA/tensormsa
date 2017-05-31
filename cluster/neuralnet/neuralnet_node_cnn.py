@@ -8,7 +8,7 @@ import os
 import operator
 import datetime
 from cluster.common.train_summary_info import TrainSummaryInfo
-
+import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
 from cluster.neuralnet import resnet
@@ -85,12 +85,18 @@ class NeuralNetNodeCnn(NeuralNetNode):
         except:
             None
         self.netconf = netconf
+
+        self.net_type = self.netconf["config"]["net_type"]
+        self.train_cnt = self.netconf["param"]["traincnt"]
+        self.epoch = self.netconf["param"]["epoch"]
+        self.train_cnt = self.netconf["param"]["traincnt"]
+        self.batch_size = self.netconf["param"]["batch_size"]
     ########################################################################
     def _set_dataconf_parm(self, dataconf):
         self.dataconf = dataconf
     ########################################################################
 
-    def get_model_cnn(self, type):
+    def get_model_cnn(self, type=None):
         prenumoutputs = 1
         num_classes = self.netconf["config"]["num_classes"]
         learnrate = self.netconf["config"]["learnrate"]
@@ -190,7 +196,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.accuracy = accuracy
         self.cost = cost
     ########################################################################
-    def get_model_resnet(self, type):
+    def get_model_resnet(self, type=None):
         lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
         early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
         csv_logger = CSVLogger('resnet.csv')
@@ -275,13 +281,13 @@ class NeuralNetNodeCnn(NeuralNetNode):
     def get_saver_model(self, sess):
         self.model_path = self.netconf["modelpath"]
         self.modelname = self.netconf["modelname"]
+        last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
 
         try:
-            last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
+            step = last_chk_path.split("-")
+            self.step_gap = int(step[1]) + 1
             saver = tf.train.Saver()
             saver.restore(sess, save_path=last_chk_path)
-            step = last_chk_path.split("-")
-            self.step_gap = int(step[1])+1
             println("Train Restored checkpoint from:" + last_chk_path)
         except:
             sess.run(tf.global_variables_initializer())
@@ -290,30 +296,72 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
         return sess, saver
-    ########################################################################
+
     def set_saver_model(self, sess):
         saver = tf.train.Saver()
         saver.save(sess, save_path=self.save_path)
+
+        batch_accR = round(self.batch_acc * 100, 2)
+        msg = "Global Step: " + str(self.step_gap) + ", Training Batch Accuracy: " + str(
+            batch_accR) + "%" + ", Cost: " + str(self.i_cost)
+        println(msg)
+
+        result = [msg]
+
         self.step_gap = self.step_gap + self.g_epoch_cnt
         self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
 
         self.model_file_delete(self.model_path, self.modelname)
 
-        if self.net_type == "resnet":
-            loss = round(self.loss * 100, 2)
-            accR = round(self.acc * 100, 2)
-            val_loss = round(self.val_loss * 100, 2)
-            val_acc = round(self.val_acc * 100, 2)
-            msg = "Global Step: " + str(self.step_gap)
-            msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
-            msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
-            println(msg)
-        else:
-            batch_accR = round(self.batch_acc * 100, 2)
-            msg = "Global Step: " + str(self.step_gap) + ", Training Batch Accuracy: " + str(
-                batch_accR) + "%" + ", Cost: " + str(self.i_cost)
-            println(msg)
+        self.train_return_arr.append(result)
+
+        self.eval(self.node_id, self.conf_data, None, None)
+
+    ########################################################################
+    def get_saver_model_keras(self):
+        self.model_path = self.netconf["modelpath"]
+        self.modelname = self.netconf["modelname"]
+        filelist = os.listdir(self.model_path)
+        self.step_gap = 1
+        name = '.h5'
+        try:
+            for filename in filelist:
+                step1 = filename.split("-")
+                step2 = step1[1].split(".")
+                if self.step_gap < int(step2[0]):
+                    self.step_gap = int(step2[0])
+            last_chk_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(name)
+            println(last_chk_path)
+            # keras.backend.clear_session()
+            self.model = keras.models.load_model(last_chk_path)
+            self.step_gap = int(step2[0]) + 1
+            println("Train Restored checkpoint from:" + last_chk_path)
+        except:
+            println("None to restore checkpoint. Initializing variables instead.")
+
+        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(name)
+
+    def set_saver_model_keras(self):
+        # keras.models.save_model(self.model, self.save_path)
+        self.model.save(self.save_path)
+        keras.backend.clear_session()
+
+        loss = round(self.loss * 100, 2)
+        accR = round(self.acc * 100, 2)
+        val_loss = round(self.val_loss * 100, 2)
+        val_acc = round(self.val_acc * 100, 2)
+        msg = "Global Step: " + str(self.step_gap)
+        msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
+        msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
+        println(msg)
+
         result = [msg]
+
+        self.step_gap = self.step_gap + self.g_epoch_cnt
+        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
+
+        self.model_file_delete(self.model_path, self.modelname)
+
         self.train_return_arr.append(result)
 
         self.eval(self.node_id, self.conf_data, None, None)
@@ -331,31 +379,25 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self._set_netconf_parm()
         self._set_dataconf_parm(dataconf)
 
-        self.net_type = self.netconf["config"]["net_type"]
-        self.train_cnt = self.netconf["param"]["traincnt"]
-        self.epoch = self.netconf["param"]["epoch"]
-        self.train_cnt = self.netconf["param"]["traincnt"]
-        self.batch_size = self.netconf["param"]["batch_size"]
-
         # train
-        with tf.Session() as sess:
-            if self.net_type == "resnet":
-                self.get_model_resnet("T")
-                sess, saver = self.get_saver_model(sess)
-                self.train_run_resnet(sess, input_data, test_data)
-            else:
-                self.get_model_cnn("T")
+        if self.net_type == "resnet":
+            self.get_model_resnet("T")
+            self.get_saver_model_keras()
+            self.train_run_resnet(input_data, test_data)
+        else:
+            self.get_model_cnn("T")
+            with tf.Session() as sess:
                 sess, saver = self.get_saver_model(sess)
                 self.train_run_cnn(sess, input_data, test_data)
 
-            self.train_return_data["TrainResult"] = self.train_return_arr
+        self.train_return_data["TrainResult"] = self.train_return_arr
 
         if self.epoch == 0 or self.train_cnt == 0:
             self.eval(self.node_id, self.conf_data, None, None)
 
         return self.train_return_data
 
-    def train_run_resnet(self, sess, input_data, test_data):
+    def train_run_resnet(self, input_data, test_data):
         try:
             if self.data_augmentation == "N" or self.data_augmentation == "n":
                 println('Not using data augmentation.')
@@ -403,6 +445,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                                             validation_data=(x_tbatch, y_tbatch),
                                             epochs=self.epoch, verbose=1, max_q_size=100,
                                             callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+
                     self.loss = history.history["loss"][0]
                     self.acc = history.history["acc"][0]
                     self.val_loss = history.history["val_loss"][0]
@@ -411,7 +454,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                     self.g_train_cnt += 1
                     self.g_epoch_cnt = self.g_train_cnt
                     println("Save Train Count=" + str(self.g_train_cnt))
-                    self.set_saver_model(sess)
+                    self.set_saver_model_keras()
 
                 input_data.next()
         except Exception as e:
@@ -463,10 +506,16 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # get data & dataconf
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
 
-        with tf.Session() as sess:
-            sess, saver = self.get_saver_model(sess)
-            self.eval_run(sess, test_data)
 
+        if self.net_type == "resnet":
+            self.get_saver_model_keras()
+            sess = None
+        else:
+            with tf.Session() as sess:
+                sess, saver = self.get_saver_model(sess)
+
+        self.eval_run(sess, test_data)
+        # keras.backend.clear_session()
         return self.eval_data
 
     def eval_run(self, sess, input_data):
@@ -617,7 +666,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                 elif self.net_type == "resnet":
                     # get variable values
                     self.get_model_resnet("P")
-                    sess, saver = self.get_saver_model(sess)
+                    self.get_saver_model_keras()
                     logits = self.model.predict(file_data)
 
                 labels = self.netconf["labels"]
