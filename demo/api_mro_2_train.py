@@ -15,7 +15,7 @@ println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 nn_id = "mro001"
 net_type = "resnet" # cnn, resnet
-wf_ver_id = 0
+wf_ver_id = 4
 
 # get workflow version
 if wf_ver_id == 0:
@@ -75,11 +75,11 @@ if net_type == "cnn":
 elif net_type == "resnet":
     resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
                      json={
-                         "param":{"traincnt": 2
-                                  ,"epoch": 10
+                         "param":{"traincnt": 3
+                                  ,"epoch": 2
                                   ,"batch_size":200
                                   ,"predictcnt": 5
-                                  , "predlog": "A"  # T:Ture, F:False, A:True&False, N:None
+                                  , "predlog": "N"  # T:Ture, F:False, A:True&False, N:None
                          },
                          "config": {"num_classes":1,
                                     "learnrate": 0.001,
@@ -88,7 +88,7 @@ elif net_type == "resnet":
                                     "eval_type":"category",
                                     "optimizer":"AdamOptimizer" #RMSPropOptimizer
                                      }
-                         ,"labels":[]
+                         ,"labels":["AC Geared Motor", "AC Induction Motor", "Air Filter", "Aux Relay", "Bolt", "Bolt-Nut", "Centrifugal Pump", "Check Valve", "Circuit Breaker", "Compressor Accessories", "Control Valve", "Controller", "DC Power Supply", "Drill Bit", "Drive Coupling", "Elbow", "Electrical Connector", "Encoder", "Equipment Spares_Accessories", "Fan", "Filter Element", "Flexible Hose", "Flowmeter", "Fuse", "Gasket", "Gear Box", "Hose", "Hydraulic Pump", "Hydraulic Valve", "Integrated Circuit", "Laboratory Supply", "Magnetic Contactor", "Manual Switch", "Nozzle", "Oil Seal_Bearing Isolator", "PIPE", "Paint_Primer_Finish", "Pipe Coupling", "Pneumatic Cylinder", "Pneumatic Valve", "Position Sensor", "Power_Control Cable", "Pressure Gauge", "Pressure Switch", "Pressure Transmitter", "Printed Circuit Board", "Protection Relay", "Proximity Switch", "Pump Accessories", "Reagent", "Ring_Retainer", "Roller Bearing", "Safety Sign_Label", "Shut-Off Valve", "Solenoid Valve", "Union", "Varied Measuring Instrument", "Varied Seal", "Varied Sensor"]
                         })
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
@@ -103,7 +103,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/f
                                            "channel":3,
                                            "filesize": 1000000,
                                            "yolo": "n",
-                                           "augmentation":"N"}
+                                           "augmentation":"Y"}
                      })
 dataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(dataconf))
@@ -122,7 +122,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/f
                                            "channel":3,
                                            "filesize": 1000000,
                                            "yolo": "n",
-                                           "augmentation":"N"}
+                                           "augmentation":"Y"}
                      })
 edataconf = json.loads(resp.json())
 
@@ -195,7 +195,6 @@ else:
 
 
 println("E")
-
 
 
 

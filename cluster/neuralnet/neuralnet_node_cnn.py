@@ -77,6 +77,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.train_return_data = {}
         self.train_return_arr = ["Trainning .................................................."]
         self.pred_return_data = {}
+        self.step_gap = 1
+        self.file_end = '.h5'
+
     ########################################################################
     def _set_netconf_parm(self):
         netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
@@ -91,6 +94,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.epoch = self.netconf["param"]["epoch"]
         self.train_cnt = self.netconf["param"]["traincnt"]
         self.batch_size = self.netconf["param"]["batch_size"]
+        self.model_path = self.netconf["modelpath"]
+        self.modelname = self.netconf["modelname"]
     ########################################################################
     def _set_dataconf_parm(self, dataconf):
         self.dataconf = dataconf
@@ -207,24 +212,44 @@ class NeuralNetNodeCnn(NeuralNetNode):
         channel = self.dataconf["preprocess"]["channel"]
         self.data_augmentation = self.dataconf["preprocess"]["augmentation"]
 
-        if numoutputs == 18:
-            model = resnet.ResnetBuilder.build_resnet_18((channel, x_size, y_size), num_classes)
-        elif numoutputs == 34:
-            model = resnet.ResnetBuilder.build_resnet_34((channel, x_size, y_size), num_classes)
-        elif numoutputs == 50:
-            model = resnet.ResnetBuilder.build_resnet_50((channel, x_size, y_size), num_classes)
-        elif numoutputs == 101:
-            model = resnet.ResnetBuilder.build_resnet_101((channel, x_size, y_size), num_classes)
-        elif numoutputs == 152:
-            model = resnet.ResnetBuilder.build_resnet_152((channel, x_size, y_size), num_classes)
-        elif numoutputs == 200:
-            model = resnet.ResnetBuilder.build_resnet_200((channel, x_size, y_size), num_classes)
+        filelist = os.listdir(self.model_path)
+
+        try:
+            for filename in filelist:
+                step1 = filename.split("-")
+                step2 = step1[1].split(".")
+                if self.step_gap < int(step2[0]):
+                    self.step_gap = int(step2[0])
+            last_chk_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(self.file_end)
+            println(last_chk_path)
+            # keras.backend.clear_session()
+            model = keras.models.load_model(last_chk_path)
+            self.step_gap = int(step2[0]) + 1
+            println("Train Restored checkpoint from:" + last_chk_path)
+        except:
+            println("None to restore checkpoint. Initializing variables instead.")
+            if numoutputs == 18:
+                model = resnet.ResnetBuilder.build_resnet_18((channel, x_size, y_size), num_classes)
+            elif numoutputs == 34:
+                model = resnet.ResnetBuilder.build_resnet_34((channel, x_size, y_size), num_classes)
+            elif numoutputs == 50:
+                model = resnet.ResnetBuilder.build_resnet_50((channel, x_size, y_size), num_classes)
+            elif numoutputs == 101:
+                model = resnet.ResnetBuilder.build_resnet_101((channel, x_size, y_size), num_classes)
+            elif numoutputs == 152:
+                model = resnet.ResnetBuilder.build_resnet_152((channel, x_size, y_size), num_classes)
+            elif numoutputs == 200:
+                model = resnet.ResnetBuilder.build_resnet_200((channel, x_size, y_size), num_classes)
+
+
+        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(self.file_end)
 
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         self.model = model
         self.lr_reducer = lr_reducer
         self.early_stopper = early_stopper
         self.csv_logger = csv_logger
+
     ########################################################################
     def get_batch_img_data(self, data_set, type):
         num_classes = self.netconf["config"]["num_classes"]
@@ -318,33 +343,30 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.eval(self.node_id, self.conf_data, None, None)
 
     ########################################################################
-    def get_saver_model_keras(self):
-        self.model_path = self.netconf["modelpath"]
-        self.modelname = self.netconf["modelname"]
-        filelist = os.listdir(self.model_path)
-        self.step_gap = 1
-        name = '.h5'
-        try:
-            for filename in filelist:
-                step1 = filename.split("-")
-                step2 = step1[1].split(".")
-                if self.step_gap < int(step2[0]):
-                    self.step_gap = int(step2[0])
-            last_chk_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(name)
-            println(last_chk_path)
-            # keras.backend.clear_session()
-            self.model = keras.models.load_model(last_chk_path)
-            self.step_gap = int(step2[0]) + 1
-            println("Train Restored checkpoint from:" + last_chk_path)
-        except:
-            println("None to restore checkpoint. Initializing variables instead.")
-
-        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(name)
+    # def get_saver_model_keras(self):
+    #     filelist = os.listdir(self.model_path)
+    #
+    #     try:
+    #         for filename in filelist:
+    #             step1 = filename.split("-")
+    #             step2 = step1[1].split(".")
+    #             if self.step_gap < int(step2[0]):
+    #                 self.step_gap = int(step2[0])
+    #         last_chk_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(self.file_end)
+    #         println(last_chk_path)
+    #         # keras.backend.clear_session()
+    #         self.model = keras.models.load_model(last_chk_path)
+    #         self.step_gap = int(step2[0]) + 1
+    #         println("Train Restored checkpoint from:" + last_chk_path)
+    #     except:
+    #         println("None to restore checkpoint. Initializing variables instead.")
+    #
+    #     self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(self.file_end)
 
     def set_saver_model_keras(self):
-        # keras.models.save_model(self.model, self.save_path)
-        self.model.save(self.save_path)
-        keras.backend.clear_session()
+        keras.models.save_model(self.model, self.save_path)
+        # self.model.save(self.save_path)
+        # keras.backend.clear_session()
 
         loss = round(self.loss * 100, 2)
         accR = round(self.acc * 100, 2)
@@ -358,7 +380,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         result = [msg]
 
         self.step_gap = self.step_gap + self.g_epoch_cnt
-        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
+        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap) + str(self.file_end)
 
         self.model_file_delete(self.model_path, self.modelname)
 
@@ -382,7 +404,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # train
         if self.net_type == "resnet":
             self.get_model_resnet("T")
-            self.get_saver_model_keras()
+            # self.get_saver_model_keras()
             self.train_run_resnet(input_data, test_data)
         else:
             self.get_model_cnn("T")
@@ -508,7 +530,8 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
 
         if self.net_type == "resnet":
-            self.get_saver_model_keras()
+            # self.get_model_resnet("T")
+            # self.get_saver_model_keras()
             sess = None
         else:
             with tf.Session() as sess:
@@ -516,6 +539,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         self.eval_run(sess, test_data)
         # keras.backend.clear_session()
+        if self.eval_flag == "E":
+            keras.backend.clear_session()
+
         return self.eval_data
 
     def eval_run(self, sess, input_data):
