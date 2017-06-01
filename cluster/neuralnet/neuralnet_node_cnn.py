@@ -583,38 +583,46 @@ class NeuralNetNodeCnn(NeuralNetNode):
                         retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
                         pred_name =  retrun_data["key"][0]
 
-                        if (predlog == "T" or predlog =="t") and true_name == pred_name:
-                            strLog = "[True] : "
-                            println(strLog + true_name + " FileName="+file_name)
-                            println(retrun_data["key"])
-                            println(retrun_data["val"])
-                        elif (predlog == "F" or predlog =="f") and true_name != pred_name:
-                            strLog = "[False] : "
-                            println(strLog + true_name + " FileName=" + file_name)
-                            println(retrun_data["key"])
-                            println(retrun_data["val"])
-                        elif (predlog == "A" or predlog =="a"):
-                            if true_name == pred_name:
-                                strLog = "[True] : "
-                            else:
-                                strLog = "[False] : "
-                            println(strLog + true_name + " FileName=" + file_name)
-                            println(retrun_data["key"])
-                            println(retrun_data["val"])
-
                         if self.eval_flag == "E":
                             if true_name == pred_name:
                                 t_cnt_arr[idx] = t_cnt_arr[idx] + 1
+                                strLog = "[True] : "
+                                if (predlog == "TT"):
+                                    println(strLog + true_name + " FileName=" + file_name)
+                                    println(retrun_data["key"])
+                                    println(retrun_data["val"])
                             else:
                                 f_cnt_arr[idx] = f_cnt_arr[idx] + 1
+                                strLog = "[False] : "
+                                if (predlog == "FF"):
+                                    println(strLog + true_name + " FileName=" + file_name)
+                                    println(retrun_data["key"])
+                                    println(retrun_data["val"])
+                            if (predlog == "AA"):
+                                println(strLog + true_name + " FileName=" + file_name)
+                                println(retrun_data["key"])
+                                println(retrun_data["val"])
                         else:
-                            # println(true_name)
-                            # println(retrun_data["key"])
                             try:
                                 listTF = retrun_data["key"].index(true_name)
                                 t_cnt_arr[idx] = t_cnt_arr[idx] + 1
+                                strLog = "[True] : "
+                                if (predlog == "T"):
+                                    println(strLog + true_name + " FileName=" + file_name)
+                                    println(retrun_data["key"])
+                                    println(retrun_data["val"])
                             except:
                                 f_cnt_arr[idx] = f_cnt_arr[idx] + 1
+                                strLog = "[False] : "
+                                if (predlog == "F"):
+                                    println(strLog + true_name + " FileName=" + file_name)
+                                    println(retrun_data["key"])
+                                    println(retrun_data["val"])
+                            if(predlog == "AA"):
+                                println(strLog + true_name + " FileName=" + file_name)
+                                println(retrun_data["key"])
+                                println(retrun_data["val"])
+
 
                         self.eval_data.set_result_info(true_name, pred_name)
 
