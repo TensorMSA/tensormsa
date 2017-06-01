@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'gui.apps.GuiConfig',
     'master.apps.MasterConfig',
     'chatbot.apps.ChatbotConfig',
-        'corsheaders',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [

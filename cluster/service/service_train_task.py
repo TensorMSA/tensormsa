@@ -4,10 +4,12 @@ from celery import shared_task
 from master import models
 from cluster.common.common_node import WorkFlowCommonNode
 from common.utils import *
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 @shared_task
 def train(nn_id, wf_ver) :
-    print ("[Train Task] Start Celery Job ")
+    logger.info("[Train Task] Start Celery Job")
     result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver)
     return result
 
@@ -110,7 +112,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
 
             # parm_list : set parm value as list
             parm_list = []
-            parm_list.append(self.nn_id + "_" + self.wf_ver)
+            parm_list.append(str(self.nn_id) + "_" + str(self.wf_ver))
 
             with connection.cursor() as cursor:
                 cursor.execute(''.join(query_list), parm_list)
@@ -181,17 +183,4 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
             return class_list[node_list[0].get('nn_wf_node_id')]
         except Exception as e :
             raise Exception (e)
-
-    def _run_next_node(self):
-        return None
-
-    def _check_node_job_state(self):
-        return None
-
-    def _report_server_state(self):
-        return None
-
-    def _report_job_state(self):
-        return None
-
 
