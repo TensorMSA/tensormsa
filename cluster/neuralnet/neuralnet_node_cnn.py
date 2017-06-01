@@ -585,22 +585,22 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
                         if (predlog == "T" or predlog =="t") and true_name == pred_name:
                             strLog = "[True] : "
-                            print(strLog + true_name + " FileName="+file_name)
-                            print(retrun_data["key"])
-                            print(retrun_data["val"])
+                            println(strLog + true_name + " FileName="+file_name)
+                            println(retrun_data["key"])
+                            println(retrun_data["val"])
                         elif (predlog == "F" or predlog =="f") and true_name != pred_name:
                             strLog = "[False] : "
-                            print(strLog + true_name + " FileName=" + file_name)
-                            print(retrun_data["key"])
-                            print(retrun_data["val"])
+                            println(strLog + true_name + " FileName=" + file_name)
+                            println(retrun_data["key"])
+                            println(retrun_data["val"])
                         elif (predlog == "A" or predlog =="a"):
                             if true_name == pred_name:
                                 strLog = "[True] : "
                             else:
                                 strLog = "[False] : "
-                            print(strLog + true_name + " FileName=" + file_name)
-                            print(retrun_data["key"])
-                            print(retrun_data["val"])
+                            println(strLog + true_name + " FileName=" + file_name)
+                            println(retrun_data["key"])
+                            println(retrun_data["val"])
 
                         if self.eval_flag == "E":
                             if true_name == pred_name:
