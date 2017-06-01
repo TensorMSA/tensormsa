@@ -16,3 +16,4 @@ from .onehot_encoder import OneHotEncoder
 from .path_util import set_filepaths
 from .common_util import copy_all
 from .common_util import isnan
+from .common_util import log_savefile

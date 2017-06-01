@@ -3,24 +3,26 @@ import os
 import shutil, errno
 import logging
 import math
+from common.utils import *
+import datetime
+import operator
 
 gLogFloag = "Y"
 gUserId = "-1"
-#gUrl = "{0}:{1}".format(os.environ['HOSTNAME'], "8000")
+# gUrl = "{0}:{1}".format(os.environ['HOSTNAME'], "8000")
 gConpg = "dbname='tensormsa' user='tfmsauser' host='localhost' password='1234'"
 
+
 def println(printStr):
-
-
     if gLogFloag == "Y":
         conn = psycopg2.connect(gConpg)
         cur = conn.cursor()
         if printStr == "S" or printStr == "s":
-            sql = "delete from common_log_info where created_by = '"+gUserId+"'"
+            sql = "delete from common_log_info where created_by = '" + gUserId + "'"
             cur.execute(sql)
             conn.commit()
         elif printStr == "E" or printStr == "e":
-            sql = "select * from common_log_info where created_by = '"+gUserId+"' order by log_id"
+            sql = "select * from common_log_info where created_by = '" + gUserId + "' order by log_id"
             cur.execute(sql)
             rows = cur.fetchall()
 
@@ -28,12 +30,13 @@ def println(printStr):
             for i in range(0, len(rows)):
                 for j in range(0, len(rows[i])):
                     if rows[i][j] is not None and cur.description[j][0] not in (
-                    "id", "log_id", "creation_date", "last_update_date", "created_by", "last_updated_by"):
+                            "id", "log_id", "creation_date", "last_update_date", "created_by", "last_updated_by"):
                         print(rows[i][j])
             print("..................................................................................")
         else:
             print(printStr)
-            cur.execute("select COALESCE(max(log_id)::int,0)+10 seq from common_log_info where created_by = '"+gUserId+"'")
+            cur.execute(
+                "select COALESCE(max(log_id)::int,0)+10 seq from common_log_info where created_by = '" + gUserId + "'")
             rows = cur.fetchall()
 
             sql = "INSERT INTO common_log_info( "
@@ -54,22 +57,68 @@ def println(printStr):
                     cnt += 1
 
                 sql += ",creation_date,last_update_date, created_by, last_updated_by,log_id) "
-                sql += "VALUES (" + valueStr + ",now(),now(),'"+gUserId+"','"+gUserId+"','" + str(rows[0][0]) + "')"
+                sql += "VALUES (" + valueStr + ",now(),now(),'" + gUserId + "','" + gUserId + "','" + str(
+                    rows[0][0]) + "')"
 
                 cur.execute(sql)
                 conn.commit()
             except Exception as e:
                 # 객체 형태일 경우 출력을 해준다.
                 sql += "attr1,creation_date,last_update_date, created_by, last_updated_by,log_id) "
-                sql += "VALUES ('" + str(printStr).replace("'","")+"',now(),now(),'" + gUserId + "','" + gUserId + "','" + str(rows[0][0]) + "')"
+                sql += "VALUES ('" + str(printStr).replace("'",
+                                                           "") + "',now(),now(),'" + gUserId + "','" + gUserId + "','" + str(
+                    rows[0][0]) + "')"
                 cur.execute(sql)
                 conn.commit()
         # 연결을 종료한다
         cur.close()
         conn.close()
 
-def get_combine_label_list(origin_list, compare_list):
+        log_savefile(printStr)
 
+def log_savefile(printStr):
+    # file Save
+    logame = 'log'
+    log_path = '/hoya_log'
+
+    filesavecnt = 3
+    filesizeMax = 50000
+
+    try:
+        if not os.path.exists(log_path):
+            os.makedirs(log_path)
+
+        filelist = os.listdir(log_path)
+
+        now_time = str(datetime.datetime.now())
+        fullname = log_path + '/' + logame + '_' + now_time
+        fullname = fullname.replace(" ", ".")
+
+        filelist.sort(reverse=True)
+
+        i = 1
+        for filename in filelist:
+            step1 = filename.split("_")
+
+            # file create
+            if i == 1:
+                fullname = log_path + '/' + filename
+                fullname = fullname.replace(" ", ".")
+                filesize = os.path.getsize(fullname)
+                if filesize > filesizeMax:
+                    fullname = log_path + '/' + step1[0] + '_' + now_time
+                    fullname = fullname.replace(" ", ".")
+
+            if i > filesavecnt:
+                os.remove(log_path + '/' + filename)
+
+            i += 1
+        with open(fullname, "a") as myfile:
+            myfile.write(printStr+ '\n')
+    except:
+        None
+
+def get_combine_label_list(origin_list, compare_list):
     """ 리스트 두개를 비교하여 차이나는 값만 마지막에 순서대로 넣는 함수
         The function that compare two list and insert distingush values
 
@@ -96,6 +145,7 @@ def get_combine_label_list(origin_list, compare_list):
     _origin_list.extend(_diff_values)
 
     return _origin_list
+
 
 def copy_all(src, dst):
     """ 디렉토리 안에 파일을 전부 복사 하는 유틸
@@ -127,19 +177,20 @@ def copy_all(src, dst):
             logging.error("copy error source({0}) to dest ({1})".format(src, dst))
             raise exc
 
+
 def isnan(value):
     """ Pandas에서 Nan 검사하는 유틸
          The function is Nan Check in pandas
-  
+
     Args:
       params:
         * value : anything
-  
+
     Returns:
         True / False
-  
+
     Raises:
-  
+
     Example
         isnan('hello') == False
         isnan('NaN') == True
@@ -147,6 +198,6 @@ def isnan(value):
         isnan(float('nan')) = True
     """
     try:
-      return math.isnan(float(value))
+        return math.isnan(float(value))
     except:
-      return False
+        return False

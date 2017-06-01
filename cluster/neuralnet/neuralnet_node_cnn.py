@@ -35,7 +35,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         return restr
     ########################################################################
     def model_file_delete(self, model_path, modelname):
-        existcnt = 20
+        existcnt = 10
         filelist = os.listdir(model_path)
 
         flist = []
@@ -47,7 +47,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             if filename.find(modelname) > -1:
                 flist.append(tmp)
             i += 1
-            flistsort = sorted(flist, key=operator.itemgetter(1), reverse=True)
+        flistsort = sorted(flist, key=operator.itemgetter(1), reverse=True)
 
         for i in range(len(flistsort)):
             if i > existcnt * 3:
