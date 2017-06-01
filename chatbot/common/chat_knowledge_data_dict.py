@@ -1,5 +1,6 @@
 from chatbot import models
 from django.core import serializers as serial
+import json
 
 class ChatKnowledgeDataDict:
 
@@ -7,11 +8,9 @@ class ChatKnowledgeDataDict:
         pass
 
     def get_entity_keys(self, cb_id):
-        entity_key_list = ['이름', '직급', '직책', '타입', '실', '근태코드', '그룹', '근무조', '부', '업무', '날짜','회의','시간시작','시간끝','장소']
-        # query_set = models.CB_ENTITY_LIST_INFO.objects.filter(cb_id=cb_id,entity_type = 'key')
-        # query_set = serial.serialize("json", query_set)
-        # return json.loads(query_set) # list type
-        return entity_key_list
+        query_set = models.CB_ENTITY_LIST_INFO.objects.filter(story_id='7', entity_type = 'key')
+        query_set = serial.serialize("json", query_set)
+        return json.loads(query_set)[0]['fields']['entity_list']['key'] # list type
 
     def get_entity_types(self, cb_id):
         #TODO : need to get data from db or cache
@@ -35,21 +34,8 @@ class ChatKnowledgeDataDict:
 
     def get_essential_entity(self, story_id):
 
-        # query_set = models.CB_ENTITY_LIST_INFO.objects.filter(story_id = story_id,entity_type = 'essential')
-        # query_set = serial.serialize("json", query_set)
-        # return json.loads(query_set) #list type
+        query_set = models.CB_ENTITY_LIST_INFO.objects.filter(story_id = '7', entity_type = 'essential')
+        query_set = serial.serialize("json", query_set)
+        return json.loads(query_set)[0]['fields']['entity_list']['essential']  # list type
 
-        essential_entity = []
-        if(story_id == '') :
-            pass
-        elif(story_id == '2') :
-            essential_entity = ["이름"]
-        elif(story_id == '3') :
-            essential_entity = ["업무"]
-        elif(story_id == '4') :
-            essential_entity = ["이름","날짜"]
-        elif(story_id == '6') :
-            essential_entity = ["이름"]
-        elif(story_id == '7') :#회의 등록
-            essential_entity = ["이름","시간시작","시간끝","장소"]
-        return essential_entity
+

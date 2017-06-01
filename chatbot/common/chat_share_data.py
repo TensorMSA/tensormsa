@@ -13,23 +13,23 @@ class ShareData(ChatBotConfManager):
 
         :return:
         """
-        self.unique_id = ""             # mobile device unique id
-        self.package_id = ""            # mobile app package id
+        # self.unique_id = ""             # mobile device unique id
+        # self.package_id = ""            # mobile app package id
         self.input_data = None          # prediction requested data
         self.convert_data = None        # convert data
         self.output_data = None         # output data
         self.intent_history = []        # intent change history (changes on intent model)
         self.request_type = ""          # text, image, voice
         self.intent_id = ""             # current intent id
-        self.intent_name = ""           # current intent name
+        # self.intent_name = ""           # current intent name
         self.service_type = ""          # chat, api service, internal service, option, error, idle
         self.story_board_id = ""        # current working story board
-        self.story_req_entity = []      # required key list
-        self.story_set_entity = {}      # key : val
-        self.opt_sel_list = {}          # intent option list when intent anl result is not clear
-        self.ontology_id = ""           # current working ontology id
-        self.ontology_req_parms = {}    # key : val
-        self.ontology_set_parms = {}    # key : val
+        self.story_key_entity = []      # required key list
+        self.story_slot_entity = {}     # key : val
+        # self.opt_sel_list = {}          # intent option list when intent anl result is not clear
+        # self.ontology_id = ""           # current working ontology id
+        # self.ontology_req_parms = {}    # key : val
+        # self.ontology_set_parms = {}    # key : val
 
     def to_json(self):
         """
@@ -44,7 +44,7 @@ class ShareData(ChatBotConfManager):
         :param object:
         :return:
         """
-        self._check_json_validation(object)
+        #self._check_json_validation(object)
         self.__dict__ = object
         return self
 
@@ -73,37 +73,37 @@ class ShareData(ChatBotConfManager):
         """
         pass
 
-    def set_device_id(self, data):
-        """
+    # def set_device_id(self, data):
+    #     """
+    #
+    #     :param data:
+    #     :return:
+    #     """
+    #     self.unique_id = data
+    #
+    # def get_device_id(self):
+    #     """
+    #
+    #     :param data:
+    #     :return:
+    #     """
+    #     return self.unique_id
 
-        :param data:
-        :return:
-        """
-        self.unique_id = data
-
-    def get_device_id(self):
-        """
-
-        :param data:
-        :return:
-        """
-        return self.unique_id
-
-    def set_package_id(self, data):
-        """
-
-        :param data:
-        :return:
-        """
-        self.package_id = data
-
-    def get_package_id(self):
-        """
-
-        :param data:
-        :return:
-        """
-        return self.package_id
+    # def set_package_id(self, data):
+    #     """
+    #
+    #     :param data:
+    #     :return:
+    #     """
+    #     self.package_id = data
+    #
+    # def get_package_id(self):
+    #     """
+    #
+    #     :param data:
+    #     :return:
+    #     """
+    #     return self.package_id
 
     def set_chatbot_id(self, data):
         """
@@ -137,21 +137,21 @@ class ShareData(ChatBotConfManager):
         """
         return self.intent_id
 
-    def set_intent_name(self, data):
-        """
-
-        :param data:
-        :return:
-        """
-        self.intent_name = data
-
-    def get_intent_name(self):
-        """
-
-        :param data:
-        :return:
-        """
-        return self.intent_name
+    # def set_intent_name(self, data):
+    #     """
+    #
+    #     :param data:
+    #     :return:
+    #     """
+    #     self.intent_name = data
+    #
+    # def get_intent_name(self):
+    #     """
+    #
+    #     :param data:
+    #     :return:
+    #     """
+    #     return self.intent_name
 
     def set_input_data(self, data):
         """
@@ -281,21 +281,21 @@ class ShareData(ChatBotConfManager):
         """
         return self.story_board_id
 
-    def set_story_req_entity(self, data):
+    def set_story_key_entity(self, data):
         """
 
         :param data:
         :return:
         """
-        self.story_req_entity.append(data)
+        self.story_key_entity.append(data)
 
-    def get_story_req_entity(self):
+    def get_story_key_entity(self):
         """
 
         :param data:
         :return:
         """
-        return self.story_req_entity
+        return self.story_key_entity
 
     def set_story_entity(self, key, val):
         """
@@ -303,7 +303,7 @@ class ShareData(ChatBotConfManager):
         :param data:
         :return:
         """
-        self.story_set_entity[key] = val
+        self.story_slot_entity[key] = val
 
     def get_story_entity(self, key = None):
         """
@@ -312,39 +312,36 @@ class ShareData(ChatBotConfManager):
         :return:
         """
         if(key) :
-            return self.story_set_entity.get(key)
+            return self.story_slot_entity.get(key)
         else :
-            return self.story_set_entity
+            return self.story_slot_entity
 
     def initialize_story_entity(self):
-        self.story_set_entity = {}
-
+        self.story_slot_entity = {}
 
     def initialize_story(self):
-        self.story_set_entity = {}
+        self.story_slot_entity = {}
         self.set_story_id("")
         self.set_intent_id("")
         self.set_request_data("")
         self.initialize_story_entity()
         self.set_request_type("")
 
-
-
-    def set_intent_option_list(self, key, val):
-        """
-        return option list when intend is not clear
-        :param data:
-        :return:
-        """
-        self.opt_sel_list[key] = val
-
-    def get_intent_option_list(self, key = None):
-        """
-        return option list when intend is not clear
-        :param data:
-        :return:
-        """
-        if(key) :
-            return self.opt_sel_list.get(key)
-        else :
-            return self.opt_sel_list
+    # def set_intent_option_list(self, key, val):
+    #     """
+    #     return option list when intend is not clear
+    #     :param data:
+    #     :return:
+    #     """
+    #     self.opt_sel_list[key] = val
+    #
+    # def get_intent_option_list(self, key = None):
+    #     """
+    #     return option list when intend is not clear
+    #     :param data:
+    #     :return:
+    #     """
+    #     if(key) :
+    #         return self.opt_sel_list.get(key)
+    #     else :
+    #         return self.opt_sel_list

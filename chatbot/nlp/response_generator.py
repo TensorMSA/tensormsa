@@ -11,21 +11,21 @@ class ResponseGenerator(ShareData):
             if (self.story_board_id == '1'):
                 self.set_output_data("이미지 검색 결과 출력")
             elif (self.story_board_id == '2'):
-                response = self.story_set_entity["이름"] + "의 전화번호는 XX-XXX-1234입니다."
+                response = self.story_slot_entity["이름"] + "의 전화번호는 XX-XXX-1234입니다."
             elif (self.story_board_id == '3'):
-                name = self.story_set_entity["업무"]
+                name = self.story_slot_entity["업무"]
                 business = {"출하" : "김승우", "야드" : "김수상", "설비" : "박성찬", "매출" : "백지현", "공정" : "이상현", "원가" : "김영재"}
-                response = self.story_set_entity["업무"] + "업무 담당자는" + business[name] + "입니다"
+                response = self.story_slot_entity["업무"] + "업무 담당자는" + business[name] + "입니다"
             elif (self.story_board_id == '4'):
-                response = self.story_set_entity["이름"] + "은 " + self.story_set_entity["날짜"] + " 휴가입니다."
+                response = self.story_slot_entity["이름"] + "은 " + self.story_slot_entity["날짜"] + " 휴가입니다."
             elif (self.story_board_id == '5'):
                 response = "AI과제 맴버는 김승우, 김수상, 백지현, 박성찬, 김영재, 이태영, 황민호, 이상현입니다."
             elif (self.story_board_id == '6'):
-                name = self.story_set_entity["이름"]
+                name = self.story_slot_entity["이름"]
                 leader = {"김수상": "김영식", "김승우": "김영식", "차민주": "박종규", "박종규": "김채홍", "신민호": "김동희", "김동희": "주용회", "주용회": "박미화"}
-                response = self.story_set_entity["이름"] + "님의 팀장은 " + leader[name] + "입니다"
+                response = self.story_slot_entity["이름"] + "님의 팀장은 " + leader[name] + "입니다"
             elif (self.story_board_id == '7'):
-                response = self.story_set_entity["이름"] + " 등 X명이 참석자로 " + self.story_set_entity["장소"] +  "에서 회의 예약 되었습니다."
+                response = self.story_slot_entity["이름"] + " 등 X명이 참석자로 " + self.story_slot_entity["장소"] + "에서 회의 예약 되었습니다."
             else :
                 response = self.get_unknown_response()
             print("■■■■■■■■■■ 챗봇 응답 메세지 결과 : " + response)

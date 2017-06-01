@@ -17,17 +17,17 @@ class DecisionMaker(ShareData):
 
             if ("타입" in share_data.get_story_entity().keys()) :
                 #If you attach Image you need to first Type "이미지"
-                if (self.story_set_entity["타입"] == "이미지"):
+                if (self.story_slot_entity["타입"] == "이미지"):
                     self.initialize_story()
                     share_data.set_intent_id("90")
                 #Initialize
-                elif (self.story_set_entity["타입"] in ["안녕","하이"]):
+                elif (self.story_slot_entity["타입"] in ["안녕", "하이"]):
                     self.initialize_story()
                     share_data.set_output_data("포스코 AI봇입니다 무엇이 궁금한가요?")
                     share_data.__dict__ = self.__dict__
                     return share_data
 
-                elif (self.story_set_entity["타입"] in ["저장"]):
+                elif (self.story_slot_entity["타입"] in ["저장"]):
                     self.initialize_story()
                     share_data.set_output_data("현재까지 대화 기록은 모델 정합성 향상에 사용됩니다")
                     share_data.__dict__ = self.__dict__
