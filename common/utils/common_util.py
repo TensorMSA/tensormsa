@@ -82,7 +82,7 @@ def log_savefile(printStr):
     log_path = '/hoya_log'
 
     filesavecnt = 3
-    filesizeMax = 50000
+    filesizeMax = 100000
 
     try:
         if not os.path.exists(log_path):

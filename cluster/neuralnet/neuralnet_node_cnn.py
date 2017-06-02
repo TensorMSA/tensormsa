@@ -618,7 +618,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
                                     println(strLog + true_name + " FileName=" + file_name)
                                     println(retrun_data["key"])
                                     println(retrun_data["val"])
-                            if(predlog == "AA"):
+                            if(predlog == "A"):
                                 println(strLog + true_name + " FileName=" + file_name)
                                 println(retrun_data["key"])
                                 println(retrun_data["val"])
