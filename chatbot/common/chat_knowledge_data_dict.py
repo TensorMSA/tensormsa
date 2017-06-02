@@ -16,7 +16,6 @@ class ChatKnowledgeDataDict:
         #TODO : need to get data from db or cache
         #['이름', '직급', '직책', '근태코드', '실', 'Grade', '그룹', '근무조', '부', '지역']
         temp_entitiy = {}
-        temp_entitiy['이름'] = ['김승우', '김수상', '박성찬', '백지현']
         temp_entitiy['업무'] = ['출하', '야드', '설비', '매출', '원가', '메일']
         temp_entitiy['날짜'] = ['어제', '오늘', '지금', '내일', '모래']
         temp_entitiy['타입'] = ['이미지', '안녕', '하이','저장','시작']
