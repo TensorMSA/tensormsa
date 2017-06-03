@@ -50,6 +50,7 @@ class EntityAnalyzer(ShareData):
             for i in range(0, len(pos_tags)):
                 if(pos_tags[i][1] in ['NNG','NNP']):
                     if(self._extract_name_entity(pos_tags[i][0]) == True):
+                        share_data.set_story_entity('이름', pos_tags[i][0])
                         pos_tags[i] = (''.join(['[이름]']), '')
                     else:
                         for key in self.entity_key_list:
