@@ -19,13 +19,25 @@ import logging
 import random
 import shutil, errno
 from sklearn.preprocessing import LabelEncoder
-from cluster.preprocess.pre_node_feed_fr2wdnn import PreNodeFeedFr2Wdnn
-from cluster.data.data_node_frame import DataNodeFrame
-from common import utils
-from time import gmtime, strftime
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Activation, Dense, BatchNormalization
+import keras
+#from keras. import
+from sklearn.preprocessing import MinMaxScaler
+from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
+import numpy as np
 
+class History(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.losses = []
+        self.acc = []
 
-class NeuralNetNodeWdnn(NeuralNetNode):
+    def on_batch_end(self, batch, logs={}):
+        self.losses.append(str(logs.get('loss')))
+        self.acc.append(str(logs.get('acc')))
+
+class NeuralNetNodeKerasdnn(NeuralNetNode):
     """
 
     """
@@ -42,55 +54,22 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         try:
             self._init_node_parm(conf_data['node_id'])
             self.cls_pool = conf_data['cls_pool'] # Data feeder
-
             self.train_batch, self.batch = self.make_batch(conf_data['node_id']) #makebatch
-
             self.before_train_batch = self.get_before_make_batch(conf_data['node_id'], self.batch)  #before train batch
 
             if self.before_train_batch != None:
                 self.model_train_before_path = ''.join([self.model_path+'/'+str(self.before_train_batch.nn_batch_ver_id)])
-
-
-
-
 
             if self.train_batch == None :
                 self.model_train_path = ''.join([self.model_path+'/'+self.batch])
             else :
                 self.model_train_path = ''.join([self.model_path + '/' + self.train_batch])
 
-
             #model file copy
             if self.before_train_batch != None:
                 src = self.model_train_before_path
                 dst =  self.model_train_path
                 utils.copy_all(src, dst)
-
-            # try:
-            #     shutil.copytree(src, dst)
-            #     logging.info("copytree source({0}) to dest ({1})".format(src,dst))
-            # except OSError as exc:  # python >2.5
-            #     if exc.errno == errno.ENOTDIR:
-            #         shutil.copy(src, dst)
-            #         logging.info("copy source({0}) to dest ({1})".format(src, dst))
-            #     else:
-            #         raise
-
-            # for filename in dirfiles:
-            #     shutil.copy(os.path.join(src, filename), dst)
-            #     logging.info("model file copy : {0}".format(filename))
-
-            # import shutil, errno
-            #
-            # def copyanything(src, dst):
-            #     try:
-            #         shutil.copytree(src, dst)
-            #     except OSError as exc:  # python >2.5
-            #         if exc.errno == errno.ENOTDIR:
-            #             shutil.copy(src, dst)
-            #         else:
-            #             raise
-
 
             logging.info("model_path : {0} ".format(self.model_path))
             logging.info("hidden_layers : {0} ".format(self.hidden_layers))
@@ -99,16 +78,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             logging.info("epoch : {0} ".format(self.epoch))
             logging.info("model_type : {0} ".format(self.model_type))
 
-
-
-            #self.get_node_name("d")
-
-            #data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
             data_conf_info = self.data_conf
-
-            # make wide & deep model
-            wdnn = NeuralCommonWdnn()
-            wdnn_model = wdnn.wdnn_build(self.model_type, conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_train_path))
 
             #feed
             # TODO file이 여러개면 어떻하지?
@@ -117,74 +87,85 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             train_data_set = self.cls_pool[data_node_name[0]] #get filename
             file_queue  = str(train_data_set.input_paths[0]) #get file_name
 
-            #file을 돌면서 최대 Row를 전부 들고 옴 tfrecord 총 record갯수 가져오는 방법필요
-
+            #TODO 아 eval이 안되서 데이터가 안불러
             _batch_size = self.batch_size
             _num_tfrecords_files = 0
             #_batch_size = 2
 
+            data_set = train_data_set[0 : train_data_set.data_size() ]
+
+            input_dims = len(data_set.columns)-1 # label 갯수 제거
+            # model = Sequential()
+            # model.add(Dense(100, input_dim=input_dims, activation='relu'))
+            # #model.add(Dense(50))
+            # model.add(Dense(50, activation='sigmoid'))
+            # #model.add(Dense(50, activation='sigmoid'))
+            # model.compile(optimizer='rmsprop',
+            #               loss='binary_crossentropy',
+            #               metrics=['accuracy'])
+            model = Sequential()
+            model.add(Dense(10, input_dim=input_dims,init='uniform'))
+            model.add(BatchNormalization())
+            model.add(Activation('sigmoid'))
+            #model.add(Dense(10, init='uniform'))
+            #model.add(BatchNormalization())
+            #model.add(Activation('sigmoid'))
+            model.add(Dense(1, init='uniform'))
+            model.add(BatchNormalization())
+            model.add(Activation('sigmoid'))
+            lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
+            early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
+            csv_logger = CSVLogger('resnet18_cifar10.csv')
+            history = History()
+
+            # Compile model
+            model.compile(loss='binary_crossentropy', optimizer='sgd')
+
+            self.batch_size = 4
+
+
+
             #multi Feeder modified
             multi_read_flag = self.multi_read_flag
-            if multi_read_flag == True:
-                for index, fn in enumerate(train_data_set.input_paths):
-                    _num_tfrecords_files += self.generator_len(
-                        tf.python_io.tf_record_iterator(fn))  # get length of generators
-                print("total loop " + str(math.ceil(_num_tfrecords_files/_batch_size)) )
-
-                for index in range(int(math.ceil(_num_tfrecords_files/_batch_size))):
-                    print("number of for loop " + str(index))
-                    wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=200)
-
-                results = wdnn_model.evaluate(
-                    input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, _batch_size),
-                    steps=1)
-            else:
+            if multi_read_flag == False:
                 #Todo H5
                 # train per files in folder h5용
-                #if multi_file flag = no이면 기본이 h5임
                 while(train_data_set.has_next()) :
-                    print("h5")
+                    logging.info("start keras dnn")
                     #파일이 하나 돌때마다
                     #for 배치사이즈와 파일의 총갯수를 가져다가 돌린다. -> 마지막에 뭐가 있을지 구분한다.
-                     #파일에 iter를 넣으면 배치만큼 가져오는 fn이 있음 그걸 __itemd에 넣고
+                    #파일에 iter를 넣으면 배치만큼 가져오는 fn이 있음 그걸 __itemd에 넣고
                     # Input 펑션에서 multi를 vk판단해서 col와 ca를 구분한다.(이걸 배치마다 할 필요가 있나?)
                     # -> 그러면서 피팅
-                    #
-                    # # Iteration is to improve for Model Accuracy
-
-                        # Per Line in file
+                    #for x in range(0, self.iter_size):
                     for i in range(0, train_data_set.data_size(), self.batch_size):
-
+                        #Last batch size preprocessing
+                        if (i+self.batch_size > train_data_set.data_size()):
+                            i= i - (train_data_set.data_size()%self.batch_size) + 1
                         data_set = train_data_set[i:i + self.batch_size]
-                        if i == 0:
-                            eval_data_Set = data_set
-                        #input_fn2(self, mode, data_file, df, nnid, dataconf):
-                        wdnn_model.fit(
-                            input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
-                                                                      data_set,data_conf_info), steps=200)
-                        #model fitting
-                        print( "model fitting h5 " + str(data_set))
+                        #data_set = train_data_set[0:train_data_set.data_size()]
+
+                        logging.info(i)
+                        X_train, targets, = train_data_set.input_fn3( file_queue,data_set,data_conf_info)
+                        #loss, accuracy =
+                        model.fit(X_train, targets
+                                  , epochs=10
+                                  , validation_data=(X_train, targets)
+                                  , batch_size=self.batch_size
+                                  , callbacks = [lr_reducer, csv_logger, history]
+                                  )
+
+
+                        #logging.info("keras training info loss : {0} ,  accuracy{1}".format(loss, accuracy))
                     # #Select Next file
                     train_data_set.next()
-                results = dict()
+                #os.makedirs(self.md_store_path + '/' + self.batch, exist_ok=True)
+               # keras.models.save_model(model, ''.join([self.md_store_path + '/' + self.batch, '/model.bin']))
 
-                #results = wdnn_model.evaluate(
-                #input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
-                #                                         eval_data_Set, data_conf_info), steps=200)
-
-
-            for key in sorted(results):
-                print("%s: %s" % (key, results[key]))
-                logging.info("train data eval result : {0} : {1}".format(key, results[key]))
-
-            #feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
             print("end")
-            #with tf.Session() as sess:
-
         except Exception as e:
             logging.error("Error Message : {0}".format(e))
             raise Exception(e)
-
 
         return None
 
@@ -192,7 +173,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         """
                 Help for Generator length promote util class(?)
                 :param it : python generator
-                :return: length of generatorDataNodeFrame
+                :return: length of generator
         """
         return len(list(it))
 
@@ -224,15 +205,18 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         :param data_path:
         :return:data_path
         """
-        store_filepath_name = data_path + "/" + "adult.noth5"
+        store_filepath_name = data_path + "/" + "adult.h5"
         hdf = pd.HDFStore(store_filepath_name)
         hdf.put('table1', dataframe, format='table', data_columns=True)
         hdf.close()
 
+    def _init_node_parm(self, node_id):
+        return None
+
     def _set_progress_state(self):
         return None
 
-    def predict2(self, nn_id, conf_data, parm = {}):
+    def predict(self, nn_id, conf_data, parm = {}):
 
         # model build
         #
@@ -278,6 +262,8 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         :return:
         """
         wf_net_conf = WorkFlowNetConfWdnn(key)
+        self.wf_state_id = wf_net_conf.get_state_id(key).pk
+        netconfig = wf_net_conf.get_view_obj(key)
         self.model_path = wf_net_conf.model_path
         self.hidden_layers = wf_net_conf.hidden_layers
         self.activation_function = wf_net_conf.activation_function
@@ -293,15 +279,13 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.extend_cell_feature = _wf_data_conf.extend_cell_feature
         self.label_values = _wf_data_conf.label_values
 
-        _wf_data_node = wf_data_node(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
-        self.multi_read_flag = _wf_data_node.multi_node_flag
-        self.predict_path = _wf_data_node.predict_path
+        if 'test' in self.get_prev_node()[0].node_name:
+            _wf_data_node = wf_data_node(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
+            self.multi_read_flag = _wf_data_node.multi_node_flag
+        else:
+            _wf_data_node = wf_data_node(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
+            self.multi_read_flag = _wf_data_node.multi_node_flag
 
-
-        #if 'test' in self.get_prev_node()[0].node_name:
-        #    _wf_data_node = wf_data_node(key.split(not'_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
-        #    self.multi_read_flag = _wf_data_node.multi_node_flag
-        #else:
         #_wf_data_node = wf_data_node(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
         #self.multi_read_flag = _wf_data_node.multi_node_flag
 
@@ -344,7 +328,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         # data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
         data_conf_info = self.data_conf
 
-        # make wide & deep modelnot
+        # make wide & deep model
         wdnn = NeuralCommonWdnn()
         wdnn_model = wdnn.wdnn_build(self.model_type, conf_data['node_id'], self.hidden_layers,
                                      str(self.activation_function), data_conf_info, str(self.model_eval_path))
@@ -449,189 +433,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
         logging.info("eval end")
         return train
-        # with tf.Session() as sess:
 
-    def predict(self, node_id,ver, parm, data=None, result=None):
-
-        """ Wdnn predict 
-            batchlist info에서 active flag가 Y인 Model을 가져와서 예측을 함 
-
-        Args:
-          params: 
-            * node_id
-            * conf_data
-
-        Returns:
-            none
-
-        Raises:
-
-        Example
-
-        """
-        try:
-            logging.info("wdnn predict_start nnid : {0}".format(node_id))
-            _node_id = node_id + "_" + ver+ "_" + "netconf_node"
-
-            _data_conf_id = node_id + "_" + ver + "_dataconf_node"
-            self._init_node_parm(_node_id)
-            #self.cls_pool_all = conf_data['cls_pool']  # Data feeder
-
-            config = {"type": self.model_type, "labels": self.label_values, "nn_id":node_id, "nn_wf_ver_id":ver}
-            train = TrainSummaryInfo(conf=config)
-            #print(config)
-            self.batch = self.get_active_batch(_node_id)
-            #print(train)
-            self.model_predict_path = ''.join([self.model_path + '/' + self.batch])
-            self.multi_node_flag = False
-
-            conf_data = {}
-            conf_data['node_id'] = _node_id
-
-
-            #conf_data['cls_pool'].get('nn00001_1_pre_feed_fr2wdnn_test')
-            print("model_path : " + str(self.model_path))
-            print("hidden_layers : " + str(self.hidden_layers))
-            print("activation_function : " + str(self.activation_function))
-            print("batch_size : " + str(self.batch_size))
-            print("epoch : " + str(self.epoch))
-            print("model_type : " + str(self.model_type))
-
-            # data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
-            data_conf_info = self.data_conf
-
-            # make wide & deep model
-            wdnn = NeuralCommonWdnn()
-            wdnn_model = wdnn.wdnn_build(self.model_type, node_id, self.hidden_layers,
-                                         str(self.activation_function), data_conf_info, str(self.model_predict_path))
-
-            # feed
-            # TODO file이 여러개면 어떻하지?
-            filelist = sorted(parm.items())
-            #train_data_set = self.cls_pool  # get filename
-            #file_queue = str(train_data_set.input_paths[0])  # get file_name
-
-            # file을 돌면서 최대 Row를 전부 들고 옴 tfrecord 총 record갯수 가져오는 방법필요
-
-            _batch_size = self.batch_size
-            _num_tfrecords_files = 0
-
-            # multi Feeder modified
-            multi_read_flag = self.multi_read_flag
-
-            # Todo H5
-            # train per files in folder h5용
-            # if multi_file flag = no이면 기본이 h5임
-
-            results = dict()
-            ori_list = list()
-            pre_list = list()
-            #self.batch_size = 5
-            for filename in filelist:
-                print("h5")
-                #feeder = PreNodeFeedFr2Wdnn().set_for_predict(_data_conf_id)
-                feeder = PreNodeFeedFr2Wdnn()
-                #_data_conf_id
-                #set_for_predict
-                feeder.set_for_predict(_data_conf_id)
-                data_node = DataNodeFrame()
-                train_data_set = data_node.load_csv_by_pandas(self.predict_path + "/" + filename[1].name)
-
-                #feeder.set_input_paths([self.predict_path + "/" + filename[1].name])
-                #train_data_set = feeder
-                #_size = train_data_set
-                # 파일이 하나 돌때마다
-                # for 배치사이즈와 파일의 총갯수를 가져다가 돌린다. -> 마지막에 뭐가 있을지 구분한다.
-                # 파일에 iter를 넣으면 배치만큼 가져오는 fn이 있음 그걸 __itemd에 넣고
-                # Input 펑션에서 multi를 vk판단해서 col와 ca를 구분한다.(이걸 배치마다 할 필요가 있나?)
-                # -> 그러면서 피팅
-                #
-                # # Iteration is to improve for Model Accuracy
-
-                # Per Line in file
-                # eval should be one line predict
-                #self.batch_size = 2
-
-                #train_date를 어떻게 가져오냐가 문제
-
-                result_df = pd.DataFrame()
-
-                for i in range(0, len(train_data_set.index), self.batch_size):
-
-                    data_set = train_data_set[i:i + self.batch_size]
-                    #if i == 0:
-                    #eval_data_Set = data_set
-                    # input_fn2(self, mode, data_file, df, nnid, dataconf):
-                    predict_value = wdnn_model.predict(
-                        input_fn=lambda: feeder.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, filename,
-                                                                  data_set, data_conf_info))
-
-                    data_set_count = len(data_set.index)
-                    predict_val_list = [_pv for _pv in predict_value]
-                    predict_val_count = len(predict_val_list)
-
-                    if (data_set_count != predict_val_count):
-                        logging.error("wdnn eval error check : dataframe count({0}) predict count({1})".format(data_set_count, predict_val_count))
-                        raise ValueError(
-                            'eval data validation check error : dataframe and predict count is different(neuralnet_node_wdnn.eval)')
-
-                    data_set['predict_label'] = predict_val_list #list(predict_value)
-                    #_predict = list(predict_value)
-                    predict_y = list(data_set['predict_label'])
-                    #pd.concat(result_df, data_set)
-                    result_df = result_df.append(data_set)
-                    ori_list.extend(data_set[self.label].values.tolist())
-                    pre_list.extend(list(data_set['predict_label']))
-
-                    # model fitting
-                    print(len(ori_list))
-                    print(len(pre_list))
-                    #logging.error("wdnn eval ori list  : {0}".format(ori_list) )
-                    logging.info("wdnn eval ori list  : {0}".format(len(ori_list)) )
-                    #logging.info("wdnn eval ori list  : {0}".format('info'))
-                    #logging.debug("wdnn eval ori list  : {0}".format('debug'))
-                    #logging.critical("wdnn eval ori list  : {0}".format('critical'))
-                    #print("model fitting h5 " + str(data_set))
-                # #Select Next file
-
-
-                #train_data_set.next()
-
-            predict_result_dir = utils.make_and_exist_directory(self.predict_path + "/" + "result" + "/")
-            predict_result_filename = predict_result_dir + "result_" + strftime("%Y-%m-%d-%H:%M:%S",
-                                                                                gmtime()) + ".csv"
-            result_df.to_csv(predict_result_filename)
-            #os.remove(self.predict_path + "/" + filename[1].name)
-
-
-
-
-            # #TODO : 앞으로 옮기자
-            # train.set_nn_batch_ver_id(self.batch)
-            # if self.model_type == "regression":
-            #     results['ori'] = ori_list
-            #     results['pre'] = pre_list
-            #     train.set_result_info(ori_list, pre_list)
-            #
-            # if self.model_type == "category":
-            #     # tfrecord는 여기서 Label을 변경한다. 나중에 꺼낼때 답이 없음 Tensor 객체로 추출되기 때문에 그러나 H5는 feeder에서 변환해주자
-            #     le = LabelEncoder()
-            #     le.fit(self.label_values)
-            #
-            #     for _i, _ori in enumerate(ori_list):
-            #         #return_value = self.labels[np.argmax(model.predict(X_train))]
-            #         train.set_result_info(str(_ori), str(le.inverse_transform(pre_list[_i])))
-            #return self.batch
-
-
-            logging.info("eval end")
-            return train
-        except Exception as e:
-            logging.error("Wdnn predict error {0}".format(e))
-
-            raise Exception(e)
-
-    # with tf.Session() as sess:
 
 
 

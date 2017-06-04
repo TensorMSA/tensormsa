@@ -13,7 +13,11 @@ if [ "$#" -eq 0 ]; then
    echo "                  5 : stop django"
    echo "                  6 : uwsgi start"
    echo "                  7 : uwsgi stop"
-   exit 1
+   echo "                  8 : celery start"
+   echo "                  9 : celery stop"
+   echo "                  10: celery flower start"
+   echo "                  11: celery flower stop"
+  exit 1
 fi
 
 type="$1"
@@ -55,7 +59,7 @@ if [ "$type" = "6" ]; then
   pkill uwsgi -9
   pkill nginx 
 
-  uwsgi /home/dev/uwsgi/hoyai.ini --emperor /home/dev/hoyai &
+  uwsgi /home/dev/uwsgi/hoyai.ini --emperor /home/dev/hoyai 2>&1 | tee /root/hoyai.out &
   /usr/sbin/nginx
   sudo chmod 777 /home/dev/hoyai/hoyai.sock
   kill $(ps aux | grep 'manage.py'|grep -v grep| awk '{print $2}')
@@ -66,4 +70,28 @@ if [ "$type" = "7" ]; then
   pkill uwsgi -9
   pkill nginx 
 
+fi  
+if [ "$type" = "8" ]; then
+
+  echo "stoping celery"
+  pkill celery
+
+  echo "starting celery"
+  celery -A hoyai worker -l info 2>&1 | tee /root/hoyai_celery.out &
+fi 
+if [ "$type" = "9" ]; then
+
+  echo "stoping celery"
+  pkill celery
 fi
+if [ "$type" = "10" ]; then
+  echo "stoping celery flower"
+  kill -9 $(ps -aux | grep flower|grep -v grep | awk '{print $2}')
+  echo "starting celery flower"
+  celery flower &
+fi
+if [ "$type" = "11" ]; then
+
+  echo "stoping celery flower"
+  kill -9 $(ps -aux | grep flower|grep -v grep | awk '{print $2}')
+fi 

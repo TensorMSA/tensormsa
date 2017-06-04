@@ -5,13 +5,53 @@ from master import models
 from cluster.common.common_node import WorkFlowCommonNode
 from common.utils import *
 from celery.utils.log import get_task_logger
-logger = get_task_logger(__name__)
+import logging
+from logging import FileHandler
+from django.conf import settings
+import datetime
+
 
 @shared_task
 def train(nn_id, wf_ver) :
-    logger.info("[Train Task] Start Celery Job")
+
+    log_home = "/root"
+    _celery_log_dir = make_celery_dir_by_datetime(log_home)
+    celery_log_dir = make_and_exist_directory(_celery_log_dir)
+
+    celery_log_file = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    _filename = str(nn_id) +"_" +str(wf_ver) +"_" +  celery_log_file + ".log"
+
+    celery_log_file = celery_log_dir + _filename
+
+    logging.config.dictConfig(settings.LOGGING)
+    logger = logging.getLogger()
+    task_handler = FileHandler(celery_log_file)
+    logger.addHandler(task_handler)
+
+    logger.info("[Train Task] Start Celery Job {0} {1}".format(nn_id, wf_ver))
+
     result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver)
     return result
+
+def make_celery_dir_by_datetime(home_dir):
+    """ 현재시간을 사용하여 디렉토리 이름 반환
+         Make Datetime directory by datetime functions
+
+    Args:
+      params:
+
+    Returns:
+        directory name using datetime
+
+    Raises:
+
+    Example
+
+    """
+    celery_log_dir = datetime.datetime.now().strftime('%Y-%m-%d')
+    celery_work_dir = home_dir + "/"+ celery_log_dir + "/"
+    return celery_work_dir
+
 
 class WorkFlowTrainTask(WorkFlowCommonNode):
     """
@@ -54,6 +94,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                     conf_data['nn_id'] = nn_id
                     conf_data['wf_ver'] = wf_ver
                     conf_data['cls_pool'] = cls_list
+                    search_info[2]
                     result_info.append(search_info[2].run(conf_data))
             return result_info
         except Exception as e :

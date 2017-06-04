@@ -1,3 +1,5 @@
+from blaze.interactive import data
+
 from cluster.data.data_node import DataNode
 import os
 import zipfile
@@ -55,11 +57,29 @@ class DataNodeFrame(DataNode):
             fp_list = utils.get_filepaths(self.data_src_path, file_type='csv')
             _multi_node_flag = self.multi_node_flag
 
+            eval_data = dict((_i, _k) for _i, _k in self.cls_list.items() if 'evaldata' in _i)
+
+
+
 
             try:
+                #data conf node id 찾기
+                for _i, _k in self.cls_list.items():
+                    if 'dataconf' in _i:
+                        data_conf_node_id = _i
+
+                data_dfconf_list = data_conf_node_id
+                #data_conf_node_id = dict((_i,_k) for _i,_k in  self.cls_list.items() if 'dataconf' in _i)
+                # if ('evaldata' in self.node_name):
+                #     data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
+                # else:
+                #     data_dfconf_list = self.get_linked_next_node_with_type('data_dfconf')
+
                 for file_path in fp_list:
+
+
                     df_csv_read = self.load_csv_by_pandas(file_path)
-                    self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id']) # make columns type of csv
+                    self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'], data_conf_node_id) # make columns type of csv
                     #self.make_unique_value_each_column(df_csv_read,conf_data['node_id'])
                     self.create_hdf5(self.data_store_path, df_csv_read)
 
@@ -67,18 +87,18 @@ class DataNodeFrame(DataNode):
                     #for wdnn
 
 
-                    if ('evaldata' in self.node_name):
-                        data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
-                    else:
-                        data_dfconf_list = self.get_linked_next_node_with_type('data_dfconf')
+
 
                     #Wdnn인경우 data_dfconf가 무조껀 한개만 존재 하므로 아래와 같은 로직이 가능
                     if len(data_dfconf_list) > 0:
-                        _key = data_dfconf_list[0].node_name
+                        # _key = data_dfconf_list[0].node_name
+                        # _nnid = _key.split('_')[0]
+                        # _ver = _key.split('_')[1]
+                        # _node = 'dataconf_node'
+                        _key =data_dfconf_list
                         _nnid = _key.split('_')[0]
                         _ver = _key.split('_')[1]
-                        _node = 'dataconf_node'
-
+                        _node  = 'dataconf_node'
                         _wf_data_conf = wf_data_conf(_key)
                         if hasattr(_wf_data_conf,'label') == True:
                             # label check
@@ -277,12 +297,13 @@ class DataNodeFrame(DataNode):
         try :
             df_csv_read = pd.read_csv(tf.gfile.Open(data_path),
                                       skipinitialspace=True,
-                                      engine="python")
+                                      engine="python",
+                                      encoding='utf-8-sig')
             return df_csv_read
         except Exception as e :
             raise Exception (e)
 
-    def make_column_types (self, df, node_id):
+    def make_column_types (self, df, node_id, data_dfconf_list):
         """
         csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
         :param df:
@@ -290,16 +311,16 @@ class DataNodeFrame(DataNode):
         """
         try:
 
-            data_conf=self.set_dataconf_for_checktype(df, node_id )
+            data_conf=self.set_dataconf_for_checktype(df, node_id, data_dfconf_list )
             #self.data_conf = self.set_dataconf_for_checktype(df, node_id )
             data_conf_unique_cnt = self.make_unique_value_each_column(df,node_id)
             data_conf.update(data_conf_unique_cnt)
             dataconf_nodes = self._get_forward_node_with_type(node_id, 'dataconf')
-            if(len(dataconf_nodes) > 0 ) :
-                wf_data_conf_node = wf_data_conf(dataconf_nodes[0])
-                if(len(wf_data_conf_node.cell_feature) == 0 or 'conf' not in wf_data_conf_node.__dict__):
-                    self.set_default_dataconf_from_csv(wf_data_conf_node, node_id,data_conf)
-                    self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf_unique_cnt)
+            if(len(dataconf_nodes) > 0 or ('evaldata' in self.node_name)) :
+                wf_data_conf_node = wf_data_conf(data_dfconf_list)
+                #if(len(wf_data_conf_node.cell_feature) == 0 or 'conf' not in wf_data_conf_node.__dict__): #싱글런을 위해 제거 했으나 필요 없
+                self.set_default_dataconf_from_csv(wf_data_conf_node, node_id,data_conf)
+                self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf_unique_cnt)
             return data_conf
         except Exception as e:
             raise Exception(e)
@@ -347,36 +368,59 @@ class DataNodeFrame(DataNode):
         data_node = "dataconf_node"
         wf_data_config.put_step_source(nnid, ver, data_node, data_conf)
 
-    def set_dataconf_for_checktype(self, df, node_id):
+    def set_dataconf_for_checktype(self, df, node_id, data_dfconf_list):
         """
         csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
         :param wf_data_config, df, nnid, ver, node:
         :param conf_data:
         """
-        #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
-        data_conf = dict()
-        #data_conf_cel = dict()
-        data_conf_col_type = dict()
-        #data_conf_label = dict()
-        numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
-        for i, v in df.dtypes.iteritems():
-            # label
-            column_dtypes = dict()
-            col_type = ''
-            if (str(v) in numerics):  # maybe need float
-                col_type = 'CONTINUOUS'
-            else:
-                col_type = 'CATEGORICAL'
-            column_dtypes['column_type'] = col_type
-            data_conf_col_type[i] = column_dtypes
-        data_conf['cell_feature'] = data_conf_col_type
-        #data_conf['data_conf'] = data_conf_cel
-        data_conf_json_str = json.dumps(data_conf)
-        data_conf_json = json.loads(data_conf_json_str)
+        try:
+            #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
+            data_conf = dict()
+            #data_conf_cel = dict()
+            data_conf_col_type = dict()
+            #data_conf_label = dict()
+            numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
-        # DATACONF_FRAME_CALL
-        #wf_data_config.put_step_source(node_id, data_conf_json)
-        return data_conf_json
+            # Wdnn인경우 data_dfconf가 무조껀 한개만 존재 하므로 아래와 같은 로직이 가능
+            if len(data_dfconf_list) > 0:
+                #_key = data_dfconf_list[0].node_name
+                _wf_data_conf = wf_data_conf(data_dfconf_list)
+                _cell_feature = _wf_data_conf.cell_feature if hasattr(_wf_data_conf,'cell_feature') else list() #처음 입려할때 라벨벨류가 없으면 빈 리스트 넘김
+
+            for i, v in df.dtypes.iteritems():
+                # label
+                column_dtypes = dict()
+                column_unique_Value = dict()
+                col_type = ''
+                if (str(v) in numerics):  # maybe need float
+                    col_type = 'CONTINUOUS'
+                    columns_unique_value = list()
+                else:
+                    col_type = 'CATEGORICAL'
+                    columns_unique_value = pd.unique(df[i].values.ravel()).tolist()  # null처리 해야함
+                column_dtypes['column_type'] = col_type
+
+
+                origin_col_list_temp =  _cell_feature[i] if ( i in _cell_feature) else list()
+                if ('column_u_values' in origin_col_list_temp):
+                    origin_col_list = origin_col_list_temp['column_u_values']
+                else:
+                    origin_col_list = list()
+                combined_col_u_list = utils.get_combine_label_list(origin_col_list, columns_unique_value)
+                #읽어와서 추가되면 뒤에 붙여준다.
+                column_dtypes['column_u_values'] = combined_col_u_list
+                data_conf_col_type[i] = column_dtypes
+            data_conf['cell_feature'] = data_conf_col_type
+            #data_conf['data_conf'] = data_conf_cel
+            data_conf_json_str = json.dumps(data_conf)
+            data_conf_json = json.loads(data_conf_json_str)
+
+            # DATACONF_FRAME_CALL
+            #wf_data_config.put_step_source(node_id, data_conf_json)
+            return data_conf_json
+        except Exception as e:
+            logging.error("set_dataconf_for_checktype {0}".format(e))
 
 
     def set_dataconf_for_labels(self, df, label):

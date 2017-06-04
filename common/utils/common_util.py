@@ -175,7 +175,7 @@ def copy_all(src, dst):
             logging.info("copy source({0}) to dest ({1})".format(src, dst))
         else:
             logging.error("copy error source({0}) to dest ({1})".format(src, dst))
-            raise exc
+            #raise exc
 
 
 def isnan(value):
@@ -200,4 +200,29 @@ def isnan(value):
     try:
         return math.isnan(float(value))
     except:
+        return False
+
+def make_and_exist_directory(directory):
+    """ 디렉토리 만들기(없으면 만들고 있으면 현재 디렉토리 값 반환)
+         Make Directory and Exist Directory
+
+    Args:
+      params:
+        * directory : directory path
+
+    Returns:
+        directory path
+
+    Raises:
+
+    Example
+
+    """
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        return directory
+    except Exception as e:
+        logging.error("Make Celery Logging Directory {0} : {1}".format(directory, e))
+        raise Exception(e)
         return False

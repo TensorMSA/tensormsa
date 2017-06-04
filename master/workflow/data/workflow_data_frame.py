@@ -100,6 +100,16 @@ class WorkFlowDataFrame(WorkFlowData) :
             return self.conf['multi_node_flag']
         else :
             return 0
+    @property
+    def predict_path(self):
+        """
+
+        :return:
+        """
+        if 'predict_path' in self.conf :
+            return self.conf['predict_path']
+        else :
+            return 0
 
     def get_preview_data(self):
         """
@@ -150,6 +160,7 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['source_server'] = input_data['source_server']
             config_data['source_sql'] = input_data['source_sql']
             config_data['source_path'] = utils.get_source_path(nnid, wfver, node)
+            config_data['predict_path'] = utils.get_source_predict_path(nnid, wfver, 'predict')
             config_data['max_sentence_len'] = input_data.get('max_sentence_len' , 0)
             config_data['multi_node_flag'] = input_data.get('multi_node_flag')
             setattr(obj, 'node_config_data', config_data)
