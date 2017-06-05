@@ -27,8 +27,8 @@ class WorkFlowCommon:
         :return:
         """
         try:
-            self.validation_check(input_data)
             #TODO : remove after lunching runtime
+            #self.validation_check(input_data)
             #self.restriction_check(node_id, input_data)
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             setattr(obj, "node_config_data", input_data)
@@ -68,13 +68,12 @@ class WorkFlowCommon:
         :param json_data:
         :return:
         """
-        if('type' in json_data) :
+        if('type' in json_data):
             filter_list = self._get_key_parms(type=json_data.get('type'))
         else :
             filter_list = self._get_key_parms()
 
-
-        if(filter_list) :
+        if(filter_list):
             match_list = list(set(json_data.keys()).intersection(filter_list))
             req_list = list(set(filter_list) - set(match_list))
             error_msg = ""
@@ -82,7 +81,8 @@ class WorkFlowCommon:
                 error_msg = ''.join([error_msg, key , 'not defined\n'])
             if(len(error_msg) > 0) :
                 raise Exception (error_msg)
-
+        else:
+            raise Exception('JSON Validation ERROR')
 
     def _get_key_parms(self, type='default'):
         """

@@ -7,7 +7,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 # Data Menu
 ##################################################
 # insert menu info
-resp = requests.post('http://' + url + '/apSi/v1/type/wf/target/menu/',
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/',
                      json={
                         "wf_task_menu_id": "data",
                         "wf_task_menu_name": "data",

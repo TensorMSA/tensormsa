@@ -91,7 +91,7 @@ class EntityAnalyzer(ShareData):
         exist = False
         input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
         for line in input_file:
-            if(line.strip() == value):
+            if(line.strip().find(value)):
                 exist = True
                 break
         input_file.close()
