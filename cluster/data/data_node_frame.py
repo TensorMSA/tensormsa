@@ -168,13 +168,15 @@ class DataNodeFrame(DataNode):
         """
         try:
             writer = tf.python_io.TFRecordWriter(output_file)
-            print("Creating TFRecords file at", output_file, "...")
+            logging.info("Creating TFRecords file at", output_file, "...")
 
             CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS  = self.make_continuous_category_list(self.data_conf["cell_feature"])
-
+            print_row_count = 10000
             csv_dataframe = df_csv_read
-            for _, row in csv_dataframe.iterrows():
+            for count, row in csv_dataframe.iterrows():
                 x = self.create_example_pandas(row, CONTINUOUS_COLUMNS, CATEGORICAL_COLUMNS, label,label_type)
+                if (count % print_row_count == 0):
+                    logging.info("###### TFRecording row count : {0}".format(count))
                 writer.write(x.SerializeToString())
             writer.close()
             print("Wrote to", output_file)
