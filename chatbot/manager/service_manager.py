@@ -27,7 +27,7 @@ class ServiceManager:
         self.chatbot_conf = ChatBotConfManager(cb_id)
         self.chat_knowledge_data_dict = ChatKnowledgeDataDict(cb_id)
         self.chat_share_data = ShareData()
-        self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_entity_keys(cb_id), self.chat_knowledge_data_dict.get_entity_values(cb_id))
+        self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_entity_keys(), self.chat_knowledge_data_dict.get_entity_values())
         self.intent_analyzer = IntendAnalyzer(self.chatbot_conf.get_intent_model())
         self.entity_recognizer = EntityRecognizer(cb_id)
         self.decision_maker = DecisionMaker()

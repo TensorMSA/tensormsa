@@ -34,6 +34,10 @@ class EntityAnalyzer(ShareData):
             else :
                 self.entity[key] = []
 
+    #Custom Case : ex)안녕 and len < 3
+    def _preprocess_data(self, ShareData):
+        return ShareData
+
     def parse(self, share_data):
         """
         parse input with entity list
