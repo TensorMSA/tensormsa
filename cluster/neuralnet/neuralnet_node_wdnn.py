@@ -41,6 +41,8 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         """
         try:
             self._init_node_parm(conf_data['node_id'])
+            if self.train == False:
+                return None
             self.cls_pool = conf_data['cls_pool'] # Data feeder
 
             self.train_batch, self.batch = self.make_batch(conf_data['node_id']) #makebatch
@@ -284,6 +286,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.batch_size = wf_net_conf.batch_size
         self.epoch = wf_net_conf.epoch
         self.model_type = wf_net_conf.model_type
+        self.train = wf_net_conf.train
         #Todo 어떻게 꺼내는지 승우씨한테 물어볼것
         _wf_data_conf = wf_data_conf(key.split('_')[0]+'_'+key.split('_')[1]+'_'+'dataconf_node')
         self.data_conf = _wf_data_conf.conf
