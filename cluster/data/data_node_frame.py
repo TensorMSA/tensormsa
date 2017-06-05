@@ -23,6 +23,7 @@ import shutil
 class DataNodeFrame(DataNode):
     """
         DataNode Configuration
+        NULL처리가 중요한데 Category "" Continuous 0.0
     """
 
 
@@ -398,7 +399,8 @@ class DataNodeFrame(DataNode):
                     columns_unique_value = list()
                 else:
                     col_type = 'CATEGORICAL'
-                    columns_unique_value = pd.unique(df[i].values.ravel()).tolist()  # null처리 해야함
+                    #columns_unique_value = pd.unique(df[i].values.ravel()).tolist()  # null처리 해야함
+                    columns_unique_value = pd.unique(df[i].fillna('').values.ravel()).tolist()  # null처리 해야함
                 column_dtypes['column_type'] = col_type
 
 

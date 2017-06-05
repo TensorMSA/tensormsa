@@ -136,13 +136,15 @@ def get_combine_label_list(origin_list, compare_list):
         compare_list = ['50>=', '50=','C','D','E']
         result => ['A', 'B', 'C', 'D', '50=', '50>=', 'E']
     """
+    try:
+        _origin_list = list(origin_list)
+        _compare_list = list(compare_list)
 
-    _origin_list = list(origin_list)
-    _compare_list = list(compare_list)
-
-    _union_values = set(_origin_list).union(set(_compare_list))
-    _diff_values = sorted(list(_union_values - set(_origin_list)))
-    _origin_list.extend(_diff_values)
+        _union_values = set(_origin_list).union(set(_compare_list))
+        _diff_values = sorted(list(_union_values - set(_origin_list)))
+        _origin_list.extend(_diff_values)
+    except Exception as e:
+        logging.error("get_combine_label_list {0}".format(e))
 
     return _origin_list
 
