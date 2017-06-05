@@ -65,6 +65,7 @@ class DataNodeFrame(DataNode):
 
             try:
                 #data conf node id 찾기
+                data_conf_node_id = ''
                 for _i, _k in self.cls_list.items():
                     if 'dataconf' in _i:
                         data_conf_node_id = _i
@@ -78,9 +79,9 @@ class DataNodeFrame(DataNode):
 
                 for file_path in fp_list:
 
-
-                    df_csv_read = self.load_csv_by_pandas(file_path)
-                    self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'], data_conf_node_id) # make columns type of csv
+                    if 'dataconf' in data_dfconf_list:
+                        df_csv_read = self.load_csv_by_pandas(file_path)
+                        self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'], data_conf_node_id) # make columns type of csv
                     #self.make_unique_value_each_column(df_csv_read,conf_data['node_id'])
                     self.create_hdf5(self.data_store_path, df_csv_read)
 
