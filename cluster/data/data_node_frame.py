@@ -78,9 +78,9 @@ class DataNodeFrame(DataNode):
                 #     data_dfconf_list = self.get_linked_next_node_with_type('data_dfconf')
 
                 for file_path in fp_list:
+                    df_csv_read = self.load_csv_by_pandas(file_path)
 
                     if 'dataconf' in data_dfconf_list:
-                        df_csv_read = self.load_csv_by_pandas(file_path)
                         self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'], data_conf_node_id) # make columns type of csv
                     #self.make_unique_value_each_column(df_csv_read,conf_data['node_id'])
                     self.create_hdf5(self.data_store_path, df_csv_read)
