@@ -73,7 +73,7 @@ class DataNodeFrame(DataNode):
             conf_data : data_source_path. etc
         """
         try:
-
+            logging.info("Data node starting : {0}".format(conf_data['node_id']))
             fp_list = utils.get_filepaths(self.data_src_path, file_type='csv')
             _multi_node_flag = self.multi_node_flag
 
@@ -142,6 +142,7 @@ class DataNodeFrame(DataNode):
             except Exception as e:
                 logging.error("Datanode making h5 or tfrecord error".format(e))
                 raise Exception(e)
+            logging.info("Data node end : {0}".format(conf_data['node_id']))
             return None
         except Exception as e:
             raise Exception(e)
