@@ -19,6 +19,7 @@ from sklearn.preprocessing import LabelEncoder
 import logging
 from common.utils import *
 import shutil
+from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_data_frame
 
 class DataNodeFrame(DataNode):
     """
@@ -46,6 +47,24 @@ class DataNodeFrame(DataNode):
         if (self.data_src_type == 'hbase'):
             raise Exception("on development now")
 
+    def get_eval_node_file_list(self, conf_data):
+        #evalnode 찾고
+        #만들고, 경로 가져옴
+
+        eval_data_node = [_i  for _i, _k in conf_data.get('cls_pool').items() if 'evaldata' in _i]
+        data_conf_node_id = [_i for _i, _k in conf_data.get('cls_pool').items() if 'dataconf' in _i]
+        eval_data_cls = wf_data_frame(eval_data_node[0])
+        eval_source_path = eval_data_cls.source_path
+        fp_list = utils.get_filepaths(eval_source_path, file_type='csv')
+        for file_path in fp_list:
+            df_csv_read = self.load_csv_by_pandas(file_path)
+            self.data_conf = self.make_column_types(df_csv_read, eval_data_node[0],
+                                                    data_conf_node_id[0])  # make columns type of csv
+
+
+        #eval_data_cls.src_local_handler
+
+
     def src_local_handler(self, conf_data):
         """
         Make h5 & tfrecord for multi treading
@@ -60,43 +79,33 @@ class DataNodeFrame(DataNode):
 
             eval_data = dict((_i, _k) for _i, _k in self.cls_list.items() if 'evaldata' in _i)
 
-
-
-
             try:
                 #data conf node id 찾기
                 data_conf_node_id = ''
                 for _i, _k in self.cls_list.items():
                     if 'dataconf' in _i:
                         data_conf_node_id = _i
+                        #eval 카테고리 데이터를 가져 오기 위해서 필요 Evalnode가 실행할때는 필요 없음
+                        if 'data_node' not in conf_data['node_id']:
+                            self.get_eval_node_file_list(conf_data)
 
                 data_dfconf_list = data_conf_node_id
-                #data_conf_node_id = dict((_i,_k) for _i,_k in  self.cls_list.items() if 'dataconf' in _i)
-                # if ('evaldata' in self.node_name):
-                #     data_dfconf_list = self.get_linked_prev_node_with_type('data_dfconf')
-                # else:
-                #     data_dfconf_list = self.get_linked_next_node_with_type('data_dfconf')
 
                 for file_path in fp_list:
                     df_csv_read = self.load_csv_by_pandas(file_path)
 
                     if 'dataconf' in data_dfconf_list:
                         self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'], data_conf_node_id) # make columns type of csv
+                        #eval 것도 같이 가져와서 unique value를 구해야함
+
                     #self.make_unique_value_each_column(df_csv_read,conf_data['node_id'])
                     self.create_hdf5(self.data_store_path, df_csv_read)
-
                     #Todo 뽑아서 함수화 시킬것
                     #for wdnn
-
-
-
-
                     #Wdnn인경우 data_dfconf가 무조껀 한개만 존재 하므로 아래와 같은 로직이 가능
                     if len(data_dfconf_list) > 0:
-                        # _key = data_dfconf_list[0].node_name
-                        # _nnid = _key.split('_')[0]
-                        # _ver = _key.split('_')[1]
-                        # _node = 'dataconf_node'
+                        #Todo 정리가능
+
                         _key =data_dfconf_list
                         _nnid = _key.split('_')[0]
                         _ver = _key.split('_')[1]
@@ -112,6 +121,8 @@ class DataNodeFrame(DataNode):
                             #리스트를 합친다음 DB에 업데이트 한다.
                             _data_conf = dict()
                             _data_conf['label_values'] = self.combined_label_list
+                            if _labe_type == 'CONTINUOUS':
+                                _data_conf['label_values'] = list()
                             _wf_data_conf.put_step_source(_nnid, _ver,_node, _data_conf )
 
                             # make tfrecord for multi Threading
@@ -315,19 +326,54 @@ class DataNodeFrame(DataNode):
         """
         try:
 
-            data_conf=self.set_dataconf_for_checktype(df, node_id, data_dfconf_list )
+            data_conf, data_conf_unique_json =self.set_dataconf_for_checktype(df, node_id, data_dfconf_list )
             #self.data_conf = self.set_dataconf_for_checktype(df, node_id )
             data_conf_unique_cnt = self.make_unique_value_each_column(df,node_id)
             data_conf.update(data_conf_unique_cnt)
             dataconf_nodes = self._get_forward_node_with_type(node_id, 'dataconf')
-            if(len(dataconf_nodes) > 0 or ('evaldata' in self.node_name)) :
-                wf_data_conf_node = wf_data_conf(data_dfconf_list)
-                #if(len(wf_data_conf_node.cell_feature) == 0 or 'conf' not in wf_data_conf_node.__dict__): #싱글런을 위해 제거 했으나 필요 없
-                self.set_default_dataconf_from_csv(wf_data_conf_node, node_id,data_conf)
+            #if(len(dataconf_nodes) > 0 or ('evaldata' in self.node_name)) :
+            wf_data_conf_node = wf_data_conf(data_dfconf_list)
+            #처음일때 Cell_feature update Eval일때는 Unique Value 업데이트
+            if self.dataconf_first_time_check(wf_data_conf_node, node_id):
+                self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf)
                 self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf_unique_cnt)
+                self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf_unique_json)
+            if self.dataconf_eval_time_check(wf_data_conf_node, node_id):
+                self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf_unique_json)
+            #    self.set_default_dataconf_from_csv(wf_data_conf_node, node_id, data_conf)
             return data_conf
         except Exception as e:
+            logging.info("make column type Error {0}  line no({1})".format(e, e.__traceback__.tb_lineno))
             raise Exception(e)
+
+
+    def dataconf_first_time_check(self, _wf_data_conf_node, _node_name):
+        """
+        data_conf가 비어있거나, DataNode일때만 업데이트 하도록 한다.
+        :param data_dfconf_list (nn00001_1_dataconf_node)
+        :return True:
+        """
+        _value = False
+        #wf_data_conf_node = wf_data_conf(data_dfconf_list)
+        if (len(_wf_data_conf_node.cell_feature) == 0 or 'conf' not in _wf_data_conf_node.__dict__) and ('data_node' in _node_name):
+            _value = True
+        return _value
+
+    def dataconf_eval_time_check(self, _wf_data_conf_node, _node_name):
+        """
+        data conf가 있어도, eval이면 unique값만 추가한다.
+        :param data_dfconf_list (nn00001_1_dataconf_node)
+        :return True:
+        """
+        _value = False
+        #wf_data_conf_node = wf_data_conf(data_dfconf_list)
+        # if hasattr(_wf_data_conf_node, 'cell_feature'):
+        #     if (len(_wf_data_conf_node.cell_feature) > 0 and ('evaldata' in _node_name)):
+        #         _value = True\
+        if ('evaldata' in _node_name):
+             _value = True
+        return _value
+
 
     def make_unique_value_each_column (self, df, node_id):
         """ Dataframe중 범주형 데이터를 찾아서 유일한 값의 갯수를 반환한다 
@@ -375,27 +421,30 @@ class DataNodeFrame(DataNode):
     def set_dataconf_for_checktype(self, df, node_id, data_dfconf_list):
         """
         csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
+        카테고리 컬럼은 Unique 한 값을 구해서 cell_feature_unique에 넣어줌(Keras용)
+        
         :param wf_data_config, df, nnid, ver, node:
         :param conf_data:
         """
         try:
             #TODO : set_default_dataconf_from_csv 파라미터 정리 필요
             data_conf = dict()
-            #data_conf_cel = dict()
+            data_conf_unique_v = dict()
+            data_conf_col_unique_v = dict()
             data_conf_col_type = dict()
-            #data_conf_label = dict()
+
             numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
             # Wdnn인경우 data_dfconf가 무조껀 한개만 존재 하므로 아래와 같은 로직이 가능
             if len(data_dfconf_list) > 0:
-                #_key = data_dfconf_list[0].node_name
                 _wf_data_conf = wf_data_conf(data_dfconf_list)
-                _cell_feature = _wf_data_conf.cell_feature if hasattr(_wf_data_conf,'cell_feature') else list() #처음 입려할때 라벨벨류가 없으면 빈 리스트 넘김
-
+                #_cell_feature = _wf_data_conf.cell_feature if hasattr(_wf_data_conf,'cell_feature') else list() #처음 입려할때 라벨벨류가 없으면 빈 리스트 넘김
+                _cell_feature_unique = _wf_data_conf.cell_feature_unique if hasattr(_wf_data_conf,
+                                                                      'cell_feature_unique') else list()  # 처음 입려할때 라벨벨류가 없으면 빈 리스트 넘김
             for i, v in df.dtypes.iteritems():
                 # label
                 column_dtypes = dict()
-                column_unique_Value = dict()
+                column_unique_value = dict()
                 col_type = ''
                 if (str(v) in numerics):  # maybe need float
                     col_type = 'CONTINUOUS'
@@ -406,26 +455,26 @@ class DataNodeFrame(DataNode):
                     columns_unique_value = pd.unique(df[i].fillna('').values.ravel()).tolist()  # null처리 해야함
                 column_dtypes['column_type'] = col_type
 
-
-                origin_col_list_temp =  _cell_feature[i] if ( i in _cell_feature) else list()
-                if ('column_u_values' in origin_col_list_temp):
-                    origin_col_list = origin_col_list_temp['column_u_values']
-                else:
-                    origin_col_list = list()
-                combined_col_u_list = utils.get_combine_label_list(origin_col_list, columns_unique_value)
+                #원래 가지고 있던 카테고리 컬럼별 유일한 값
+                origin_feature_unique = _cell_feature_unique[i].get('column_u_values') if (i in _cell_feature_unique) else list()
+                combined_col_u_list = utils.get_combine_label_list(origin_feature_unique, columns_unique_value)
                 #읽어와서 추가되면 뒤에 붙여준다.
-                column_dtypes['column_u_values'] = combined_col_u_list
+                column_unique_value['column_u_values'] = combined_col_u_list
+
                 data_conf_col_type[i] = column_dtypes
+                data_conf_col_unique_v[i] = column_unique_value
             data_conf['cell_feature'] = data_conf_col_type
-            #data_conf['data_conf'] = data_conf_cel
+            data_conf_unique_v['cell_feature_unique'] = data_conf_col_unique_v
+
+            #json으로 바꿔줌
             data_conf_json_str = json.dumps(data_conf)
             data_conf_json = json.loads(data_conf_json_str)
+            data_conf_unique_json_str = json.dumps(data_conf_unique_v)
+            data_conf_unique_json = json.loads(data_conf_unique_json_str)
 
-            # DATACONF_FRAME_CALL
-            #wf_data_config.put_step_source(node_id, data_conf_json)
-            return data_conf_json
+            return data_conf_json, data_conf_unique_json
         except Exception as e:
-            logging.error("set_dataconf_for_checktype {0}".format(e))
+            logging.error("set_dataconf_for_checktype {0} {1}".format(e, e.__traceback__.tb_lineno))
 
 
     def set_dataconf_for_labels(self, df, label):

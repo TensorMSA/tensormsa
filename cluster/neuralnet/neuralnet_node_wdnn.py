@@ -68,32 +68,6 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 dst =  self.model_train_path
                 utils.copy_all(src, dst)
 
-            # try:
-            #     shutil.copytree(src, dst)
-            #     logging.info("copytree source({0}) to dest ({1})".format(src,dst))
-            # except OSError as exc:  # python >2.5
-            #     if exc.errno == errno.ENOTDIR:
-            #         shutil.copy(src, dst)
-            #         logging.info("copy source({0}) to dest ({1})".format(src, dst))
-            #     else:
-            #         raise
-
-            # for filename in dirfiles:
-            #     shutil.copy(os.path.join(src, filename), dst)
-            #     logging.info("model file copy : {0}".format(filename))
-
-            # import shutil, errno
-            #
-            # def copyanything(src, dst):
-            #     try:
-            #         shutil.copytree(src, dst)
-            #     except OSError as exc:  # python >2.5
-            #         if exc.errno == errno.ENOTDIR:
-            #             shutil.copy(src, dst)
-            #         else:
-            #             raise
-
-
             logging.info("model_path : {0} ".format(self.model_path))
             logging.info("hidden_layers : {0} ".format(self.hidden_layers))
             logging.info("activation_function : {0} ".format(self.activation_function))
@@ -102,10 +76,6 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             logging.info("model_type : {0} ".format(self.model_type))
 
 
-
-            #self.get_node_name("d")
-
-            #data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
             data_conf_info = self.data_conf
 
             # make wide & deep model
@@ -135,7 +105,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
                 for index in range(int(math.ceil(_num_tfrecords_files/_batch_size))):
                     print("number of for loop " + str(index))
-                    wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=200)
+                    wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=self.epoch)
 
                 results = wdnn_model.evaluate(
                     input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, _batch_size),
@@ -316,7 +286,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         :param parm:
         :return:
         """
-        logging.info("eval_data")
+        logging.info("eval_starting ------> {0}".format(node_id))
 
         self._init_node_parm(node_id.split('_')[0] + "_" + node_id.split('_')[1]+ "_" + "netconf_node")
         self.cls_pool_all = conf_data['cls_pool']  # Data feeder
@@ -337,12 +307,12 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 self.multi_node_flag = _v.multi_node_flag
 
         #conf_data['cls_pool'].get('nn00001_1_pre_feed_fr2wdnn_test')
-        print("model_path : " + str(self.model_path))
-        print("hidden_layers : " + str(self.hidden_layers))
-        print("activation_function : " + str(self.activation_function))
-        print("batch_size : " + str(self.batch_size))
-        print("epoch : " + str(self.epoch))
-        print("model_type : " + str(self.model_type))
+        logging.info("model_path : {0}".format(self.model_path))
+        print("hidden_layers : {0}".format(self.hidden_layers))
+        print("activation_function : {0}".format(self.activation_function))
+        print("batch_size : {0}".format(self.batch_size))
+        print("epoch : {0}".format(self.epoch))
+        print("model_type : {0}".format(self.model_type))
 
         # data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
         data_conf_info = self.data_conf

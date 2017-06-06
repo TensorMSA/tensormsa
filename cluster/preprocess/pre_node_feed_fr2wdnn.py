@@ -153,6 +153,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
                 #file_pattern=data_file,
                 batch_size=batch_size,
                 features=features,
+                queue_capacity = 20000,
                 name="read_batch_features_{}".format(mode))
 
             target = feature_map.pop("label")
@@ -216,7 +217,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
                 categorical_cols = {k: tf.SparseTensor(
                     indices=[[i, 0] for i in range(df[k].size)],
-                    values=df[k].replace(['nan','Nan'],'').values,
+                    values=df[k].fillna('').replace(['nan','Nan'],'').values,
                     dense_shape=[df[k].size, 1])
                                     for k in CATEGORICAL_COLUMNS}
 
@@ -246,7 +247,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
             return feature_cols, label
         except Exception as e:
-            print("Error Message : {0}".format(e))
+            print("Error Message : {0} cause by {1} ".format(e), e.__traceback__.tb_lineno)
             raise Exception(e)
 
     def _convert_data_format(self, file_path, index):
