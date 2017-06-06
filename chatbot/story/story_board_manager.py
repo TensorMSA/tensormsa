@@ -12,14 +12,14 @@ class StoryBoardManager(ShareData):
         init global variables
         """
         self.story_board_id = story_board_id
-        self.essential_entity = ChatKnowledgeDataDict(cb_id).get_essential_entity()
+        self.essential_entity = ChatKnowledgeDataDict(cb_id).get_essential_entity(story_board_id)
 
     def run(self, share_data):
         try:
             if (share_data.get_service_type() == "find_image") :
                 share_data = self._call_service_provider(share_data)
             #Check Essential Entity
-            elif (self._check_essential_entity(share_data.get_story_entity().keys(), share_data)) :
+            elif (self._check_essential_entity(share_data.get_story_slot_entity().keys(), share_data)) :
                 share_data = self._call_service_provider(share_data)
             #no match service
             elif (self.story_board_id  == "99"):

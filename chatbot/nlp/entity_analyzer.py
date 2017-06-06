@@ -52,9 +52,11 @@ class EntityAnalyzer(ShareData):
             print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
             return_msg = ""
             for i in range(0, len(pos_tags)):
-                if(pos_tags[i][1] in ['NNG','NNP']):
+                if(pos_tags[i][1] in ['SY','SF']):
+                    pass
+                elif(pos_tags[i][1] in ['NNG','NNP']):
                     if(self._extract_name_entity(pos_tags[i][0]) == True):
-                        share_data.set_story_entity('이름', pos_tags[i][0])
+                        share_data.set_story_slot_entity('이름', pos_tags[i][0])
                         pos_tags[i] = (''.join(['[이름]']), '')
                     else:
                         for key in self.entity_key_list:
@@ -62,9 +64,11 @@ class EntityAnalyzer(ShareData):
                                 word = pos_tags[i][0]
                                 if(word == val):
                                     pos_tags[i] = (''.join(['[' , key, ']']), '')
-                                    share_data.set_story_entity(key, val)
+                                    share_data.set_story_slot_entity(key, val)
                                     break
-                return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
+                    return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
+                else:
+                    return_msg = ''.join([return_msg, ' ', pos_tags[i][0]])
             print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
             share_data.set_convert_data(return_msg)
         return share_data

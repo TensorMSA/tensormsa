@@ -32,4 +32,4 @@ class CB_ENTITY_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.CB_ENTITY_LIST_INFO
-        fields = ('story_id', 'entity_type', 'entity_list')
+        fields = ('cb_id', 'intent_id', 'story_id', 'entity_type', 'entity_list')
