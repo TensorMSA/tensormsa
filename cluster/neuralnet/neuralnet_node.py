@@ -177,6 +177,7 @@ class NeuralNetNode(WorkFlowCommonNode):
 
 
     def change_predict_fileList(self, filelist, dataconf):
+        from cluster.data.data_node_image import DataNodeImage
         x_size = dataconf["preprocess"]["x_size"]
         y_size = dataconf["preprocess"]["y_size"]
         channel = dataconf["preprocess"]["channel"]
@@ -194,10 +195,15 @@ class NeuralNetNode(WorkFlowCommonNode):
                     img = Image.open(io.BytesIO(img_val))
                     # println(image)
 
-                    img = img.resize((x_size, y_size), Image.ANTIALIAS)
+                    # img = img.resize((x_size, y_size), Image.ANTIALIAS)
+                    #
+                    # img = np.array(img)
+                    # img = img.reshape([-1, x_size, y_size, channel])
 
-                    img = np.array(img)
+                    sess, img = DataNodeImage().image_convert(None, dataconf, img, filename, None)
+
                     img = img.reshape([-1, x_size, y_size, channel])
+                    # img = img.flatten()
 
                     file_name_arr.append(filename)
                     file_data_arr.append(img)

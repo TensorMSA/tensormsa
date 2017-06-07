@@ -14,7 +14,7 @@ println("S")
 # ./manage.py runserver [HOST]:8000
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 nn_id = "mro001"
-wf_ver_id = 0
+wf_ver_id = 1
 # get workflow version info
 if wf_ver_id == 0:
     resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')

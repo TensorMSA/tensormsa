@@ -114,7 +114,7 @@ def log_savefile(printStr):
 
             i += 1
         with open(fullname, "a") as myfile:
-            myfile.write(printStr+ '\n')
+            myfile.write(str(printStr)+ '\n')
     except:
         None
 
