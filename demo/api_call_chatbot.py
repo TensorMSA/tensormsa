@@ -10,9 +10,7 @@ resp = requests.put('http://' + url + '/api/v1/type/service/chatbot/C00001/',
                             #"package_id" : "",
                             "intent_id" : "",
                             # "intent_name" : "",
-                            #"input_data" : "야드 담당자 알려줘",
-                            "input_data" : "최욱 교대조 알아",
-                            #"input_data": "회의를 김수상,김승우,신민호 차장으로 10시부터 11시까지 판교에 예약 해줘",
+                            "input_data": "회의를 김수상,김승우,신민호 차장으로 10시부터 11시까지 판교에 예약 해줘",
                             "convert_data" : "",
                             "intent_history" : [],
                             "request_type" : "text",
@@ -26,8 +24,8 @@ resp = requests.put('http://' + url + '/api/v1/type/service/chatbot/C00001/',
                             # "ontology_set_parms" : {},
                             "output_data" : ""
                           })
-data = json.loads(resp.json())
+# data = json.loads(resp.json())
 
-print("evaluation result : {0}".format(data))
-print("chatbot output is result : " + json.loads(data)['output_data'])
+print("evaluation result : {0}".format(resp.json()))
+print("chatbot output is result : " + resp.json()['output_data'])
 

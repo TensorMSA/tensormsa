@@ -27,6 +27,8 @@ class CB_STORYBOARD_LIST_INFO(models.Model):
     story_desc = models.CharField(max_length=50, blank=True)
 
 class CB_ENTITY_LIST_INFO(models.Model):
+    cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
+    intent_id = models.ForeignKey(CB_INTENT_LIST_INFO, on_delete=models.CASCADE)
     story_id = models.ForeignKey(CB_STORYBOARD_LIST_INFO, on_delete=models.CASCADE)
     entity_type = models.CharField(max_length=10, blank=False)
     entity_list = JSONField()

@@ -110,6 +110,8 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+CELERYD_HIJACK_ROOT_LOGGER = False
 """ How to Logging
 
     log types :
@@ -173,7 +175,15 @@ LOGGING = {
             'backupCount': 7,
             'formatter': 'main_formatter',
             'filters': ['require_debug_true'],
-        }
+        },
+        'celery': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/root/celery.log',
+            'formatter': 'main_formatter',
+            'maxBytes': 1024 * 1024 * 100,  # 100 mb
+            'filters': ['require_debug_true'],
+        },
     },
     'loggers': {
         'django.request': {
@@ -182,11 +192,14 @@ LOGGING = {
             'propagate': True,
         },
         '': {
-            'handlers': ['console', 'production_file', 'debug_file'],
+            'handlers': ['console', 'production_file', 'debug_file','celery'],
             'level': "DEBUG",
+            'propagate': True,
         },
+
     }
 }
+#CELERYD_HIJACK_ROOT_LOGGER = False
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

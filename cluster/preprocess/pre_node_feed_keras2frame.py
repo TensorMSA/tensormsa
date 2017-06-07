@@ -6,26 +6,20 @@ from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_dat
 from common import utils
 from sklearn.preprocessing import LabelEncoder
 import logging
+from keras.models import Sequential
+from keras.layers import Dense
+from sklearn.preprocessing import MinMaxScaler
+import numpy as np
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelBinarizer
 
-class PreNodeFeedFr2Wdnn(PreNodeFeed):
+
+
+
+class PreNodeFeedKerasFrame(PreNodeFeed):
     """
-
+    pre_feed_keras2frame
     """
-
-    # @property
-    # def input_paths(self):
-    #     return self.input_paths
-
-    # @input_paths.setter
-    # def input_paths(self, value):
-    #     self.input_paths = value
-    def set_for_predict(self, nnid=None):
-        self.pointer = 0
-        if nnid != None:
-            self._init_node_parm(nnid)
-
-
-
     def run(self, conf_data):
         """
         override init class
@@ -36,7 +30,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         try:
             data_conf_node_name = self.node_name.split('_')[0] + "_" + self.node_name.split('_')[1] +"_dataconf_node"
             self._init_node_parm(data_conf_node_name)
-            super(PreNodeFeedFr2Wdnn, self).run(conf_data)
+            super(PreNodeFeedKerasFrame, self).run(conf_data)
             #input_features = self.create_feature_columns()
 
             #testself.node_name.split('_')[1]
@@ -84,58 +78,6 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
         label_modi = tf.contrib.layers.real_valued_column("label", dtype=tf.int64)
         modi_set.add(label_modi)
 
-        #
-        # gender = tf.contrib.layers.sparse_column_with_keys(
-        #     column_name="sex", keys=["female", "male"])
-        # race = tf.contrib.layers.sparse_column_with_keys(
-        #     column_name="race", keys=[
-        #         "Amer-Indian-Eskimo",
-        #         "Asian-Pac-Islander",
-        #         "Black",
-        #         "Other",
-        #         "White"
-        #     ])
-        #
-        #
-        #
-        # education = tf.contrib.layers.sparse_column_with_hash_bucket(
-        #     "education", hash_bucket_size=1000)
-        # marital_status = tf.contrib.layers.sparse_column_with_hash_bucket(
-        #     "marital_status", hash_bucket_size=100)
-        # relationship = tf.contrib.layers.sparse_column_with_hash_bucket(
-        #     "relationship", hash_bucket_size=100)
-        # workclass = tf.contrib.layers.sparse_column_with_hash_bucket(
-        #     "workclass", hash_bucket_size=100)
-        # occupation = tf.contrib.layers.sparse_column_with_hash_bucket(
-        #     "occupation", hash_bucket_size=1000)
-        # native_country = tf.contrib.layers.sparse_column_with_hash_bucket(
-        #     "native_country", hash_bucket_size=1000)
-        #
-        # # Continuous base columns.
-        # age = tf.contrib.layers.real_valued_column("age", dtype=tf.int64)
-        # education_num = tf.contrib.layers.real_valued_column("education_num", dtype=tf.int64)
-        # capital_gain = tf.contrib.layers.real_valued_column("capital_gain", dtype=tf.int64)
-        # capital_loss = tf.contrib.layers.real_valued_column("capital_loss", dtype=tf.int64)
-        # hours_per_week = tf.contrib.layers.real_valued_column("hours_per_week", dtype=tf.int64)
-        #
-        # label = tf.contrib.layers.real_valued_column("label", dtype=tf.int64)
-        #
-        # ori_set =  set([
-        #     workclass,
-        #     education,
-        #     marital_status,
-        #     occupation,
-        #     relationship,
-        #     race,
-        #     gender,
-        #     native_country,
-        #     age,
-        #     education_num,
-        #     capital_gain,
-        #     capital_loss,
-        #     hours_per_week,
-        #     label,
-        # ])
 
         return modi_set #ori_set
 
@@ -153,7 +95,6 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
                 #file_pattern=data_file,
                 batch_size=batch_size,
                 features=features,
-                queue_capacity = 20000,
                 name="read_batch_features_{}".format(mode))
 
             target = feature_map.pop("label")
@@ -217,7 +158,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
                 categorical_cols = {k: tf.SparseTensor(
                     indices=[[i, 0] for i in range(df[k].size)],
-                    values=df[k].fillna('').replace(['nan','Nan'],'').values,
+                    values=df[k].replace(['nan','Nan'],'').values,
                     dense_shape=[df[k].size, 1])
                                     for k in CATEGORICAL_COLUMNS}
 
@@ -247,8 +188,95 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
             return feature_cols, label
         except Exception as e:
-            print("Error Message : {0} cause by {1} ".format(e), e.__traceback__.tb_lineno)
+            print("Error Message : {0}".format(e))
             raise Exception(e)
+
+    def input_fn3(self, data_file, df, dataconf):
+        """Wide & Deep Network input tensor maker
+            V1.0    16.11.04    Initial
+                :param df : dataframe from hbase
+                :param df, nnid
+                :return: tensor sparse, constraint """
+        try:
+
+            # remove NaN elements
+            _label = self.label
+            _label_calues = self.label_values
+            CONTINUOUS_COLUMNS = []
+            CATEGORICAL_COLUMNS = []
+
+            le = LabelEncoder()
+            le.fit(_label_calues)
+            df = df.dropna(subset=[_label],how='all')
+            if self.label_type == "CONTINUOUS":
+                df["label"] = df[_label].astype(int)
+            else:
+                lable_encoder_func = lambda x: le.transform([x])
+                df["label"] = df[_label].map(lable_encoder_func).astype(int)
+
+            #CATEGORICAL_COLUMNS = dict()
+            j_feature = dataconf['cell_feature']
+            for cn, c_value in j_feature.items():
+                if c_value["column_type"] == "CATEGORICAL":
+                    CATEGORICAL_COLUMNS.append(cn)
+                    #cate_u_val = c_value['column_u_values']
+                    #cate_val = LabelEncoder()
+                    #cate_val.fit(cate_u_val)
+                    #df[cn] = df[cn].map(lambda x: cate_val.transform([x]))
+                    #df[cn] = cate_val.transform(df[cn])
+                    #_df_category_values = df[cn].values
+                    #df[cn] = np.eye(len(cate_u_val))[_df_category_values]
+                    #onehot_val = OneHotEncoder()
+                    #onehot_val.fit(cate_u_val)
+                    #df[cn] = onehot_val.transform(df[cn])
+                    #onehotdf = pd.DataFrame
+                    #df[cn] = pd.get_dummies(df[cn])
+                    cate_u_val = c_value['column_u_values']
+                    cate_val_bi = LabelBinarizer()
+                    cate_val_bi.fit(cate_u_val)
+                    #df[cn] = df[cn].map(lambda x: cate_val.transform([x]))
+                    df[cn] = cate_val_bi.transform(df[cn])
+                    print(df[cn])
+
+                if c_value["column_type"] == "CONTINUOUS":
+                    CONTINUOUS_COLUMNS.append(cn)
+                    df[cn] = df[cn].fillna(0)
+
+
+
+            # This makes One-Hot Encoding:
+            #df_dummie = pd.get_dummies(df, columns=[x for x in CATEGORICAL_COLUMNS])
+            #test = self.dummyEncode(CATEGORICAL_COLUMNS, df)
+            # This makes scaled:
+            #df_final = pd.DataFrame(MinMaxScaler().fit_transform(df_dummie), columns=df_dummie.columns)
+            #df.pop(_label)
+            #df.pop('SUCCESSFUL_BID_DATE')
+            #df.pop('YYYYMMDD')
+
+            df.reindex_axis(sorted(df.columns), axis=1)
+            y = df["label"].values
+            #df.pop("label")
+            X = df[df.columns.difference(["label",_label])].values
+
+            return X, y
+
+        except Exception as e:
+            print("Error Message : {0}".format(e))
+            raise Exception(e)
+
+    from sklearn.preprocessing import LabelEncoder
+
+    # Auto encodes any dataframe column of type category or object.
+    def dummyEncode(self, CATEGORICAL_COLUMNS, df):
+        #columnsToEncode = list(df.select_dtypes(include=['category', 'object']))
+        le = LabelEncoder()
+        df_onehot = pd.DataFrame()
+        for feature in CATEGORICAL_COLUMNS:
+            try:
+                df_onehot[feature] = le.fit_transform(df[feature])
+            except:
+                print('Error encoding ' + feature)
+        return df_onehot
 
     def _convert_data_format(self, file_path, index):
         """
@@ -429,13 +457,13 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
             self.extend_cell_feature = _wf_data_conf.extend_cell_feature
             self.label_values = _wf_data_conf.label_values
             self.label_type = _wf_data_conf.label_type
-            if hasattr(self, "node_name"): #bugfix node_name이 없는 경우 에러 안나게 처리
-                if 'test' in self.__dict__.get("node_name"):
-                    _wf_data_conf = wf_data_frame(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'evaldata')
-                    self.multi_node_flag = _wf_data_conf.multi_node_flag
-                else :
-                    _wf_data_conf = wf_data_frame(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
-                    self.multi_node_flag = _wf_data_conf.multi_node_flag
+
+            if 'test' in self.node_name:
+                _wf_data_conf = wf_data_frame(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'evaldata')
+                self.multi_node_flag = _wf_data_conf.multi_node_flag
+            else :
+                _wf_data_conf = wf_data_frame(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
+                self.multi_node_flag = _wf_data_conf.multi_node_flag
 
         except Exception as e :
             raise Exception ("WorkFlowDataFrame parms are not set " + str(e))

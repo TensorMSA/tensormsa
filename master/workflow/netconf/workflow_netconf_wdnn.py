@@ -50,6 +50,12 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         getter for preprocess
         """
         return self.conf['model_type']
+    @property
+    def train(self):
+        """
+        getter for preprocess
+        """
+        return self.conf['train']
 
 
     def __init__(self, key = None):
@@ -123,6 +129,7 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
                 config_data['batch_size'] = input_data['batch_size']
                 config_data['epoch'] = input_data['epoch']
                 config_data['model_type'] = input_data['model_type']
+                config_data['train'] = input_data['train']
                 # config_data['source_parse_type'] = form
                 # config_data['source_server'] = input_data['source_server']
                 # config_data['source_sql'] = input_data['source_sql']

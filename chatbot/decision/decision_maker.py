@@ -15,7 +15,7 @@ class DecisionMaker(ShareData):
         try :
             self.__dict__ = share_data.__dict__
 
-            if ("타입" in share_data.get_story_entity().keys()) :
+            if ("타입" in share_data.get_story_slot_entity().keys()) :
                 #If you attach Image you need to first Type "이미지"
                 if (self.story_slot_entity["타입"] == "이미지"):
                     self.initialize_story()
@@ -34,7 +34,7 @@ class DecisionMaker(ShareData):
                     return share_data
             #Story Exist
             if (self.story_board_id != "") :
-                share_data = StoryBoardManager("c00001(temp)", self.story_board_id).run(share_data)
+                share_data = StoryBoardManager("cb0007", self.story_board_id).run(share_data)
             #First Story
             else :
                 share_data = self._get_story_board(share_data)
@@ -55,30 +55,30 @@ class DecisionMaker(ShareData):
                 share_data.set_story_id("1")
                 share_data.set_service_type("find_image")
                 share_data.set_output_data("이미지를 첨부하세요")
-                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                StoryBoardManager("cb0007",share_data.get_story_id()).run(share_data)
             elif(self.intent_id == "2") :
                 share_data.set_story_id("2")
-                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                StoryBoardManager("cb0007",share_data.get_story_id()).run(share_data)
                 share_data.set_service_type("find_info")
             elif(self.intent_id == "3") :
                 share_data.set_story_id("3")
-                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                StoryBoardManager("cb0007",share_data.get_story_id()).run(share_data)
                 share_data.set_service_type("find_leader")
             elif(self.intent_id == "4") :
                 share_data.set_story_id("4")
-                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                StoryBoardManager("cb0007",share_data.get_story_id()).run(share_data)
                 share_data.set_service_type("find_biz")
             elif(self.intent_id == "5") :
                 share_data.set_story_id("5")
-                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                StoryBoardManager("cb0007",share_data.get_story_id()).run(share_data)
                 share_data.set_service_type("find_AI_member")
             elif(self.intent_id == "6") :
                 share_data.set_story_id("6")
-                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                StoryBoardManager("cb0007",share_data.get_story_id()).run(share_data)
                 share_data.set_service_type("find_leader")
             elif(self.intent_id == "7") :
                 share_data.set_story_id("7")
-                StoryBoardManager("c00001(temp)",share_data.get_story_id()).run(share_data)
+                StoryBoardManager("cb0007",share_data.get_story_id()).run(share_data)
                 share_data.set_service_type("find_meeting")
             #Set Image Parameter
             elif(self.intent_id == "90") :

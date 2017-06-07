@@ -61,6 +61,12 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
         getter for object type
         """
         return self.conf['label_type']
+    @property
+    def cell_feature_unique(self):
+        """
+        getter for object type
+        """
+        return self.conf['cell_feature_unique']
 
 
     #data_conf
@@ -134,8 +140,18 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
             config_data['extend_cell_feature'] = input_data.get('extend_cell_feature') if 'extend_cell_feature' in input_data else config_data['extend_cell_feature']
             config_data['label_values'] = input_data.get('label_values') if 'label_values' in input_data else config_data['label_values']
             config_data['label_type'] = input_data.get('label_type') if 'label_type' in input_data else config_data['label_type']
+            config_data['cell_feature_unique'] = input_data.get('cell_feature_unique') if 'cell_feature_unique' in input_data else self.config_data_nvl(config_data, 'cell_feature_unique')
             setattr(obj, 'node_config_data', config_data)
             obj.save()
             return config_data
         except Exception as e:
             raise Exception(e)
+
+    def config_data_nvl(self, config_data, attribute_name):
+
+        if attribute_name in config_data:
+            _value = config_data[attribute_name]
+        else:
+            _value = list()
+        return _value
+

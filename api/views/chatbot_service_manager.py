@@ -24,7 +24,7 @@ class ChatbotServiceManager(APIView):
             #TODO:request prediction with text data (swkim)
             #Get Cache
             result = ServiceManager(cbid).run_chatbot(request.data)
-            return Response(json.dumps(result))
+            return Response(json.loads(result))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))

@@ -84,6 +84,26 @@ delete from django_migrations where app = 'master';
 
 ./manage.py migrate
 
+### Chatbot Drop Table and Create Table Again
+delete /chatbot/migrations/*.py (except __init__.py)
+```sh
+drop table Chatbot_CB_ONTOLOGY_INFO,
+Chatbot_CB_NLP_INFO,
+Chatbot_CB_RESPONSE_LIST_INFO,
+Chatbot_CB_SERVICE_LIST_INFO,
+Chatbot_CB_MODEL_LIST_INFO,
+Chatbot_CB_ENTITY_LIST_INFO,
+Chatbot_CB_STORYBOARD_LIST_INFO,
+Chatbot_CB_INTENT_LIST_INFO,
+Chatbot_CB_DEF_LIST_INFO
+```
+make migrations
+```sh
+./manage.py makemigrations chatbot
+./manage.py migrate --fake chatbot zero
+./manage.py migrate chatbot
+```
+
 ### Run Jupyter for API Test
 ```sh
 vi jupyter_notebook_config.py 
@@ -96,6 +116,6 @@ Find in vi - /ip n N
 - mecab-ko-dic-2.0.1-20150920.tar.gz (2017.06 recent)
 - go to dic directory and userdic
 - add csv(1 line : 김수상,,,,NNP,*,F,김수상,*,*,*,*) 1)T/F : 받침유무
- ![링크](http://andersonjo.github.io/nlp/2016/12/28/NLP/)
+- [링크](http://andersonjo.github.io/nlp/2016/12/28/NLP/)
 - run mecab-ko-dic-2.0.1-20150920/tools/add-userdic.sh
 

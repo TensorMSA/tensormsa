@@ -222,6 +222,20 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/s
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_keras2frame",
+                        "wf_task_submenu_name": "pre_feed_keras2frame",
+                        "wf_task_submenu_desc": "pre_feed_keras2frame",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_keras2frame",
+                        "wf_node_class_name": "PreNodeFeedKerasFrame"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+#PreNodeFeedKerasFrame
+
+
 
 # insert submenu info
 resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
@@ -386,6 +400,19 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/subm
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
+                        "wf_task_submenu_id": "keras_dnn",
+                        "wf_task_submenu_name": "keras_dnn",
+                        "wf_task_submenu_desc": "keras_dnn",
+                        "wf_node_class_path": "cluster.neuralnet.neuralnet_node_kerasdnn",
+                        "wf_node_class_name": "NeuralNetNodeKerasdnn"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
 ##################################################
 # Test Menu
 ##################################################

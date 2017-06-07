@@ -136,13 +136,15 @@ def get_combine_label_list(origin_list, compare_list):
         compare_list = ['50>=', '50=','C','D','E']
         result => ['A', 'B', 'C', 'D', '50=', '50>=', 'E']
     """
+    try:
+        _origin_list = list(origin_list)
+        _compare_list = list(compare_list)
 
-    _origin_list = list(origin_list)
-    _compare_list = list(compare_list)
-
-    _union_values = set(_origin_list).union(set(_compare_list))
-    _diff_values = sorted(list(_union_values - set(_origin_list)))
-    _origin_list.extend(_diff_values)
+        _union_values = set(_origin_list).union(set(_compare_list))
+        _diff_values = sorted(list(_union_values - set(_origin_list)))
+        _origin_list.extend(_diff_values)
+    except Exception as e:
+        logging.error("get_combine_label_list {0}".format(e))
 
     return _origin_list
 
@@ -175,7 +177,7 @@ def copy_all(src, dst):
             logging.info("copy source({0}) to dest ({1})".format(src, dst))
         else:
             logging.error("copy error source({0}) to dest ({1})".format(src, dst))
-            raise exc
+            #raise exc
 
 
 def isnan(value):
@@ -200,4 +202,29 @@ def isnan(value):
     try:
         return math.isnan(float(value))
     except:
+        return False
+
+def make_and_exist_directory(directory):
+    """ 디렉토리 만들기(없으면 만들고 있으면 현재 디렉토리 값 반환)
+         Make Directory and Exist Directory
+
+    Args:
+      params:
+        * directory : directory path
+
+    Returns:
+        directory path
+
+    Raises:
+
+    Example
+
+    """
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        return directory
+    except Exception as e:
+        logging.error("Make Celery Logging Directory {0} : {1}".format(directory, e))
+        raise Exception(e)
         return False

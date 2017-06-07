@@ -18,6 +18,7 @@ class ShareData(ChatBotConfManager):
         self.input_data = None          # prediction requested data
         self.convert_data = None        # convert data
         self.output_data = None         # output data
+        self.edit_history = []          # data change history (preprocess -> tag -> NER)
         self.intent_history = []        # intent change history (changes on intent model)
         self.request_type = ""          # text, image, voice
         self.intent_id = ""             # current intent id
@@ -217,6 +218,22 @@ class ShareData(ChatBotConfManager):
         """
         return self.output_data
 
+    def set_edit_history(self, edit_type):
+        """
+        intent id
+        :param intent_id:
+        :return:
+        """
+        self.edit_history.append(edit_type)
+
+    def get_edit_history(self):
+        """
+        intent id
+        :param intent_id:
+        :return:
+        """
+        return self.edit_history
+
     def set_intent_history(self, intent_id):
         """
         intent id
@@ -297,7 +314,7 @@ class ShareData(ChatBotConfManager):
         """
         return self.story_key_entity
 
-    def set_story_entity(self, key, val):
+    def set_story_slot_entity(self, key, val):
         """
 
         :param data:
@@ -305,7 +322,7 @@ class ShareData(ChatBotConfManager):
         """
         self.story_slot_entity[key] = val
 
-    def get_story_entity(self, key = None):
+    def get_story_slot_entity(self, key = None):
         """
 
         :param data:

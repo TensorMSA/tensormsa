@@ -44,7 +44,7 @@ class ResponseGenerator(ShareData):
             share_data.set_story_id("")
             share_data.set_intent_id("")
             share_data.set_request_data("")
-            share_data.initialize_story_entity()
+            share_data.initialize_story_slot_entity()
             share_data.set_request_type("")
         return share_data
 

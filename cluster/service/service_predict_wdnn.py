@@ -35,8 +35,9 @@ class PredictNetWdnn(PredictNet):
         conf_data['net_conf'] = netconf_arr
         conf_data['data_conf'] = dataconf_arr
 
+
         if(self._valid_check(parm)) :
-            return NeuralNetNodeWdnn().predict(nn_id, conf_data, parm)
+            return NeuralNetNodeWdnn().predict(nn_id, ver, parm)
 
     def _valid_check(self, parm):
         return True
