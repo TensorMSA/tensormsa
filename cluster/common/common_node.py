@@ -551,7 +551,7 @@ class WorkFlowCommonNode :
 
     def decode_pad(self, input_list, max_len = 0, pad_char = '#', start_char = '@'):
         """
-
+[pad_char] * pad_len + input
         :param pos:
         :return:
         """

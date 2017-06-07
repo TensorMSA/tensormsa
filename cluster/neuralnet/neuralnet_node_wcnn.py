@@ -124,9 +124,9 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                 set_filepaths(path)
                 saver.save(sess, path)
             return ""
-        except Exception as e :
+        except Exception as e:
             raise Exception ("error on train : {0}".format(e))
-        finally :
+        finally:
             # copy data feeder's parm to netconf
             self._copy_node_parms(train_data_set, self)
 

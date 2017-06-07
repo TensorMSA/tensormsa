@@ -91,7 +91,7 @@ class PreNodeFeedFr2Wcnn(PreNodeFeed):
         elif (self.preprocess_type == 'twitter'):
             return self._mecab_parse(input_data)
         else :
-            return input_data
+            return list(map(lambda x : x.split(' '), input_data.tolist()))
 
     def data_size(self):
         """
