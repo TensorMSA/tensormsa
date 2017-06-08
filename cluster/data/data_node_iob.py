@@ -3,13 +3,11 @@ from master.workflow.data.workflow_data_iob import WorkFlowDataIob
 from common import utils
 import os,h5py
 from time import gmtime, strftime
-from gensim.models import word2vec
 from cluster.service.service_predict_w2v import PredictNetW2V
-from shutil import copyfile
-import numpy as np
 from common.utils import *
+from cluster.common.neural_common_bilismcrf import BiLstmCommon
 
-class DataNodeIob(DataNode):
+class DataNodeIob(DataNode, BiLstmCommon):
 
 
     def run(self, conf_data):

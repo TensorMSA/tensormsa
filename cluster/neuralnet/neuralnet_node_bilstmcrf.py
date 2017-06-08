@@ -2,12 +2,11 @@ from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from master.workflow.netconf.workflow_netconf_bilstmcrf import WorkFlowNetConfBiLstmCrf
 import os, json
 import numpy as np
-from konlpy.tag import Mecab
-from gensim.models.wrappers import FastText
 import logging
 import tensorflow as tf
+from cluster.common.neural_common_bilismcrf import BiLstmCommon
 
-class NeuralNetNodeBiLstmCrf(NeuralNetNode):
+class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
     def run(self, conf_data):
         try :
@@ -33,9 +32,6 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode):
                 self.train(train, dev, self.vocab_tags)
                 train_data_set.next()
             train_data_set.reset_pointer()
-
-
-
         except Exception as e :
             raise Exception ("error on fast text tain process : {0}".format(e))
 
@@ -96,7 +92,10 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode):
             self.hidden_size = 300
             self.char_hidden_size = 100
 
-            self.output_path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+            if(self.check_batch_exist(node_id)) :
+                self.output_path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
+            else :
+                self.output_path = ''.join([self.md_store_path, '/', self.make_batch(node_id)[1], '/'])
             self.model_output = self.output_path
             self.log_path = self.output_path + "/log/log.txt"
 
@@ -400,12 +399,13 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode):
         # for early stopping
         nepoch_no_imprv = 0
         with tf.Session() as sess:
-            # restore model
-            if (self.check_batch_exist(self.node_id)):
-                path = ''.join([self.md_store_path, '/', self.get_eval_batch(self.node_id), '/'])
-                saver.restore(sess, path)
 
             sess.run(self.init)
+
+            # restore model
+            if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
+                saver.restore(sess, self.model_output)
+
             # tensorboard
             self.add_summary(sess)
             for epoch in range(self.nepochs):
@@ -419,13 +419,12 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode):
                 # early stopping and saving best parameters
                 if f1 >= best_score:
                     nepoch_no_imprv = 0
-                    self.model_output = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
                     if not os.path.exists(self.model_output):
                         os.makedirs(self.model_output)
                     saver.save(sess, self.model_output)
+                    self.model_output = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
                     best_score = f1
                     logging.info("- new best score!")
-
                 else:
                     nepoch_no_imprv += 1
                     if nepoch_no_imprv >= self.nepoch_no_imprv:
