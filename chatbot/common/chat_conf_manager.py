@@ -28,7 +28,7 @@ class ChatBotConfManager:
         #TODO:need to get data from cache server
         self.pos_type = "mecab"
         self.word_embed_model = "nn00002"
-        self.intent_anal_model = "nn500995"
+        self.intent_anal_model = "nnn12993" #nn500995 #nnn12993
         self.syntax_anal_model = ""
         self.resp_gen_model = ""
         self.ton_gen_model = ""

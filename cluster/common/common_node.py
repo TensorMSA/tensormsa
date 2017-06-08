@@ -717,12 +717,15 @@ class WorkFlowCommonNode :
         :param input_tuple:
         :return:
         """
-        pad_size = word_len - (len(input_tuple) + 1)
-        if(pad_size >= 0 ) :
-            input_tuple = pad_size * [('#', '')] + input_tuple[0: word_len -1] + [('SF', '')]
-        else :
-            input_tuple = input_tuple[0: word_len-1] + [('SF', '')]
-        return input_tuple
+        try :
+            pad_size = word_len - (len(input_tuple) + 1)
+            if(pad_size >= 0 ) :
+                input_tuple = pad_size * [('#', '')] + input_tuple[0: word_len -1] + [('SF', '')]
+            else :
+                input_tuple = input_tuple[0: word_len-1] + [('SF', '')]
+            return input_tuple
+        except Exception as e:
+            raise Exception(e)
 
     def _copy_node_parms(self, from_node, to_node):
         """

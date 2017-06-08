@@ -342,8 +342,18 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
 
             #preprocess input data if necessary
             word_list = []
-            if(type == 'raw') :
-                word_list = [self._pos_tag_predict_data(x_input, self.y_size)]
+            if(type == 'raw'):
+                if(self.netconf.get_preprocess_type == 'mecab'):
+                    word_list = [self._pos_tag_predict_data(x_input, self.y_size)]
+                else:
+                    pad_size = self.y_size - (len(x_input.split(' ')))
+                    if (pad_size >= 0): #list(map(lambda x : "('"+x+"')", x_input.split(' ')))
+                        word_list = [pad_size * [('#')] + list(map(lambda x : x, x_input.split(' ')))[0:self.y_size-1]]
+                        #<class 'list'>: [('#', ''), ('#', ''), ('#', '), ('#', ''), "('')", "('[이름]')", "('찾')", "('아')", "('줘')"]
+                    else:
+                        word_list = [x_input[0: self.y_size - 1]]
+                    #word_list = [self._pad_predict_input([tuple(map(lambda x : tuple([x]), x_input.split(' ')))], self.y_size)]
+                print(word_list)
                 word_list = self._word_embed_data('onehot', np.array(word_list), cls=self.input_onehot)
                 word_list = np.array(word_list).reshape([-1, self.x_size, self.y_size, self.channel])
             elif(type=='pre'):
