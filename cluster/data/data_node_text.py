@@ -36,22 +36,10 @@ class DataNodeText(DataNode):
             fp_list = utils.get_filepaths(self.data_src_path)
             for file_path in fp_list :
                 str_buf = self._load_local_files(file_path)
-                conv_buf = self.encode_pad(self.get_tag_package(self.data_preprocess_type, str_buf))
+                conv_buf = self.encode_pad(self._preprocess(str_buf, type=self.data_preprocess_type))
                 self._save_hdf5(conv_buf)
         except Exception as e:
             raise Exception(e)
-
-    def get_tag_package(self, type, str_buf):
-        buffer_list = []
-        if (type == 'mecab'):
-            buffer_list = self._mecab_parse(str_buf)
-        elif (type == 'kkma'):
-            buffer_list = self._kkma_parse(str_buf)
-        elif (type == 'twitter'):
-            buffer_list = self._twitter_parse(str_buf)
-        else :
-            buffer_list = str_buf
-        return buffer_list
 
     def _load_local_files(self, file_path):
         """

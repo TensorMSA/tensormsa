@@ -51,7 +51,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
 
             os.makedirs(self.md_store_path, exist_ok=True)
             model.save(self._get_model_path())
-            return len(model.raw_vocab)
+            return True
         except Exception as e:
             raise Exception(e)
 
@@ -108,6 +108,8 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
                 return_val = self._predict_vector2word(parm, return_val, model)
             elif (parm['type'] in ['vocablen']):
                 return len(model.wv.vocab) - 1
+            elif (parm['type'] in ['model']):
+                return model
             else :
                 raise Exception ("Not available type : {0}".format(parm['type']))
             return return_val

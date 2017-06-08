@@ -52,21 +52,6 @@ class PreNodeFeedFr2Wv(PreNodeFeed):
         finally:
             store.close()
 
-    def _preprocess(self, input_data):
-        """
-
-        :param input_data:
-        :returnen:
-        """
-        if(self.preprocess_type == 'mecab') :
-            return self._mecab_parse(input_data)
-        elif (self.preprocess_type == 'kkma'):
-            return self._kkma_parse(input_data)
-        elif (self.preprocess_type == 'twitter'):
-            return self._twitter_parse(input_data)
-        else :
-            return input_data
-
     def data_size(self):
         """
         get data array size of this calss

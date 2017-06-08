@@ -50,10 +50,9 @@ class DataNodeRaw(DataNode):
 
     def _load_local_files(self, file_path):
         """
-
+        load local source file
         :return:
         """
-
         with open(file_path, 'r') as myfile:
             os.remove(file_path)
             return myfile.readlines()

@@ -19,5 +19,3 @@ class DataNode(WorkFlowCommonNode):
 
     def multi_load_data(self, node_id, parm = 'all'):
         pass
-
-

@@ -348,6 +348,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             self.probs = tf.nn.softmax(self.logits)
 
             # Loss
+            tf.contrib.seq2seq.attention_decoder_fn_train
             self.loss = tf.contrib.legacy_seq2seq.sequence_loss([self.logits],  # Input
                                                                 [tf.reshape(self.targets, [-1])],  # Target
                                                                 [tf.ones([self.batch_size * self.decoder_seq_length])],  # Weight
@@ -366,7 +367,6 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
 
         except Exception as e :
             raise Exception (e)
-
 
     def _run_train(self, sess, xbatch, ybatch, target):
         """
@@ -387,8 +387,6 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
             return sess
         except Exception as e :
             raise Exception(e)
-
-
 
     def _set_predict_model(self):
         """prob_idx

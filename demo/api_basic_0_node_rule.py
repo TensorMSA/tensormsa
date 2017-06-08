@@ -65,6 +65,18 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/data/submenu
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/data/submenu/',
+                     json={
+                        "wf_task_submenu_id": "data_iob",
+                        "wf_task_submenu_name": "data_iob",
+                        "wf_task_submenu_desc": "data_iob",
+                        "wf_node_class_path": "cluster.data.data_node_iob",
+                        "wf_node_class_name": "DataNodeIob"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
 ##################################################
 # PreProcess Menu
 ##################################################
@@ -261,6 +273,20 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/s
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/preprocess/submenu/',
+                     json={
+                        "wf_task_submenu_id": "pre_feed_iob2bilstmcrf",
+                        "wf_task_submenu_name": "pre_feed_iob2bilstmcrf",
+                        "wf_task_submenu_desc": "pre_feed_iob2bilstmcrf",
+                        "wf_node_class_path": "cluster.preprocess.pre_node_feed_iob2bilstmcrf",
+                        "wf_node_class_name": "PreNodeFeedIob2BiLstmCrf"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+
+
 ##################################################
 # DataConfig Menu
 ##################################################
@@ -404,6 +430,18 @@ print("evaluation result : {0}".format(data))
 # insert submenu info
 resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
                      json={
+                        "wf_task_submenu_id": "bilstmcrf",
+                        "wf_task_submenu_name": "bilstmcrf",
+                        "wf_task_submenu_desc": "bilstmcrf",
+                        "wf_node_class_path": "cluster.neuralnet.neuralnet_node_bilstmcrf",
+                        "wf_node_class_name": "NeuralNetNodeBiLstmCrf"
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+# insert submenu info
+resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/submenu/',
+                     json={
                         "wf_task_submenu_id": "keras_dnn",
                         "wf_task_submenu_name": "keras_dnn",
                         "wf_task_submenu_desc": "keras_dnn",
@@ -412,6 +450,7 @@ resp = requests.post('http://' + url + '/api/v1/type/wf/target/menu/netconf/subm
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
 
 ##################################################
 # Test Menu

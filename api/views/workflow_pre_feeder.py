@@ -5,6 +5,7 @@ from master.workflow.preprocess.workflow_feed_fr2seq import WorkflowFeedFr2Seq
 from master.workflow.preprocess.workflow_feed_fr2wv import WorkflowFeedFr2Wv
 from master.workflow.preprocess.workflow_feed_fr2auto import WorkflowFeedFr2Auto
 from master.workflow.preprocess.workflow_feed_fr2wcnn import WorkflowFeedFr2Wcnn
+from master.workflow.preprocess.workflow_feed_iob2bilstmcrf import WorkflowFeedIob2BiLstmCrf
 
 class WorkFlowPreFeeder(APIView) :
     """
@@ -24,6 +25,8 @@ class WorkFlowPreFeeder(APIView) :
                 return_data = WorkflowFeedFr2Auto().set_view_obj(nodeid, request.data)
             elif (src == 'frame' and net == 'wcnn'):
                 return_data = WorkflowFeedFr2Wcnn().set_view_obj(nodeid, request.data)
+            elif (src == 'iob' and net == 'bilstmcrf'):
+                return_data = WorkflowFeedIob2BiLstmCrf().set_view_obj(nodeid, request.data)
             else :
                 raise Exception("not supported converting type")
             return Response(json.dumps(return_data))
@@ -56,6 +59,8 @@ class WorkFlowPreFeeder(APIView) :
                 return_data = WorkflowFeedFr2Auto().set_view_obj(nodeid, request.data)
             elif (src == 'frame' and net == 'wcnn'):
                 return_data = WorkflowFeedFr2Wcnn().set_view_obj(nodeid, request.data)
+            elif (src == 'iob' and net == 'bilstmcrf'):
+                return_data = WorkflowFeedIob2BiLstmCrf().set_view_obj(nodeid, request.data)
             else :
                 raise Exception("not supported converting type")
             return Response(json.dumps(return_data))

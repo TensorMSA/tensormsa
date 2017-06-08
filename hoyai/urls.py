@@ -74,6 +74,11 @@ urlpatterns = [
         r'(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataText.as_view())),
 
+    # 1.(?P<src>.*) : localcsv, s3, hbase, rdb, etc.. , 2.(?P<form>.*) : raw, zip  3. (?P<prg>.*) : source, pre, store
+    url(r'^api/v1/type/wf/state/iobdata/src/(?P<src>.*)/form/(?P<form>.*)/prg/(?P<prg>.*)/nnid/(?P<nnid>.*)/ver/'
+        r'(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowDataIob.as_view())),
+
     url(r'^api/v1/type/wf/state/data/detail/reuse/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataReuse.as_view())),
     url(r'^api/v1/type/wf/state/data/detail/upload/file/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/dir/(?P<dir>.*)/',
@@ -114,6 +119,8 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfRenet.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/wcnn/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfWcnn.as_view())),
+    url(r'^api/v1/type/wf/state/netconf/detail/bilstmcrf/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConfBiLstmCrf.as_view())),
 
     # workflow - test APIs
     url(r'^api/v1/type/wf/state/eval/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',

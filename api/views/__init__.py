@@ -42,3 +42,5 @@ from .workflow_netconf_renet import WorkFlowNetConfRenet
 from .chatbot_service_manager import ChatbotServiceManager
 from .workflow_netconf_wcnn import WorkFlowNetConfWcnn
 from .chatbot_build_manager import ChatbotBuildManager
+from .workflow_data_iob import WorkFlowDataIob
+from .workflow_netconf_bilstmcrf import WorkFlowNetConfBiLstmCrf
