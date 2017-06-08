@@ -81,6 +81,9 @@ class OneHotEncoder :
         """
         try :
             self.bucket.fill(self.pad)
+            if(item == '#') :
+                return self.bucket.copy()
+
             idx = self.get_idx(item)
             if(idx >= 0 and (self.bucket_size > idx)) :
                 np.put(self.bucket, idx, 1)
@@ -98,7 +101,8 @@ class OneHotEncoder :
         """
         sorted_list = sorted(vector, reverse=True)
         idx = np.where(vector==sorted_list[prob_idx])[0][0]
-        print("■■■■■■■■■■ Accuracy 출력 : " + str(vector[idx]) )
+        print("■■■■■■■■■■ Accuracy 출력 : " + str(vector[idx]))
+        print("■■■■■■■■■■ 예측값 : " + str(idx))
         if(vector[idx] > min_prob) :
             return self.dict_list[idx]
         else :

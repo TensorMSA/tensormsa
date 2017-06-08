@@ -15,7 +15,7 @@ class PredictNetSeq2Seq(PredictNet):
         :param parm:
         :return:
         """
-        if(self._valid_check(parm)) :
+        if(self._valid_check(parm)):
             return Seq2Seq().predict(self._find_netconf_node_id(nn_id), parm)
 
     def _valid_check(self, parm):

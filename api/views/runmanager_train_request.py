@@ -14,10 +14,10 @@ class RunManagerTrainRequest(APIView):
         - desc : insert data
         """
         try:
-            if(self._same_request_check(nnid, ver) == 'run') :
+            if(self._same_request_check(nnid, ver) == 'run'):
                 result = train.delay(nnid, ver)
                 return Response(json.dumps({"status": "200", "id": result.id, "state": result.state}))
-            elif(self._same_request_check(nnid, ver) == 'debug') :
+            elif(self._same_request_check(nnid, ver) == 'debug'):
                 result = train(nnid, ver)
                 return Response(json.dumps(result))
             else :
