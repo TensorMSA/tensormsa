@@ -31,10 +31,7 @@ if wf_ver_id == 0:
 wf_ver_id = str(wf_ver_id)
 # CNN Network WorkFlow Node : Network Config Setup
 # (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
-node = "netconf_node"
-
-if net_type == "cnn":
-    resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
                      json={
                          "param":{"traincnt": 1
                                   ,"epoch": 1
@@ -73,58 +70,37 @@ if net_type == "cnn":
                                 }
                          ,"labels":[]
                         })
-elif net_type == "resnet":
-    resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
-                     json={
-                         "param":{"traincnt": 1
-                                  ,"epoch": 1
-                                  ,"batch_size":200
-                                  ,"predictcnt": 2
-                                  , "predlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
-                         },
-                         "config": {"num_classes":1,
-                                    "learnrate": 0.001,
-                                    "layeroutputs":18, #18, 34, 50, 101, 152, 200
-                                    "net_type":"resnet",
-                                    "eval_type":"category",
-                                    "optimizer":"AdamOptimizer" #RMSPropOptimizer
-                                     }
-                         ,"labels":[]
-                        })
+
 netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
+
+# CNN Network WorkFlow Node :  Eval Config Setup
+node = "eval_node"
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/'
+                    ,json={})
+evalconf = json.loads(resp.json())
+
+# yolo min image size 385 and %7 = 0
+datajson = {"preprocess": {"x_size": 32,
+                           "y_size": 32,
+                           "channel":3,
+                           "filesize": 1000000,
+                           "yolo": "n"}
+            }
 
 # CNN Network WorkFlow Node :  Data Config Setup
 # yolo min image size 385 and %7 = 0
 node = "datasrc"
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',
-                     json={
-                            "preprocess": {"x_size": 32,
-                                           "y_size": 32,
-                                           "channel":3,
-                                           "filesize": 1000000,
-                                           "yolo": "n",
-                                           "augmentation":"Y"}
-                     })
+                     json=datajson)
 dataconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(dataconf))
-
-# CNN Network WorkFlow Node :  Eval Config Setup
-node = "eval_node"
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={})
-evalconf = json.loads(resp.json())
 
 # CNN Network WorkFlow Node :  Eval Data Config Setup
 # (CNN Network WorkFlow Node의 Data Config를 Setup 해준다.)
 node = 'evaldata'
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/',json={
-                            "preprocess": {"x_size": 32,
-                                           "y_size": 32,
-                                           "channel":3,
-                                           "filesize": 1000000,
-                                           "yolo": "n",
-                                           "augmentation":"Y"}
-                     })
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/'+node+'/'
+                    ,json=datajson)
 edataconf = json.loads(resp.json())
 
 # CNN Network Training
@@ -200,6 +176,6 @@ println("E")
 
 
 
-sys.stdout.close()
+
 
 # "AC Geared Motor", "AC Induction Motor", "Air Filter", "Aux Relay", "Bolt", "Bolt-Nut", "Centrifugal Pump", "Check Valve", "Circuit Breaker", "Compressor Accessories", "Control Valve", "Controller", "DC Power Supply", "Drill Bit", "Drive Coupling", "Elbow", "Electrical Connector", "Encoder", "Equipment Spares_Accessories", "Fan", "Filter Element", "Flexible Hose", "Flowmeter", "Fuse", "Gasket", "Gear Box", "Hose", "Hydraulic Pump", "Hydraulic Valve", "Integrated Circuit", "Laboratory Supply", "Magnetic Contactor", "Manual Switch", "Nozzle", "Oil Seal_Bearing Isolator", "PIPE", "Paint_Primer_Finish", "Pipe Coupling", "Pneumatic Cylinder", "Pneumatic Valve", "Position Sensor", "Power_Control Cable", "Pressure Gauge", "Pressure Switch", "Pressure Transmitter", "Printed Circuit Board", "Protection Relay", "Proximity Switch", "Pump Accessories", "Reagent", "Ring_Retainer", "Roller Bearing", "Safety Sign_Label", "Shut-Off Valve", "Solenoid Valve", "Union", "Varied Measuring Instrument", "Varied Seal", "Varied Sensor"

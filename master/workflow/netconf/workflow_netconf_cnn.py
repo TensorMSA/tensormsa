@@ -19,7 +19,6 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
         self._set_prhb_parms([])
 
     def set_num_classes_predcnt(self, nn_id, wfver, node, node_id, netconf):
-        self.validation_check(netconf)
         try:
             labels = netconf["labels"]
             num_classes = netconf["config"]["num_classes"]

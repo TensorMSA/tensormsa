@@ -9,7 +9,7 @@ biz_sub_cate = "MRO"
 nn_title = "MRO Image Classification"
 nn_desc = "MRO Image Classification"
 nn_wf_ver_info = "MRO Image Classification"
-network_type = "cnn"
+network_type = "renet"
 # network_type = "renet"
 
 # CNN Network : Create

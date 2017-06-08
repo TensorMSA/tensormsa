@@ -73,7 +73,7 @@ class WorkFlowCommon:
         else :
             filter_list = self._get_key_parms()
 
-        if(filter_list):
+        if(filter_list is not None):
             match_list = list(set(json_data.keys()).intersection(filter_list))
             req_list = list(set(filter_list) - set(match_list))
             error_msg = ""

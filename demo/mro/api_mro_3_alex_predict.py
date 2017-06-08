@@ -51,8 +51,7 @@ files = {
 restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
 
 resp = requests.post(restURL, files=files, json={
-                         "config": {"net_type":"cnn"
-                                     }
+                         "config": {}
                          ,"labels":[]
                         }
                      )

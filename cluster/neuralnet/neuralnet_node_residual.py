@@ -1,20 +1,18 @@
-from __future__ import print_function
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
-from keras.datasets import cifar10
-from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import np_utils
-from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
+from common.utils import *
+from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
+from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
+import tensorflow as tf
 import numpy as np
 import os
-import keras
-from master.workflow.netconf.workflow_netconf_renet import WorkFlowNetConfReNet
-from cluster.neuralnet import resnet
-from master.workflow.data.workflow_data_image import WorkFlowDataImage
-from cluster.common.train_summary_info import TrainSummaryInfo
 import operator
-from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
-from keras.applications.resnet50 import preprocess_input
-from keras.preprocessing import image
+import datetime
+from cluster.common.train_summary_info import TrainSummaryInfo
+import keras
+from keras.preprocessing.image import ImageDataGenerator
+from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
+from cluster.neuralnet import resnet
+from common.graph.nn_graph_manager import NeuralNetModel
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 
 class History(keras.callbacks.Callback):
@@ -28,102 +26,142 @@ class History(keras.callbacks.Callback):
 
 class NeuralNetNodeReNet(NeuralNetNode):
     """
-
     """
+    def _init_train_parm(self, conf_data):
+        # get initial value
+        self.conf_data = conf_data
+        self.cls_pool = conf_data["cls_pool"]
+        self.nn_id = conf_data["nn_id"]
+        self.wf_ver = conf_data["wf_ver"]
+        self.node_id = conf_data["node_id"]
+        self.node = WorkFlowSimpleManager().get_train_node()
 
-    def run(self, conf_data):
-        #return
+        # get feed name
+        self.train_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_train_feed_node()
+        self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_eval_feed_node()
+        self.feed_node = self.get_prev_node()
+
+    def _init_value(self):
+        self.g_train_cnt = 0
+        self.file_end = '.bin'
+        self.train_return_data = {}
+        self.train_return_arr = ["Trainning .................................................."]
+        self.pred_return_data = {}
+
+    ####################################################################################################################
+    def _set_netconf_parm(self):
+        netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
         try:
-            # init parms
-            self._init_node_parm(conf_data['node_id'])
-            self.cls_pool = conf_data['cls_pool']
-            self.train_batch, self.batch = self.make_batch(conf_data['node_id'])
-            if self.train_batch == None :
-                path = ''.join([self.md_store_path+'/'+self.batch,'/model.bin'])
-            else :
-                path = ''.join([self.md_store_path + '/' + self.train_batch, '/model.bin'])
+            netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(self.nn_id, self.wf_ver, self.node, self.node_id, netconf)
+        except:
+            None
+        self.netconf = netconf
 
-            train_data_set = self.cls_pool[self.wf_state_id + '_' + self.train_feed_node]
-            test_data = self.cls_pool[self.wf_state_id + '_' + self.eval_feed_node]
-            data_node_name = self._get_backward_node_with_type(conf_data['node_id'], 'data')
+        self.train_cnt = self.netconf["param"]["traincnt"]
+        self.epoch = self.netconf["param"]["epoch"]
+        self.batch_size = self.netconf["param"]["batch_size"]
+        self.model_path = self.netconf["modelpath"]
+        self.modelname = self.netconf["modelname"]
 
-            lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
-            early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
-            csv_logger = CSVLogger('resnet18_cifar10.csv')
-            history = History()
+    def _set_dataconf_parm(self, dataconf):
+        self.dataconf = dataconf
 
-            data_config = WorkFlowDataImage().get_step_source(data_node_name[0])
-            preprocess = data_config['preprocess']
+    ####################################################################################################################
+    def set_saver_model(self):
+        self.save_path = self.model_path + "/" + str(self.batch) + str(self.file_end)
+        keras.models.save_model(self.model, self.save_path)
 
-            # input image dimensions
-            img_rows, img_cols = preprocess['x_size'], preprocess['y_size']
-            # The CIFAR10 images are RGB.
-            img_channels = preprocess['channel']
+        loss = round(self.loss * 100, 2)
+        accR = round(self.acc * 100, 2)
+        val_loss = round(self.val_loss * 100, 2)
+        val_acc = round(self.val_acc * 100, 2)
+        msg = "Global Step: " + str(self.g_train_cnt)
+        msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
+        msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
+        println(msg)
 
-            # load model for train
-            if (os.path.exists(path) == True):
-                model = keras.models.load_model(path)
-            else:
-                model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), self.nb_classes)
+        config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
+        result = TrainSummaryAccLossInfo(config)
+        result.loss_info["loss"] = str(val_loss)
+        result.acc_info["acc"] = str(val_acc)
+        self.save_accloss_info(result)
 
-            while (train_data_set.has_next()):
-                data_set = train_data_set[0:train_data_set.data_size()]
-                test_data_set = test_data[0:test_data.data_size()]
-                X_train = data_set[0]
-                X_test = test_data_set[0]
-                targets = data_set[1]
-                test_targets = test_data_set[1]
-                targets_conv = []
-                test_targets_conv = []
-                rawdata_conv = np.zeros((X_train.size, X_train[0].size))
-                test_rawdata_conv = np.zeros((X_test.size, X_test[0].size))
-                for j in range(0, data_set[0].size, 1):
-                    targets_conv.append(self.labels.index(str(targets[j], 'utf-8')))
-                for j in range(0, test_data_set[0].size, 1):
-                    test_targets_conv.append(self.labels.index(str(test_targets[j], 'utf-8')))
-                r = 0
-                for j in X_train:
-                    j = j.tolist()
-                    rawdata_conv[r] = j
-                    r += 1
-                r = 0
-                for j in X_test:
-                    j = j.tolist()
-                    test_rawdata_conv[r] = j
-                    r += 1
-                rawdata_conv = np.reshape(rawdata_conv, (-1, img_rows, img_cols, img_channels))
-                test_rawdata_conv = np.reshape(test_rawdata_conv, (-1, img_rows, img_cols, img_channels))
-                y_train = targets_conv
-                y_test = test_targets_conv
+        result = [msg]
 
-                # Convert class vectors to binary class matrices.
-                Y_train = np_utils.to_categorical(y_train, self.nb_classes)
-                Y_test = np_utils.to_categorical(y_test, self.nb_classes)
+        self.model_file_delete(self.model_path, self.modelname)
 
-                X_train = rawdata_conv.astype('float32')
-                X_test = test_rawdata_conv.astype('float32')
+        self.train_return_arr.append(result)
 
-                # subtract mean and normalize
-                mean_image = np.mean(X_train, axis=0)
-                X_train -= mean_image
-                X_test -= mean_image
-                X_train /= 128.
-                X_test /= 128.
+        self.eval(self.node_id, self.conf_data, None, None)
 
-                model.compile(loss='categorical_crossentropy',
-                              optimizer='adam',
-                              metrics=['accuracy'])
+    def get_model_resnet(self):
+        keras.backend.tensorflow_backend.clear_session()
+        self.lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
+        self.early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
+        self.csv_logger = CSVLogger('resnet.csv')
+        num_classes = self.netconf["config"]["num_classes"]
+        numoutputs = self.netconf["config"]["layeroutputs"]
+        x_size = self.dataconf["preprocess"]["x_size"]
+        y_size = self.dataconf["preprocess"]["y_size"]
+        channel = self.dataconf["preprocess"]["channel"]
+        optimizer = self.netconf["config"]["optimizer"]
 
-                if not self.data_augmentation:
-                    print('Not using data augmentation.')
-                    model.fit(X_train, Y_train,
-                              batch_size=self.batch_size,
-                              nb_epoch=self.nb_epoch,
-                              validation_data=(X_test, Y_test),
-                              shuffle=True,
-                              callbacks=[lr_reducer, early_stopper, csv_logger, history])
+        filelist = os.listdir(self.model_path)
+        filelist.sort(reverse=True)
+
+        last_name = ""
+        for filename in filelist:
+            last_name = filename
+            break
+
+        last_chk_path = self.model_path + "/" + last_name
+
+        try:
+            self.model = keras.models.load_model(last_chk_path)
+            println("Train Restored checkpoint from:" + last_chk_path)
+        except Exception as e:
+            if numoutputs == 18:
+                self.model = resnet.ResnetBuilder.build_resnet_18((channel, x_size, y_size), num_classes)
+            elif numoutputs == 34:
+                self.model = resnet.ResnetBuilder.build_resnet_34((channel, x_size, y_size), num_classes)
+            elif numoutputs == 50:
+                self.model = resnet.ResnetBuilder.build_resnet_50((channel, x_size, y_size), num_classes)
+            elif numoutputs == 101:
+                self.model = resnet.ResnetBuilder.build_resnet_101((channel, x_size, y_size), num_classes)
+            elif numoutputs == 152:
+                self.model = resnet.ResnetBuilder.build_resnet_152((channel, x_size, y_size), num_classes)
+            elif numoutputs == 200:
+                self.model = resnet.ResnetBuilder.build_resnet_200((channel, x_size, y_size), num_classes)
+            println("None to restore checkpoint. Initializing variables instead." + last_chk_path)
+            println(e)
+
+        self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+    ####################################################################################################################
+    def train_run_resnet(self, input_data, test_data):
+        data_augmentation = self.netconf["param"]["augmentation"]
+        # try:
+        if data_augmentation == "N" or data_augmentation == "n":
+            println('Not using data augmentation.')
+        else:
+            println('Using real-time data augmentation.')
+
+        while (input_data.has_next()):
+            data_set = input_data[0:input_data.data_size()]
+            x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "T")
+
+            test_set = test_data[0:test_data.data_size()]
+            x_tbatch, y_tbatch, n_tbatch = self.get_batch_img_data(test_set, "T")
+
+            for i in range(self.train_cnt):
+                if data_augmentation == "N" or data_augmentation == "n":
+                    history = self.model.fit(x_batch, y_batch,
+                                   batch_size=self.batch_size,
+                                   epochs=self.epoch,
+                                   validation_data=(x_tbatch, y_tbatch),
+                                   shuffle=True,
+                                   callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
                 else:
-                    print('Using real-time data augmentation.')
                     # This will do preprocessing and realtime data augmentation:
                     datagen = ImageDataGenerator(
                         featurewise_center=False,  # set input mean to 0 over the dataset
@@ -132,171 +170,247 @@ class NeuralNetNodeReNet(NeuralNetNode):
                         samplewise_std_normalization=False,  # divide each input by its std
                         zca_whitening=False,  # apply ZCA whitening
                         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-                        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-                        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+                        width_shift_range=0.1,
+                        # randomly shift images horizontally (fraction of total width)
+                        height_shift_range=0.1,
+                        # randomly shift images vertically (fraction of total height)
                         horizontal_flip=True,  # randomly flip images
                         vertical_flip=False)  # randomly flip images
 
                     # Compute quantities required for featurewise normalization
                     # (std, mean, and principal components if ZCA whitening is applied).
-                    datagen.fit(X_train)
+                    datagen.fit(x_batch)
 
                     # Fit the model on the batches generated by datagen.flow().
-                    model.fit_generator(datagen.flow(X_train, Y_train, batch_size=self.batch_size),
-                                        steps_per_epoch=X_train.shape[0] // self.batch_size,
-                                        validation_data=(X_train, Y_train),
-                                        epochs=self.nb_epoch, verbose=1, max_q_size=100,
-                                        callbacks=[lr_reducer, early_stopper, csv_logger])
-                train_data_set.next()
+                    history = self.model.fit_generator(datagen.flow(x_batch, y_batch, batch_size=self.batch_size),
+                                        steps_per_epoch=x_batch.shape[0] // self.batch_size,
+                                        validation_data=(x_tbatch, y_tbatch),
+                                        epochs=self.epoch, verbose=1, max_q_size=100,
+                                        callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
 
-            os.makedirs(self.md_store_path+'/'+self.batch, exist_ok=True)
-            keras.models.save_model(model,''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
-            config = {"nn_id": conf_data["nn_id"],
-                      "nn_wf_ver_id": conf_data["wf_ver"], "nn_batch_ver_id": self.batch}
-            result = TrainSummaryAccLossInfo(config)
-            result.loss_info["loss"] = history.losses
-            result.acc_info["acc"] = history.acc
-            self.save_accloss_info(result)
-        except Exception as e:
-            raise Exception(e)
-        finally:
-            keras.backend.clear_session()
-        return None
+                self.loss = history.history["loss"][0]
+                self.acc = history.history["acc"][0]
+                self.val_loss = history.history["val_loss"][0]
+                self.val_acc = history.history["val_acc"][0]
 
-    def _init_node_parm(self, node_id):
-        wf_conf = WorkFlowNetConfReNet(node_id)
-        self.wf_state_id = wf_conf.get_state_id(node_id).pk
-        netconfig = wf_conf.get_view_obj(node_id)
-        self.md_store_path = netconfig['model_path']
-        self.train_feed_node = netconfig['train_feed_node']
-        self.eval_feed_node = netconfig['eval_feed_node']
-        self.labels = netconfig['labels']
-        self.batch_size = netconfig['batch_size']
-        self.nb_classes = netconfig['nb_classes']
-        self.nb_epoch = netconfig['nb_epoch']
-        self.data_augmentation = (netconfig['data_augmentation'] == 'True')
-        self.pred_cnt = netconfig['pred_cnt']
+                self.g_train_cnt += 1
+                println("Save Train Count=" + str(self.g_train_cnt))
+                self.set_saver_model()
 
-    def _set_progress_state(self):
-        return None
+            input_data.next()
+        # except Exception as e:
+        #     println("Error[400] ..............................................")
+        #     println(e)
 
-    def predict(self, node_id, parm):
+    def run(self, conf_data):
+        println("run NeuralNetNodeCnn Train")
+        # init data setup
+        self._init_train_parm(conf_data)
+        self._init_value()
+        # set batch
+        self.train_batch, self.batch = self.make_batch(self.node_id)
+
+        # get data & dataconf
+        test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
+        input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
+
+        # set netconf, dataconf
+        self._set_netconf_parm()
+        self._set_dataconf_parm(dataconf)
+
+        self.get_model_resnet()
+
+        self.train_run_resnet(input_data, test_data)
+
+        self.train_return_data["TrainResult"] = self.train_return_arr
+
+        if self.epoch == 0 or self.train_cnt == 0:
+            self.eval(self.node_id, self.conf_data, None, None)
+
+        return self.train_return_data
+
+    ####################################################################################################################
+    def eval_run(self, input_data):
+        self.batch_size = self.netconf["param"]["batch_size"]
+        labels = self.netconf["labels"]
+        pred_cnt = self.netconf["param"]["predictcnt"]
         try:
-            # init parms
-            self._init_node_parm(node_id)
-            self.batch = self.get_active_batch(node_id)
+            predlog = self.netconf["param"]["predictlog"]
+        except:
+            predlog = "N"
+        # println(labels)
+        t_cnt_arr = []
+        f_cnt_arr = []
+        for i in range(len(labels)):
+            t_cnt_arr.append(0)
+            f_cnt_arr.append(0)
 
-            if (os.path.exists(''.join([self.md_store_path+'/'+self.batch, '/model.bin'])) == True):
-                model = keras.models.load_model(''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
-                filelist = sorted(parm.items(), key=operator.itemgetter(0))
-                data = {}
-                for file in filelist:
-                    value = file[1]
-                    filename = file[1].name
-                    data_node_name = self._get_backward_node_with_type(node_id, 'data')
-                    data_config = WorkFlowDataImage().get_step_source(data_node_name[0])
-                    preprocess = data_config['preprocess']
+        input_data.pointer = 0
+        while (input_data.has_next()):
+            data_set = input_data[0:input_data.data_size()]
+            x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "E")
 
-                    # input image dimensions
-                    x_size, y_size = preprocess['x_size'], preprocess['y_size']
+            try:
+                logits = self.model.predict(x_batch)
 
-                    img = image.load_img(value, target_size=(x_size, y_size))
-                    x = image.img_to_array(img)
-                    x = np.expand_dims(x, axis=0)
-                    x = preprocess_input(x)
-                    return_value = model.predict(x)
+                for i in range(len(logits)):
+                    true_name = y_batch[i]
+                    file_name = n_batch[i]
 
-                    one = np.zeros((len(self.labels), 2))
-                    for i in range(len(self.labels)):
-                        one[i][0] = i
-                        one[i][1] = return_value[0][i]
-                    onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
-                    data_sub = {}
-                    data_sub_key = []
-                    data_sub_val = []
-                    for i in range(self.pred_cnt):
-                        data_sub_key.append(self.labels[int(onesort[i][0])])
-                        val = round(onesort[i][1], 8) * 100
-                        if val < 0:
-                            val = 0
-                        data_sub_val.append(val)
-                    data_sub["key"] = data_sub_key
-                    data_sub["val"] = data_sub_val
-                    data[filename] = data_sub
-                keras.backend.clear_session()
-                return data
-            else:
-                raise Exception('No Model')
-        except Exception as e:
-            raise Exception(e)
+                    logit = []
+                    logit.append(logits[i])
+                    #
+                    idx = labels.index(true_name)
+                    retrun_data = self.set_predict_return_cnn_img(labels, logit, pred_cnt)
+                    pred_name = retrun_data["key"][0]
 
-    def eval(self, node_id, parm, data=None, result=None):
+                    if self.eval_flag == "E":
+                        if true_name == pred_name:
+                            t_cnt_arr[idx] = t_cnt_arr[idx] + 1
+                            strLog = "[True] : "
+                            if (predlog == "TT"):
+                                println(strLog + true_name + " FileName=" + file_name)
+                                println(retrun_data["key"])
+                                println(retrun_data["val"])
+                        else:
+                            f_cnt_arr[idx] = f_cnt_arr[idx] + 1
+                            strLog = "[False] : "
+                            if (predlog == "FF"):
+                                println(strLog + true_name + " FileName=" + file_name)
+                                println(retrun_data["key"])
+                                println(retrun_data["val"])
+                        if (predlog == "AA"):
+                            println(strLog + true_name + " FileName=" + file_name)
+                            println(retrun_data["key"])
+                            println(retrun_data["val"])
+                    else:
+                        try:
+                            listTF = retrun_data["key"].index(true_name)
+                            t_cnt_arr[idx] = t_cnt_arr[idx] + 1
+                            strLog = "[True] : "
+                            if (predlog == "T"):
+                                println(strLog + true_name + " FileName=" + file_name)
+                                println(retrun_data["key"])
+                                println(retrun_data["val"])
+                        except:
+                            f_cnt_arr[idx] = f_cnt_arr[idx] + 1
+                            strLog = "[False] : "
+                            if (predlog == "F"):
+                                println(strLog + true_name + " FileName=" + file_name)
+                                println(retrun_data["key"])
+                                println(retrun_data["val"])
+                        if (predlog == "A"):
+                            println(strLog + true_name + " FileName=" + file_name)
+                            println(retrun_data["key"])
+                            println(retrun_data["val"])
+
+                    self.eval_data.set_result_info(true_name, pred_name)
+
+            except Exception as e:
+                println(e)
+                println("None to restore checkpoint. Initializing variables instead.")
+
+            input_data.next()
+
+        self.eval_print(labels, t_cnt_arr, f_cnt_arr)
+
+    def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
+        println(
+            "####################################################################################################")
+        result = []
+        strResult = "['Eval ......................................................']"
+        result.append(strResult)
+        totCnt = 0
+        tCnt = 0
+        fCnt = 0
+        for i in range(len(labels)):
+            strResult = "Category : " + self.spaceprint(labels[i], 15) + " "
+            strResult += "TotalCnt=" + self.spaceprint(str(t_cnt_arr[i] + f_cnt_arr[i]), 8) + " "
+            strResult += "TrueCnt=" + self.spaceprint(str(t_cnt_arr[i]), 8) + " "
+            strResult += "FalseCnt=" + self.spaceprint(str(f_cnt_arr[i]), 8) + " "
+            if t_cnt_arr[i] + f_cnt_arr[i] != 0:
+                strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(
+                    round(t_cnt_arr[i] / (t_cnt_arr[i] + f_cnt_arr[i]) * 100)) + "%"
+            totCnt += t_cnt_arr[i] + f_cnt_arr[i]
+            tCnt += t_cnt_arr[i]
+            fCnt += f_cnt_arr[i]
+            println(strResult)
+            result.append(strResult)
+        strResult = "---------------------------------------------------------------------------------------------------"
+        println(strResult)
+        strResult = "Total Category=" + self.spaceprint(str(len(labels)), 11) + " "
+        strResult += "TotalCnt=" + self.spaceprint(str(totCnt), 8) + " "
+        strResult += "TrueCnt=" + self.spaceprint(str(tCnt), 8) + " "
+        strResult += "FalseCnt=" + self.spaceprint(str(fCnt), 8) + " "
+        if totCnt != 0:
+            strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(tCnt / totCnt * 100)) + "%"
+        println(strResult)
+        result.append(strResult)
+        println(
+            "###################################################################################################")
+
+    def eval(self, node_id, conf_data, data=None, result=None):
+        println("run NeuralNetNodeCnn eval")
+        if data == None:
+            self.eval_flag = "T"
+        else:
+            self.eval_flag = "E"
+
+        # eval
+        self.batch = self.get_eval_batch(node_id)
+        config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"],
+                  "nn_id": self.nn_id,
+                  "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
+        self.eval_data = TrainSummaryInfo(conf=config)
+
+        # get data & dataconf
+        test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
+
+        self.eval_run(test_data)
+
+        return self.eval_data
+
+    ####################################################################################################################
+    def predict(self, node_id, filelist):
         """
-
-        :param node_id:
-        :param parm:
-        :return:
         """
-        try:
-            eval_config_data = WorkFlowEvalConfig().get_view_obj(node_id)
-            data_node = self.get_linked_prev_node_with_grp('data')
-            data_node_name = data_node[0].get_node_name()
-            data_config_data = WorkFlowDataImage().get_step_source(data_node_name)
-            self.cls_pool = parm['cls_pool']
-            self._init_node_parm(self.get_node_name())
-            eval_data_set = self.cls_pool[self.wf_state_id + '_' + self.eval_feed_node]
-            total_cnt = eval_data_set.data_size()
-            self.batch = self.get_eval_batch(node_id)
-            config = {"type": eval_config_data["type"], "labels": self.labels, "nn_id": parm["nn_id"],
-                      "nn_wf_ver_id": parm["wf_ver"], "nn_batch_ver_id" : self.batch}
-            train = TrainSummaryInfo(conf=config)
-            if (os.path.exists(''.join([self.md_store_path+'/'+self.batch, '/model.bin'])) == True):
-                model = keras.models.load_model(''.join([self.md_store_path+'/'+self.batch, '/model.bin']))
-            else:
-                raise Exception('No Model')
-            preprocess = data_config_data['preprocess']
-            # input image dimensions
-            img_rows, img_cols = preprocess['x_size'], preprocess['y_size']
-            # The CIFAR10 images are RGB.
-            img_channels = preprocess['channel']
-            true_cnt = 0
-            while (eval_data_set.has_next()):
-                for i in range(0, eval_data_set.data_size(), 1):
-                    data_set = eval_data_set[i:i+1]
-                    X_train = data_set[0]
-                    targets = data_set[1]
-                    names = data_set[2]
-                    rawdata_conv = np.zeros((X_train.size, X_train[0].size))
-                    r = 0
-                    for j in X_train:
-                        j = j.tolist()
-                        rawdata_conv[r] = j
-                        r += 1
-                    rawdata_conv = np.reshape(rawdata_conv, (-1, img_rows, img_cols, img_channels))
+        println("run NeuralNetNodeCnn Predict")
+        self.node_id = node_id
+        self._init_value()
+        # net, data config setup
+        data_node_name = self._get_backward_node_with_type(node_id, 'data')
+        dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
+        self._set_netconf_parm()
+        self._set_dataconf_parm(dataconf)
 
-                    X_train = preprocess_input(rawdata_conv)
+        # data shape change MultiValuDict -> nd array
+        filename_arr, filedata_arr = self.change_predict_fileList(filelist, dataconf)
 
-                    return_values = model.predict(X_train)
+        # get unique key
+        unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
 
-                    one = np.zeros((len(self.labels), 2))
-                    for i in range(len(self.labels)):
-                        one[i][0] = i
-                        one[i][1] = return_values[0][i]
-                    onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
-                    data_sub_key = []
-                    for i in range(self.pred_cnt):
-                        data_sub_key.append(self.labels[int(onesort[i][0])])
-                    if str(targets[0],'UTF-8') in data_sub_key:
-                        true_cnt = true_cnt + 1
+        ## create tensorflow graph
+        if (NeuralNetModel.dict.get(unique_key)):
+            self = NeuralNetModel.dict.get(unique_key)
+            graph = NeuralNetModel.graph.get(unique_key)
+        else:
+            self.get_model_resnet()
 
-                    return_value = self.labels[np.argmax(return_values)]
-                    train.set_result_info(str(targets[0],'UTF-8'),return_value)
-                    if str(targets[0],'UTF-8') != return_value:
-                        print(str(targets[0],'UTF-8') + '/' + str(names[0]))
-                eval_data_set.next()
-            print("Accuracy : " + str(true_cnt / total_cnt * 100))
-            return train
-        except Exception as e:
-            raise Exception(e)
-        finally:
-            keras.backend.clear_session()
+            NeuralNetModel.dict[unique_key] = self
+            NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+            graph = tf.get_default_graph()
+
+        for i in range(len(filename_arr)):
+            file_name = filename_arr[i]
+            file_data = filedata_arr[i]
+
+            logits = self.model.predict(file_data)
+
+            labels = self.netconf["labels"]
+            pred_cnt = self.netconf["param"]["predictcnt"]
+            retrun_data = self.set_predict_return_cnn_img(labels, logits, pred_cnt)
+            self.pred_return_data[file_name] = retrun_data
+            println("Return Data.......................................")
+            println(self.pred_return_data)
+
+        return self.pred_return_data

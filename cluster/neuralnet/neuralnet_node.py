@@ -6,6 +6,8 @@ import numpy as np
 import operator
 from PIL import Image
 import io
+import os
+import datetime
 
 class NeuralNetNode(WorkFlowCommonNode):
     """
@@ -193,12 +195,6 @@ class NeuralNetNode(WorkFlowCommonNode):
 
                 for img_val in value.chunks():
                     img = Image.open(io.BytesIO(img_val))
-                    # println(image)
-
-                    # img = img.resize((x_size, y_size), Image.ANTIALIAS)
-                    #
-                    # img = np.array(img)
-                    # img = img.reshape([-1, x_size, y_size, channel])
 
                     sess, img = DataNodeImage().image_convert(None, dataconf, img, filename, None)
 
@@ -244,3 +240,88 @@ class NeuralNetNode(WorkFlowCommonNode):
         data_sub["key"] = data_sub_key
         data_sub["val"] = data_sub_val
         return data_sub
+
+    def spaceprint(self, val, cnt):
+        leng = len(str(val))
+        cnt = cnt - leng
+        restr = ""
+        for i in range(cnt):
+            restr += " "
+        restr = restr + str(val)
+        return restr
+
+    def model_file_delete(self, model_path, modelname):
+        existcnt = 10
+        filelist = os.listdir(model_path)
+
+        flist = []
+        i = 0
+        for filename in filelist:
+            filetime = datetime.datetime.fromtimestamp(os.path.getctime(model_path + '/' + filename)).strftime(
+                '%Y%m%d%H%M%S')
+            tmp = [filename, filetime]
+            if filename.find(modelname) > -1:
+                flist.append(tmp)
+            i += 1
+        flistsort = sorted(flist, key=operator.itemgetter(1), reverse=True)
+
+        for i in range(len(flistsort)):
+            if i > existcnt * 3:
+                os.remove(model_path + "/" + flistsort[i][0])
+
+    def get_batch_img_data(self, data_set, type):
+        num_classes = self.netconf["config"]["num_classes"]
+        labels = self.netconf["labels"]
+        x_size = self.dataconf["preprocess"]["x_size"]
+        y_size = self.dataconf["preprocess"]["y_size"]
+        channel = self.dataconf["preprocess"]["channel"]
+
+        labelsHot = np.zeros((num_classes, num_classes))
+
+        for i in range(num_classes):
+            for j in range(num_classes):
+                if i == j:
+                    labelsHot[i][j] = 1
+
+        name_data_batch = data_set[2]
+        label_data_batch = data_set[1]
+        img_data_batch = data_set[0]
+
+        if type == "T":
+            r = 0
+            y_batch = np.zeros((len(label_data_batch), num_classes))
+            for j in label_data_batch:
+                j = j.decode('UTF-8')
+                k = labels.index(j)
+                y_batch[r] = labelsHot[k]
+                r += 1
+        else:
+            y_batch = []
+            for j in label_data_batch:
+                j = j.decode('UTF-8')
+                y_batch.append(j)
+
+        n_batch = []
+        for j in name_data_batch:
+            j = j.decode('UTF-8')
+            n_batch.append(j)
+
+        try:
+            x_batch = np.zeros((len(img_data_batch), len(img_data_batch[0])))
+        except Exception as e:
+            print(e)
+        r = 0
+        for j in img_data_batch:
+            j = j.tolist()
+            x_batch[r] = j
+            r += 1
+
+        x_batch = np.reshape(x_batch, (-1, x_size, y_size, channel))
+
+        # println("Image Label ////////////////////////////////////////////////")
+        # println(label_data_batch)
+        # println(y_batch)
+        # println("Image /////////////////////////////////////////////////")
+        # println(x_batch)
+
+        return x_batch, y_batch, n_batch
