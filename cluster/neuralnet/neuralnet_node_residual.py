@@ -108,13 +108,11 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
         filelist = os.listdir(self.model_path)
         filelist.sort(reverse=True)
-
-        last_name = ""
-        for filename in filelist:
-            last_name = filename
-            break
-
-        last_chk_path = self.model_path + "/" + last_name
+        self.batch = self.get_eval_batch(self.node_id)
+        try:
+            last_chk_path = self.model_path + "/" + self.load_batch+self.file_end
+        except:
+            last_chk_path = self.model_path + "/" + self.get_eval_batch(self.node_id)+self.file_end
 
         try:
             self.model = keras.models.load_model(last_chk_path)
@@ -208,6 +206,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self._init_train_parm(conf_data)
         self._init_value()
         # set batch
+        self.load_batch = self.get_eval_batch(self.node_id)
         self.train_batch, self.batch = self.make_batch(self.node_id)
 
         # get data & dataconf
@@ -357,7 +356,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
             self.eval_flag = "E"
 
         # eval
-        self.batch = self.get_eval_batch(node_id)
         config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"],
                   "nn_id": self.nn_id,
                   "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
