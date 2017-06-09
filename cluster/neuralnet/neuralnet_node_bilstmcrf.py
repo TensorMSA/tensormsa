@@ -5,6 +5,7 @@ import numpy as np
 import logging
 import tensorflow as tf
 from cluster.common.neural_common_bilismcrf import BiLstmCommon
+from common.graph.nn_graph_manager import NeuralNetModel
 
 class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
@@ -82,7 +83,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             self.max_iter = None
             self.lowercase = True
             self.train_embeddings = False
-            self.nepochs = 50
+            self.nepochs = 5
             self.p_dropout = 0.5
             self.batch_size = 50
             self.p_lr = 0.001
@@ -274,6 +275,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
     def add_init_op(self):
         self.init = tf.global_variables_initializer()
+        self.saver = tf.train.Saver(tf.all_variables())
 
 
     def add_summary(self, sess):
@@ -343,13 +345,13 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                 if i % 10 == 0:
                     self.file_writer.add_summary(summary, epoch * nbatches + i)
 
-            acc, f1 = self.run_evaluate(sess, dev, tags)
+            acc, f1, _ = self.run_evaluate(sess, dev, tags)
             logging.info("- dev acc {:04.2f} - f1 {:04.2f}".format(100 * acc, 100 * f1))
             return acc, f1
         except Exception as e :
             print ("Exception on run_epoch {0}".format(e))
 
-    def run_evaluate(self, sess, test, tags):
+    def run_evaluate(self, sess, test, tags, result=None):
         """
         Evaluates performance on test set
         Args:
@@ -373,6 +375,9 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
                     lab_chunks = set(self.get_chunks(lab, tags))
                     lab_pred_chunks = set(self.get_chunks(lab_pred, tags))
+                    if(result) :
+                        result.set_result_info(self.get_chunks(lab, tags)[0][0],
+                                               self.get_chunks(lab_pred, tags)[0][0])
                     correct_preds += len(lab_chunks & lab_pred_chunks)
                     total_preds += len(lab_pred_chunks)
                     total_correct += len(lab_chunks)
@@ -381,7 +386,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             r = correct_preds / total_correct if correct_preds > 0 else 0
             f1 = 2 * p * r / (p + r) if correct_preds > 0 else 0
             acc = np.mean(accs)
-            return acc, f1
+            return acc, f1, result
         except Exception as e:
             raise Exception(e)
 
@@ -422,7 +427,6 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                     if not os.path.exists(self.model_output):
                         os.makedirs(self.model_output)
                     saver.save(sess, self.model_output)
-                    self.model_output = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
                     best_score = f1
                     logging.info("- new best score!")
                 else:
@@ -432,22 +436,89 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                             nepoch_no_imprv))
                         break
 
-    def eval(self, test, tags):
-        saver = tf.train.Saver()
-        with tf.Session() as sess:
-            logging.info("Testing model over test set")
-            saver.restore(sess, self.model_output)
-            acc, f1 = self.run_evaluate(sess, test, tags)
-            logging.info("- test acc {:04.2f} - f1 {:04.2f}".format(100 * acc, 100 * f1))
 
-    def predict(self, tags, processing_word, sentence):
-        idx_to_tag = {idx: tag for tag, idx in iter(tags.items())}
-        saver = tf.train.Saver()
-        with tf.Session() as sess:
-            saver.restore(sess, self.model_output)
-            words_raw = sentence.strip().split(" ")
-            words = list(map(lambda x: processing_word(x), words_raw))
-            if type(words[0]) == tuple:
-                words = zip(*words)
-            pred_ids, _ = self.predict_batch(sess, [words])
-            preds = list(map(lambda idx: idx_to_tag[idx], list(pred_ids[0])))
+    def eval(self, node_id, conf_data, data=None, result=None, stand=0.1):
+        """
+        eval process check if model works well (accuracy with cross table)
+        :param node_id:
+        :param conf_data:
+        :param data:
+        :param result:
+        :return:
+        """
+        try :
+            node_id = self.get_node_name()
+            lables = list(map(lambda x : x.split('-')[-1], list(self.vocab_tags.keys())))
+            result.set_result_data_format({"labels": lables})
+            result.set_nn_batch_ver_id(self.get_eval_batch(node_id))
+
+            with tf.Session() as sess:
+                # load trained model
+                if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
+                    self.saver.restore(sess, self.model_output)
+                else:
+                    raise Exception("bilstm crf error : no pretrained model exist")
+
+                if(data.has_next() == False) :
+                    result.set_result_info([''], [''])
+                    logging.info("no test data exists")
+                    return result
+
+                while (data.has_next()):
+                    test = self.CoNLLDataset(data.get_file_name(),
+                                            self.processing_word,
+                                            self.processing_tag,
+                                            self.max_iter)
+                    acc, f1, result = self.run_evaluate(sess, test, self.vocab_tags, result=result)
+                    logging.info("- test acc {:04.2f} - f1 {:04.2f}".format(100 * acc, 100 * f1))
+                    data.next()
+            return result
+        except Exception as e :
+            raise Exception ("error on eval wcnn : {0}".format(e))
+
+
+    def predict(self, node_id, parm={"input_data": {}}):
+        """
+        predict logic for ner
+        tockenize input text and find matching tags for each value
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        try:
+            # get unique key
+            unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
+
+            # set init params
+            self._init_node_parm(node_id)
+            idx_to_tag = {idx: tag for tag, idx in iter(self.vocab_tags.items())}
+
+            ## create tensorflow graph
+            if (NeuralNetModel.dict.get(unique_key)):
+                self = NeuralNetModel.dict.get(unique_key)
+                graph = NeuralNetModel.graph.get(unique_key)
+            else:
+                self.build_graph()
+                NeuralNetModel.dict[unique_key] = self
+                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+                graph = tf.get_default_graph()
+
+            with tf.Session(graph=graph) as sess:
+                # load trained model
+                if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
+                    self.saver.restore(sess, self.model_output)
+                else:
+                    raise Exception("bilstm crf error : no pretrained model exist")
+
+                input_arr = parm["input_data"].split(' ')
+                words = list(map(lambda x: self.processing_word(x), input_arr))
+                if type(words[0]) == tuple:
+                    words = zip(*words)
+                pred_ids, _ = self.predict_batch(sess, [words])
+                preds = list(map(lambda idx: idx_to_tag[idx], list(pred_ids[0])))
+
+                return preds
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            sess.close()

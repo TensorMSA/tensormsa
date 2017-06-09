@@ -75,10 +75,6 @@ class DataNodeIob(DataNode, BiLstmCommon):
                 vocab.add(self.UNK)
                 vocab_chars = self.get_char_vocab(train, chars=vocab_chars)
 
-                # move source file to store path
-                str_buf = self._load_local_files(file_path)
-                self._save_raw_file(str_buf)
-
             # write dict and vecotors for train
             self.write_char_embedding(vocab_chars, ''.join([netconf_path, 'char.vec']))
             self.write_vocab(vocab_chars, ''.join([netconf_path, 'chars.txt']))
@@ -88,6 +84,11 @@ class DataNodeIob(DataNode, BiLstmCommon):
 
         except Exception as e:
             raise Exception(e)
+        finally :
+            for file_path in fp_list:
+                # move source file to store path
+                str_buf = self._load_local_files(file_path)
+                self._save_raw_file(str_buf)
 
     def _save_raw_file(self,buffer_list):
         file_name = ''.join([strftime("%Y-%m-%d-%H:%M:%S", gmtime()) , '.iob'])
