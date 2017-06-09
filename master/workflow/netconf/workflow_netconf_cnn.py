@@ -35,7 +35,7 @@ class WorkFlowNetConfCNN(WorkFlowNetConf):
             None
 
         netconf["modelpath"] = get_model_path(nn_id, wfver, node)
-        netconf["modelname"] = "model_" + nn_id + "_" + wfver
+        netconf["modelname"] = nn_id + "_" + wfver
 
         obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
 
