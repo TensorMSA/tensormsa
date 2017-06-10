@@ -33,3 +33,12 @@ class CB_ENTITY_LIST_INFO_Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.CB_ENTITY_LIST_INFO
         fields = ('cb_id', 'intent_id', 'story_id', 'entity_type', 'entity_list')
+
+
+class CB_TAGGING_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : CB_TAGGING_INFO
+    """
+    class Meta:
+        model = models.CB_TAGGING_INFO
+        fields = ('cb_id', 'pos_type', 'proper_noun')

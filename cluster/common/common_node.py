@@ -670,7 +670,10 @@ class WorkFlowCommonNode :
         if (embeder_id) :
             w2v_id = embeder_id
         else :
-            w2v_id = self.word_embed_id
+            if('word_embed_id' in self.__dict__) :
+                w2v_id = self.word_embed_id
+            else :
+                w2v_id = ''
 
         if(embed_type == 'onehot'):
             for data in input_data:

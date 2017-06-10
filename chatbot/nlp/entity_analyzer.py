@@ -35,8 +35,19 @@ class EntityAnalyzer(ShareData):
                 self.entity[key] = []
 
     #Custom Case : ex)안녕 and len < 3
-    def _preprocess_data(self, ShareData):
-        return ShareData
+    def _preprocess_data(self, share_data, pos_tags):
+        #except meaningless
+        return_msg = ""
+        if (pos_tags[1] in ['SY', 'SF']):
+            pass
+        elif (pos_tags[1] in ['NNG', 'NNP']):
+            if (self._extract_proper_entity(pos_tags[0]) == True):
+                share_data.set_story_slot_entity('이름', pos_tags[0])
+                pos_tags = (''.join(['[이름]']), '')
+            return_msg = ''.join([return_msg, ' ' , pos_tags[0]])
+        else:
+            return_msg = ''.join([return_msg, ' ', pos_tags[0]])
+        return return_msg
 
     def parse(self, share_data):
         """
@@ -44,33 +55,14 @@ class EntityAnalyzer(ShareData):
         :param share_data:
         :return:
         """
-        if (share_data.get_request_type() == 'image') :
-            pass
-        else:
-            input_data = share_data.get_request_data()
-            pos_tags = self._pos_tagger(input_data)
-            print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
-            return_msg = ""
-            for i in range(0, len(pos_tags)):
-                if(pos_tags[i][1] in ['SY','SF']):
-                    pass
-                elif(pos_tags[i][1] in ['NNG','NNP']):
-                    if(self._extract_name_entity(pos_tags[i][0]) == True):
-                        share_data.set_story_slot_entity('이름', pos_tags[i][0])
-                        pos_tags[i] = (''.join(['[이름]']), '')
-                    else:
-                        for key in self.entity_key_list:
-                            for val in self.entity[key]:
-                                word = pos_tags[i][0]
-                                if(word == val):
-                                    pos_tags[i] = (''.join(['[' , key, ']']), '')
-                                    share_data.set_story_slot_entity(key, val)
-                                    break
-                    return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
-                else:
-                    return_msg = ''.join([return_msg, ' ', pos_tags[i][0]])
-            print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
-            share_data.set_convert_data(return_msg)
+        input_data = share_data.get_request_data()
+        pos_tags = self._pos_tagger(input_data)
+        print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
+        return_msg = ""
+        for i in range(0, len(pos_tags)):
+            return_msg += self._preprocess_data(share_data, pos_tags[i])
+        print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
+        share_data.set_convert_data(return_msg)
         return share_data
 
     def _pos_tagger(self, input, type ='mecab'):
@@ -91,7 +83,8 @@ class EntityAnalyzer(ShareData):
             twitter = Twitter(jvmpath=None)
             return twitter.pos(str(input))
 
-    def _extract_name_entity(self, value):
+    # TODO : get nlp DB
+    def _extract_proper_entity(self, value):
         exist = False
         input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
         for line in input_file:
