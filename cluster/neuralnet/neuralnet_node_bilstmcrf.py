@@ -18,21 +18,29 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
             # get prev node for load data
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
+            best_score = 0
+            with tf.Session() as sess:
+                while (train_data_set.has_next()):
+                    # create dataset
+                    dev = self.CoNLLDataset(train_data_set.get_file_name(),
+                                            self.processing_word,
+                                            self.processing_tag,
+                                            self.max_iter)
+                    train = self.CoNLLDataset(train_data_set.get_file_name(),
+                                              self.processing_word,
+                                              self.processing_tag,
+                                              self.max_iter)
+                    # train
+                    best_score = self.train(train, dev, self.vocab_tags, sess)
 
-            while (train_data_set.has_next()):
-                # create dataset
-                dev = self.CoNLLDataset(train_data_set.get_file_name(),
-                                        self.processing_word,
-                                        self.processing_tag,
-                                        self.max_iter)
-                train = self.CoNLLDataset(train_data_set.get_file_name(),
-                                          self.processing_word,
-                                          self.processing_tag,
-                                          self.max_iter)
-                # train
-                self.train(train, dev, self.vocab_tags)
-                train_data_set.next()
-            train_data_set.reset_pointer()
+                    # save model
+                    self.output_path = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
+                    if not os.path.exists(self.model_output):
+                        os.makedirs(self.model_output)
+                    self.saver.save(sess, self.model_output)
+
+                    train_data_set.next()
+            return [best_score]
         except Exception as e :
             raise Exception ("error on fast text tain process : {0}".format(e))
 
@@ -45,7 +53,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
         try:
             wf_conf = WorkFlowNetConfBiLstmCrf(node_id)
             self.node_id = node_id
-            self.md_store_path = wf_conf.get_model_store_path()
+            self.md_store_path = wf_conf.get_model_store_path
 
             # create dict folder for ner if not exists
             dict_path = ''.join([self.md_store_path, '/dict/'])
@@ -66,10 +74,10 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
             self.nchars = len(self.vocab_chars)
             self.ntags = len(self.vocab_tags)
-            self.lowercase = False
-            self.max_iter = None
-            self.crf = True  # size one is not allowed
-            self.chars = True  # if char embedding, training is 3.5x slower
+            self.lowercase = wf_conf.lowercase
+            self.max_iter = wf_conf.max_iter
+            self.crf = wf_conf.crf
+            self.chars = wf_conf.chars
 
             self.processing_word = self.get_processing_word(self.vocab_words,
                                                             self.vocab_chars,
@@ -78,20 +86,18 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             self.processing_tag = self.get_processing_word(self.vocab_tags,
                                                            lowercase=False)
 
-            self.dim = 300
-            self.dim_char = 120
-            self.max_iter = None
-            self.lowercase = True
-            self.train_embeddings = False
-            self.nepochs = 5
-            self.p_dropout = 0.5
-            self.batch_size = 50
-            self.p_lr = 0.001
-            self.lr_decay = 0.9
-            self.nepoch_no_imprv = 3
+            self.dim = wf_conf.dim
+            self.dim_char = wf_conf.dim_char
+            self.train_embeddings = wf_conf.train_embeddings
+            self.nepochs = wf_conf.nepochs
+            self.p_dropout = wf_conf.p_dropout
+            self.batch_size = wf_conf.batch_size
+            self.p_lr = wf_conf.p_lr
+            self.lr_decay = wf_conf.lr_decay
+            self.nepoch_no_imprv = wf_conf.nepoch_no_imprv
 
-            self.hidden_size = 300
-            self.char_hidden_size = 100
+            self.hidden_size = wf_conf.hidden_size
+            self.char_hidden_size = wf_conf.char_hidden_size
 
             if(self.check_batch_exist(node_id)) :
                 self.output_path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
@@ -376,8 +382,10 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                     lab_chunks = set(self.get_chunks(lab, tags))
                     lab_pred_chunks = set(self.get_chunks(lab_pred, tags))
                     if(result) :
-                        result.set_result_info(self.get_chunks(lab, tags)[0][0],
-                                               self.get_chunks(lab_pred, tags)[0][0])
+                        if (len(self.get_chunks(lab_pred, tags)) > 0 and
+                            len(self.get_chunks(lab, tags)) > 0 ) :
+                            result.set_result_info(self.get_chunks(lab, tags)[0][0],
+                                                   self.get_chunks(lab_pred, tags)[0][0])
                     correct_preds += len(lab_chunks & lab_pred_chunks)
                     total_preds += len(lab_pred_chunks)
                     total_correct += len(lab_chunks)
@@ -390,7 +398,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
         except Exception as e:
             raise Exception(e)
 
-    def train(self, train, dev, tags):
+    def train(self, train, dev, tags, sess):
         """
         Performs training with early stopping and lr exponential decay
         Args:
@@ -403,38 +411,34 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
         # for early stopping
         nepoch_no_imprv = 0
-        with tf.Session() as sess:
+        sess.run(self.init)
 
-            sess.run(self.init)
+        # restore model
+        if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
+            saver.restore(sess, self.model_output)
 
-            # restore model
-            if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
-                saver.restore(sess, self.model_output)
+        # tensorboard
+        self.add_summary(sess)
+        for epoch in range(self.nepochs):
+            logging.info("Epoch {:} out of {:}".format(epoch + 1, self.nepochs))
 
-            # tensorboard
-            self.add_summary(sess)
-            for epoch in range(self.nepochs):
-                logging.info("Epoch {:} out of {:}".format(epoch + 1, self.nepochs))
+            acc, f1 = self.run_epoch(sess, train, dev, tags, epoch)
 
-                acc, f1 = self.run_epoch(sess, train, dev, tags, epoch)
+            # decay learning rate
+            self.p_lr *= self.lr_decay
 
-                # decay learning rate
-                self.p_lr *= self.lr_decay
-
-                # early stopping and saving best parameters
-                if f1 >= best_score:
-                    nepoch_no_imprv = 0
-                    if not os.path.exists(self.model_output):
-                        os.makedirs(self.model_output)
-                    saver.save(sess, self.model_output)
-                    best_score = f1
-                    logging.info("- new best score!")
-                else:
-                    nepoch_no_imprv += 1
-                    if nepoch_no_imprv >= self.nepoch_no_imprv:
-                        logging.info("- early stopping {} epochs without improvement".format(
-                            nepoch_no_imprv))
-                        break
+            # early stopping and saving best parameters
+            if f1 >= best_score:
+                nepoch_no_imprv = 0
+                best_score = f1
+                logging.info("- new best score!")
+            else:
+                nepoch_no_imprv += 1
+                if nepoch_no_imprv >= self.nepoch_no_imprv:
+                    logging.info("- early stopping {} epochs without improvement".format(
+                        nepoch_no_imprv))
+                    break
+        return best_score
 
 
     def eval(self, node_id, conf_data, data=None, result=None, stand=0.1):

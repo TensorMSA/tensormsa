@@ -11,170 +11,136 @@ class WorkFlowNetConfBiLstmCrf(WorkFlowNetConf):
         :param key:
         :return:
         """
-        self.key = key
+        if key is not None :
+            self.key = key
+            self.conf = self.get_view_obj(key)
+
         self._set_key_parms([])
         self._set_prhb_parms([])
 
-    def validation_check(self, json_data):
-        error_msg = ""
-        if ('learning_rate' not in json_data):
-            error_msg = ''.join([error_msg, 'learning_rate (int) not defined'])
-        if ('batch_size' not in json_data):
-            error_msg = ''.join([error_msg, 'batch_size (int) not defined'])
-        if ('batch_size' not in json_data):
-            error_msg = ''.join([error_msg, 'batch_size (int) not defined'])
-        if ('iter' not in json_data):
-            error_msg = ''.join([error_msg, 'iter (int) not defined'])
-        if (error_msg == ""):
-            return True
-        else:
-            raise Exception (error_msg)
-
+    @property
     def get_model_store_path(self):
         """
-
-        :param node_id:
-        :return:
+        getter for preprocess
         """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
         return self.conf.get('model_path')
 
-    def get_data_store_path(self):
+    @property
+    def crf(self):
         """
+        if sentence max lenghth is one you cannot usr crf layer
+        """
+        return_val = self.conf.get('crf')
+        return True if return_val == None else return_val
 
-        :param node_id:
-        :return:
+    @property
+    def chars(self):
         """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('store_path')
+        if char embedding, training is 3.5x slower
+        """
+        return_val = self.conf.get('chars')
+        return True if return_val == None else return_val
 
+    @property
+    def dim(self):
+        """
+        dimension size of word vector (must be equal to word embedding models vecotr size)
+        """
+        return_val = self.conf.get('dim')
+        return 300 if return_val == None else return_val
 
-    def get_iter_size(self):
+    @property
+    def dim_char(self):
         """
+        if you use default vector it's ok to use default value
+        """
+        return_val = self.conf.get('dim_char')
+        return 120 if return_val == None else return_val
 
-        :param node_id:
-        :return:
+    @property
+    def max_iter(self):
         """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['iter']
+        set maximum iteration size (None : no limit)
+        """
+        return_val = self.conf.get('max_iter')
+        return None if return_val == None else return_val
 
-    def get_batch_size(self):
+    @property
+    def lowercase(self):
         """
+        lowercase preprocess only needed for english
+        """
+        return_val = self.conf.get('lowercase')
+        return False if return_val == None else return_val
 
-        :param node_id:
-        :return:
+    @property
+    def train_embeddings(self):
         """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['batch_size']
+        choose to chagne word embedding vector or not (recommend False)
+        """
+        return_val = self.conf.get('train_embeddings')
+        return False if return_val == None else return_val
 
-    def get_learn_rate(self):
+    @property
+    def nepochs(self):
         """
-        get learning rate of autoencoder
-        :param node_id:
-        :return:
+        iteration time of train
         """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('learning_rate')
+        return_val = self.conf.get('nepochs')
+        return 5 if return_val == None else return_val
 
-    def get_n_input(self):
+    @property
+    def p_dropout(self):
         """
-        number of autoencoder input vecotr size
-        :param node_id:
-        :return:
+        drop rate on train process
         """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('input_size')
+        return_val = self.conf.get('p_dropout')
+        return 0.5 if return_val == None else return_val
 
-    def get_n_hidden(self):
+    @property
+    def batch_size(self):
         """
-        number of autoencoder hidden layer size
-        :param node_id:
-        :return:
+        batch size on train
         """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('n_hidden')
+        return_val = self.conf.get('batch_size')
+        return 50 if return_val == None else return_val
 
-    def get_encode_column(self):
+    @property
+    def p_lr(self):
         """
+        learning rate
+        """
+        return_val = self.conf.get('p_lr')
+        return 0.001 if return_val == None else return_val
 
-        :param node_id:
-        :return:
+    @property
+    def lr_decay(self):
         """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['encode_column']
+        hyper parms on learning rate which chage learning rate on the middle of traing
+        """
+        return_val = self.conf.get('lr_decay')
+        return 0.9 if return_val == None else return_val
 
-    def get_encode_len(self):
+    @property
+    def nepoch_no_imprv(self):
         """
+        early stop cehck rule (if there is no improvement on given amount of time, train will be stopeed)
+        """
+        return_val = self.conf.get('nepoch_no_imprv')
+        return 3 if return_val == None else return_val
 
-        :param node_id:
-        :return:
+    @property
+    def hidden_size(self):
         """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['encode_len']
+        rnn cell size for word
+        """
+        return_val = self.conf.get('hidden_size')
+        return 300 if return_val == None else return_val
 
-    def get_preprocess_type(self):
+    @property
+    def char_hidden_size(self):
         """
-
-        :param node_id:
-        :return:
+        rnn cell size for char
         """
-        if('conf' not in self.__dict__) :
-            self.conf = self.get_view_obj(self.key)
-        return self.conf['preprocess']
-
-    def set_vocab_list(self, data):
-        """
-
-        :param node_id:
-        :return:
-        """
-        obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
-        config_data = getattr(obj, 'node_config_data')
-        config_data['vocab_list'] = data
-        obj.save()
-
-    def get_vocab_list(self):
-        """
-
-        :param node_id:
-        :return:
-        """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('vocab_list')
-
-    def get_vocab_size(self):
-        """
-        get vocab size for onhot encoder
-        :return:
-        """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('vocab_size')
-
-    def get_embed_type(self):
-        """
-        get vector embed type
-        :return:
-        """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('embed_type')
-
-    def get_feeder_pre_type(self):
-        """
-        get vector embed type
-        :return:
-        """
-        if ('conf' not in self.__dict__):
-            self.conf = self.get_view_obj(self.key)
-        return self.conf.get('preprocess_type')
+        return_val = self.conf.get('char_hidden_size')
+        return 100 if return_val == None else return_val
