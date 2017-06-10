@@ -62,5 +62,5 @@ All functions (100%) developed on this project linked to REST API, so that you c
 
 # Contributions *[(Desigin Link)](https://docs.google.com/presentation/d/105lw-nC9a37qJvKXsyBh045pGaBa7lqbCUI4V2mfjKc/pub?start=false&loop=false&delayms=3000)*
  <p align="center">
-  <img src="https://github.com/TensorMSA/TensorMSA/blob/master/HOYA%20F_W%20Design%20Document.jpg?raw=true" width="750"/>
+  <img src="https://github.com/TensorMSA/tensormsa_old/blob/master/HOYA%20F_W%20Design%20Document.jpg?raw=true" width="750"/>
  </p>
