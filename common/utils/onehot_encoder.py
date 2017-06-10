@@ -99,10 +99,10 @@ class OneHotEncoder :
         :param item: posb vector
         :return:
         """
-        sorted_list = sorted(vector, reverse=True)
+        sorted_list = sorted(vector, reverse = True)
         idx = np.where(vector==sorted_list[prob_idx])[0][0]
         print("■■■■■■■■■■ Accuracy 출력 : " + str(vector[idx]))
-        print("■■■■■■■■■■ 예측값 : " + str(idx))
+        print("■■■■■■■■■■ 예측 Label 값 : " + str(idx-2))
         if(vector[idx] > min_prob) :
             return self.dict_list[idx]
         else :

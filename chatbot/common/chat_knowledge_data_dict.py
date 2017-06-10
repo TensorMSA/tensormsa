@@ -7,8 +7,7 @@ class ChatKnowledgeDataDict:
     def __init__(self, cb_id):
         self.cb_id = cb_id
         #TODO : need to get data from cache
-
-    def get_entity_keys(self):
+    def get_intent_entity_keys(self):
         query_set = models.CB_ENTITY_LIST_INFO.objects.filter(cb_id = self.cb_id, entity_type = 'key')
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)[0]['fields']['entity_list']['key'] # list type
@@ -27,3 +26,8 @@ class ChatKnowledgeDataDict:
         query_set = models.CB_ENTITY_LIST_INFO.objects.filter(cb_id = self.cb_id, entity_type = 'custom')
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)[0]['fields']['entity_list']['custom']  # list type
+
+    def get_tagging_keys(self):
+        query_set = models.CB_TAGGING_INFO.objects.filter(cb_id = self.cb_id)
+        query_set = serial.serialize("json", query_set)
+        return json.loads(query_set)[0]['fields']['proper_noun'].keys()  # list type

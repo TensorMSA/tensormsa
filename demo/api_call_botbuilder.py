@@ -23,9 +23,28 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/',
                         'story_id' : "7",
                         'story_desc' : "find_tel",
                         #entity
+                        "cb_id": "cb0007",
+                        "intent_id": "7",
+                        'story_id': "7",
                         'entity_type' : "key", #(custom/essential/response/default/key)
-                        'entity_list' : "type"
-                        })
+                        'entity_list' : {"key": ["이름", "직급", "직책", "근태코드", "그룹", "근무조", "업무", "날짜", "장소"]},
+                        # entity
+                        # "cb_id": "cb0007",
+                        # "intent_id": "7",
+                        # 'story_id': "7",
+                        # 'entity_type': "essential",  # (custom/essential/response/default/key)
+                        # 'entity_list': {"essential": ["이름"]},
+                        # # entity
+                        # "cb_id": "cb0007",
+                        # "intent_id": "7",
+                        # 'story_id': "7",
+                        # 'entity_type': "key_values",  # (custom/essential/response/default/key)
+                        # 'entity_list': {"장소": ["센터", "판교", "포항", "광양"], "직급": ["사원", "대리", "과장", "차장", "부장", "팀장", "사업부장", "상사", "리더"]},
+                        #tagging
+                        "cb_id": "cb0007",
+                        "pos_type": "mecab",
+                        "proper_noun": {"이름": "/home/dev/hoyai/demo/data/name.txt", "장소":"/home/dev/hoyai/demo/data/name.txt"}
+                     })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
