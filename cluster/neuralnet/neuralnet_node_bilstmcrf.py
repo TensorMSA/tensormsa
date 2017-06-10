@@ -34,7 +34,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                     best_score = self.train(train, dev, self.vocab_tags, sess)
 
                     # save model
-                    self.output_path = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
+                    self.model_output = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
                     if not os.path.exists(self.model_output):
                         os.makedirs(self.model_output)
                     self.saver.save(sess, self.model_output)
