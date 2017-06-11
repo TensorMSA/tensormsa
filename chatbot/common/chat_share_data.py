@@ -23,7 +23,7 @@ class ShareData(ChatBotConfManager):
         self.request_type = ""          # text, image, voice
         self.intent_id = ""             # current intent id
         # self.intent_name = ""           # current intent name
-        self.service_type = ""          # chat, api service, internal service, option, error, idle
+        self.service_type = ""          # I:Intent, N:NER
         self.story_board_id = ""        # current working story board
         self.story_key_entity = []      # required key list
         self.story_slot_entity = {}     # key : val
@@ -45,7 +45,7 @@ class ShareData(ChatBotConfManager):
         :param object:
         :return:
         """
-        #self._check_json_validation(object)
+        self._check_json_validation(object)
         self.__dict__ = object
         return self
 

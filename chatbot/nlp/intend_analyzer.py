@@ -25,13 +25,13 @@ class IntendAnalyzer(ShareData):
         :param context:
         :return:
         """
-        if (share_data.get_story_id() != ""):
-            print("■■■■■■■■■■ 의도 존재  : " + share_data.get_story_id())
+        if (share_data.get_intent_id() != ""):
+            print("■■■■■■■■■■ 의도 존재  : " + share_data.get_intent_id())
         else :
             convert_data =  share_data.get_convert_data()
             # TODO : get data from db
             #result = self.seq2seq_model.run(self.nn_id , {"input_data": convert_data, "num": 0, "clean_ans": False})[0][1][0]
-            result = str(self.wcnn_model.run(self.nn_id , {"input_data": convert_data, "num": 0, "clean_ans": False}))
+            result = str(self.wcnn_model.run(self.nn_id , {"input_data": convert_data, "num": 0, "clean_ans": False})[0])
             print ("■■■■■■■■■■ 의도 분석 결과 : " + result)
             share_data.set_intent_id(result)
             share_data.set_intent_history(result)

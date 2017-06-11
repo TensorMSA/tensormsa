@@ -12,7 +12,7 @@ class StoryBoardManager(ShareData):
         init global variables
         """
         self.story_board_id = story_board_id
-        self.essential_entity = ChatKnowledgeDataDict(cb_id).get_essential_entity(story_board_id)
+        #self.essential_entity = ChatKnowledgeDataDict(cb_id).get_essential_entity(story_board_id)
 
     def run(self, share_data):
         try:
