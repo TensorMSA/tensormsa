@@ -14,7 +14,6 @@ class EntityRecognizer(ShareData):
 
         slot_key = ChatKnowledgeDataDict(self.cb_id).get_essential_entity(share_data.get_intent_id())
         share_data.set_story_key_entity(slot_key)
-        #share_data.story_slot_entity(slot_key,"김수상")
         return share_data
 
     def _make_slot_entity(self, share_data):

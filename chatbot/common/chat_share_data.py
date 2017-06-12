@@ -304,7 +304,7 @@ class ShareData(ChatBotConfManager):
         :param data:
         :return:
         """
-        self.story_key_entity.append(data)
+        self.story_key_entity = data
 
     def get_story_key_entity(self):
         """

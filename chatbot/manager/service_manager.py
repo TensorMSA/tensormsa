@@ -30,9 +30,9 @@ class ServiceManager:
         self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging())
         self.intent_analyzer = IntendAnalyzer(self.chatbot_conf.get_intent_model())
         self.entity_recognizer = EntityRecognizer(cb_id)
-        self.decision_maker = DecisionMaker()
-        self.service_provider = ServiceProvider()
-        #self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
+        # self.decision_maker = DecisionMaker()
+        # self.service_provider = ServiceProvider()
+        # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
 
     def run_chatbot(self, req_ctx):
         """

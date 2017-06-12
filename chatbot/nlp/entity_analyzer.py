@@ -15,33 +15,34 @@ class EntityAnalyzer(ShareData):
         """
         init global variables
         """
-        self.entity_key_list = proper_noun.keys()
-        self.peoper_noun_values = {}       # key : [values]
-        self._load_proper_noun(proper_noun.keys(), proper_noun)
+        self.proper_key_list = list(proper_noun.keys()) #Python 3+ return not list but dict_Keys
+        self.proper_noun = proper_noun     # key : [values]
+        #self._load_proper_noun(proper_noun.keys(), proper_noun)
 
-    def _load_proper_noun(self, key_list, proper_noun):
-        """
-        load entity lists
-        :return:
-        """
-        if (len(key_list) == 0) :
-            raise Exception ("")
-
-        for key in key_list :
-            if key in proper_noun :
-                self.peoper_noun_values[key] = proper_noun[key]
-                #compare file r/w
-                #self._load_proper_file(key, proper_noun[key])
-            else :
-                self.peoper_noun_values[key] = []
-
-    def _load_proper_file(self, key, path):
-        input_file = open(path, 'r')
-        noun_values=[]
-        for line in input_file:
-            noun_values.append(line)
-        self.peoper_noun_values[key] = noun_values
-        input_file.close()
+    # Compare load all file and Step by Step (Step is faster
+    # def _load_proper_noun(self, key_list, proper_noun):
+    #     """
+    #     load entity lists
+    #     :return:
+    #     """
+    #     if (len(key_list) == 0) :
+    #         raise Exception ("")
+    #
+    #     for key in key_list :
+    #         if key in proper_noun :
+    #             self.peoper_noun_values[key] = proper_noun[key]
+    #             #compare file r/w
+    #             #self._load_proper_file(key, proper_noun[key])
+    #         else :
+    #             self.peoper_noun_values[key] = []
+    #
+    # def _load_proper_file(self, key, path):
+    #     input_file = open(path, 'r')
+    #     noun_values=[]
+    #     for line in input_file:
+    #         noun_values.append(line)
+    #     self.peoper_noun_values[key] = noun_values
+    #     input_file.close()
 
     #Custom Case : ex)안녕 and len < 3
     def _preprocess_data(self, share_data, pos_tags):
@@ -49,10 +50,13 @@ class EntityAnalyzer(ShareData):
         return_msg = ""
         if (pos_tags[1] in ['SY', 'SF']):
             pass
-        elif (pos_tags[1] in ['NNG', 'NNP']):
-            if (self._extract_proper_entity(pos_tags[0]) == True):
-                share_data.set_story_slot_entity('이름', pos_tags[0])
-                pos_tags = (''.join(['[이름]']), '')
+        elif (pos_tags[1] in ['NNG', 'NNP']): #Check only Noun
+            key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
+            if(key_check == []):
+                pass
+            else: #proper noun priority
+                share_data.set_story_slot_entity(key_check[0], pos_tags[0])
+                pos_tags = (''.join(['['+ key_check[0] +']']), '')
             return_msg = ''.join([return_msg, ' ' , pos_tags[0]])
         else:
             return_msg = ''.join([return_msg, ' ', pos_tags[0]])
@@ -85,21 +89,23 @@ class EntityAnalyzer(ShareData):
             mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
             return mecab.pos(str(input))
 
-        elif(type == 'kkma') :
-            kkma = Kkma()
-            return kkma.pos(str(input))
-
-        elif(type == 'twitter') :
-            twitter = Twitter(jvmpath=None)
-            return twitter.pos(str(input))
+        # elif(type == 'kkma') :
+        #     kkma = Kkma()
+        #     return kkma.pos(str(input))
+        #
+        # elif(type == 'twitter') :
+        #     twitter = Twitter(jvmpath=None)
+        #     return twitter.pos(str(input))
 
     # TODO : get nlp DB
-    def _extract_proper_entity(self, value):
+    def _extract_proper_entity(self, value, key):
         exist = False
-        input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
-        for line in input_file:
-            if(line.strip().find(value) == 0):
-                exist = True
-                break
-        input_file.close()
+        #input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
+        input_file = open(self.proper_noun.get(key), 'r')
+        if(input_file is not None):
+            for line in input_file:
+                if(line.strip().find(value) == 0):
+                    exist = True
+                    break
+            input_file.close()
         return exist
