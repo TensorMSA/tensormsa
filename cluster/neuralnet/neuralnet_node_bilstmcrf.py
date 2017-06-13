@@ -384,8 +384,8 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                     if(result) :
                         if (len(self.get_chunks(lab_pred, tags)) > 0 and
                             len(self.get_chunks(lab, tags)) > 0 ) :
-                            result.set_result_info(self.get_chunks(lab, tags)[0][0],
-                                                   self.get_chunks(lab_pred, tags)[0][0])
+                            for label, pred in zip (self.get_chunks(lab, tags), self.get_chunks(lab_pred, tags)) :
+                                result.set_result_info(label[0], pred[0])
                     correct_preds += len(lab_chunks & lab_pred_chunks)
                     total_preds += len(lab_pred_chunks)
                     total_correct += len(lab_chunks)
