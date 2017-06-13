@@ -101,10 +101,10 @@ class EntityAnalyzer(ShareData):
     def _extract_proper_entity(self, value, key):
         exist = False
         #input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
-        input_file = open(self.proper_noun.get(key), 'r')
+        input_file = open(self.proper_noun.get(key)[1], 'r')
         if(input_file is not None):
             for line in input_file:
-                if(line.strip().find(value) == 0):
+                if(line.strip().find(value) > -1):
                     exist = True
                     break
             input_file.close()
