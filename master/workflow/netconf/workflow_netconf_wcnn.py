@@ -207,7 +207,7 @@ class WorkFlowNetConfWideCnn(WorkFlowNetConf):
         get vocab size for onhot encoder
         :return:
         """
-        return int(self.conf.get('vocab_size')) + 4
+        return self.conf.get('word_vector_size')
 
     @property
     def encode_len(self):

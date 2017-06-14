@@ -146,6 +146,7 @@ class PreNodeFeedFr2Wcnn(PreNodeFeed):
             return True
         else :
             self.wf_conf.set_lable_list(self.lable_onehot.dics())
+            self.wf_conf.set_word_vector_size(self.word_vector_size)
             if (self.embed_type == 'onehot'):
                 self.wf_conf.set_vocab_list(self.input_onehot.dics())
             return False

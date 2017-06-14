@@ -94,6 +94,17 @@ class WorkflowFeedFr2Wcnn(WorkFlowPre):
         config_data['lable_list'] = data
         obj.save()
 
+    def set_word_vector_size(self, data):
+        """
+        setter for WorkflowFeedFr2Wcnn conf
+        :param node_id:
+        :return:
+        """
+        obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=self.key)
+        config_data = getattr(obj, 'node_config_data')
+        config_data['word_vector_size'] = data
+        obj.save()
+
     @property
     def get_lable_list(self):
         """
