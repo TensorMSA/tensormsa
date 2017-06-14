@@ -128,6 +128,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             raise Exception ("error on train : {0}".format(e))
         finally:
             # copy data feeder's parm to netconf
+            self._set_dataconf_parm(train_data_set)
             self._copy_node_parms(train_data_set, self)
 
     def _set_progress_state(self):
@@ -143,7 +144,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         try :
             prenumoutputs = 1
             global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
-            X = tf.placeholder(tf.float32, shape=[None, self.x_size, self.y_size, self.channel], name='x')
+            X = tf.placeholder(tf.float32, shape=[None, self.y_size, self.x_size, self.channel], name='x')
             Y = tf.placeholder(tf.float32, shape=[None, self.num_classes], name='y')
             model = X
             numoutputs = self.numoutputs
@@ -254,8 +255,12 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         :return:
         """
         try :
-            lables =  self.dataconf.wf_conf.get_lable_list
+            node_id = self.get_node_name()
+            lables =  self.dataconf.__dict__['lable_onehot'].dict_list
+            lables.append(-1)
             result.set_result_data_format({"labels":lables})
+            result.set_nn_batch_ver_id(self.get_eval_batch(node_id))
+
             tf.reset_default_graph()
             # prepare net conf
             self.get_model(self.netconf, "P")
@@ -270,7 +275,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                                                     data_set[0][0],
                                                     saver=self.saver)
                         result.set_result_info(lables[data_set[1][0].index(1.0)],
-                                               lables[predict[0]])
+                                               predict[0] if predict[0] in lables else -1)
                     data.next()
             return result
         except Exception as e :

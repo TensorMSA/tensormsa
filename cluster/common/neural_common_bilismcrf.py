@@ -1,6 +1,4 @@
-from hanja import hangul
 import numpy as np
-import re
 import os,h5py
 
 class BiLstmCommon :
@@ -10,64 +8,6 @@ class BiLstmCommon :
     UNK = "$UNK$"
     NUM = "$NUM$"
     NONE = "O"
-
-    def get_onehot_vector(self, sent):
-        """
-        convert sentecne to vector
-        :return: list
-        """
-        try:
-            return_vector = []
-            embeddings = np.zeros([30])
-            idx = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', ' ']
-            num_reg = re.compile("[0-9- ]")
-
-            if (type(sent) not in [type('str'), type([])]):
-                raise Exception("input must be str")
-
-            if (type(sent) == type([])):
-                sent = sent[0]
-
-            for char in sent:
-                vector_a = np.copy(embeddings)
-                vector_b = np.copy(embeddings)
-                vector_c = np.copy(embeddings)
-                vector_d = np.copy(embeddings)
-
-                if (num_reg.match(char) == None and hangul.is_hangul(char)):
-                    anl = hangul.separate(char)
-                    vector_a[anl[0] if anl[0] > 0 else 0] = 1
-                    vector_b[anl[1] if anl[1] > 0 else 0] = 1
-                    vector_c[anl[2] if anl[2] > 0 else 0] = 1
-                elif (num_reg.match(char)):
-                    vector_d[idx.index(char)] = 1
-                return_vector.append(np.append(vector_a, [vector_b, vector_c, vector_d]))
-            return np.array(return_vector)
-        except Exception as e:
-            print("error on get_onehot_vector : {0}".format(e))
-
-
-    def get_onehot_word(self, vec_list):
-        """
-        convert sentecne to vector
-        :return: list
-        """
-        idx = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', ' ']
-        return_vector = []
-        if (len(vec_list) == 0 or len(vec_list[0]) != 120):
-            raise Exception("input size error")
-
-        for vec in vec_list:
-            anl = np.array(vec).reshape(4, 30)
-
-            if (np.argmax(anl[3]) > 0):
-                return_vector.append(idx[np.argmax(anl) - 90])
-            else:
-                return_vector.append(hangul.build(np.argmax(anl[0]),
-                                                  np.argmax(anl[1]),
-                                                  np.argmax(anl[2])))
-        return return_vector
-
 
     def write_char_embedding(self, vocab, trimmed_filename):
         """

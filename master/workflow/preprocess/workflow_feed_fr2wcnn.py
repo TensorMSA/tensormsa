@@ -136,3 +136,23 @@ class WorkflowFeedFr2Wcnn(WorkFlowPre):
         :return:
         """
         return self.conf.get("vocab_list")
+
+    @property
+    def char_encode(self):
+        """
+        get vector embed type
+        :param node_id:
+        :return:
+        """
+        return_val = self.conf.get('char_encode')
+        return False if return_val == None else return_val
+
+    @property
+    def char_max_len(self):
+        """
+        get vector embed type
+        :param node_id:
+        :return:
+        """
+        return_val = self.conf.get('char_max_len')
+        return 5 if return_val == None else return_val
