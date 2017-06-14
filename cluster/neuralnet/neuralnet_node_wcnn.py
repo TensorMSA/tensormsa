@@ -358,7 +358,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                         word_list = [x_input.split(' ')]
                     print("Predict Parsed Data : {0}".format(word_list))
                 word_list = self._word_embed_data('onehot', np.array(word_list), cls=self.input_onehot)
-                word_list = np.array(word_list).reshape([-1, self.x_size, self.y_size, self.channel])
+                word_list = np.array(word_list).reshape([-1, self.y_size, self.x_size, self.channel])
             elif(type=='pre'):
                 word_list = [x_input]
             else :
