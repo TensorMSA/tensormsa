@@ -12,8 +12,8 @@ class ChatBotConfManager:
         self.pos_type = ""
         self.entity_key_list = []
         self.word_embed_model = ""
-        self.intent_anal_model = ""
-        self.syntax_anal_model = ""
+        self.intent_analyze_model = ""
+        self.ner_analyze_model = ""
         self.resp_gen_model = ""
         self.ton_gen_model = ""
         self.stroy_board = []     #available story_board lists
@@ -25,11 +25,11 @@ class ChatBotConfManager:
         :param cb_id:
         :return:
         """
-        #TODO:need to get data from cache server
+        #TODO:need to get data from cache server and chatbot model DB
         self.pos_type = "mecab"
         self.word_embed_model = "nn00002"
-        self.intent_anal_model = "nnnnn995" #nn500995 #nnn12993
-        self.syntax_anal_model = ""
+        self.intent_analyze_model = "nnnnn995" #nn500995 #nnn12993
+        self.ner_analyze_model = "lstmcrf025"
         self.resp_gen_model = ""
         self.ton_gen_model = ""
         self.stroy_board = []
@@ -105,7 +105,7 @@ class ChatBotConfManager:
         :param data:
         :return:
         """
-        self.intent_anal_model = data
+        self.intent_analyze_model = data
 
     def get_intent_model(self):
         """
@@ -113,23 +113,23 @@ class ChatBotConfManager:
         :param data:
         :return:
         """
-        return self.intent_anal_model
+        return self.intent_analyze_model
 
-    def set_syntax_model(self, data):
+    def set_ner_model(self, data):
         """
         net id pretrained on hoyai
         :param data:
         :return:
         """
-        self.intent_anal_model = data
+        self.ner_analyze_model = data
 
-    def get_syntax_model(self):
+    def get_ner_model(self):
         """
         net id pretrained on hoyai
         :param data:
         :return:
         """
-        return self.intent_anal_model
+        return self.ner_analyze_model
 
     def set_resp_model(self, data):
         """

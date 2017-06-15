@@ -2,6 +2,7 @@ from chatbot.common.chat_share_data import ShareData
 # from konlpy.tag import Kkma
 # from konlpy.tag import Twitter
 from konlpy.tag import Mecab
+from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 
 class EntityAnalyzer(ShareData):
     """
@@ -11,13 +12,15 @@ class EntityAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, proper_noun):
+    def __init__(self, proper_noun, ner_model_id):
         """
         init global variables
         """
+        self.ner_model_id = ner_model_id
         self.proper_key_list = list(proper_noun.keys()) #Python 3+ return not list but dict_Keys
         self.proper_noun = proper_noun     # key : [values]
         #self._load_proper_noun(proper_noun.keys(), proper_noun)
+        self.bilstmcrf_model = PredictNetBiLstmCrf()
 
     # Compare load all file and Step by Step (Step is faster
     # def _load_proper_noun(self, key_list, proper_noun):
@@ -44,24 +47,6 @@ class EntityAnalyzer(ShareData):
     #     self.peoper_noun_values[key] = noun_values
     #     input_file.close()
 
-    #Custom Case : ex)안녕 and len < 3
-    def _preprocess_data(self, share_data, pos_tags):
-        #except meaningless
-        return_msg = ""
-        if (pos_tags[1] in ['SY', 'SF']):
-            pass
-        elif (pos_tags[1] in ['NNG', 'NNP']): #Check only Noun
-            key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
-            if(key_check == []):
-                pass
-            else: #proper noun priority
-                share_data.set_story_slot_entity(key_check[0], pos_tags[0])
-                pos_tags = (''.join(['['+ key_check[0] +']']), '')
-            return_msg = ''.join([return_msg, ' ' , pos_tags[0]])
-        else:
-            return_msg = ''.join([return_msg, ' ', pos_tags[0]])
-        return return_msg
-
     def parse(self, share_data):
         """
         parse input with entity list
@@ -72,12 +57,36 @@ class EntityAnalyzer(ShareData):
         input_data = share_data.get_request_data()
         pos_tags = self._pos_tagger(input_data)
         print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
-        return_msg = ""
-        for i in range(0, len(pos_tags)):
-            return_msg += self._preprocess_data(share_data, pos_tags[i])
-        print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
-        share_data.set_convert_data(return_msg)
+        result = list(map(lambda x : self._preprocess_data(share_data,x), pos_tags))
+        convert_dict_data = list(map(lambda x : x[1],result))
+        morphed_data = list(map(lambda x : x[0],result))
+        print ("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
+        ner_data = self._get_ner_data(''.join(morphed_data).strip())
+        print("■■■■■■■■■■ NER 분석 결과 : " + str(ner_data))
+        self._add_ner_slot(morphed_data, ner_data, share_data.get_story_slot_entity())
+        share_data.set_convert_data(''.join(convert_dict_data).strip())
         return share_data
+
+    #Custom Case : ex)안녕 and len < 3
+    def _preprocess_data(self, share_data, pos_tags):
+        #except meaningless
+        convert_dict_data = ""
+        morphed_data = ""
+        if (pos_tags[1] in ['SY', 'SF']):
+            pass
+        elif (pos_tags[1] in ['NNG', 'NNP']): #Check only Noun
+            morphed_data = ''.join([morphed_data, ' ', pos_tags[0]])
+            key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
+            if(key_check == []):
+                pass
+            else: #proper noun priority
+                share_data.set_story_slot_entity(key_check[0], pos_tags[0])
+                pos_tags = (''.join(['['+ key_check[0] +']']), '')
+            convert_dict_data = ''.join([convert_dict_data, ' ' , pos_tags[0]])
+        else:
+            morphed_data = ''.join([morphed_data, ' ', pos_tags[0]])
+            convert_dict_data = ''.join([convert_dict_data, ' ', pos_tags[0]])
+        return morphed_data, convert_dict_data
 
     def _pos_tagger(self, input, type ='mecab'):
         """
@@ -88,7 +97,6 @@ class EntityAnalyzer(ShareData):
         if(type == 'mecab') :
             mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
             return mecab.pos(str(input))
-
         # elif(type == 'kkma') :
         #     kkma = Kkma()
         #     return kkma.pos(str(input))
@@ -109,3 +117,16 @@ class EntityAnalyzer(ShareData):
                     break
             input_file.close()
         return exist
+
+    # TODO : get BIO Tag from sentence
+    def _get_ner_data(self, input_sentence):
+        result = self.bilstmcrf_model.run(self.ner_model_id, {"input_data": input_sentence, "num": 0, "clean_ans": False})
+        return result
+
+    def _add_ner_slot(self, morphed_data, ner_data, slot_eneity):
+        get_ner_list = []
+        key_list = self.proper_key_list
+        pass
+
+    def _convert_ner_slot(self):
+        pass
