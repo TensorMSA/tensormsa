@@ -14,8 +14,9 @@ class DataAugmentation :
         """
         self.use_mecab = True
         self.pattern_data_path = "/home/dev/Test.txt"
-        self.augmented_out_path = "/home/dev/Test.iob"
+        self.augmented_out_path = "/home/dev/Test.out"
         self.dict_path = "/home/dev/Test.csv"
+        self.out_format_type = 'plain'
         self.ner_dicts = {}
 
     def load_dict(self):
@@ -90,6 +91,18 @@ class DataAugmentation :
                     f.write('\n')
                 f.write('\n')
 
+    def _plain_formatter(self, aug_data) :
+        """
+        save aug list as iob file format
+        :param aug_data: augmented list of sentence
+        :return: None
+        """
+        with open(self.augmented_out_path, "a")  as f :
+            for line in aug_data :
+                for word in line :
+                    f.write(''.join([word[0], ' ']))
+                f.write('\n')
+
     def convert_data(self) :
         """
         augment data with entity list and pattern
@@ -110,7 +123,12 @@ class DataAugmentation :
                         words.append(word)
                 print("===={0} line job start".format(i))
                 match_keys = self._check_all_match(words)
-                self._iob_formatter(self._aug_sent(match_keys, words))
+                if(self.out_format_type == 'plain') :
+                    self._plain_formatter(self._aug_sent(match_keys, words))
+                elif(self.out_format_type == 'iob') :
+                    self._iob_formatter(self._aug_sent(match_keys, words))
+                else :
+                    raise Exception (' '.join(['not', 'plain', 'or iob']))
                 print("===={0} line job done".format(i))
 
 
