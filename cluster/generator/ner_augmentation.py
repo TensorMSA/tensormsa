@@ -48,7 +48,7 @@ class DataAugmentation :
                 match_keys.append(word)
         return match_keys
 
-    def _aug_sent(self, keys, pattern) :
+    def _aug_sent(self, keys, pattern, return_aug_sent=[]) :
         """
         function which actually augment sentences
         with given pattern and keys
@@ -56,27 +56,41 @@ class DataAugmentation :
         :param pattern: sentence pattern
         :return: list of augmented sentence
         """
-        return_aug_sent = []
-        for key in keys :
-            for word in self.ner_dicts[key] :
-                line = []
-                for slot in pattern :
-                    for rep in ['\n', 'NaN'] :
-                        slot = slot.replace(rep, '')
-                    if(key in slot) :
-                        line.append((word, key))
-                    else :
-                        line.append((slot, 'O'))
-                return_aug_sent.append(line)
+        try :
+            if(len(keys) > 0) :
+                key = keys[0]
+                del keys[0]
+            else :
+                return return_aug_sent
 
-        for key in keys :
-            for word in self.ner_dicts[key]:
-                for i, line in enumerate(return_aug_sent) :
-                    for j, slot in enumerate(line) :
-                        if (slot[0] == key) :
-                            return_aug_sent[i][j] = (word, key)
-
-        return return_aug_sent
+            if(len(return_aug_sent) == 0) :
+                for word in self.ner_dicts[key] :
+                    line = []
+                    for slot in pattern :
+                        for rep in ['\n', 'NaN'] :
+                            slot = slot.replace(rep, '')
+                        if(key in slot) :
+                            line.append((word, key))
+                        else :
+                            line.append((slot, 'O'))
+                    return_aug_sent.append(line)
+            else :
+                del_idx = []
+                for i, line in enumerate(return_aug_sent):
+                    for j, slot in enumerate(line):
+                        if (slot[0] == key):
+                            for word in self.ner_dicts[key]:
+                                line = return_aug_sent[i].copy()
+                                for z, slot in enumerate(line):
+                                    if(slot[0] == key) :
+                                        line[z] = (word, key)
+                                return_aug_sent.append(line)
+                            del_idx.append(i)
+                for _ in del_idx :
+                    del return_aug_sent[0]
+            return self._aug_sent(keys, pattern, return_aug_sent)
+        except Exception as e :
+            print("error on nlp data augmentation :{0}".format(e))
 
     def _iob_formatter(self, aug_data) :
         """
@@ -124,15 +138,17 @@ class DataAugmentation :
                 print("===={0} line job start".format(i))
                 match_keys = self._check_all_match(words)
                 if(self.out_format_type == 'plain') :
-                    self._plain_formatter(self._aug_sent(match_keys, words))
+                    aug_data = self._aug_sent(match_keys, words, [])
+                    self._plain_formatter(aug_data)
                 elif(self.out_format_type == 'iob') :
-                    self._iob_formatter(self._aug_sent(match_keys, words))
+                    aug_data = self._aug_sent(match_keys, words, [])
+                    self._iob_formatter(aug_data)
                 else :
                     raise Exception (' '.join(['not', 'plain', 'or iob']))
                 print("===={0} line job done".format(i))
 
 
-# cls = DataAugmentation()
-# cls.load_dict()
-# cls.convert_data()
+cls = DataAugmentation()
+cls.load_dict()
+cls.convert_data()
 
