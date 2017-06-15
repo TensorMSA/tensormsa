@@ -32,7 +32,7 @@ class DataAugmentation :
         for col in df_csv_read.keys() :
             self.ner_dicts[col] = []
             for val in df_csv_read[col] :
-                if (val == val) :
+                if (val == val and val != None) :
                     self.ner_dicts[col].append(val)
 
     def _check_all_match(self, words) :
