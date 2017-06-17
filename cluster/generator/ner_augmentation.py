@@ -17,9 +17,10 @@ class DataAugmentation :
         """
         self.use_mecab = True
         self.pattern_data_path = "/home/dev/Test.txt"
-        self.augmented_out_path = "/home/dev/Test.out"
+        self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/Test.iob"
+        #self.augmented_out_path = "/home/dev/Test2.iob"
         self.dict_path = "/home/dev/Test.csv"
-        self.out_format_type = 'plain'
+        self.out_format_type = 'iob'
         self.ner_dicts = {}
 
     def load_dict(self):
@@ -34,7 +35,7 @@ class DataAugmentation :
 
         for col in df_csv_read.keys() :
             self.ner_dicts[col] = []
-            for val in df_csv_read[col] :
+            for val in list(set(df_csv_read[col])) :
                 if (val == val and val != None) :
                     self.ner_dicts[col].append(val)
 
@@ -47,6 +48,7 @@ class DataAugmentation :
         """
         match_keys = []
         for word in words :
+            word = word.replace('\n', '')
             if(word in list(self.ner_dicts.keys())) :
                 match_keys.append(word)
         return match_keys
@@ -104,8 +106,10 @@ class DataAugmentation :
         with open(self.augmented_out_path, "a")  as f :
             for line in aug_data :
                 for word in line :
-                    f.write(''.join([word[0], ' ', word[1]]))
-                    f.write('\n')
+                    related_words =  word[0].split(' ')
+                    for tocken in related_words :
+                        f.write(''.join([tocken, ' ', word[1]]))
+                        f.write('\n')
                 f.write('\n')
 
     def _plain_formatter(self, aug_data) :
@@ -149,3 +153,7 @@ class DataAugmentation :
                 else :
                     raise Exception (' '.join(['not', 'plain', 'or iob']))
                 print("===={0} line job done".format(i))
+
+test = DataAugmentation()
+test.load_dict()
+test.convert_data()

@@ -26,6 +26,7 @@ class BiLstmCommon :
             if (type(vocab) == type(set())):
                 vocab = list(vocab)
             for i, word in enumerate(vocab):
+                word = word.lower()
                 embeddings[vocab.index(word)] = np.array(self.get_onehot_vector(word))[0]
             np.savetxt(trimmed_filename, embeddings)
             print("- done. {} tokens".format(len(vocab)))
@@ -147,6 +148,7 @@ class BiLstmCommon :
 
         for words, _ in dataset:
             for word in words:
+                word = word.lower()
                 vocab_char.update(word)
 
         return vocab_char
@@ -351,6 +353,8 @@ class BiLstmCommon :
                                 yield words, tags
                                 words, tags = [], []
                         else:
+                            if len(line.split(' ')) < 2 :
+                                continue
                             word, tag = line.split(' ')
                             if self.processing_word is not None:
                                 word = self.processing_word(word)
