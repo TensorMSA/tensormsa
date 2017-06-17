@@ -43,7 +43,7 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/',
                         #tagging
                         "cb_id": "cb0007",
                         "pos_type": "mecab",
-                        "proper_noun": {"이름": "/home/dev/hoyai/demo/data/name.txt", "장소":"/home/dev/hoyai/demo/data/name.txt"}
+                        "proper_noun": {"이름": "/home/dev/hoyai/demo/data/name.txt", "장소":"/home/dev/hoyai/demo/data/grade.txt"}
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
