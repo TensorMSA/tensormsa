@@ -1,5 +1,6 @@
 import numpy as np
 import os,h5py
+from hanja import hangul
 
 class BiLstmCommon :
     """
@@ -21,7 +22,7 @@ class BiLstmCommon :
         """
         try:
             print("Writing vocab...")
-            embeddings = np.zeros([len(vocab), 120])
+            embeddings = np.zeros([len(vocab), 160])
             if (type(vocab) == type(set())):
                 vocab = list(vocab)
             for i, word in enumerate(vocab):
@@ -171,10 +172,8 @@ class BiLstmCommon :
                         char_ids += [vocab_chars[char]]
 
             # 1. preprocess word
-            # if lowercase:
-            #     word = word.lower()
-            # if word.isdigit():
-            #     word = NUM
+            if (lowercase):
+                word = word.lower()
 
             # 2. get id of word
             if vocab_words is not None:

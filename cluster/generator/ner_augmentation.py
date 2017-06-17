@@ -6,6 +6,9 @@ class DataAugmentation :
     """
     Data Augmentation Class for nlp
     mainly for create iob data with pattern and dict
+    test = DataAugmentation()
+    test.load_dict()
+    test.convert_data()
     """
 
     def __init__(self):
@@ -146,9 +149,3 @@ class DataAugmentation :
                 else :
                     raise Exception (' '.join(['not', 'plain', 'or iob']))
                 print("===={0} line job done".format(i))
-
-
-cls = DataAugmentation()
-cls.load_dict()
-cls.convert_data()
-

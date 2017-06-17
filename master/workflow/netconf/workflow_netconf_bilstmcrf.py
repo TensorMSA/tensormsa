@@ -55,7 +55,7 @@ class WorkFlowNetConfBiLstmCrf(WorkFlowNetConf):
         if you use default vector it's ok to use default value
         """
         return_val = self.conf.get('dim_char')
-        return 120 if return_val == None else return_val
+        return 160 if return_val == None else return_val
 
     @property
     def max_iter(self):

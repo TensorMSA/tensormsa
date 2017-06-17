@@ -93,7 +93,7 @@ class OneHotEncoder :
         except Exception as e :
             raise Exception ("get vector error !")
 
-    def get_vocab(self, vector, prob_idx = 0, min_prob = 0.6):
+    def get_vocab(self, vector, prob_idx = 0, min_prob = 0.3):
         """
         get posb max item
         :param item: posb vector
