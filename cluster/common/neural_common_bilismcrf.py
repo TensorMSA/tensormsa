@@ -353,8 +353,11 @@ class BiLstmCommon :
                                 yield words, tags
                                 words, tags = [], []
                         else:
-                            if len(line.split(' ')) < 2 :
+                            if len(line.split(' ')) != 2 :
                                 continue
+                            if len(line.split(' ')) > 2 :
+                                temp = line.split(' ')
+                                line = ' '.join([temp[len(temp)-2],temp[len(temp)-1]])
                             word, tag = line.split(' ')
                             if self.processing_word is not None:
                                 word = self.processing_word(word)

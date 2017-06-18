@@ -1,4 +1,4 @@
-import codecs
+import codecs, os
 import pandas as pd
 from konlpy.tag import Mecab
 
@@ -15,12 +15,14 @@ class DataAugmentation :
         """
         init parms need to mange teses parms on db
         """
+        self.aug_file_cnt = 0
         self.use_mecab = True
+        self.max_file_size = 10000000  #10M
         self.pattern_data_path = "/home/dev/Test.txt"
-        self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/Test.iob"
-        #self.augmented_out_path = "/home/dev/Test2.iob"
+        #self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/"
+        self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/"
         self.dict_path = "/home/dev/Test.csv"
-        self.out_format_type = 'iob'
+        self.out_format_type = 'plain'
         self.ner_dicts = {}
 
     def load_dict(self):
@@ -103,14 +105,27 @@ class DataAugmentation :
         :param aug_data: augmented list of sentence
         :return: None
         """
-        with open(self.augmented_out_path, "a")  as f :
-            for line in aug_data :
-                for word in line :
-                    related_words =  word[0].split(' ')
-                    for tocken in related_words :
-                        f.write(''.join([tocken, ' ', word[1]]))
-                        f.write('\n')
-                f.write('\n')
+        path = ''.join([self.augmented_out_path, 'Test' , str(self.aug_file_cnt) , '.iob'])
+        if(os.path.exists(path) == False or os.path.getsize(path) < self.max_file_size) :
+            with open(path, "a")  as f :
+                for line in aug_data :
+                    for word in line :
+                        related_words =  word[0].split(' ')
+                        for tocken in related_words :
+                            f.write(''.join([tocken, ' ', word[1]]))
+                            f.write('\n')
+                    f.write('\n')
+        else :
+            self.aug_file_cnt = self.aug_file_cnt + 1
+            path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.iob'])
+            with open(path, "w")  as f :
+                for line in aug_data :
+                    for word in line :
+                        related_words =  word[0].split(' ')
+                        for tocken in related_words :
+                            f.write(''.join([tocken, ' ', word[1]]))
+                            f.write('\n')
+                    f.write('\n')
 
     def _plain_formatter(self, aug_data) :
         """
@@ -118,11 +133,21 @@ class DataAugmentation :
         :param aug_data: augmented list of sentence
         :return: None
         """
-        with open(self.augmented_out_path, "a")  as f :
-            for line in aug_data :
-                for word in line :
-                    f.write(''.join([word[0], ' ']))
-                f.write('\n')
+        path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.out'])
+        if (os.path.exists(path) == False or os.path.getsize(path) < self.max_file_size):
+            with open(path, "a")  as f :
+                for line in aug_data :
+                    for word in line :
+                        f.write(''.join([word[0], ' ']))
+                    f.write('\n')
+        else :
+            self.aug_file_cnt = self.aug_file_cnt + 1
+            path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.out'])
+            with open(path, "w")  as f :
+                for line in aug_data :
+                    for word in line :
+                        f.write(''.join([word[0], ' ']))
+                    f.write('\n')
 
     def convert_data(self) :
         """

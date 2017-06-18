@@ -21,6 +21,9 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             best_score = 0
             with tf.Session() as sess:
                 while (train_data_set.has_next()):
+                    print("------------------------------")
+                    print(train_data_set.get_file_name())
+                    print("------------------------------")
                     # create dataset
                     dev = self.CoNLLDataset(train_data_set.get_file_name(),
                                             self.processing_word,

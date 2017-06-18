@@ -803,6 +803,8 @@ class WorkFlowCommonNode :
                     vector_c[anl[2] if anl[2] > 0 else 0] = 1
                 elif (num_reg.match(char)):
                     vector_d[idx.index(char)] = 1
+                else :
+                    vector_d[39] = 1
                 return_vector.append(np.append(vector_a, [vector_b, vector_c, vector_d]))
             return np.array(return_vector)
         except Exception as e:
