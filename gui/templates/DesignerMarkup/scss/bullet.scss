@@ -1,0 +1,14 @@
+.bullet {
+  position:relative;
+  &:before {
+    content:'';
+    display:inline-block;
+    width:4px;
+    height:4px;
+    background:#3c92ca;
+    position:absolute;
+    left:-10px;
+    top:7px;
+    margin-right:2px;
+  }
+}

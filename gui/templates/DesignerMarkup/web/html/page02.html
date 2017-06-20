@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tensor MSA</title>
+<link rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+<body>
+
+<header class="mainHeader">
+	<h1 class="logo">
+		<div class="logo-image"></div>	
+		<span class="system-logo">tensor MSA</span>
+	</h1>
+
+	<nav>
+		<h1 class="hidden">네비게이터</h1>
+		<ul>
+			<li class="current"><a href="#"><span>Net Info</span></a></li>
+			<li><a href="#"><span>Data</span></a></li>
+			<li><a href="#"><span>Net conf</span></a></li>
+			<li><a href="#"><span>Train Statistics</span></a></li>
+			<li><a href="#"><span>Predict Test</span></a></li>
+		</ul>
+	</nav>
+	
+	<dl class="utilMenu">
+		<dt>유틸메뉴</dt>
+		<dd class="utilMenu-help"><a href="#"><span>도움말</span></a></dd>
+		<dd class="utilMenu-logout"><a href="#"><span>로그아웃</span></a></dd>
+		<dd class="utilMenu-user-info"><a href="#"><span class="user-name">홍길동</span><span>님 환영합니다!</span></a></dd>
+	</dl>
+</header>
+
+<main>
+	<section>
+		<h1 class="hidden">tensor MSA main table</h1>
+		<ul class="tabHeader">
+			<li class="current"><a href="#">Network Basic Information</a></li>
+			<div class="btnArea">
+				<button type="button" class="img-btn upload">Upload</button>
+				<button type="button" class="img-btn save">Save</button>
+				<div class="PNBtn">
+					<button type="button" class=" prev">Prev</button>
+					<button type="button" class="next">Next</button>
+				</div>
+			</div>
+		</ul>
+
+			<!--tabBody 시작-->
+			<div class="container tabBody">
+				<!--tab1 시작-->
+				<div id="tab1">
+					<article>
+						<table class="form-table align-left">
+							<colgroup>
+							<col width="250" />
+							<col width="500" />
+							<col width="250" />
+							<col width="500" />
+							</colgroup>	
+							<tr>
+								<th>GROUP(Business Category)</th>
+								<td>
+									<select>
+									<option value="" selected>GROUP(Business Category)
+									<option value="">
+									</select>
+								</td>
+								<th>Neural Network Type</th>
+								<td>
+									<select>
+									<option value="" selected>Neural Network Type
+									<option value="">
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>Title</th>
+								<td colspan="3"><input type="text" class="w100p"></td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<span class="label-blue positionA">Description</span>
+									<textarea rows="30" class="w100p paddingT30"></textarea>
+								</td>
+							</tr>
+						</table>
+					</article>
+				</div>
+				<!--tab1 끝-->
+			</div>
+			<!--tabBody 끝-->
+		
+
+
+	</section>
+</main>
+
+
+<footer>
+</footer>
+
+</body>
+</html>

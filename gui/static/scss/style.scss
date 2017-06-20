@@ -1,0 +1,42 @@
+// Core variables
+@import "variables";
+@import "mixins";
+// Reset
+@import "normalize";
+//Component
+@import "option";
+@import "bullet";
+@import "header";
+@import "nav";
+@import "util-menu";
+@import "search-area";
+@import "main.scss";
+@import "container";
+@import "button";
+@import "input";
+@import "table";
+@import "tab";
+@import "align";
+@import "label";
+@import "option-select";
+@import "layer-box";
+@import "img-box";
+@import "modal";
+@import "object";
+@import "scroll";
+@import "predict-box";
+@import "train";
+@import "pagination";
+@import "boot-table";
+@import "react-table";
+@import "spinner";
+@import "netconf-diagram";
+@import "netconf-table";
+@import "grid";
+@import "form";
+@import "preprocess";
+@import "dropdown";
+@import "dropzone";
+@import "login";
+//AddNewDesign
+@import "AddNewDesign";

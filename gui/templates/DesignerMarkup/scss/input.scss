@@ -1,0 +1,20 @@
+input[type="text"],
+textarea,
+select {
+  border:1px solid $input-border-color;
+}
+
+textarea {
+  padding: $input-base-padding;
+ }
+
+input[type="text"],
+select {
+  height:22px;
+  padding-left: $input-base-padding;
+  padding-right: $input-base-padding;
+}
+
+select {
+  padding-right:0;
+}

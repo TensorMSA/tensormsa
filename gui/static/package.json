@@ -1,0 +1,61 @@
+{
+  "name": "TensorMSAView",
+  "version": "0.0.1",
+  "description": " TensorFlow micro service architecture",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TensorMSA/TensorMSA.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha --compilers js:babel-core/register",
+    "prep": "cat node_modules/material-design-lite/material.min.js node_modules/d3/build/d3.min.js node_modules/seedrandom/seedrandom.min.js > dist/lib.js",
+    "build": "webpack --watch --config webpack.config.js"
+  },
+  "dependencies": {
+    "@types/react": "^0.14.41",
+    "@types/react-dom": "^0.14.17",
+    "crossfilter": "^1.3.12",
+    "d3": "^3.5.17",
+    "dc": "^2.0.0-beta.32",
+    "es6-promise": "^3.3.1",
+    "faker": "^4.1.0",
+    "fixed-data-table": "^0.6.4",
+    "isomorphic-fetch": "^2.2.1",
+    "material-design-lite": "^1.2.1",
+    "react": "^15.3.2",
+    "react-addons-css-transition-group": "^15.4.1",
+    "react-alert": "^1.0.14",
+    "react-bootstrap-table": "^2.5.8",
+    "react-data-grid": "^2.0.49",
+    "react-dom": "^15.3.2",
+    "react-dropzone-component": "^1.0.4",
+    "react-fileupload": "^2.4.0",
+    "react-json-table": "^0.1.1",
+    "react-modal": "^1.5.2",
+    "react-router": "^2.8.1",
+    "react-table": "^6.3.0",
+    "seedrandom": "^2.4.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
+    "css-loader": "^0.25.0",
+    "expect": "^1.20.2",
+    "file-loader": "^0.9.0",
+    "mocha": "^3.0.2",
+    "node-sass": "^3.10.1",
+    "nodemon": "^1.11.0",
+    "react-addons-test-utils": "^15.3.2",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^0.8.2",
+    "typescript": "^2.0.3",
+    "typings": "^1.5.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "jsx": "react",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "target": "es6"
+  },
+  "exclude": [
+    "node_modules",
+    "typings/main",
+    "typings/main.d.ts"
+  ]
+}

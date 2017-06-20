@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Tensor MSA</title>
+<link rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+<body>
+
+<header class="mainHeader">
+	<h1 class="logo">
+		<div class="logo-image"></div>	
+		<span class="system-logo">tensor MSA</span>
+	</h1>
+
+	<nav>
+		<h1 class="hidden">네비게이터</h1>
+		<ul>
+			<li><a href="#">Net Info</a></li>
+			<li><a href="#">Data</a></li>
+			<li><a href="#">Net conf</a></li>
+			<li><a href="#">Train Statistics</a></li>
+			<li><a href="#">Predict Test</a></li>
+		</ul>
+	</nav>
+
+	<dl class="utilMenu">
+		<dt>유틸메뉴</dt>
+		<dd class="utilMenu-help"><a href="#"><span>도움말</span></a></dd>
+		<dd class="utilMenu-logout"><a href="#"><span>로그아웃</span></a></dd>
+		<dd class="utilMenu-user-info"><a href="#"><span class="user-name">홍길동</span><span>님 환영합니다!</span></a></dd>
+	</dl>
+</header>
+
+<main>
+	<section>
+		<h1 class="hidden">tensor MSA main table</h1>
+		<div class="searchArea">
+			<label class="bullet" for="Name">Name</label>
+			<input type="text" name="Name" placeholder="Name" />
+			<label class="bullet" for="Name2">Name2</label>
+			<input type="text" name="Name2" placeholder="Name" />
+			<button class="btn-sm" type="button">Search</button>
+
+			<div class="btnArea">
+				<div class="PNBtn">
+					<button type="button" class=" prev">Prev</button>
+					<button type="button" class="next">Next</button>
+				</div>
+			</div>
+		</div>
+		
+
+		<div class="container paddingT10">
+			<div class="tblBtnArea">
+				<button type="button" class="add">Add New</button>
+				<button type="button " class="delete">Delete</button>
+				<button type="button " class="modify">Modify</button>
+				<button type="button " class="detail">Detail</button>
+				<button type="button " class="board">Tensor Board</button>
+			</div>
+
+			<article>
+				<table class="table">
+					<thead>
+						<tr>
+							<th></th>
+							<th>그룹</th>
+							<th>타입</th>
+							<th>제목</th>
+							<th>ID</th>
+							<th>설명</th>
+							<th>Data</th>
+							<th>Conf</th>
+							<th>정합성</th>
+							<th>Train</th>
+							<th>정확도</th>
+						</tr>
+					</thead>
+					<tbody>
+						<td><input type="checkbox"></td>
+						<td>MES</td>
+						<td>CNN</td>
+						<td>1냉연</td>
+						<td>01</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tbody>
+				</table>
+			</article>
+		</div>
+	</section>
+</main>
+
+
+<footer>
+</footer>
+
+</body>
+</html>

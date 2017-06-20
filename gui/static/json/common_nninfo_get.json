@@ -1,0 +1,35 @@
+{
+	"status": "200",
+	"result": [{
+		"pk": "nn0000010",
+		"model": "tfmsacore.nninfo",
+		"fields": {
+			"imagepre": "",
+			"samplemethod": "",
+			"samplepercent": "",
+			"imagey": "",
+			"imagex": "",
+			"table": "",
+			"query": "",
+			"datadesc": "",
+			"category": "evaluation",
+			"subcate": "csv",
+			"preprocess": "",
+			"datasize": "",
+			"config": "",
+			"testfail": "",
+			"train": "",
+			"desc": "sssssssssssssssssssssss",
+			"acc": "",
+			"datavaild": "",
+			"datasets": "",
+			"name": "evaluation",
+			"testpass": "",
+			"type": "",
+			"created": "2016-10-15T03:35:14.378Z",
+			"samplenum": "",
+			"confvaild": "",
+			"dir": ""
+		}
+	}]
+}

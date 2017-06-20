@@ -1,0 +1,11 @@
+[class^="label"] {
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 4px;
+    float: left;
+    position: absolute;
+}
+
+.label-blue {
+  background: $label-bg-blue;
+}

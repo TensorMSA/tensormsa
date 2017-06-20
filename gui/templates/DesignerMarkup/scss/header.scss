@@ -1,0 +1,51 @@
+.mainHeader {
+  position:relative;
+  width: $mainHeader-width;
+  height: $mainHeader-height;
+  @include background(#ffffff,#e9e9e9);
+  z-index:100;
+  box-shadow: 0px 3px 8px #aaa;
+  overflow:hidden;
+    .logo {
+        float:left;
+        width: $logo-width;
+        @include transition(width, 1s);
+        height:100%;
+        float:left;
+        @include background(#9ec4e9,#78a4cf);
+        .logo-image {
+          display:inline-block;
+          width:56px;
+          height:46px;
+          background:$logo-img-url;
+          margin-left: 27px;
+          margin-top: 10px;
+          float:left;
+        }
+        .system-logo {
+          text-indent:-999999px;
+          position:absolute;
+          display:inline-block;
+          opacity:100;
+          @include transition(opacity, .5s);
+          width:110px;
+          height:20px;
+          background:$sysmen-logo-url no-repeat;
+          margin-left: 10px;
+          margin-top: 23px;
+        }
+    }
+}
+
+@media screen and (max-width: 1023px) {
+  .mainHeader {
+    .logo {
+      width: $resize-logo-width;
+      @include transition(width, .5s);
+      .system-logo {
+        opacity:0;
+        @include transition(opacity, .5s);
+      }
+    }
+  }
+}

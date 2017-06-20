@@ -1,0 +1,74 @@
+//size
+.w100p {
+    width: 100% !important;
+}
+
+.hInherit {
+    height: inherit !important;
+}
+
+//position
+.positionA {
+    position: absolute !important;
+}
+
+.positionR {
+    position: relative !important
+}
+
+.floatL {
+    float: left !important
+}
+
+.floatR {
+    float: right !important
+}
+
+.clearB {
+    clear: both;
+}
+
+//padding & margin
+.paddingT30 {
+    padding-top: 30px !important;
+}
+
+.paddingT10 {
+    padding-top: 10px !important;
+}
+
+.marginT5 {
+    margin-top: 5px !important;
+}
+
+.marginB5 {
+    margin-bottom: 5px !important;
+}
+
+.marginT10 {
+    margin-top: 10px !important;
+}
+
+//align
+.left {
+    text-align: left !important;
+}
+
+.right {
+    text-align: right !important;
+}
+
+.center {
+    text-align: center !important;
+}
+
+.width350 {
+    width: 350px !important;
+}
+
+.min-width-1 {
+    min-width: 1000px !important;
+}
+.min-width-2 {
+    min-width: 1100px !important;
+}

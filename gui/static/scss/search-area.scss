@@ -1,0 +1,21 @@
+.searchArea {
+  height:50px;
+  width:100%;
+  padding:16px 16px 16px 25px;
+  background: $body-bg-color;
+  float:left;
+  input,
+  select {
+    border:1px solid #d2dce3;
+    vertical-align:middle;
+  }
+  label {
+    color:#4b5156;
+    font-size: $font-size-base;
+    margin-right:6px;
+    margin-left:22px;
+    &:first-child {
+      margin-left:0;
+    }
+  }
+}

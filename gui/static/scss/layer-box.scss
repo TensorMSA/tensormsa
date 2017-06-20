@@ -1,0 +1,44 @@
+dl.layer-box {
+    width: 250px;
+    height: 200px;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    display: inline-table;
+    >dt {
+        font-size: 15px;
+        color: #495158;
+        width: 100%;
+        height: 30px;
+        border-radius: $layer-box-border-radius $layer-box-border-radius 0 0;
+        @include box-sizing(border-box);
+        padding: 5px 3px;
+        background: $layer-box-title-bg;
+        text-align: center;
+        [class^="circle-"] {
+            position: relative;
+            padding-left: 18px;
+            &:before {
+                width: 12px;
+                height: 12px;
+                top: 5px;
+                margin-right: 2px;
+                border-width: 3px;
+            }
+        }
+    }
+    >dd {
+        width: 100%;
+        background: $layer-box-bg;
+        min-height: calc(100% - 30px);
+        @include box-sizing(border-box);
+        padding: 10px;
+        border-radius: 0 0 $layer-box-border-radius $layer-box-border-radius;
+        *zoon:1;
+        &:after {
+            display:block;
+            clear:both;
+            content:'';
+        }
+    }
+}

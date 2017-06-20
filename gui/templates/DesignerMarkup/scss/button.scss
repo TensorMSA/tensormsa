@@ -1,0 +1,158 @@
+button {
+  background: $defaultBtn-bg-color;
+  height:$btn-height;
+  @include box-sizing(border-box);
+  display: inline-block;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  vertical-align: middle;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  outline: 0;
+  padding-left:$btn-padding;
+  padding-right:$btn-padding;
+  border-radius: $btn-border-radius;
+  color: $btn-color;
+  min-width:80px;
+  position:relative;
+  border:1px solid $defaultBtn-border-color;
+  &.img-btn {
+    padding-left:36px;
+    box-shadow: inset 30px 1px 0px rgba(255,255,255,.2);
+    border-color:$imgBtn-border-color;
+    &:before {
+      border:1px solid $imgBtn-border-color;
+      content:'';
+      width:30px;
+      height:30px;
+      display:inline-block;
+      position:absolute;
+      left:-1px;
+      top:-1px;
+      background:$btn-icon-url no-repeat;
+      background-color: $imgBtn-bg-color;
+      border-radius: $btn-border-radius 0 0 $btn-border-radius;
+      @include box-sizing(border-box);
+    }
+  }
+  &:hover {
+    background: $imgBtn-bg-color;
+  }
+  &:active {
+    box-shadow: $active-shadow-effect;
+  }
+}
+
+.img-btn {
+  &.save {
+    &:before {
+      background-position:0 0;
+    }
+  }
+  &.upload {
+    &:before {
+      background-position:-30px 0;
+    }
+  }
+}
+
+// table button
+.tblBtnArea {
+  float:right;
+  margin-bottom:5px;
+  button {
+    float:left;
+    color:$tblBtn-color;
+    @include background(#ffffff,#ededed);
+    border:1px solid #b6b6b6;
+    border-radius: $btn-border-radius;
+    margin:0 3px;
+    padding-left:$btn-img-padding;
+    padding-right:$btn-padding;
+    position:relative;
+    &:before {
+      content:'';
+      width:15px;
+      height:15px;
+      display:inline-block;
+      position:absolute;
+      left:8px;
+      background:$tblBtn-icon-url;
+    }
+    &:hover {
+      @include background(#f7f7f7,#e5e5e5);
+    }
+    &:active {
+      @include background(#f9f9f9,#e7e7e7);
+      box-shadow: $active-shadow-effect;
+      border:1px solid $tblBtn-border-color-active;
+    }
+  }
+}
+
+button {
+  &.new {
+    &:before {
+    background-position:0 0;
+    }
+  }
+  &.delete {
+    &:before {
+      background-position:-15px 0;
+    }
+  }
+  &.modify {
+    &:before {
+      background-position:-30px 0;
+    }
+  }
+  &.detail {
+    &:before {
+      background-position:-45px 0;
+    }
+  }
+  &.board {
+    &:before {
+      background-position:-60px 0;
+    }
+  }
+}
+
+
+.btnArea {
+  float:right;
+}
+
+.btn-sm {
+  height: $btn-sm-height;
+}
+
+.PNBtn {
+  display:inline-block;
+  vertical-align:middle;
+  button {
+    text-indent:-99999px;
+    width:40px;
+    min-width:auto;
+    background:$btn-icon-url no-repeat;
+    border:1px solid $defaultBtn-border-color;
+  }
+  .prev {
+    float:left;
+    border-radius: $btn-border-radius 0 0 $btn-border-radius;
+    background-position: -65px 0;
+    &:hover {
+      background-position: -65px -30px;
+    }
+  }
+  .next {
+    float:right;
+    border-radius: 0 $btn-border-radius $btn-border-radius 0;
+    border-left:none;
+    background-position: -115px 0;
+    &:hover {
+      background-position: -115px -30px;
+    }
+  }
+}

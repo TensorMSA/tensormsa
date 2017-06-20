@@ -1,0 +1,13 @@
+@mixin transition($transition, $transition-time) {
+  transition: $transition $transition-time;
+  -ms-transition: $transition $transition-time;
+  -moz-transition: $transition $transition-time;
+  -o-transition: $transition $transition-time;
+  transition: $transition $transition-time;
+}
+
+@mixin box-sizing($boxmodel) {
+  -webkit-box-sizing: $boxmodel;
+  -moz-box-sizing: $boxmodel;
+  box-sizing: $boxmodel;
+}

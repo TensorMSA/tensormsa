@@ -1,0 +1,25 @@
+.pre-tbl-wrap {
+    clear: both;
+    float: left;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+    height: calc(100% - 320px)
+}
+
+.data-box-wrap {
+    width: 100%;
+    @include box-sizing(border-box);
+    height: 280px;
+    border-radius: 10px;
+    background: #eaecf0;
+    border: 1px solid #c9cdd5;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    .center-box {
+        width: 960px;
+        margin: 0 auto;
+        height: 100%;
+    }
+}

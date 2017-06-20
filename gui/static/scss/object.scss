@@ -1,0 +1,15 @@
+[class^="signal-lamp"] {
+    width: 13px;
+    height: 13px;
+    display: inline-block;
+    border-radius: 100%;
+    vertical-align: middle;
+}
+
+.signal-lamp-red {
+    background: $signal-red
+}
+
+.signal-lamp-green {
+    background: $signal-green
+}

@@ -1,0 +1,101 @@
+$img-route:"../images/";
+$body-min-width: 1000px;
+
+$red:#d56248;
+$yellow: #e8a71e;
+$green: #39b366;
+$blue: #3974c1;
+$dark-blue: #395976;
+
+$border-color-base : #ccc;
+$body-bg-color: #f7f7f7;
+$page-basic-padding:15px;
+
+$font-size-base: 12px;
+$font-color-base: #333;
+$font-family-base: 'malgun gothic',dotum,sans-serif;
+
+//header
+$mainHeader-width: 100%;
+$mainHeader-height: 64px;
+$logo-width :230px;
+$utilMenu-width : 230px;
+$logo-img-url:url("#{$img-route}logotest.png");
+$sysmen-logo-url:url("#{$img-route}system-logo.png");
+
+//nav
+$nav-current-color: #4084d9;
+$nav-hover-color: #f0e374;
+$nav-font-size: ($font-size-base + 1);
+$nav-font-color: #777;
+$nav-icon-url:url("#{$img-route}nav-icon.png");
+
+//nav bar color
+$nav-bar-color: #eaeaea;
+$nav-bar-color2: darken($nav-bar-color, 10%);
+$nav-bar-color3: darken($nav-bar-color, 20%);
+$nav-bar-color4: darken($nav-bar-color, 30%);
+$nav-bar-color5: darken($nav-bar-color, 40%);
+$nav-bar-hover-color: darken($nav-bar-color, 50%);
+$nav-icon-color1:#4b77e9;
+$nav-icon-color2:$green;
+$nav-icon-color3:$dark-blue;
+$nav-icon-color4:#4b77e9;
+$nav-icon-color5: $yellow;
+
+//util menu
+$utilMenu-icon-url:url("#{$img-route}topIcon.png");
+$utilMenus-font-size: $font-size-base;
+$utilMenus-font-color: #545454;
+$name-text-color: #2662b4;
+
+//table
+$tbl-basic-v-padding : 4px;
+$tbl-basic-h-padding : 10px;
+
+//button
+$btn-icon-url:url("#{$img-route}btnIcon.png");
+$tblBtn-icon-url:url("#{$img-route}tblIcon.png");
+$btn-border-radius: 3px;
+$btn-color : #fff;
+$defaultBtn-border-color: #4d81bd;
+$defaultBtn-bg-color: #6098da;
+$imgBtn-bg-color: #5186c5;
+$imgBtn-border-color: #436d9d;
+$defaultBtn-hover-bg-color: darken($defaultBtn-bg-color, 5%);
+$btn-height:30px;
+$btn-padding:12px;
+$btn-img-padding:28px;
+$active-shadow-effect: inset 3px 3px 5px rgba(0,0,0,.2);
+
+$tblBtn-bg-color: #f7f7f7;
+$tblBtn-color: #464646;
+$tblBtn-border-color: #b6b6b6;
+$tblBtn-border-color-active: darken($tblBtn-border-color, 10%);
+
+$btn-sm-height: ($btn-height - 4);
+
+//input
+$input-base-padding: 4px;
+$input-border-color: #c7c7c7;
+
+//tab
+$tab-bg-color:#eeeeee;
+$tab-hover-bg-color: darken($tab-bg-color, 4%);
+$tab-active-bg-color: darken($tab-bg-color, 6%);
+$tab-current-bg-color: #fff;
+$tab-color:#7d7d7d;
+$tab-current-color: #2981e8;
+$tab-current-hover-color: darken($tab-current-color, 10%);
+$tab-boder-radius: 4px;
+$tab-border-color: #e1e1e1;
+$tab-current-border-color : #ccc;
+$tab-font-size: ($font-size-base + 2);
+
+//label
+$label-bg-blue: $blue;
+
+//resize
+$resize-logo-width: 120px;
+$resize-util-width: 104px;
+$resize-nav-width: calc(100% - 224px);
