@@ -20,7 +20,7 @@ class EntityAnalyzer(ShareData):
         self.proper_key_list = list(proper_noun.keys()) #Python 3+ return not list but dict_Keys
         self.proper_noun = proper_noun     # key : [values]
         #self._load_proper_noun(proper_noun.keys(), proper_noun)
-        self.bilstmcrf_model = PredictNetBiLstmCrf()
+        #self.bilstmcrf_model = PredictNetBiLstmCrf()
 
     # Compare load all file and Step by Step (Step is faster
     # def _load_proper_noun(self, key_list, proper_noun):
@@ -60,12 +60,9 @@ class EntityAnalyzer(ShareData):
         result = list(map(lambda x : self._preprocess_data(share_data,x), pos_tags))
         convert_dict_data = list(map(lambda x : x[1].strip() ,result))
         morphed_data = list(map(lambda x : x[0].strip() ,result))
+        share_data.set_convert_dict_data(convert_dict_data)
+        share_data.set_morphed_data(morphed_data)
         print ("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
-        ner_data = self._get_ner_data(''.join(morphed_data))
-        print("■■■■■■■■■■ NER 분석 결과 : " + str(ner_data))
-        self._add_ner_slot(morphed_data, ner_data, share_data.get_story_slot_entity())
-        convert_data = self._convert_ner_slot(convert_dict_data, ner_data)
-        share_data.set_convert_data(convert_data)
         return share_data
 
     #Custom Case : ex)안녕 and len < 3
@@ -106,7 +103,6 @@ class EntityAnalyzer(ShareData):
         #     twitter = Twitter(jvmpath=None)
         #     return twitter.pos(str(input))
 
-    # TODO : get nlp DB
     def _extract_proper_entity(self, value, key):
         exist = False
         #input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
@@ -118,33 +114,3 @@ class EntityAnalyzer(ShareData):
                     break
             input_file.close()
         return exist
-
-    # TODO : get BIO Tag from sentence
-    def _get_ner_data(self, input_sentence):
-        #result = self.bilstmcrf_model.run(self.ner_model_id, {"input_data": input_sentence, "num": 0, "clean_ans": False})
-        result = ['company', 'O', 'name', 'O', 'O', 'rank', 'O', 'O', 'O', 'rank', 'O']
-        return result
-
-    def _add_ner_slot(self, morphed_data, ner_data, slot_entity):
-        get_ner_list = []
-        key_list = self.proper_key_list
-        return slot_entity
-
-    def _convert_ner_slot(self, convert_dict_data, ner_data):
-        for i in range(len(convert_dict_data)):
-            if(ner_data[i].find("company") > -1 and convert_dict_data[i].find("[회사]") > -1):
-                pass
-            elif(ner_data[i].find("B-") > -1 and convert_dict_data[i].find("[") > -1):
-                if(ner_data[i] == "B-PERSON"):
-                    convert_dict_data[i] = "[이름]"
-                elif(ner_data[i] == "B-LOCATION"):
-                    convert_dict_data[i] = "[장소]"
-            # Delete Same Entity from dictionary
-            elif(ner_data[i].find("I-") > -1 and convert_dict_data[i].find("[") > -1):
-                # Compare Prior Entity
-                if(i > 0 and convert_dict_data[i] != convert_dict_data[i-1]):
-                   del convert_dict_data[i]
-            else: # Out Case
-                pass
-        convert_data = ' '.join(convert_dict_data)
-        return convert_data

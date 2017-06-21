@@ -28,8 +28,8 @@ class ServiceManager:
         self.chat_knowledge_data_dict = ChatKnowledgeDataDict(cb_id)
         self.chat_share_data = ShareData()
         self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging(), self.chatbot_conf.get_ner_model())
-        self.intent_analyzer = IntendAnalyzer(self.chatbot_conf.get_intent_model())
         self.entity_recognizer = EntityRecognizer(cb_id)
+        self.intent_analyzer = IntendAnalyzer(cb_id, self.chatbot_conf.get_intent_model())
         # self.decision_maker = DecisionMaker()
         # self.service_provider = ServiceProvider()
         # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
@@ -45,9 +45,12 @@ class ServiceManager:
             share_ctx = self.chat_share_data.load_json(req_ctx)
 
             # 2. nlp process
+            # Preprocess
             share_ctx = self.entity_analyzer.parse(share_ctx)
-            share_ctx = self.intent_analyzer.parse(share_ctx)
+            # NER
             share_ctx = self.entity_recognizer.parse(share_ctx)
+            # Intent
+            share_ctx = self.intent_analyzer.parse(share_ctx)
 
             # 3. decision maker
             #share_ctx = self.decision_maker.run(share_ctx)

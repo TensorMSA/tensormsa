@@ -16,7 +16,7 @@ class CB_INTENT_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.CB_INTENT_LIST_INFO
-        fields = ('cb_id', 'intent_id', 'intent_type', 'intent_desc', 'nn_id', 'nn_type')
+        fields = ('cb_id', 'intent_id', 'intent_type', 'rule_value', 'intent_desc', 'nn_type')
 
 class CB_STORYBOARD_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
@@ -32,7 +32,7 @@ class CB_ENTITY_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.CB_ENTITY_LIST_INFO
-        fields = ('cb_id', 'intent_id', 'story_id', 'entity_type', 'entity_list')
+        fields = ('cb_id', 'intent_id', 'entity_type', 'entity_list')
 
 
 class CB_TAGGING_INFO_Serializer(serializers.ModelSerializer):
@@ -49,4 +49,4 @@ class CB_MODEL_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.CB_MODEL_LIST_INFO
-        fields = ('cb_id', 'nn_id', 'nn_purpose','nn_type','entity_list')
+        fields = ('cb_id', 'nn_id', 'nn_purpose','nn_type','nn_label_data','nn_desc')
