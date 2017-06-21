@@ -54,12 +54,15 @@ class OneHotEncoder :
         :param item:
         :return:
         """
-        if (self.add_flag == False) :
-            return None
-        if item not in self.dict_list :
-            if(self.bucket_size > len(self.dict_list)) :
-                if (isnan(item) == False) :
-                    self.dict_list.append(item)
+        try :
+            if (self.add_flag == False) :
+                pass
+            if item not in self.dict_list :
+                if(self.bucket_size > len(self.dict_list)) :
+                    if (isnan(item) == False) :
+                        self.dict_list.append(item)
+        except Exception as e:
+           raise Exception("get voc error !")
 
     def get_idx(self, item):
         """

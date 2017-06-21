@@ -27,6 +27,8 @@ class ShareData(ChatBotConfManager):
         self.story_board_id = ""        # current working story board
         self.story_key_entity = []      # required key list
         self.story_slot_entity = {}     # key : val
+        self.morphed_data = []
+        self.convert_dict_data =[]
         # self.opt_sel_list = {}          # intent option list when intent anl result is not clear
         # self.ontology_id = ""           # current working ontology id
         # self.ontology_req_parms = {}    # key : val
@@ -55,7 +57,8 @@ class ShareData(ChatBotConfManager):
         :param object:
         :return:
         """
-        for key in self.__dict__ :
+        # Check Essential Input
+        for key in ['input_data', 'intent_id']:
             if key not in object :
                 raise Exception (''.join([key, ' not exist!']))
 
@@ -313,6 +316,38 @@ class ShareData(ChatBotConfManager):
         :return:
         """
         return self.story_key_entity
+
+    def set_morphed_data(self, data):
+        """
+
+        :param data:
+        :return:
+        """
+        self.morphed_data = data
+
+    def get_morphed_data(self):
+        """
+
+        :param data:
+        :return:
+        """
+        return self.morphed_data
+
+    def set_convert_dict_data(self, data):
+        """
+
+        :param data:
+        :return:
+        """
+        self.convert_dict_data = data
+
+    def get_convert_dict_data(self):
+        """
+
+        :param data:
+        :return:
+        """
+        return self.convert_dict_data
 
     def set_story_slot_entity(self, key, val):
         """
