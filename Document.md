@@ -88,7 +88,7 @@ delete from django_migrations where app = 'master';
 delete /chatbot/migrations/*.py (except __init__.py)
 ```sh
 drop table Chatbot_CB_ONTOLOGY_INFO,
-CB_TAGGING_INFO,
+Chatbot_CB_TAGGING_INFO,
 Chatbot_CB_RESPONSE_LIST_INFO,
 Chatbot_CB_SERVICE_LIST_INFO,
 Chatbot_CB_MODEL_LIST_INFO,

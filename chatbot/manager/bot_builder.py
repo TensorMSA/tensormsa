@@ -12,7 +12,7 @@ class BotBuilder(APIView):
         try:
             serializer_def = serializers.CB_DEF_LIST_INFO_Serializer(data=data)
             serializer_intent = serializers.CB_INTENT_LIST_INFO_Serializer(data=data)
-            serializer_story = serializers.CB_STORYBOARD_LIST_INFO_Serializer(data=data)
+            #serializer_story = serializers.CB_STORYBOARD_LIST_INFO_Serializer(data=data)
             serializer_entity = serializers.CB_ENTITY_LIST_INFO_Serializer(data=data)
             serializer_tagging = serializers.CB_TAGGING_INFO_Serializer(data=data)
             serializer_model = serializers.CB_MODEL_LIST_INFO_Serializer(data=data)
@@ -27,10 +27,10 @@ class BotBuilder(APIView):
             else :
                 return serializer_intent.is_valid(raise_exception=True)
 
-            if serializer_story.is_valid():
-                serializer_story.save()
-            else :
-                return serializer_story.is_valid(raise_exception=True)
+            # if serializer_story.is_valid():
+            #     serializer_story.save()
+            # else :
+            #     return serializer_story.is_valid(raise_exception=True)
 
             if serializer_entity.is_valid():
                 serializer_entity.save()
