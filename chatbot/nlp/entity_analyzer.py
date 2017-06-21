@@ -58,8 +58,10 @@ class EntityAnalyzer(ShareData):
         pos_tags = self._pos_tagger(input_data)
         print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
         result = list(map(lambda x : self._preprocess_data(share_data,x), pos_tags))
-        convert_dict_data = list(map(lambda x : x[1].strip() ,result))
-        morphed_data = list(map(lambda x : x[0].strip() ,result))
+        # Remove preposition
+        result = list(filter(lambda x : x[0] != "", result))
+        convert_dict_data = list(map(lambda x : x[1] ,result))
+        morphed_data = list(map(lambda x : x[0] ,result))
         share_data.set_convert_dict_data(convert_dict_data)
         share_data.set_morphed_data(morphed_data)
         print ("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
@@ -68,23 +70,23 @@ class EntityAnalyzer(ShareData):
     #Custom Case : ex)안녕 and len < 3
     def _preprocess_data(self, share_data, pos_tags):
         #except meaningless
-        convert_dict_data = ""
-        morphed_data = ""
+        convert_dict_data = pos_tags[0]
         if (pos_tags[1] in ['SY', 'SF']):
-            pass
+            return "", ""
         elif (pos_tags[1] in ['NNG', 'NNP']): #Check only Noun
-            morphed_data = ''.join([morphed_data, ' ', pos_tags[0]])
+            convert_dict_data = pos_tags[0]
             key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
             if(key_check == []):
-                pass
+                return "", ""
             else: #proper noun priority
-                share_data.set_story_slot_entity(key_check[0], pos_tags[0])
-                pos_tags = (''.join(['['+ key_check[0] +']']), '')
-            convert_dict_data = ''.join([convert_dict_data, ' ' , pos_tags[0]])
-        else:
-            morphed_data = ''.join([morphed_data, ' ', pos_tags[0]])
-            convert_dict_data = ''.join([convert_dict_data, ' ', pos_tags[0]])
-        return morphed_data, convert_dict_data
+                key_slot = pos_tags[0]
+                # except duplicated
+                if(self.proper_noun[key_check[0]][2]):
+                    key_slot = share_data.get_story_slot_entity(key_check[0]) + key_slot if share_data.get_story_slot_entity(key_check[0]) != None else ""
+                share_data.set_story_slot_entity(key_check[0], key_slot)
+                convert_dict_data = '['+ key_check[0] +']'
+
+        return pos_tags[0], convert_dict_data
 
     def _pos_tagger(self, input, type ='mecab'):
         """
