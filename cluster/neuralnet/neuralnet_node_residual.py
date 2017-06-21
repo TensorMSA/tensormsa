@@ -385,7 +385,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
         filename_arr, filedata_arr = self.change_predict_fileList(filelist, dataconf)
 
         # get unique key
-        unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
+        unique_key = '_'.join([node_id, self.get_active_batch(node_id)])
 
         ## create tensorflow graph
         if (NeuralNetModel.dict.get(unique_key)):
