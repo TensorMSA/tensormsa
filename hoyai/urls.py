@@ -138,6 +138,16 @@ urlpatterns = [
     url(r'^api/v1/type/runmanager/state/train/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.RunManagerTrainRequest.as_view())),
 
+    # automl
+    url(r'^api/v1/type/automl/state/train/nnid/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.RunManagerAutoTrain.as_view())),
+    url(r'^api/v1/type/automl/state/stat/nnid/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.RunManagerAutoStat.as_view())),
+    url(r'^api/v1/type/automl/state/conf/nnid/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.RunManagerAutoConf.as_view())),
+    url(r'^api/v1/type/automl/state/rule/graph_id/(?P<graph_id>.*)/',
+        csrf_exempt(rest_view.RunManagerAutoRule.as_view())),
+
     # summary
     url(r'^api/v1/type/result/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',
         csrf_exempt(rest_view.ResultManagerDefault.as_view())),

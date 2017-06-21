@@ -8,7 +8,8 @@ class NN_DEF_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.NN_DEF_LIST_INFO
-        fields = ('nn_id', 'biz_cate', 'biz_sub_cate', 'nn_title', 'nn_desc', 'use_flag', 'dir', 'config')
+        fields = ('nn_id', 'biz_cate', 'biz_sub_cate', 'nn_title', 'nn_desc', 'use_flag', 'dir', 'config',
+                  'automl_parms', 'automl_runtime', 'automl_stat')
 
 class NN_VER_WFLIST_INFO_Serializer(serializers.ModelSerializer):
     """
@@ -85,3 +86,11 @@ class NN_VER_BATCHLIST_INFO_Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.NN_VER_BATCHLIST_INFO
         fields = ('nn_batch_ver_id', 'active_flag', 'nn_wf_ver_id')
+
+class AUTO_ML_RULE_Serializer(serializers.ModelSerializer):
+    """
+    Table : AUTO_ML_RULE
+    """
+    class Meta:
+        model = models.AUTO_ML_RULE
+        fields = ('graph_flow_id', 'graph_flow_data')
