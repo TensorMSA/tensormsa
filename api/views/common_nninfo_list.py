@@ -14,6 +14,9 @@ class CommonNNInfoList(APIView):
         try:
             input_parm = request.data
             input_parm['nn_id'] = nnid
+            input_parm['automl_parms'] = {}
+            input_parm['automl_runtime'] = {}
+            input_parm['automl_stat'] = {}
             return_data = NNCommonManager().insert_nn_info(input_parm)
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -43,6 +46,9 @@ class CommonNNInfoList(APIView):
         try:
             input_parm = request.data
             input_parm['nn_id'] = nnid
+            input_parm['automl_parms'] = {}
+            input_parm['automl_runtime'] = {}
+            input_parm['automl_stat'] = {}
             return_data = NNCommonManager().update_nn_info(input_parm)
             return Response(json.dumps(return_data))
         except Exception as e:

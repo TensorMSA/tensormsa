@@ -63,6 +63,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
         self.batch_size = wf_conf.get_batch_size()
         self.iter_size = wf_conf.get_iter_size()
         self.min_count = wf_conf.get_min_count()
+        self.preprocess = wf_conf.preprocess_type()
 
     def _get_model_path(self):
         return ''.join([self.md_store_path, '/model.bin'])
@@ -89,8 +90,10 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
 
             model = word2vec.Word2Vec.load(self._get_model_path())
             if(parm['type'] in ['vector', 'sim', 'similarity']):
-                if ('val_1' in parm): parm['val_1'] = self._pos_raw_data(parm['val_1'])
-                if ('val_2' in parm): parm['val_2'] = self._pos_raw_data(parm['val_2'])
+                if ('val_1' in parm) :
+                    parm['val_1'] = np.array(self._preprocess(parm['val_1'], type=self.preprocess)).flatten().tolist()
+                if ('val_2' in parm) :
+                    parm['val_2'] = np.array(self._preprocess(parm['val_2'], type=self.preprocess)).flatten().tolist()
 
             if(parm['type'] in ['vector','train']) :
                 return_val = self._predict_word2vec(parm, return_val, model)

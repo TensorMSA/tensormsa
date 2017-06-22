@@ -1,3 +1,7 @@
+from chatbot import models
+from django.core import serializers as serial
+import json
+
 class ChatBotConfManager:
     """
     class which handle chabot conf include nlp, stroyboard, entity and service
@@ -12,8 +16,8 @@ class ChatBotConfManager:
         self.pos_type = ""
         self.entity_key_list = []
         self.word_embed_model = ""
-        self.intent_anal_model = ""
-        self.syntax_anal_model = ""
+        self.intent_analyze_model = ""
+        self.ner_analyze_model = ""
         self.resp_gen_model = ""
         self.ton_gen_model = ""
         self.stroy_board = []     #available story_board lists
@@ -25,14 +29,27 @@ class ChatBotConfManager:
         :param cb_id:
         :return:
         """
-        #TODO:need to get data from cache server
+        #TODO:need to get data from cache server and chatbot model DB
         self.pos_type = "mecab"
         self.word_embed_model = "nn00002"
-        self.intent_anal_model = "nnn12993" #nn500995 #nnn12993
-        self.syntax_anal_model = ""
+        self.intent_analyze_model = self.get_model_conf(cb_id, 'Intent')['nn_id']
+        self.ner_analyze_model = self.get_model_conf(cb_id, 'NER')['nn_id']
         self.resp_gen_model = ""
         self.ton_gen_model = ""
         self.stroy_board = []
+
+    def get_model_conf(self, cb_id, purpose):
+        query_set = models.CB_MODEL_LIST_INFO.objects.filter(cb_id = cb_id, nn_purpose = purpose)
+        query_set = serial.serialize("json", query_set)
+        return json.loads(query_set)[0]['fields']
+
+    def get_intent_model(self):
+        """
+        tag type mecab, twitter, etc
+        :param data:
+        :return:
+        """
+        return self.intent_analyze_model
 
     def _save_conf(self, cb_id):
         """
@@ -99,37 +116,21 @@ class ChatBotConfManager:
         """
         return self.pos_type
 
-    def set_intent_model(self, data):
+    def set_ner_model(self, data):
         """
         net id pretrained on hoyai
         :param data:
         :return:
         """
-        self.intent_anal_model = data
+        self.ner_analyze_model = data
 
-    def get_intent_model(self):
+    def get_ner_model(self):
         """
         net id pretrained on hoyai
         :param data:
         :return:
         """
-        return self.intent_anal_model
-
-    def set_syntax_model(self, data):
-        """
-        net id pretrained on hoyai
-        :param data:
-        :return:
-        """
-        self.intent_anal_model = data
-
-    def get_syntax_model(self):
-        """
-        net id pretrained on hoyai
-        :param data:
-        :return:
-        """
-        return self.intent_anal_model
+        return self.ner_analyze_model
 
     def set_resp_model(self, data):
         """

@@ -72,4 +72,14 @@ class WorkFlowNetConfW2V(WorkFlowNetConf):
         """
         if ('conf' not in self.__dict__):
             self.conf = self.get_view_obj(self.key)
-        return self.conf.get('min_count')
+        return 1 if self.conf.get('min_count') is None else self.conf.get('min_count')
+
+    def preprocess_type(self):
+        """
+
+        :param node_id:
+        :return:
+        """
+        if ('conf' not in self.__dict__):
+            self.conf = self.get_view_obj(self.key)
+        return 'mecab' if self.conf.get('preprocess') is None else self.conf.get('preprocess')

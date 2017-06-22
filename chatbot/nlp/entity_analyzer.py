@@ -1,8 +1,8 @@
 from chatbot.common.chat_share_data import ShareData
-from konlpy.tag import Kkma
-from konlpy.tag import Twitter
+# from konlpy.tag import Kkma
+# from konlpy.tag import Twitter
 from konlpy.tag import Mecab
-from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
+from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 
 class EntityAnalyzer(ShareData):
     """
@@ -12,31 +12,40 @@ class EntityAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, key_list, entity_types):
+    def __init__(self, proper_noun, ner_model_id):
         """
         init global variables
         """
-        self.entity_key_list = key_list
-        self.entity = {}       # key : [values]
-        self._load_entity_data(key_list, entity_types)
+        self.ner_model_id = ner_model_id
+        self.proper_key_list = list(proper_noun.keys()) #Python 3+ return not list but dict_Keys
+        self.proper_noun = proper_noun     # key : [values]
+        #self._load_proper_noun(proper_noun.keys(), proper_noun)
+        #self.bilstmcrf_model = PredictNetBiLstmCrf()
 
-    def _load_entity_data(self, key_list, temp_entitiy):
-        """
-        load entity lists
-        :return:
-        """
-        if (len(key_list) == 0) :
-            raise Exception ("")
-
-        for key in key_list :
-            if key in temp_entitiy :
-                self.entity[key] = temp_entitiy[key]
-            else :
-                self.entity[key] = []
-
-    #Custom Case : ex)안녕 and len < 3
-    def _preprocess_data(self, ShareData):
-        return ShareData
+    # Compare load all file and Step by Step (Step is faster
+    # def _load_proper_noun(self, key_list, proper_noun):
+    #     """
+    #     load entity lists
+    #     :return:
+    #     """
+    #     if (len(key_list) == 0) :
+    #         raise Exception ("")
+    #
+    #     for key in key_list :
+    #         if key in proper_noun :
+    #             self.peoper_noun_values[key] = proper_noun[key]
+    #             #compare file r/w
+    #             #self._load_proper_file(key, proper_noun[key])
+    #         else :
+    #             self.peoper_noun_values[key] = []
+    #
+    # def _load_proper_file(self, key, path):
+    #     input_file = open(path, 'r')
+    #     noun_values=[]
+    #     for line in input_file:
+    #         noun_values.append(line)
+    #     self.peoper_noun_values[key] = noun_values
+    #     input_file.close()
 
     def parse(self, share_data):
         """
@@ -44,34 +53,40 @@ class EntityAnalyzer(ShareData):
         :param share_data:
         :return:
         """
-        if (share_data.get_request_type() == 'image') :
-            pass
-        else:
-            input_data = share_data.get_request_data()
-            pos_tags = self._pos_tagger(input_data)
-            print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
-            return_msg = ""
-            for i in range(0, len(pos_tags)):
-                if(pos_tags[i][1] in ['SY','SF']):
-                    pass
-                elif(pos_tags[i][1] in ['NNG','NNP']):
-                    if(self._extract_name_entity(pos_tags[i][0]) == True):
-                        share_data.set_story_slot_entity('이름', pos_tags[i][0])
-                        pos_tags[i] = (''.join(['[이름]']), '')
-                    else:
-                        for key in self.entity_key_list:
-                            for val in self.entity[key]:
-                                word = pos_tags[i][0]
-                                if(word == val):
-                                    pos_tags[i] = (''.join(['[' , key, ']']), '')
-                                    share_data.set_story_slot_entity(key, val)
-                                    break
-                    return_msg = ''.join([return_msg, ' ' , pos_tags[i][0]])
-                else:
-                    return_msg = ''.join([return_msg, ' ', pos_tags[i][0]])
-            print ("■■■■■■■■■■ Entity 분석 결과 : " + return_msg)
-            share_data.set_convert_data(return_msg)
+        # TODO : Add Intent and NER divide call from service_type 
+        input_data = share_data.get_request_data()
+        pos_tags = self._pos_tagger(input_data)
+        print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
+        result = list(map(lambda x : self._preprocess_data(share_data,x), pos_tags))
+        # Remove preposition
+        result = list(filter(lambda x : x[0] != "", result))
+        convert_dict_data = list(map(lambda x : x[1] ,result))
+        morphed_data = list(map(lambda x : x[0] ,result))
+        share_data.set_convert_dict_data(convert_dict_data)
+        share_data.set_morphed_data(morphed_data)
+        print ("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
         return share_data
+
+    #Custom Case : ex)안녕 and len < 3
+    def _preprocess_data(self, share_data, pos_tags):
+        #except meaningless
+        convert_dict_data = pos_tags[0]
+        if (pos_tags[1] in ['SY', 'SF']):
+            return "", ""
+        elif (pos_tags[1] in ['NNG', 'NNP']): #Check only Noun
+            convert_dict_data = pos_tags[0]
+            key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
+            if(key_check == []):
+                return "", ""
+            else: #proper noun priority
+                key_slot = pos_tags[0]
+                # except duplicated
+                if(self.proper_noun[key_check[0]][2]):
+                    key_slot = share_data.get_story_slot_entity(key_check[0]) + key_slot if share_data.get_story_slot_entity(key_check[0]) != None else ""
+                share_data.set_story_slot_entity(key_check[0], key_slot)
+                convert_dict_data = '['+ key_check[0] +']'
+
+        return pos_tags[0], convert_dict_data
 
     def _pos_tagger(self, input, type ='mecab'):
         """
@@ -82,21 +97,22 @@ class EntityAnalyzer(ShareData):
         if(type == 'mecab') :
             mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
             return mecab.pos(str(input))
+        # elif(type == 'kkma') :
+        #     kkma = Kkma()
+        #     return kkma.pos(str(input))
+        #
+        # elif(type == 'twitter') :
+        #     twitter = Twitter(jvmpath=None)
+        #     return twitter.pos(str(input))
 
-        elif(type == 'kkma') :
-            kkma = Kkma()
-            return kkma.pos(str(input))
-
-        elif(type == 'twitter') :
-            twitter = Twitter(jvmpath=None)
-            return twitter.pos(str(input))
-
-    def _extract_name_entity(self, value):
+    def _extract_proper_entity(self, value, key):
         exist = False
-        input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
-        for line in input_file:
-            if(line.strip().find(value)):
-                exist = True
-                break
-        input_file.close()
+        #input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
+        input_file = open(self.proper_noun.get(key)[1], 'r')
+        if(input_file is not None):
+            for line in input_file:
+                if(line.strip().find(value) > -1):
+                    exist = True
+                    break
+            input_file.close()
         return exist

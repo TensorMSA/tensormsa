@@ -96,6 +96,7 @@ class DataNodeImage(DataNode):
         saver = tf.train.Saver(net.trainable_collection)
         return saver, predicts, img
 
+    # image convert
     def image_convert(self, sess, dataconf, img, filename, forder=None):
         set_flag = "N"
         if forder == None:# forder None = predict call
@@ -107,7 +108,6 @@ class DataNodeImage(DataNode):
                 set_flag = "Y"
 
         if set_flag == "Y":
-            # tf.reset_default_graph()
             self.x_size = dataconf["preprocess"]["x_size"]
             self.y_size = dataconf["preprocess"]["y_size"]
             self.channel = dataconf["preprocess"]["channel"]
@@ -128,11 +128,6 @@ class DataNodeImage(DataNode):
                         try:
                             self.download_file_from_google_drive(self.tiny_url, self.yolo_tiny)
                             self.download_file_from_google_drive(self.face_url, self.yolo_face)
-
-                            # gzlist = os.listdir(self.model_yolo)
-                            # for gzname in gzlist:
-                            #     if gzname.find(".gz") > -1:
-                            #         print("gz=" + gzname)
                         except:
                             println("Error : yolo_tiny,ckpt down.")
 
@@ -141,6 +136,7 @@ class DataNodeImage(DataNode):
             except:
                 self.yolo = "N"
 
+        # png -> jpg
         pngidx = str(type(img)).find("PngImageFile")
         if pngidx > -1:
             img = img.convert("RGBA")
@@ -150,12 +146,31 @@ class DataNodeImage(DataNode):
             bg.save(self.directory + '/' + forder + '/' + filename)
             img = Image.open(self.directory + '/' + forder + '/' + filename)
 
+        # grey color
         if self.channel == 1:
             img = img.convert('L')
 
+        # image cropping
+        longer_side = max(img.size)
+        horizontal_padding = (longer_side - img.size[0]) / 2
+        vertical_padding = (longer_side - img.size[1]) / 2
+        img = img.crop(
+            (
+                -horizontal_padding,
+                -vertical_padding,
+                img.size[0] + horizontal_padding,
+                img.size[1] + vertical_padding
+            )
+        )
+
+        # set_filepaths(self.output_yolo + '/' + forder)
+        # img.save(self.output_yolo + '/' + forder + '/' + filename)
+
+        # image resize
         img = img.resize((self.x_size, self.y_size), Image.ANTIALIAS)
         img = np.array(img)
 
+        # yolo
         if self.yolo == "Y" or self.yolo == "y":
             if self.x_size<385 or self.y_size<385:
                 println("Error : The Yolo x_size or y_size must be greater than 385 pixel")
@@ -247,7 +262,6 @@ class DataNodeImage(DataNode):
                             #PNG -> JPEG
                             img = Image.open(directory + '/' + forder + '/' + filename)
                             sess, img = self.image_convert(sess, dataconf, img, filename, forder)
-
 
                             img = img.reshape([-1, self.x_size, self.y_size, self.channel])
                             img = img.flatten()

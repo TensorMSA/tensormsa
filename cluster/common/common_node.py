@@ -6,6 +6,9 @@ from konlpy.tag import Kkma
 from konlpy.tag import Mecab
 from konlpy.tag import Twitter
 import warnings
+import numpy as np
+from hanja import hangul
+import re
 
 class WorkFlowCommonNode :
     """
@@ -670,7 +673,10 @@ class WorkFlowCommonNode :
         if (embeder_id) :
             w2v_id = embeder_id
         else :
-            w2v_id = self.word_embed_id
+            if('word_embed_id' in self.__dict__) :
+                w2v_id = self.word_embed_id
+            else :
+                w2v_id = ''
 
         if(embed_type == 'onehot'):
             for data in input_data:
@@ -764,3 +770,66 @@ class WorkFlowCommonNode :
             return self._twitter_parse(input_data)
         else :
             return list(map(lambda x : x.split(' '), input_data))
+
+    def get_onehot_vector(self, sent):
+        """
+        convert sentecne to vector
+        :return: list
+        """
+        try:
+            return_vector = []
+            embeddings = np.zeros([40])
+            idx = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', ' ',
+                   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+            num_reg = re.compile("[a-z0-9- ]")
+
+            if (type(sent) not in [type('str'), type([])]):
+                raise Exception("input must be str")
+
+            if (type(sent) == type([])):
+                sent = sent[0]
+
+            for char in sent:
+                vector_a = np.copy(embeddings)
+                vector_b = np.copy(embeddings)
+                vector_c = np.copy(embeddings)
+                vector_d = np.copy(embeddings)
+
+                if (num_reg.match(char) == None and hangul.is_hangul(char)):
+                    anl = hangul.separate(char)
+                    vector_a[anl[0] if anl[0] > 0 else 0] = 1
+                    vector_b[anl[1] if anl[1] > 0 else 0] = 1
+                    vector_c[anl[2] if anl[2] > 0 else 0] = 1
+                elif (num_reg.match(char)):
+                    vector_d[idx.index(char)] = 1
+                else :
+                    vector_d[39] = 1
+                return_vector.append(np.append(vector_a, [vector_b, vector_c, vector_d]))
+            return np.array(return_vector)
+        except Exception as e:
+            print("error on get_onehot_vector : {0}".format(e))
+
+
+    def get_onehot_word(self, vec_list):
+        """
+        convert sentecne to vector
+        :return: list
+        """
+        idx = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', ' ',
+               'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+               'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        return_vector = []
+        if (len(vec_list) == 0 or len(vec_list[0]) != 160):
+            raise Exception("input size error")
+
+        for vec in vec_list:
+            anl = np.array(vec).reshape(4, 40)
+
+            if (np.argmax(anl[3]) > 0):
+                return_vector.append(idx[np.argmax(anl) - 120])
+            else:
+                return_vector.append(hangul.build(np.argmax(anl[0]),
+                                                  np.argmax(anl[1]),
+                                                  np.argmax(anl[2])))
+        return return_vector

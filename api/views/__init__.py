@@ -44,3 +44,7 @@ from .workflow_netconf_wcnn import WorkFlowNetConfWcnn
 from .chatbot_build_manager import ChatbotBuildManager
 from .workflow_data_iob import WorkFlowDataIob
 from .workflow_netconf_bilstmcrf import WorkFlowNetConfBiLstmCrf
+from .runmanager_auto_conf import RunManagerAutoConf
+from .runmanager_auto_stat import RunManagerAutoStat
+from .runmanager_auto_train import RunManagerAutoTrain
+from .runmanager_auto_rule import RunManagerAutoRule

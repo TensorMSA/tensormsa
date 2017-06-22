@@ -5,6 +5,7 @@ import numpy as np
 import logging
 import tensorflow as tf
 from cluster.common.neural_common_bilismcrf import BiLstmCommon
+from common.graph.nn_graph_manager import NeuralNetModel
 
 class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
@@ -17,21 +18,32 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
             # get prev node for load data
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
+            best_score = 0
+            with tf.Session() as sess:
+                while (train_data_set.has_next()):
+                    print("------------------------------")
+                    print(train_data_set.get_file_name())
+                    print("------------------------------")
+                    # create dataset
+                    dev = self.CoNLLDataset(train_data_set.get_file_name(),
+                                            self.processing_word,
+                                            self.processing_tag,
+                                            self.max_iter)
+                    train = self.CoNLLDataset(train_data_set.get_file_name(),
+                                              self.processing_word,
+                                              self.processing_tag,
+                                              self.max_iter)
+                    # train
+                    best_score = self.train(train, dev, self.vocab_tags, sess)
 
-            while (train_data_set.has_next()):
-                # create dataset
-                dev = self.CoNLLDataset(train_data_set.get_file_name(),
-                                        self.processing_word,
-                                        self.processing_tag,
-                                        self.max_iter)
-                train = self.CoNLLDataset(train_data_set.get_file_name(),
-                                          self.processing_word,
-                                          self.processing_tag,
-                                          self.max_iter)
-                # train
-                self.train(train, dev, self.vocab_tags)
-                train_data_set.next()
-            train_data_set.reset_pointer()
+                    # save model
+                    self.model_output = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
+                    if not os.path.exists(self.model_output):
+                        os.makedirs(self.model_output)
+                    self.saver.save(sess, self.model_output)
+
+                    train_data_set.next()
+            return [best_score]
         except Exception as e :
             raise Exception ("error on fast text tain process : {0}".format(e))
 
@@ -44,7 +56,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
         try:
             wf_conf = WorkFlowNetConfBiLstmCrf(node_id)
             self.node_id = node_id
-            self.md_store_path = wf_conf.get_model_store_path()
+            self.md_store_path = wf_conf.get_model_store_path
 
             # create dict folder for ner if not exists
             dict_path = ''.join([self.md_store_path, '/dict/'])
@@ -65,10 +77,10 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
             self.nchars = len(self.vocab_chars)
             self.ntags = len(self.vocab_tags)
-            self.lowercase = False
-            self.max_iter = None
-            self.crf = True  # size one is not allowed
-            self.chars = True  # if char embedding, training is 3.5x slower
+            self.lowercase = wf_conf.lowercase
+            self.max_iter = wf_conf.max_iter
+            self.crf = wf_conf.crf
+            self.chars = wf_conf.chars
 
             self.processing_word = self.get_processing_word(self.vocab_words,
                                                             self.vocab_chars,
@@ -77,20 +89,18 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             self.processing_tag = self.get_processing_word(self.vocab_tags,
                                                            lowercase=False)
 
-            self.dim = 300
-            self.dim_char = 120
-            self.max_iter = None
-            self.lowercase = True
-            self.train_embeddings = False
-            self.nepochs = 50
-            self.p_dropout = 0.5
-            self.batch_size = 50
-            self.p_lr = 0.001
-            self.lr_decay = 0.9
-            self.nepoch_no_imprv = 3
+            self.dim = wf_conf.dim
+            self.dim_char = wf_conf.dim_char
+            self.train_embeddings = wf_conf.train_embeddings
+            self.nepochs = wf_conf.nepochs
+            self.p_dropout = wf_conf.p_dropout
+            self.batch_size = wf_conf.batch_size
+            self.p_lr = wf_conf.p_lr
+            self.lr_decay = wf_conf.lr_decay
+            self.nepoch_no_imprv = wf_conf.nepoch_no_imprv
 
-            self.hidden_size = 300
-            self.char_hidden_size = 100
+            self.hidden_size = wf_conf.hidden_size
+            self.char_hidden_size = wf_conf.char_hidden_size
 
             if(self.check_batch_exist(node_id)) :
                 self.output_path = ''.join([self.md_store_path, '/', self.get_eval_batch(node_id), '/'])
@@ -274,6 +284,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
     def add_init_op(self):
         self.init = tf.global_variables_initializer()
+        self.saver = tf.train.Saver(tf.all_variables())
 
 
     def add_summary(self, sess):
@@ -343,13 +354,13 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                 if i % 10 == 0:
                     self.file_writer.add_summary(summary, epoch * nbatches + i)
 
-            acc, f1 = self.run_evaluate(sess, dev, tags)
+            acc, f1, _ = self.run_evaluate(sess, dev, tags)
             logging.info("- dev acc {:04.2f} - f1 {:04.2f}".format(100 * acc, 100 * f1))
             return acc, f1
         except Exception as e :
             print ("Exception on run_epoch {0}".format(e))
 
-    def run_evaluate(self, sess, test, tags):
+    def run_evaluate(self, sess, test, tags, result=None):
         """
         Evaluates performance on test set
         Args:
@@ -373,6 +384,11 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
                     lab_chunks = set(self.get_chunks(lab, tags))
                     lab_pred_chunks = set(self.get_chunks(lab_pred, tags))
+                    if(result) :
+                        if (len(self.get_chunks(lab_pred, tags)) > 0 and
+                            len(self.get_chunks(lab, tags)) > 0 ) :
+                            for label, pred in zip (self.get_chunks(lab, tags), self.get_chunks(lab_pred, tags)) :
+                                result.set_result_info(label[0], pred[0])
                     correct_preds += len(lab_chunks & lab_pred_chunks)
                     total_preds += len(lab_pred_chunks)
                     total_correct += len(lab_chunks)
@@ -381,11 +397,11 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             r = correct_preds / total_correct if correct_preds > 0 else 0
             f1 = 2 * p * r / (p + r) if correct_preds > 0 else 0
             acc = np.mean(accs)
-            return acc, f1
+            return acc, f1, result
         except Exception as e:
             raise Exception(e)
 
-    def train(self, train, dev, tags):
+    def train(self, train, dev, tags, sess):
         """
         Performs training with early stopping and lr exponential decay
         Args:
@@ -398,56 +414,118 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
 
         # for early stopping
         nepoch_no_imprv = 0
-        with tf.Session() as sess:
+        sess.run(self.init)
 
-            sess.run(self.init)
+        # restore model
+        if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
+            saver.restore(sess, self.model_output)
 
-            # restore model
-            if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
-                saver.restore(sess, self.model_output)
+        # tensorboard
+        self.add_summary(sess)
+        for epoch in range(self.nepochs):
+            logging.info("Epoch {:} out of {:}".format(epoch + 1, self.nepochs))
 
-            # tensorboard
-            self.add_summary(sess)
-            for epoch in range(self.nepochs):
-                logging.info("Epoch {:} out of {:}".format(epoch + 1, self.nepochs))
+            acc, f1 = self.run_epoch(sess, train, dev, tags, epoch)
 
-                acc, f1 = self.run_epoch(sess, train, dev, tags, epoch)
+            # decay learning rate
+            self.p_lr *= self.lr_decay
 
-                # decay learning rate
-                self.p_lr *= self.lr_decay
+            # early stopping and saving best parameters
+            if f1 >= best_score:
+                nepoch_no_imprv = 0
+                best_score = f1
+                logging.info("- new best score!")
+            else:
+                nepoch_no_imprv += 1
+                if nepoch_no_imprv >= self.nepoch_no_imprv:
+                    logging.info("- early stopping {} epochs without improvement".format(
+                        nepoch_no_imprv))
+                    break
+        return best_score
 
-                # early stopping and saving best parameters
-                if f1 >= best_score:
-                    nepoch_no_imprv = 0
-                    if not os.path.exists(self.model_output):
-                        os.makedirs(self.model_output)
-                    saver.save(sess, self.model_output)
-                    self.model_output = ''.join([self.md_store_path, '/', self.make_batch(self.node_id)[1], '/'])
-                    best_score = f1
-                    logging.info("- new best score!")
+
+    def eval(self, node_id, conf_data, data=None, result=None, stand=0.1):
+        """
+        eval process check if model works well (accuracy with cross table)
+        :param node_id:
+        :param conf_data:
+        :param data:
+        :param result:
+        :return:
+        """
+        try :
+            node_id = self.get_node_name()
+            lables = list(map(lambda x : x.split('-')[-1], list(self.vocab_tags.keys())))
+            result.set_result_data_format({"labels": lables})
+            result.set_nn_batch_ver_id(self.get_eval_batch(node_id))
+
+            with tf.Session() as sess:
+                # load trained model
+                if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
+                    self.saver.restore(sess, self.model_output)
                 else:
-                    nepoch_no_imprv += 1
-                    if nepoch_no_imprv >= self.nepoch_no_imprv:
-                        logging.info("- early stopping {} epochs without improvement".format(
-                            nepoch_no_imprv))
-                        break
+                    raise Exception("bilstm crf error : no pretrained model exist")
 
-    def eval(self, test, tags):
-        saver = tf.train.Saver()
-        with tf.Session() as sess:
-            logging.info("Testing model over test set")
-            saver.restore(sess, self.model_output)
-            acc, f1 = self.run_evaluate(sess, test, tags)
-            logging.info("- test acc {:04.2f} - f1 {:04.2f}".format(100 * acc, 100 * f1))
+                if(data.has_next() == False) :
+                    result.set_result_info([''], [''])
+                    logging.info("no test data exists")
+                    return result
 
-    def predict(self, tags, processing_word, sentence):
-        idx_to_tag = {idx: tag for tag, idx in iter(tags.items())}
-        saver = tf.train.Saver()
-        with tf.Session() as sess:
-            saver.restore(sess, self.model_output)
-            words_raw = sentence.strip().split(" ")
-            words = list(map(lambda x: processing_word(x), words_raw))
-            if type(words[0]) == tuple:
-                words = zip(*words)
-            pred_ids, _ = self.predict_batch(sess, [words])
-            preds = list(map(lambda idx: idx_to_tag[idx], list(pred_ids[0])))
+                while (data.has_next()):
+                    test = self.CoNLLDataset(data.get_file_name(),
+                                            self.processing_word,
+                                            self.processing_tag,
+                                            self.max_iter)
+                    acc, f1, result = self.run_evaluate(sess, test, self.vocab_tags, result=result)
+                    logging.info("- test acc {:04.2f} - f1 {:04.2f}".format(100 * acc, 100 * f1))
+                    data.next()
+            return result
+        except Exception as e :
+            raise Exception ("error on eval wcnn : {0}".format(e))
+
+
+    def predict(self, node_id, parm={"input_data": {}}):
+        """
+        predict logic for ner
+        tockenize input text and find matching tags for each value
+        :param node_id:
+        :param parm:
+        :return:
+        """
+        try:
+            # get unique key
+            unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
+
+            # set init params
+            self._init_node_parm(node_id)
+            idx_to_tag = {idx: tag for tag, idx in iter(self.vocab_tags.items())}
+
+            ## create tensorflow graph
+            if (NeuralNetModel.dict.get(unique_key)):
+                self = NeuralNetModel.dict.get(unique_key)
+                graph = NeuralNetModel.graph.get(unique_key)
+            else:
+                self.build_graph()
+                NeuralNetModel.dict[unique_key] = self
+                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+                graph = tf.get_default_graph()
+
+            with tf.Session(graph=graph) as sess:
+                # load trained model
+                if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
+                    self.saver.restore(sess, self.model_output)
+                else:
+                    raise Exception("bilstm crf error : no pretrained model exist")
+
+                input_arr = parm["input_data"].split(' ')
+                words = list(map(lambda x: self.processing_word(x), input_arr))
+                if type(words[0]) == tuple:
+                    words = zip(*words)
+                pred_ids, _ = self.predict_batch(sess, [words])
+                preds = list(map(lambda idx: idx_to_tag[idx], list(pred_ids[0])))
+
+                return preds
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            sess.close()

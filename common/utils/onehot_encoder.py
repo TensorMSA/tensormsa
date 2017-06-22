@@ -54,12 +54,15 @@ class OneHotEncoder :
         :param item:
         :return:
         """
-        if (self.add_flag == False) :
-            return None
-        if item not in self.dict_list :
-            if(self.bucket_size > len(self.dict_list)) :
-                if (isnan(item) == False) :
-                    self.dict_list.append(item)
+        try :
+            if (self.add_flag == False) :
+                pass
+            if item not in self.dict_list :
+                if(self.bucket_size > len(self.dict_list)) :
+                    if (isnan(item) == False) :
+                        self.dict_list.append(item)
+        except Exception as e:
+           raise Exception("get voc error !")
 
     def get_idx(self, item):
         """
@@ -93,16 +96,16 @@ class OneHotEncoder :
         except Exception as e :
             raise Exception ("get vector error !")
 
-    def get_vocab(self, vector, prob_idx = 0, min_prob = 0.6):
+    def get_vocab(self, vector, prob_idx = 0, min_prob = 0.3):
         """
         get posb max item
         :param item: posb vector
         :return:
         """
-        sorted_list = sorted(vector, reverse=True)
+        sorted_list = sorted(vector, reverse = True)
         idx = np.where(vector==sorted_list[prob_idx])[0][0]
         print("■■■■■■■■■■ Accuracy 출력 : " + str(vector[idx]))
-        print("■■■■■■■■■■ 예측값 : " + str(idx))
+        print("■■■■■■■■■■ 예측 Label 값 : " + str(idx-2))
         if(vector[idx] > min_prob) :
             return self.dict_list[idx]
         else :

@@ -10,6 +10,7 @@ from cluster.service.service_predict_seq2seq import PredictNetSeq2Seq
 from cluster.service.service_predict_autoencoder import PredictNetAutoEncoder
 from cluster.service.service_predict_anomaly import PredictNetAnomaly
 from cluster.service.service_predict_wcnn import PredictNetWcnn
+from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 from common.utils import *
 
 class ServiceManagerPredict(APIView):
@@ -44,6 +45,8 @@ class ServiceManagerPredict(APIView):
                     return_data = PredictNetAnomaly().run(nnid, request.data)
                 elif (type == "wcnn"):
                     return_data = PredictNetWcnn().run(nnid, request.data)
+                elif (type == "bilstmcrf"):
+                    return_data = PredictNetBiLstmCrf().run(nnid, request.data)
                 else :
                     raise Exception ("Not defined type error")
             else :

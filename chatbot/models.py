@@ -15,10 +15,10 @@ class CB_DEF_LIST_INFO(models.Model):
 
 class CB_INTENT_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    intent_id = models.CharField(max_length=10, blank=False,  primary_key=True)
+    intent_id = models.CharField(max_length=10, blank=False)
     intent_type = models.CharField(max_length=10, blank=False) #model/custom
     intent_desc = models.CharField(max_length=50, blank=True)
-    nn_id = models.CharField(max_length=10, blank=True)
+    rule_value = JSONField() # custom case
     nn_type = models.CharField(max_length=10, blank=True)
 
 class CB_STORYBOARD_LIST_INFO(models.Model):
@@ -29,7 +29,6 @@ class CB_STORYBOARD_LIST_INFO(models.Model):
 class CB_ENTITY_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     intent_id = models.ForeignKey(CB_INTENT_LIST_INFO, on_delete=models.CASCADE)
-    story_id = models.ForeignKey(CB_STORYBOARD_LIST_INFO, on_delete=models.CASCADE)
     entity_type = models.CharField(max_length=10, blank=False)
     entity_list = JSONField()
 
@@ -38,6 +37,7 @@ class CB_MODEL_LIST_INFO(models.Model):
     nn_id = models.CharField(max_length=10, blank=True)
     nn_purpose = models.CharField(max_length=10, blank=True)
     nn_type = models.CharField(max_length=10, blank=True)
+    nn_label_data = JSONField()
     nn_desc = models.CharField(max_length=50, blank=True)
 
 class CB_SERVICE_LIST_INFO(models.Model):
@@ -55,13 +55,13 @@ class CB_RESPONSE_LIST_INFO(models.Model):
     output_data = models.CharField(max_length=50, blank=True)
     nn_id = models.CharField(max_length=10, blank=True)
 
-class CB_NLP_INFO(models.Model):
+class CB_TAGGING_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     pos_type = models.CharField(max_length=10, blank=True)
-    custom_data = models.CharField(max_length=50, blank=True)
+    proper_noun = JSONField()
+    parsed_length = models.IntegerField(default=10)
 
 class CB_ONTOLOGY_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     ontology_id = models.CharField(max_length=10, blank=True)
     ontology_desc = models.CharField(max_length=50, blank=True)
-
