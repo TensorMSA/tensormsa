@@ -28,7 +28,10 @@ class CommonNNInfoVersion(APIView):
         """
         try:
             return_data = NNCommonManager().get_nn_wf_info(nnid)
-            return Response(json.dumps(return_data))
+            conv = []
+            for row in return_data:
+                conv.append(row['fields'])
+            return Response(json.dumps(conv))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
