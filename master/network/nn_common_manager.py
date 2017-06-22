@@ -27,10 +27,14 @@ class NNCommonManager :
             query_list.append("FROM  master_NN_DEF_LIST_INFO NL LEFT OUTER JOIN master_NN_VER_WFLIST_INFO WF ")
             query_list.append("      ON NL.nn_id = WF.nn_id_id AND WF.active_flag = 'Y' ")
             query_list.append("      LEFT OUTER JOIN master_NN_VER_BATCHLIST_INFO BT ")
-            query_list.append("      ON WF.nn_wf_ver_id = BT.nn_wf_ver_id_id AND BT.active_flag = 'Y' ")
+            if condition['nn_id'] == '%':
+                query_list.append("      ON WF.nn_wf_ver_id = BT.nn_wf_ver_id_id AND BT.eval_flag = 'Y' ")
+            else:
+                query_list.append("      ON WF.nn_wf_ver_id = BT.nn_wf_ver_id_id AND BT.active_flag = 'Y' ")
             query_list.append("WHERE NL.nn_id like %s ")
             query_list.append("  AND NL.biz_cate like %s ")
             query_list.append("  AND NL.biz_sub_cate like %s ")
+            query_list.append("  AND NL.use_flag = 'Y' ")
 
             # parm_list : set parm value as list
             parm_list = []

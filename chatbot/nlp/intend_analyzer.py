@@ -12,12 +12,13 @@ class IntendAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, cb_id, nn_id):
+    def __init__(self, cb_id, nn_id, intent_conf):
         """
         init global variables
         """
         self.cb_id = cb_id
         self.nn_id = nn_id
+        self.intent_conf = intent_conf
         self.seq2seq_model = PredictNetSeq2Seq()
         self.wcnn_model = PredictNetWcnn()
 
@@ -32,10 +33,10 @@ class IntendAnalyzer(ShareData):
         else :
             convert_data =  share_data.get_convert_data()
             intent_model = self.get_intent_model(convert_data)
-            print ("■■■■■■■■■■ 의도 분석 결과 : " + intent_model)
+            print ("■■■■■■■■■■ 의도 분석 결과(Model) : " + intent_model)
 
             intent_rule = self.get_rule_value(convert_data)
-
+            print ("■■■■■■■■■■ 의도 분석 결과(Rule) : " + str(intent_rule))
 
             share_data.set_intent_id(intent_model)
             share_data.set_intent_history(intent_model)
@@ -50,5 +51,7 @@ class IntendAnalyzer(ShareData):
         return intent_model
 
     def get_rule_value(self, convert_data):
-        result = ""
-        return result
+        intent_list = list(filter(lambda x: x["fields"]["intent_type"] == "custom" and any(
+            key in convert_data for key in x["fields"]["rule_value"]["value"]), self.intent_conf))
+        intent_list = list(map(lambda x : x["fields"]["intent_id"],intent_list))
+        return intent_list[0]
