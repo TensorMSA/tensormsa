@@ -12,12 +12,11 @@ class EntityAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, proper_noun, ner_model_id):
+    def __init__(self, proper_noun):
         """
         init global variables
         """
-        self.ner_model_id = ner_model_id
-        self.proper_key_list = list(proper_noun.keys()) #Python 3+ return not list but dict_Keys
+        self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=True) #Sorted Key Priority
         self.proper_noun = proper_noun     # key : [values]
         #self._load_proper_noun(proper_noun.keys(), proper_noun)
         #self.bilstmcrf_model = PredictNetBiLstmCrf()
@@ -72,12 +71,11 @@ class EntityAnalyzer(ShareData):
         #except meaningless
         convert_dict_data = pos_tags[0]
         if (pos_tags[1] in ['SY', 'SF']):
-            return "", ""
+            return "",""
         elif (pos_tags[1] in ['NNG', 'NNP']): #Check only Noun
-            convert_dict_data = pos_tags[0]
             key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
             if(key_check == []):
-                return "", ""
+                pass
             else: #proper noun priority
                 key_slot = pos_tags[0]
                 # except duplicated
