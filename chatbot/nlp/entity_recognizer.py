@@ -3,11 +3,12 @@ from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 
 class EntityRecognizer(ShareData):
 
-    def __init__(self, cb_id):
+    def __init__(self, cb_id, ner_model_id):
         """
         init global variables
         """
         self.cb_id = cb_id
+        self.ner_model_id = ner_model_id
         self.bilstmcrf_model = PredictNetBiLstmCrf()
 
     def parse(self, share_data):
@@ -34,26 +35,25 @@ class EntityRecognizer(ShareData):
 
         if(len(convert_dict_data) != len(ner_data)):
             print("■■■■■■■■■■ 길이 차이로 NER 처리 불가 ■■■■■■■■■■")
-            return ' '.join(convert_dict_data)
-
-        for i in range(len(convert_dict_data)):
-            if(ner_data[i].find("B-COMPANY") > -1 and convert_dict_data[i].find("[회사]") > -1):
-                pass
-            # not Dict but NER
-            elif(ner_data[i].find("B-") > -1 and convert_dict_data[i].find("[") == -1):
-                if(ner_data[i] == "B-PERSON"):
-                    convert_dict_data[i] = "[이름]"
-                elif(ner_data[i] == "B-LOCATION"):
-                    convert_dict_data[i] = "[장소]"
-                elif(ner_data[i] == "B-DEPT"):
-                    convert_dict_data[i] = "[부서]"
-            # Delete Same Entity from dictionary
-            elif(ner_data[i].find("I-") > -1 and convert_dict_data[i].find("[") > -1):
-                # Compare Prior Entity
-                if(i > 0 and convert_dict_data[i] != convert_dict_data[i-1]):
-                   del convert_dict_data[i]
-            else: # Out Case
-                pass
+        else:
+            for i in range(len(convert_dict_data)):
+                if(ner_data[i].find("B-COMPANY") > -1 and convert_dict_data[i].find("[회사]") > -1):
+                    pass
+                # not Dict but NER
+                elif(ner_data[i].find("B-") > -1 and convert_dict_data[i].find("[") == -1):
+                    if(ner_data[i] == "B-PERSON"):
+                        convert_dict_data[i] = "[이름]"
+                    elif(ner_data[i] == "B-LOCATION"):
+                        convert_dict_data[i] = "[장소]"
+                    elif(ner_data[i] == "B-DEPT"):
+                        convert_dict_data[i] = "[부서]"
+                # Delete Same Entity from dictionary
+                elif(ner_data[i].find("I-") > -1 and convert_dict_data[i].find("[") > -1):
+                    # Compare Prior Entity
+                    if(i > 0 and convert_dict_data[i] != convert_dict_data[i-1]):
+                       del convert_dict_data[i]
+                else: # Out Case
+                    pass
         # Remove Distinct
         convert_data = ' '.join(sorted(set(convert_dict_data), key = convert_dict_data.index))
         print("■■■■■■■■■■ NER 변화 결과 : " + str(convert_data))
