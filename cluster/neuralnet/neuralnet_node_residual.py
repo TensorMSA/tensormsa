@@ -108,11 +108,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
         filelist = os.listdir(self.model_path)
         filelist.sort(reverse=True)
-        self.batch = self.get_eval_batch(self.node_id)
-        try:
-            last_chk_path = self.model_path + "/" + self.load_batch+self.file_end
-        except:
-            last_chk_path = self.model_path + "/" + self.get_eval_batch(self.node_id)+self.file_end
+        last_chk_path = self.model_path + "/" + self.load_batch+self.file_end
 
         try:
             self.model = keras.models.load_model(last_chk_path)
@@ -385,7 +381,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
         filename_arr, filedata_arr = self.change_predict_fileList(filelist, dataconf)
 
         # get unique key
-        unique_key = '_'.join([node_id, self.get_active_batch(node_id)])
+        self.load_batch = self.get_active_batch(self.node_id)
+        unique_key = '_'.join([node_id, self.load_batch])
 
         ## create tensorflow graph
         if (NeuralNetModel.dict.get(unique_key)):
