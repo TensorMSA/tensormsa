@@ -48,3 +48,5 @@ from .runmanager_auto_conf import RunManagerAutoConf
 from .runmanager_auto_stat import RunManagerAutoStat
 from .runmanager_auto_train import RunManagerAutoTrain
 from .runmanager_auto_rule import RunManagerAutoRule
+from .aug_nlp_conf import AugNlpConf
+from .workflow_netconf_fasttext import WorkFlowNetConfFastText

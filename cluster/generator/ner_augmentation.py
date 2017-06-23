@@ -13,18 +13,17 @@ class DataAugmentation :
     test.convert_data()
     """
 
-    def __init__(self):
+    def __init__(self, conf):
         """
         init parms need to mange teses parms on db
         """
         self.aug_file_cnt = 0
-        self.use_mecab = True
-        self.max_file_size = 10000000  #10M
-        self.pattern_data_path = "/home/dev/tensormsa_jupyter/data/pattern.txt"
-        self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/"
-        #self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/"
-        self.dict_path = "/home/dev/tensormsa_jupyter/data/dict.csv"
-        self.out_format_type = 'iob'
+        self.use_mecab = conf.get("use_mecab")
+        self.max_file_size = conf.get("max_file_size")  #10M
+        self.pattern_data_path = conf.get("pattern_data_path")
+        self.augmented_out_path = conf.get("augmented_out_path")
+        self.dict_path = conf.get("dict_path")
+        self.out_format_type = conf.get("out_format_type")
         self.ner_dicts = {}
         self.gpu_use = True
 
@@ -184,7 +183,3 @@ class DataAugmentation :
                 else :
                     raise Exception (' '.join(['not', 'plain', 'or iob']))
                 print("===={0} line job done".format(i))
-
-test = DataAugmentation()
-test.load_dict()
-test.convert_data()
