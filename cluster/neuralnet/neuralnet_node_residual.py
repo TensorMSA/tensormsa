@@ -57,11 +57,15 @@ class NeuralNetNodeReNet(NeuralNetNode):
             None
         self.netconf = netconf
 
-        self.train_cnt = self.netconf["param"]["traincnt"]
-        self.epoch = self.netconf["param"]["epoch"]
-        self.batch_size = self.netconf["param"]["batch_size"]
-        self.model_path = self.netconf["modelpath"]
-        self.modelname = self.netconf["modelname"]
+        try:
+            self.train_cnt = self.netconf["param"]["traincnt"]
+            self.epoch = self.netconf["param"]["epoch"]
+            self.batch_size = self.netconf["param"]["batch_size"]
+            self.model_path = self.netconf["modelpath"]
+            self.modelname = self.netconf["modelname"]
+        except Exception as e:
+            println("NetConf is not exist.")
+            println(e)
 
     def _set_dataconf_parm(self, dataconf):
         self.dataconf = dataconf
@@ -197,7 +201,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             println(e)
 
     def run(self, conf_data):
-        println("run NeuralNetNodeCnn Train")
+        println("run NeuralNetNodeResnet Train")
         # init data setup
         self._init_train_parm(conf_data)
         self._init_value()
@@ -384,7 +388,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.load_batch = self.get_active_batch(self.node_id)
         unique_key = '_'.join([node_id, self.load_batch])
 
-        println("unique_key:"+unique_key)
+        println("getModelPath:"+self.model_path + "/" + self.load_batch+self.file_end)
 
         ## create tensorflow graph
         if (NeuralNetModel.dict.get(unique_key)):
