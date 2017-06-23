@@ -658,7 +658,7 @@ class WorkFlowCommonNode :
         else :
             raise Exception ("No Active version Exist for predict service !")
 
-    def _word_embed_data(self, embed_type, input_data, cls=None, embeder_id=None):
+    def _word_embed_data(self, embed_type, input_data, cls=None, embeder_id=None, char_embed=False):
         """
         change word to vector
         :param input_data:
@@ -678,24 +678,49 @@ class WorkFlowCommonNode :
             else :
                 w2v_id = ''
 
-        if(embed_type == 'onehot'):
+        if (embed_type == 'onehot' and char_embed == False):
             for data in input_data:
                 row_arr = []
                 for row in data :
                     row_arr = row_arr + embed_class.get_vector(row).tolist()
                 return_arr.append(row_arr)
             return return_arr
-        # elif (embed_type == 'w2v'):
-        #     from cluster.service.service_predict_w2v import PredictNetW2V
-        #     for data in input_data:
-        #         parm = {"type": "train", "val_1": {}, "val_2": []}
-        #         parm['val_1'] = data
-        #         return_arr.append(PredictNetW2V().run(w2v_id, parm))
-        #     return return_arr
+        elif (embed_type == 'w2v' and char_embed == False):
+            from cluster.service.service_predict_w2v import PredictNetW2V
+            for data in input_data:
+                parm = {"type": "train", "val_1": {}, "val_2": []}
+                parm['val_1'] = data
+                return_arr.append(PredictNetW2V().run(w2v_id, parm))
+            return return_arr
+        elif (embed_type == 'onehot' and char_embed == True) :
+            encode = self._word_embed_data(embed_type, input_data, cls=cls)
+            encode = np.array(encode).reshape([-1, self.encode_len, self.vocab_size])
+            encode = self._concat_char_vector(encode, input_data)
+            encode = np.array(encode).reshape([-1, self.encode_len, self.word_vector_size, self.encode_channel])
+            return encode
         elif(embed_type == None) :
             return input_data
         else :
             raise Exception ("[Error] seq2seq train - word embeding : not defined type {0}".format(embed_type))
+
+    def _concat_char_vector(self, encode, words):
+        """
+        concat word embedding vecotr and char level embedding
+        :param encode : word vector list
+        :param words : word list
+        :return: concat vector
+        """
+        return_encode = np.array([])
+        for i, vec_list, word_list in zip(range(len(encode)), encode, words) :
+            for j, vec, word in zip(range(len(vec_list)), vec_list, word_list) :
+                word = word[:self.char_max_len-1] if len(word) > self.char_max_len else word
+                pad_len = (self.char_max_len - len(word))
+                return_encode = np.append(return_encode,
+                                          np.concatenate([vec,
+                                                          np.array(self.get_onehot_vector(str(word))).reshape([len(word) * self.char_embed_size]),
+                                                          np.zeros([pad_len * self.char_embed_size])]))
+        return return_encode
+
 
     def _pos_tag_predict_data(self, x_input, word_len):
         """

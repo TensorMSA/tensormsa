@@ -74,11 +74,11 @@ class PreNodeFeedFr2Wcnn(PreNodeFeed):
             count = index.stop - index.start
             if(self.encode_col in chunk and self.decode_col in chunk) :
                 words = self.encode_pad(self._preprocess(chunk[self.encode_col].values)[0:count], max_len=self.encode_len)
-                encode = self._word_embed_data(self.embed_type, words, cls=self.input_onehot)
-                encode = np.array(encode).reshape([-1, self.encode_len, self.vocab_size])
-                if (self.char_embed == True):
-                    encode = self._concat_char_vector(encode, words)
-                encode = np.array(encode).reshape([-1, self.encode_len, self.word_vector_size, self.encode_channel])
+                if(self.char_embed) :
+                    encode = self._word_embed_data(self.embed_type, words, cls=self.input_onehot, char_embed=True )
+                else :
+                    encode = self._word_embed_data(self.embed_type, words, cls=self.input_onehot, char_embed=False)
+                    encode = np.array(encode).reshape([-1, self.encode_len, self.word_vector_size, self.encode_channel])
                 decode = np.array(chunk[self.decode_col].values).reshape([-1,1]).tolist()
                 return encode, self._word_embed_data(self.embed_type, decode, cls=self.lable_onehot)
             else :
@@ -87,26 +87,6 @@ class PreNodeFeedFr2Wcnn(PreNodeFeed):
             raise Exception (e)
         finally:
             store.close()
-
-    def _concat_char_vector(self, encode, words):
-        """
-        concat word embedding vecotr and char level embedding
-        :param encode : word vector list
-        :param words : word list
-        :return: concat vector
-        """
-        return_encode = np.array([])
-        for i, vec_list, word_list in zip(range(len(encode)), encode, words) :
-            for j, vec, word in zip(range(len(vec_list)), vec_list, word_list) :
-                word = word[:self.char_max_len-1] if len(word) > self.char_max_len else word
-                pad_len = (self.char_max_len - len(word))
-                return_encode = np.append(return_encode,
-                                          np.concatenate([vec,
-                                                          np.array(self.get_onehot_vector(word)).reshape([len(word) * self.char_embed_size]),
-                                                          np.zeros([pad_len * self.char_embed_size])]))
-        return return_encode
-
-
 
     def _preprocess(self, input_data):
         """
@@ -147,6 +127,11 @@ class PreNodeFeedFr2Wcnn(PreNodeFeed):
         else :
             self.wf_conf.set_lable_list(self.lable_onehot.dics())
             self.wf_conf.set_word_vector_size(self.word_vector_size)
+            self.wf_conf.set_char_embed(self.char_embed)
+            self.wf_conf.set_char_max_len(self.char_max_len)
+            self.wf_conf.set_encode_len(self.encode_len)
+            self.wf_conf.set_encode_channel(self.encode_channel)
+            self.wf_conf.set_char_embed_size(self.char_embed_size)
             if (self.embed_type == 'onehot'):
                 self.wf_conf.set_vocab_list(self.input_onehot.dics())
             return False

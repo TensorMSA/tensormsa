@@ -61,11 +61,17 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             self.dataconf = dataconf
             self.x_size = dataconf.word_vector_size
             self.y_size = dataconf.encode_len
-            self.channel = dataconf.encode_channel
+            self.word_vector_size = dataconf.word_vector_size
+            self.encode_len = dataconf.encode_len
+            self.encode_channel = dataconf.encode_channel
             self.num_classes = dataconf.lable_size
             self.embed_type = dataconf.embed_type
             self.lable_onehot = dataconf.lable_onehot
             self.input_onehot = dataconf.input_onehot
+            self.char_embed_flag = dataconf.char_embed
+            self.vocab_size = dataconf.vocab_size + 4
+            self.char_max_len = dataconf.char_max_len
+            self.char_embed_size = dataconf.char_embed_size
         except Exception as e :
             raise Exception ("error on set up data conf : {0}".format(e))
 
@@ -144,7 +150,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         try :
             prenumoutputs = 1
             global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
-            X = tf.placeholder(tf.float32, shape=[None, self.y_size, self.x_size, self.channel], name='x')
+            X = tf.placeholder(tf.float32, shape=[None, self.y_size, self.x_size, self.encode_channel], name='x')
             Y = tf.placeholder(tf.float32, shape=[None, self.num_classes], name='y')
             model = X
             numoutputs = self.numoutputs
@@ -357,8 +363,11 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                     else:
                         word_list = [x_input.split(' ')]
                     print("Predict Parsed Data : {0}".format(word_list))
-                word_list = self._word_embed_data('onehot', np.array(word_list), cls=self.input_onehot)
-                word_list = np.array(word_list).reshape([-1, self.y_size, self.x_size, self.channel])
+                word_list = self._word_embed_data('onehot',
+                                                  np.array(word_list),
+                                                  cls=self.input_onehot,
+                                                  char_embed=self.char_embed_flag)
+                word_list = np.array(word_list).reshape([-1, self.y_size, self.x_size, self.encode_channel])
             elif(type=='pre'):
                 word_list = [x_input]
             else :
