@@ -100,7 +100,7 @@ class NeuralNetNode(WorkFlowCommonNode):
         ver_id = models.NN_VER_WFLIST_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=nn_wf_ver_id).id
         count = len(models.NN_VER_BATCHLIST_INFO.objects.filter(nn_wf_ver_id=ver_id, active_flag='Y'))
         if count == 0:
-            batch = 1
+            batch = str(nn_id) + '_' + str(nn_wf_ver_id) + str("_1")
         else:
             batch = models.NN_VER_BATCHLIST_INFO.objects.get(nn_wf_ver_id=ver_id, active_flag='Y').nn_batch_ver_id
         return batch
@@ -117,7 +117,7 @@ class NeuralNetNode(WorkFlowCommonNode):
         ver_id = models.NN_VER_WFLIST_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=nn_wf_ver_id).id
         count = len(models.NN_VER_BATCHLIST_INFO.objects.filter(nn_wf_ver_id=ver_id, eval_flag='Y'))
         if count == 0:
-            batch = 1
+            batch = str(nn_id) + '_' + str(nn_wf_ver_id) + str("_1")
         else:
             batch = models.NN_VER_BATCHLIST_INFO.objects.get(nn_wf_ver_id=ver_id, eval_flag='Y').nn_batch_ver_id
         return batch
