@@ -384,6 +384,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.load_batch = self.get_active_batch(self.node_id)
         unique_key = '_'.join([node_id, self.load_batch])
 
+        println("unique_key:"+unique_key)
+
         ## create tensorflow graph
         if (NeuralNetModel.dict.get(unique_key)):
             self = NeuralNetModel.dict.get(unique_key)
