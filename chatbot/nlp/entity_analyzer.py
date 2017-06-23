@@ -72,7 +72,7 @@ class EntityAnalyzer(ShareData):
         convert_dict_data = pos_tags[0]
         if (pos_tags[1] in ['SY', 'SF']):
             return "",""
-        elif (pos_tags[1] in ['NNG', 'NNP']): #Check only Noun
+        elif (pos_tags[1] in ['NNG', 'NNP'] and len(pos_tags[0]) > 1): #Check only Noun
             key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
             if(key_check == []):
                 pass
@@ -80,7 +80,7 @@ class EntityAnalyzer(ShareData):
                 key_slot = pos_tags[0]
                 # except duplicated
                 if(self.proper_noun[key_check[0]][2]):
-                    key_slot = share_data.get_story_slot_entity(key_check[0]) + key_slot if share_data.get_story_slot_entity(key_check[0]) != None else ""
+                    key_slot = share_data.get_story_slot_entity(key_check[0]) if share_data.get_story_slot_entity(key_check[0]) is not None else "" + key_slot
                 share_data.set_story_slot_entity(key_check[0], key_slot)
                 convert_dict_data = '['+ key_check[0] +']'
 
