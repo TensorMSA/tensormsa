@@ -6,6 +6,7 @@ import math
 from common.utils import *
 import datetime
 import operator
+import logging
 
 gLogFloag = "Y"
 gUserId = "-1"
@@ -26,15 +27,15 @@ def println(printStr):
             cur.execute(sql)
             rows = cur.fetchall()
 
-            print("Trace.............................................................................")
+            logging.debug("Trace.............................................................................")
             for i in range(0, len(rows)):
                 for j in range(0, len(rows[i])):
                     if rows[i][j] is not None and cur.description[j][0] not in (
                             "id", "log_id", "creation_date", "last_update_date", "created_by", "last_updated_by"):
                         print(rows[i][j])
-            print("..................................................................................")
+            logging.debug("..................................................................................")
         else:
-            print(printStr)
+            logging.debug(printStr)
             cur.execute(
                 "select COALESCE(max(log_id)::int,0)+10 seq from common_log_info where created_by = '" + gUserId + "'")
             rows = cur.fetchall()

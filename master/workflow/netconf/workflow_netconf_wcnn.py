@@ -19,6 +19,24 @@ class WorkFlowNetConfWideCnn(WorkFlowNetConf):
         self._set_prhb_parms([])
 
     @property
+    def vocab_size(self):
+        """
+        getter for wide and cnn
+        :param node_id:
+        :return:
+        """
+        return self.conf.get('vocab_size')
+
+    @property
+    def char_embed(self):
+        """
+        getter for wide and cnn
+        :param node_id:
+        :return:
+        """
+        return self.conf.get('char_embed')
+
+    @property
     def num_classes(self):
         """
         getter for wide and cnn
@@ -263,7 +281,7 @@ class WorkFlowNetConfWideCnn(WorkFlowNetConf):
         :param node_id:
         :return:
         """
-        input_onehot = OneHotEncoder(self.word_vector_size)
+        input_onehot = OneHotEncoder(self.vocab_size + 4)
         if (self.get_vocab_list):
             input_onehot.restore(self.get_vocab_list)
         return input_onehot
@@ -287,3 +305,13 @@ class WorkFlowNetConfWideCnn(WorkFlowNetConf):
         """
         return_val = self.conf.get('char_max_len')
         return 5 if return_val == None else return_val
+
+    @property
+    def char_embed_size(self):
+        """
+        get vector embed type
+        :param node_id:
+        :return:
+        """
+        return_val = self.conf.get('char_embed_size')
+        return 160 if return_val == None else return_val

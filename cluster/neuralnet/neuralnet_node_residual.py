@@ -57,11 +57,15 @@ class NeuralNetNodeReNet(NeuralNetNode):
             None
         self.netconf = netconf
 
-        self.train_cnt = self.netconf["param"]["traincnt"]
-        self.epoch = self.netconf["param"]["epoch"]
-        self.batch_size = self.netconf["param"]["batch_size"]
-        self.model_path = self.netconf["modelpath"]
-        self.modelname = self.netconf["modelname"]
+        try:
+            self.train_cnt = self.netconf["param"]["traincnt"]
+            self.epoch = self.netconf["param"]["epoch"]
+            self.batch_size = self.netconf["param"]["batch_size"]
+            self.model_path = self.netconf["modelpath"]
+            self.modelname = self.netconf["modelname"]
+        except Exception as e:
+            println("NetConf is not exist.")
+            println(e)
 
     def _set_dataconf_parm(self, dataconf):
         self.dataconf = dataconf
@@ -108,11 +112,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
         filelist = os.listdir(self.model_path)
         filelist.sort(reverse=True)
-        self.batch = self.get_eval_batch(self.node_id)
-        try:
-            last_chk_path = self.model_path + "/" + self.load_batch+self.file_end
-        except:
-            last_chk_path = self.model_path + "/" + self.get_eval_batch(self.node_id)+self.file_end
+        last_chk_path = self.model_path + "/" + self.load_batch+self.file_end
 
         try:
             self.model = keras.models.load_model(last_chk_path)
@@ -201,7 +201,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             println(e)
 
     def run(self, conf_data):
-        println("run NeuralNetNodeCnn Train")
+        println("run NeuralNetNodeResnet Train")
         # init data setup
         self._init_train_parm(conf_data)
         self._init_value()
@@ -385,7 +385,10 @@ class NeuralNetNodeReNet(NeuralNetNode):
         filename_arr, filedata_arr = self.change_predict_fileList(filelist, dataconf)
 
         # get unique key
-        unique_key = '_'.join([node_id, self.get_active_batch(node_id)])
+        self.load_batch = self.get_active_batch(self.node_id)
+        unique_key = '_'.join([node_id, self.load_batch])
+
+        println("getModelPath:"+self.model_path + "/" + self.load_batch+self.file_end)
 
         ## create tensorflow graph
         if (NeuralNetModel.dict.get(unique_key)):

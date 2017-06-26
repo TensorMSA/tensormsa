@@ -1,6 +1,8 @@
 import codecs, os
 import pandas as pd
 from konlpy.tag import Mecab
+from numba import *
+import numpy as np
 
 class DataAugmentation :
     """
@@ -11,19 +13,19 @@ class DataAugmentation :
     test.convert_data()
     """
 
-    def __init__(self):
+    def __init__(self, conf):
         """
         init parms need to mange teses parms on db
         """
         self.aug_file_cnt = 0
-        self.use_mecab = True
-        self.max_file_size = 10000000  #10M
-        self.pattern_data_path = "/home/dev/Test.txt"
-        #self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/"
-        self.augmented_out_path = "/home/dev/tensormsa_jupyter/data/"
-        self.dict_path = "/home/dev/Test.csv"
-        self.out_format_type = 'plain'
+        self.use_mecab = conf.get("use_mecab")
+        self.max_file_size = conf.get("max_file_size")  #10M
+        self.pattern_data_path = conf.get("pattern_data_path")
+        self.augmented_out_path = conf.get("augmented_out_path")
+        self.dict_path = conf.get("dict_path")
+        self.out_format_type = conf.get("out_format_type")
         self.ner_dicts = {}
+        self.gpu_use = True
 
     def load_dict(self):
         """
@@ -55,6 +57,7 @@ class DataAugmentation :
                 match_keys.append(word)
         return match_keys
 
+    #@autojit
     def _aug_sent(self, keys, pattern, return_aug_sent=[]) :
         """
         function which actually augment sentences
@@ -64,16 +67,16 @@ class DataAugmentation :
         :return: list of augmented sentence
         """
         try :
-            if(len(keys) > 0) :
+            if (len(keys) > 0):
                 key = keys[0]
                 del keys[0]
             else :
                 return return_aug_sent
 
-            if(len(return_aug_sent) == 0) :
+            if (len(return_aug_sent) == 0):
                 for word in self.ner_dicts[key] :
                     line = []
-                    for slot in pattern :
+                    for slot in pattern:
                         for rep in ['\n', 'NaN'] :
                             slot = slot.replace(rep, '')
                         if(key in slot) :
@@ -93,7 +96,8 @@ class DataAugmentation :
                                         line[z] = (word, key)
                                 return_aug_sent.append(line)
                             del_idx.append(i)
-                for _ in del_idx :
+
+                for _ in del_idx:
                     del return_aug_sent[0]
             return self._aug_sent(keys, pattern, return_aug_sent)
         except Exception as e :
@@ -161,12 +165,13 @@ class DataAugmentation :
             for i, line in enumerate(document) :
                 words = []
                 if(self.use_mecab) :
-                    words = str(line).split(' ')
-                else :
                     mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
                     pos = mecab.pos(line)
                     for word, tag in pos:
                         words.append(word)
+                else :
+                    words = str(line).split(' ')
+
                 print("===={0} line job start".format(i))
                 match_keys = self._check_all_match(words)
                 if(self.out_format_type == 'plain') :
@@ -178,7 +183,3 @@ class DataAugmentation :
                 else :
                     raise Exception (' '.join(['not', 'plain', 'or iob']))
                 print("===={0} line job done".format(i))
-
-test = DataAugmentation()
-test.load_dict()
-test.convert_data()
