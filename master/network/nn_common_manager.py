@@ -157,7 +157,7 @@ class NNCommonManager :
         except Exception as e:
             raise Exception(e)
 
-    def get_nn_max_ver(selfself, nn_id):
+    def get_nn_max_ver(self, nn_id):
         try:
             query_set = models.NN_VER_WFLIST_INFO.objects.filter(nn_id=nn_id).aggregate(Max('nn_wf_ver_id'))
             return_value = query_set['nn_wf_ver_id__max']
@@ -165,5 +165,14 @@ class NNCommonManager :
                 return_value = 0
             return return_value
 
+        except Exception as e:
+            raise Exception(e)
+
+    def get_nn_batch_info(self, nn_id, ver):
+        try:
+            ver_id = models.NN_VER_WFLIST_INFO.objects.filter(nn_id=nn_id, nn_wf_ver_id=ver)
+            query_set = models.NN_VER_BATCHLIST_INFO.objects.filter(nn_wf_ver_id_id=ver_id)
+            query_set = serial.serialize("json", query_set)
+            return json.loads(query_set)
         except Exception as e:
             raise Exception(e)
