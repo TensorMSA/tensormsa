@@ -38,6 +38,13 @@ class IntendAnalyzer(ShareData):
             intent_rule = self.get_rule_value(convert_data)
             print ("■■■■■■■■■■ 의도 분석 결과(Rule) : " + str(intent_rule))
 
+            for rule_value in intent_rule:
+                if(intent_rule == rule_value):
+                    print("■■■■■■■■■■ 의도 분석 결과 Rule와 일치 ■■■■■■■■■■")
+                else:
+                    print("■■■■■■■■■■ 의도 분석 불가 ■■■■■■■■■■")
+                    pass
+
             share_data.set_intent_id(intent_model)
             share_data.set_intent_history(intent_model)
 
@@ -54,4 +61,4 @@ class IntendAnalyzer(ShareData):
         intent_list = list(filter(lambda x: x["fields"]["intent_type"] == "custom" and any(
             key in convert_data for key in x["fields"]["rule_value"]["value"]), self.intent_conf))
         intent_list = list(map(lambda x : x["fields"]["intent_id"],intent_list))
-        return intent_list[0]
+        return intent_list
