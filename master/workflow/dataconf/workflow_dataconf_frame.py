@@ -147,6 +147,26 @@ class WorkflowDataConfFrame(WorkFlowDataConf):
         except Exception as e:
             raise Exception(e)
 
+    def get_data_conf(self, nnid, ver, node):
+        """
+        putter for source step
+        :param obj: config data from view
+        :return:boolean
+        """
+        # "label":
+        # "Transformations":
+        # "cross_cell"
+        # "cell_feature":
+        # "extend_cell_feature":
+        # "label_values":
+
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=str(nnid) + "_" + str(ver) + "_" + str(node))
+            config_data = getattr(obj, 'node_config_data')
+            return config_data
+        except Exception as e:
+            raise Exception(e)
+
     def config_data_nvl(self, config_data, attribute_name):
 
         if attribute_name in config_data:

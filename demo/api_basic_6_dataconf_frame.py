@@ -67,17 +67,24 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 # data = json.loads(resp.json())
 
 
+#
+# resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
+#                      json={"label": "SLAB_SUR_MAIN_DEF_CD2"
+#                             , "Transformations":{}
+#                             , "cross_cell":{}
+#                             , "cell_feature":{}
+#                             , "extend_cell_feature" :{}
+#                             , "label_values" : []
+#                             , "label_type" : "CATEGORICAL"
+#                            })
+# data = json.loads(resp.json())
 
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
-                     json={"label": "SLAB_SUR_MAIN_DEF_CD2"
-                            , "Transformations":{}
-                            , "cross_cell":{}
-                            , "cell_feature":{}
-                            , "extend_cell_feature" :{}
-                            , "label_values" : []
-                            , "label_type" : "CATEGORICAL"
-                           })
+
+resp = requests.get('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00031/ver/1/node/dataconf_node/')
 data = json.loads(resp.json())
+
+
+#nn00031_1_dataconf_node
 
 
 print("evaluation result : {0}".format(data))

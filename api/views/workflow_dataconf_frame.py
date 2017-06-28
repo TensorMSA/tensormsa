@@ -25,7 +25,8 @@ class WorkFlowDataConfFrame(APIView):
         - desc : get cnn configuration data
         """
         try:
-            return_data = ""
+            return_data = data_conf_frm().get_data_conf( nnid, ver, node)
+            #data_conf_frm().get_data_conf(nnid, ver, node, request.data)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
