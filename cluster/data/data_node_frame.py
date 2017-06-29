@@ -72,6 +72,7 @@ class DataNodeFrame(DataNode):
           DataConf의 ID반환
         """
         for _i, _k in self.cls_list.items():
+            data_conf_node_id = ''
             if 'dataconf' in _i:    #wdnn만 Dataconf를 가
                 data_conf_node_id = _i
                 if 'data_node' not in _conf_data['node_id']:    # eval 카테고리 데이터를 가져 오기 위해서 필요 Evalnode가 실행할때는 필요 없음
@@ -192,6 +193,9 @@ class DataNodeFrame(DataNode):
             _preprocess_type = self.data_preprocess_type
             #_preprocess_type = "maxabs_scale"
             _drop_duplicate = self.drop_duplicate
+            dir = self.data_src_path + "/backup"  # backup 디렉토리 만들고
+            if not os.path.exists(dir):
+                os.makedirs(dir)
 
             try:
                 data_conf_node_id = self.check_eval_node_for_wdnn(conf_data)
@@ -208,12 +212,11 @@ class DataNodeFrame(DataNode):
                             # eval 것도 같이 가져와서 unique value를 구해야함
                             # Todo 만약 eval과 train의 데이터 타입이 틀리면 Category로 해야하는 로직이 필요함
                         _label,_labe_type = self.make_label_values(data_dfconf_list, df_csv_read)   # WDNN인 경우 Label Values를 Dataconf에 넣음
-                        dir = self.data_src_path + "/backup" #backup 디렉토리 만들고
-                        if not os.path.exists(dir):
-                            os.makedirs(dir)
+
                         drop_dup_df_csv_read = self.make_drop_duplicate(df_csv_read, _drop_duplicate,_label)
                         _pre_df_csv_read = self.make_preprocessing_pandas(drop_dup_df_csv_read, _preprocess_type,_label )
-
+                        temp_preprocess_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_pre.csv"
+                        _pre_df_csv_read.to_csv(self.data_src_path + "/backup/" + temp_preprocess_filename)
                         self.create_hdf5(self.data_store_path, _pre_df_csv_read)
                         if _multi_node_flag == True:
                             skip_header = False
@@ -221,8 +224,6 @@ class DataNodeFrame(DataNode):
                             self.save_tfrecord(file_path, self.data_store_path, skip_header, _pre_df_csv_read,_label, _labe_type)
 
                     file_name_bk = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".csvbk"
-                    temp_preprocess_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_pre.csv"
-                    _pre_df_csv_read.to_csv(self.data_src_path+"/backup/"+ temp_preprocess_filename)
                     shutil.copy(file_path,self.data_src_path+"/backup/"+file_name_bk )
                     os.remove(file_path) #승우씨것
             except Exception as e:
