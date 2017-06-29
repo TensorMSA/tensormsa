@@ -164,7 +164,7 @@ class DataNodeFrame(DataNode):
             cell_features.remove(_label)
             result_df = _df_csv_read_ori.drop_duplicates(cell_features, keep="first")
             logging.info("duplicated row delete {0}".format(len(_df_csv_read_ori.index)-len(result_df.index)))
-            temp_duplicate_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_dup.csv"
+            temp_duplicate_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_dup.csvbk"
             result_df.to_csv(self.data_src_path + "/backup/" + temp_duplicate_filename)
         return result_df
 
@@ -215,7 +215,7 @@ class DataNodeFrame(DataNode):
 
                         drop_dup_df_csv_read = self.make_drop_duplicate(df_csv_read, _drop_duplicate,_label)
                         _pre_df_csv_read = self.make_preprocessing_pandas(drop_dup_df_csv_read, _preprocess_type,_label )
-                        temp_preprocess_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_pre.csv"
+                        temp_preprocess_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_pre.csvbk"
                         _pre_df_csv_read.to_csv(self.data_src_path + "/backup/" + temp_preprocess_filename)
                         self.create_hdf5(self.data_store_path, _pre_df_csv_read)
                         if _multi_node_flag == True:
