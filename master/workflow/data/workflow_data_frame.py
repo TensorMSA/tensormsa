@@ -111,6 +111,18 @@ class WorkFlowDataFrame(WorkFlowData) :
         else :
             return 0
 
+    @property
+    def drop_duplicate(self):
+        """
+
+        :return:
+        """
+        if 'drop_duplicate' in self.conf:
+            return self.conf['drop_duplicate'] if 'drop_duplicate' in self.conf else False
+        else:
+            return False
+
+
     def get_preview_data(self):
         """
 
@@ -163,12 +175,22 @@ class WorkFlowDataFrame(WorkFlowData) :
             config_data['predict_path'] = utils.get_source_predict_path(nnid, wfver, 'predict')
             config_data['max_sentence_len'] = input_data.get('max_sentence_len' , 0)
             config_data['multi_node_flag'] = input_data.get('multi_node_flag')
+            config_data['drop_duplicate'] = input_data.get('drop_duplicate') if 'drop_duplicate' in input_data else self.config_data_nvl_bool(config_data, 'drop_duplicate')
             setattr(obj, 'node_config_data', config_data)
             obj.save()
             return config_data
 
         except Exception as e:
             raise Exception(e)
+
+
+    def config_data_nvl_bool(self, config_data, attribute_name):
+
+        if attribute_name in config_data:
+            _value = config_data[attribute_name]
+        else:
+            _value = False
+        return _value
 
 
     def put_step_preprocess(self, src, form, prg, nnid, wfver, node,input_data):

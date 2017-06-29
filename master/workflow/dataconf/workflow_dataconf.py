@@ -13,6 +13,13 @@ class WorkFlowDataConf(WorkFlowCommon) :
     #     self.key = key
     #     self.conf = self.get_step_source(key)
 
+    # @property
+    # def data_conf(self):
+    #     """
+    #     getter for preprocess
+    #     """
+    #     return self.conf['data_conf']
+
     def get_step_source(self, nnid):
         """
         getter for source step
@@ -26,10 +33,4 @@ class WorkFlowDataConf(WorkFlowCommon) :
         except Exception as e:
             raise Exception(e)
 
-    @property
-    def data_conf(self):
-        """
-        getter for preprocess
-        """
-        return self.conf['data_conf']
 

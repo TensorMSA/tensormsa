@@ -55,16 +55,16 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 #
 #
 
-# resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00001/ver/1/node/dataconf_node/',
-#                      json={"label": "SUCCESSFUL_BID_PRICE"
-#                             , "Transformations":{}
-#                             , "cross_cell":{}
-#                             , "cell_feature":{}
-#                             , "extend_cell_feature" :{}
-#                             , "label_values" : []
-#                             , "label_type" : "CONTINUOUS"
-#                            })
-# data = json.loads(resp.json())
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00031/ver/1/node/dataconf_node/',
+                     json={"label": "SUCCESSFUL_BID_PRICE"
+                            , "Transformations":{}
+                            , "cross_cell":{}
+                            , "cell_feature":{}
+                            , "extend_cell_feature" :{}
+                            , "label_values" : []
+                            , "label_type" : "CONTINUOUS"
+                           })
+data = json.loads(resp.json())
 
 
 #
@@ -80,7 +80,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 # data = json.loads(resp.json())
 
 
-resp = requests.get('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00031/ver/1/node/dataconf_node/')
+#resp = requests.get('http://' + url + '/api/v1/type/wf/state/dataconf/detail/frame/nnid/nn00031/ver/1/node/dataconf_node/')
 data = json.loads(resp.json())
 
 

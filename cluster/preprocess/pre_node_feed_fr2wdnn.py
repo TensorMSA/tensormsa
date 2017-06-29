@@ -240,9 +240,6 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
                 lable_encoder_func = lambda x: le.transform([x])
                 df["label"] = df[_label].map(lable_encoder_func).astype(int)
                 #label_encode = le.transform(label_list)
-
-
-
             label = tf.constant(df["label"].values)
 
             return feature_cols, label

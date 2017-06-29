@@ -55,7 +55,7 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         """
         getter for preprocess
         """
-        return self.conf['train']
+        return self.conf['train'] if hasattr(self.conf,'train') else True
 
 
     def __init__(self, key = None):
