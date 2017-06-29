@@ -71,8 +71,8 @@ class DataNodeFrame(DataNode):
           data_conf_node_id
           DataConf의 ID반환
         """
+        data_conf_node_id = ''
         for _i, _k in self.cls_list.items():
-            data_conf_node_id = ''
             if 'dataconf' in _i:    #wdnn만 Dataconf를 가
                 data_conf_node_id = _i
                 if 'data_node' not in _conf_data['node_id']:    # eval 카테고리 데이터를 가져 오기 위해서 필요 Evalnode가 실행할때는 필요 없음
