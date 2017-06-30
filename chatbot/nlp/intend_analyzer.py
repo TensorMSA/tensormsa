@@ -38,12 +38,16 @@ class IntendAnalyzer(ShareData):
             intent_rule = self.get_rule_value(convert_data)
             print ("■■■■■■■■■■ 의도 분석 결과(Rule) : " + str(intent_rule))
 
-            for rule_value in intent_rule:
-                if(intent_rule == rule_value):
-                    print("■■■■■■■■■■ 의도 분석 결과 Rule와 일치 ■■■■■■■■■■")
-                else:
-                    print("■■■■■■■■■■ 의도 분석 불가 ■■■■■■■■■■")
-                    pass
+            if(intent_model == -1 and intent_rule is not []):
+                intent_model = intent_rule[0]
+            else:
+                for rule_value in intent_rule:
+                    if(intent_model == rule_value):
+                        print("■■■■■■■■■■ 의도 분석 결과 Rule와 일치 ■■■■■■■■■■")
+                        break
+                    else:
+                        print("■■■■■■■■■■ 의도 분석 불가 ■■■■■■■■■■")
+                        pass
 
             share_data.set_intent_id(intent_model)
             share_data.set_intent_history(intent_model)
