@@ -6,6 +6,7 @@ import sys
 # [TEST - Celery]
 # apt-get install rabbitmq-server
 # service rabbitmq-server start
+
 # rabbitmqctl add_user tensormsa tensormsa
 # rabbitmqctl set_user_tags tensormsa administrator
 # rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
@@ -14,8 +15,8 @@ import sys
 
 println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
-nn_id = "mro001"
-wf_ver_id = 7
+nn_id = "mro0003"
+wf_ver_id = 1
 
 # get workflow version
 if wf_ver_id == 0:
@@ -34,8 +35,8 @@ wf_ver_id = str(wf_ver_id)
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/renet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
                  json={
                      "param":{"traincnt": 1
-                              ,"epoch": 1
-                              ,"batch_size":200
+                              ,"epoch": 3
+                              ,"batch_size":20
                               ,"predictcnt": 2
                               ,"predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                               ,"augmentation": "Y"

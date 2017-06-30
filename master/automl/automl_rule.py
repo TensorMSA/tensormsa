@@ -29,7 +29,7 @@ class AutoMlRule:
             query_set = json.loads(query_set)
             ids = []
             for row in query_set :
-                ids.append(row['pk'])
+                ids.append(row)
             return ids
         except Exception as e:
             raise Exception(e)
