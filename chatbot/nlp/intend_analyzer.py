@@ -31,29 +31,19 @@ class IntendAnalyzer(ShareData):
         if (share_data.get_intent_id() != ""):
             print("■■■■■■■■■■ 의도 존재  : " + share_data.get_intent_id())
         else :
-            convert_data =  share_data.get_convert_data()
+            convert_data = share_data.get_convert_data()
             intent_model = self.get_intent_model(convert_data)
             print ("■■■■■■■■■■ 의도 분석 결과(Model) : " + intent_model)
 
             intent_rule = self.get_rule_value(convert_data)
             print ("■■■■■■■■■■ 의도 분석 결과(Rule) : " + str(intent_rule))
 
-            if(intent_model == -1 and intent_rule is not []):
-                intent_model = intent_rule[0]
-            else:
-                for rule_value in intent_rule:
-                    if(intent_model == rule_value):
-                        print("■■■■■■■■■■ 의도 분석 결과 Rule와 일치 ■■■■■■■■■■")
-                        break
-                    else:
-                        print("■■■■■■■■■■ 의도 분석 불가 ■■■■■■■■■■")
-                        pass
+            if(intent_model == -1):
+                intent_model = intent_rule
 
             share_data.set_intent_id(intent_model)
             share_data.set_intent_history(intent_model)
 
-            # slot_key = ChatKnowledgeDataDict(self.cb_id).get_essential_entity(share_data.get_intent_id())
-            # share_data.set_story_key_entity(slot_key)
         return share_data
 
     def get_intent_model(self, convert_data):
@@ -64,5 +54,7 @@ class IntendAnalyzer(ShareData):
     def get_rule_value(self, convert_data):
         intent_list = list(filter(lambda x: x["fields"]["intent_type"] == "custom" and any(
             key in convert_data for key in x["fields"]["rule_value"]["value"]), self.intent_conf))
-        intent_list = list(map(lambda x : x["fields"]["intent_id"],intent_list))
-        return intent_list
+        intent_list = list(map(lambda x : x["fields"]["intent_id"], intent_list))
+        #custom intent is only one
+        intent_rule = intent_list[0] if len(intent_list) > 0 else "-1"
+        return intent_rule
