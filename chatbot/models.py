@@ -16,6 +16,7 @@ class CB_DEF_LIST_INFO(models.Model):
 class CB_INTENT_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     intent_id = models.CharField(max_length=10, blank=False)
+    intent_uuid = models.CharField(max_length=50, blank=False)
     intent_type = models.CharField(max_length=10, blank=False) #model/custom
     intent_desc = models.CharField(max_length=50, blank=True)
     rule_value = JSONField() # custom case

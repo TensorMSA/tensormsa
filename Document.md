@@ -112,8 +112,9 @@ Find in vi - /ip n N
 ```
 
 ## Add Corpus (Mecab)
-- mecab-0.996-ko-0.9.2.tar.gz (2017.06 recent)
-- mecab-ko-dic-2.0.1-20150920.tar.gz (2017.06 recent)
+- mecab-0.996-ko-0.9.2.tar.gz (2017.06 recent) [링크](https://bitbucket.org/eunjeon/mecab-ko/downloads/)
+- mecab-ko-dic-2.0.1-20150920.tar.gz (2017.06 recent) [링크](https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/)
+- tar xvf mecab-ko-dic-2.0.1-20150920.tar.gz
 - go to dic directory and userdic
 - add csv(1 line : 김수상,,,,NNP,*,F,김수상,*,*,*,*) 1)T/F : 받침유무
 - [링크](http://andersonjo.github.io/nlp/2016/12/28/NLP/)
