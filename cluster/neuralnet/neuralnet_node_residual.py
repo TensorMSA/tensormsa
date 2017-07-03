@@ -46,7 +46,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.file_end = '.bin'
         self.train_return_data = {}
         self.train_return_arr = ["Trainning .................................................."]
-        self.pred_return_data = {}
 
     ####################################################################################################################
     def _set_netconf_parm(self):
@@ -400,7 +399,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             NeuralNetModel.dict[unique_key] = self
             NeuralNetModel.graph[unique_key] = tf.get_default_graph()
             graph = tf.get_default_graph()
-
+        pred_return_data = {}
         for i in range(len(filename_arr)):
             file_name = filename_arr[i]
             file_data = filedata_arr[i]
@@ -410,8 +409,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
             labels = self.netconf["labels"]
             pred_cnt = self.netconf["param"]["predictcnt"]
             retrun_data = self.set_predict_return_cnn_img(labels, logits, pred_cnt)
-            self.pred_return_data[file_name] = retrun_data
+            pred_return_data[file_name] = retrun_data
             println("Return Data.......................................")
-            println(self.pred_return_data)
+            println(pred_return_data)
 
-        return self.pred_return_data
+        return pred_return_data
