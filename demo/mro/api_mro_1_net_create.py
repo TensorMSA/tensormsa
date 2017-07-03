@@ -3,7 +3,7 @@ import json, os
 from common.utils import *
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
-nn_id = "mro001"
+nn_id = "mro0003"
 biz_cate = "ERP"
 biz_sub_cate = "MRO"
 nn_title = "MRO Image Classification"

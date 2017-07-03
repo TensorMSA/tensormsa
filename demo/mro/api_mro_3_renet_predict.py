@@ -13,18 +13,7 @@ println("S")
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
-nn_id = "mro001"
-wf_ver_id = 7
-# get workflow version info
-if wf_ver_id == 0:
-    resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
-    data = json.loads(resp.json())
-
-    for config in data:
-        if config["fields"]["active_flag"] == "Y":
-            wf_ver_id = config["fields"]["nn_wf_ver_id"]
-
-wf_ver_id = str(wf_ver_id)
+nn_id = "mro0003"
 
 files = {
         #  'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
@@ -38,8 +27,8 @@ files = {
         # ,'files000009':  open('/home/dev/hoyai/demo/data/motor/1motor.jpg','rb')
         # ,'files000010':  open('/home/dev/hoyai/demo/data/motor/2motor.jpg','rb')
 
- 'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
-    ,'files000002':  open('/home/dev/hoyai/demo/data/airplane/2air.jpg','rb')
+'files000001':  open('//hoya_src_root/mro0001/test.jpg','rb')
+    # ,'files000002':  open('/home/dev/hoyai/demo/data/airplane/2air.jpg','rb')
 # ,'files000003':  open('/hoya_src_root/nn00004/21/personData/LSH/20170418_094624.jpg','rb')
 
  #  'files000004':  open('/hoya_src_root/nn00004/21/personDataTest/PSC/20170417_180614.jpg','rb')
@@ -48,7 +37,7 @@ files = {
 
         }
 
-restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/renet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/'
+restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/renet/nnid/'+nn_id+'/ver/0/'
 
 resp = requests.post(restURL, files=files, json={
                          "config": {}

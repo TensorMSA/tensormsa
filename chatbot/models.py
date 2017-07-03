@@ -34,7 +34,7 @@ class CB_ENTITY_LIST_INFO(models.Model):
 
 class CB_MODEL_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    nn_id = models.CharField(max_length=10, blank=True)
+    nn_id = models.CharField(max_length=50, blank=True)
     nn_purpose = models.CharField(max_length=10, blank=True)
     nn_type = models.CharField(max_length=10, blank=True)
     nn_label_data = JSONField()
