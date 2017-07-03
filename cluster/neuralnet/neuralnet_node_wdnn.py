@@ -80,7 +80,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             # make wide & deep model
             wdnn = NeuralCommonWdnn()
-            wdnn_model = wdnn.wdnn_build(self.model_type, conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_train_path))
+            wdnn_model = wdnn.wdnn_build(self.model_type, conf_data['node_id'],self.hidden_layers,str(self.activation_function),data_conf_info, str(self.model_train_path),self.train, self.auto_demension)
 
             #feed
             # TODO file이 여러개면 어떻하지?
@@ -257,6 +257,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.epoch = wf_net_conf.epoch
         self.model_type = wf_net_conf.model_type
         self.train = wf_net_conf.train
+        self.auto_demension = wf_net_conf.auto_demension
         #Todo 어떻게 꺼내는지 승우씨한테 물어볼것
         _wf_data_conf = wf_data_conf(key.split('_')[0]+'_'+key.split('_')[1]+'_'+'dataconf_node')
         self.data_conf = _wf_data_conf.conf

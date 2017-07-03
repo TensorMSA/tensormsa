@@ -57,6 +57,13 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         """
         return self.conf['train'] if hasattr(self.conf,'train') else True
 
+    @property
+    def auto_demension(self):
+        """
+        getter for preprocess
+        """
+        return self.conf['auto_demension'] if hasattr(self.conf,'auto_demension') else True
+
 
     def __init__(self, key = None):
         """
@@ -130,6 +137,8 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
                 config_data['epoch'] = input_data['epoch']
                 config_data['model_type'] = input_data['model_type']
                 config_data['train'] = input_data['train']
+                config_data['auto_demension'] = input_data['auto_demension']  if 'auto_demension' in input_data else self.config_data_nvl_bool(config_data,
+                                                                                                       'auto_demension')
                 # config_data['source_parse_type'] = form
                 # config_data['source_server'] = input_data['source_server']
                 # config_data['source_sql'] = input_data['source_sql']
@@ -143,6 +152,13 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
             raise Exception(e)
         #return None
 
+    def config_data_nvl_bool(self, config_data, attribute_name):
+
+        if attribute_name in config_data:
+            _value = config_data[attribute_name]
+        else:
+            _value = False
+        return _value
 
 
     def get_drop_out(self):

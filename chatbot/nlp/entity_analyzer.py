@@ -80,7 +80,7 @@ class EntityAnalyzer(ShareData):
                 key_slot = pos_tags[0]
                 # except duplicated
                 if(self.proper_noun[key_check[0]][2]):
-                    key_slot = share_data.get_story_slot_entity(key_check[0]) if share_data.get_story_slot_entity(key_check[0]) is not None else "" + key_slot
+                    key_slot = share_data.get_story_slot_entity(key_check[0]) + pos_tags[0] if share_data.get_story_slot_entity(key_check[0]) is not None else "" + pos_tags[0]
                 share_data.set_story_slot_entity(key_check[0], key_slot)
                 convert_dict_data = '['+ key_check[0] +']'
 
