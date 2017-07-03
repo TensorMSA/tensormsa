@@ -21,7 +21,7 @@ WDNN NETWORK COMMON CLASS
 class NeuralCommonWdnn():
 
 
-    def wdnn_build(self, model_type, nodeid, hidden_layers, activation_fn, dataconf, model_dir,  train=True):
+    def wdnn_build(self, model_type, nodeid, hidden_layers, activation_fn, dataconf, model_dir,  train=True, dememsion_auto_flag=False):
         """ wide & deep netowork builder
             :param nnid
             :param model_dir : directory of chkpoint of wdnn model
@@ -36,11 +36,14 @@ class NeuralCommonWdnn():
             _extend_cell_feature = dataconf.get('extend_cell_feature')
             #label_object  = dataconf
 
+            _dememsion_auto_flag = dememsion_auto_flag
+
             featureDeepEmbedding={}
             featureTransfomation = {}
 
             j_feature = data_conf_json["cell_feature"]
             _label = data_conf_json['label']
+            _cell_feature_unique = dataconf.get('cell_feature_unique')
 
             # one line expression change
             # Categorial columns을 Sparse Layer로 만듬 python처럼 한줄로 표시
@@ -64,7 +67,15 @@ class NeuralCommonWdnn():
 
 
             # Categorucal layer를 emdedding 해서 차원을 줄임
-            featureDeepEmbedding = {key:tf.contrib.layers.embedding_column(value, dimension=8) for key, value in featureColumnCategorical.items()}
+            if _dememsion_auto_flag == False or _dememsion_auto_flag == None:
+                featureDeepEmbedding = {key:tf.contrib.layers.embedding_column(value, dimension=8) for key, value in featureColumnCategorical.items()}
+            else:
+                #demension = n unique value , K = small conatraint , k * (n ** 1/4)
+                auto_demension = {key: round(3*(len(_cell_feature_unique[key].get('column_u_values'))**1/4) )for key, value in featureColumnCategorical.items()}
+
+                featureDeepEmbedding = {key: tf.contrib.layers.embedding_column(value, dimension=auto_demension.get(key)) for key, value in
+                                        featureColumnCategorical.items()}
+
 
 
             # Json에서 Continuous Colums 가져옴
