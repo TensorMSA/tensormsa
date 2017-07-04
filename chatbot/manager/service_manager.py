@@ -6,6 +6,7 @@ from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
 from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
+from chatbot.manager.service_mapper import ServiceMapper
 from chatbot.services.service_provider import ServiceProvider
 from chatbot.story.story_board_manager import StoryBoardManager
 from chatbot.decision.decision_maker import DecisionMaker
@@ -36,6 +37,8 @@ class ServiceManager:
             self.intent_analyzer = IntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_intent_model(),
                                                   self.chat_knowledge_data_dict.get_intent_conf())
+            self.service_mapper = ServiceMapper(cb_id, self.chat_knowledge_data_dict.get_entity_uuid())
+
             # self.decision_maker = DecisionMaker()
             # self.service_provider = ServiceProvider()
             # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
@@ -59,6 +62,8 @@ class ServiceManager:
             share_ctx = self.entity_recognizer.parse(share_ctx)
             # Intent
             share_ctx = self.intent_analyzer.parse(share_ctx)
+            # UUID mapping
+            share_ctx = self.service_mapper.run(share_ctx)
 
             # 3. decision maker
             #share_ctx = self.decision_maker.run(share_ctx)

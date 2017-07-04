@@ -16,6 +16,7 @@ class BotBuilder(APIView):
             serializer_entity = serializers.CB_ENTITY_LIST_INFO_Serializer(data=data)
             serializer_tagging = serializers.CB_TAGGING_INFO_Serializer(data=data)
             serializer_model = serializers.CB_MODEL_LIST_INFO_Serializer(data=data)
+            serializer_entity_relation = serializers.CB_ENTITY_RELATION_INFO_Serializer(data=data)
 
             if serializer_def.is_valid():
                 serializer_def.save()
@@ -46,6 +47,12 @@ class BotBuilder(APIView):
                 serializer_model.save()
             else :
                 return serializer_model.is_valid(raise_exception=True)
+
+            if serializer_entity_relation.is_valid():
+                serializer_entity_relation.save()
+            else :
+                return serializer_entity_relation.is_valid(raise_exception=True)
+
             return data["cb_id"]
 
         except Exception as e:

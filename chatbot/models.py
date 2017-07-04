@@ -16,7 +16,7 @@ class CB_DEF_LIST_INFO(models.Model):
 class CB_INTENT_LIST_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     intent_id = models.CharField(max_length=10, blank=False)
-    intent_uuid = models.CharField(max_length=50, blank=False)
+    intent_uuid = models.CharField(max_length=100, blank=False)
     intent_type = models.CharField(max_length=10, blank=False) #model/custom
     intent_desc = models.CharField(max_length=50, blank=True)
     rule_value = JSONField() # custom case
@@ -61,6 +61,12 @@ class CB_TAGGING_INFO(models.Model):
     pos_type = models.CharField(max_length=10, blank=True)
     proper_noun = JSONField()
     parsed_length = models.IntegerField(default=10)
+
+class CB_ENTITY_RELATION_INFO(models.Model):
+    cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
+    entity_id = models.CharField(max_length=50, blank=True)
+    entity_uuid = models.CharField(max_length=100, blank=True)
+    entity_desc = models.CharField(max_length=100, blank=True)
 
 class CB_ONTOLOGY_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)

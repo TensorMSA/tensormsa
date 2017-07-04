@@ -50,3 +50,11 @@ class CB_MODEL_LIST_INFO_Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.CB_MODEL_LIST_INFO
         fields = ('cb_id', 'nn_id', 'nn_purpose','nn_type','nn_label_data','nn_desc')
+
+class CB_ENTITY_RELATION_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : CB_ENTITY_RELATION_INFO
+    """
+    class Meta:
+        model = models.CB_ENTITY_RELATION_INFO
+        fields = ('cb_id', 'entity_id', 'entity_uuid', 'entity_desc')

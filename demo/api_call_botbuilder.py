@@ -16,7 +16,7 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/',
 
                         #Model List
                         "cb_id": "cb0001",
-                        "nn_id": "lstmcrf025",
+                        "nn_id": "lstmcrf0002", #wcnn_ksw01
                         'nn_purpose': "NER", # Intend ADD
                         'nn_type': "bilstmcrf",
                         'nn_label_data': {"entity": ["이름", "직급", "직책", "근태코드", "그룹", "근무조", "업무", "날짜", "장소"]},
@@ -55,9 +55,13 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/',
                         #tagging
                         "cb_id": "cb0001",
                         "pos_type": "mecab",
-                        "proper_noun": {"부서": [3, "/home/dev/hoyai/demo/data/dept.txt"], "이름": [2, "/home/dev/hoyai/demo/data/name.txt"], "직급": [1, "/home/dev/hoyai/demo/data/grade.txt"], "회사": [0, "/home/dev/hoyai/demo/data/company.txt"]}
+                        "proper_noun": {"tagwc": [1, "/hoya_model_root/chatbot/wc.txt", false], "tagceo": [1, "/hoya_model_root/chatbot/ceo.txt", false], "tagloc": [1, "/hoya_model_root/chatbot/loc.txt", false], "tagorg": [1, "/hoya_model_root/chatbot/org.txt", false], "tagrot": [1, "/hoya_model_root/chatbot/rot.txt", false], "tagdate": [4, "/hoya_model_root/chatbot/super.txt", false], "taghead": [1, "/hoya_model_root/chatbot/head.txt", false], "tagname": [2, "/hoya_model_root/chatbot/name.txt", false], "tagrank": [1, "/hoya_model_root/chatbot/rank.txt", false], "tagcompany": [2, "/hoya_model_root/chatbot/company.txt", false]},
+
+                        #entity relation
+                        "cb_id": "cb0001",
+                        "entity_id" : "tagname",
+                        "entity_uuid" : "asdf",
+                        "entity_desc" : "이름",
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
-
-
