@@ -39,9 +39,12 @@ class ChatBotConfManager:
         self.stroy_board = []
 
     def get_model_conf(self, cb_id, purpose):
-        query_set = models.CB_MODEL_LIST_INFO.objects.filter(cb_id = cb_id, nn_purpose = purpose)
-        query_set = serial.serialize("json", query_set)
-        return json.loads(query_set)[0]['fields']
+        try :
+            query_set = models.CB_MODEL_LIST_INFO.objects.filter(cb_id = cb_id, nn_purpose = purpose)
+            query_set = serial.serialize("json", query_set)
+            return json.loads(query_set)[0]['fields']
+        except Exception as e :
+            raise Exception ("Model for {0} is required : {1}".format(purpose, e))
 
     def get_intent_model(self):
         """

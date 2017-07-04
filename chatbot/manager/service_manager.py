@@ -5,6 +5,7 @@ from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
+from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
 from chatbot.services.service_provider import ServiceProvider
 from chatbot.story.story_board_manager import StoryBoardManager
 from chatbot.decision.decision_maker import DecisionMaker
@@ -22,17 +23,24 @@ class ServiceManager:
         initialze chatbot servic with id
         :param cb_id:
         """
-        # TODO : need to use cache for better rsponse time
-        self.cb_id = cb_id
-        self.chatbot_conf = ChatBotConfManager(cb_id)
-        self.chat_knowledge_data_dict = ChatKnowledgeDataDict(cb_id)
-        self.chat_share_data = ShareData()
-        self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging())
-        self.entity_recognizer = EntityRecognizer(cb_id, self.chatbot_conf.get_ner_model())
-        self.intent_analyzer = IntendAnalyzer(cb_id, self.chatbot_conf.get_intent_model(), self.chat_knowledge_data_dict.get_intent_conf())
-        # self.decision_maker = DecisionMaker()
-        # self.service_provider = ServiceProvider()
-        # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
+        try :
+            # TODO : need to use cache for better rsponse time
+            self.cb_id = cb_id
+            self.chatbot_conf = ChatBotConfManager(cb_id)
+            self.chat_knowledge_data_dict = ChatKnowledgeDataDict(cb_id)
+            self.chat_knowledge_data_dict.initialize(cb_id)
+            self.chat_share_data = ShareData()
+            self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging())
+            self.entity_recognizer = EntityRecognizer(cb_id,
+                                                      self.chatbot_conf.get_ner_model())
+            self.intent_analyzer = IntendAnalyzer(cb_id,
+                                                  self.chatbot_conf.get_intent_model(),
+                                                  self.chat_knowledge_data_dict.get_intent_conf())
+            # self.decision_maker = DecisionMaker()
+            # self.service_provider = ServiceProvider()
+            # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
+        except Exception as e :
+            raise Exception ("error on ChatBot ServiceManager init process : {0}".format(e))
 
     def run_chatbot(self, req_ctx):
         """
