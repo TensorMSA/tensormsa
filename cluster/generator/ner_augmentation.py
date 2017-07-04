@@ -80,7 +80,8 @@ class DataAugmentation :
                         for rep in ['\n', 'NaN'] :
                             slot = slot.replace(rep, '')
                         if(key in slot) :
-                            line.append((word, key))
+                            for wd in self.mecab.morphs(word):
+                                line.append((wd, key))
                         else :
                             line.append((slot, 'O'))
                     return_aug_sent.append(line)
@@ -93,7 +94,8 @@ class DataAugmentation :
                                 line = return_aug_sent[i].copy()
                                 for z, slot in enumerate(line):
                                     if(slot[0] == key) :
-                                        line[z] = (word, key)
+                                        for wd in self.mecab.morphs(word) :
+                                            line[z] = (wd, key)
                                 return_aug_sent.append(line)
                             del_idx.append(i)
 
@@ -165,8 +167,8 @@ class DataAugmentation :
             for i, line in enumerate(document) :
                 words = []
                 if(self.use_mecab) :
-                    mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
-                    pos = mecab.pos(line)
+                    self.mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
+                    pos = self.mecab.pos(line)
                     for word, tag in pos:
                         words.append(word)
                 else :
