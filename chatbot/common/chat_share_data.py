@@ -357,6 +357,15 @@ class ShareData(ChatBotConfManager):
         """
         self.story_slot_entity[key] = val
 
+    def update_story_slot_entity(self, key, val):
+        """
+
+        :param data:
+        :return:
+        """
+        if(key not in list(self.story_slot_entity.keys())) :
+            self.story_slot_entity[key] = val
+
     def get_story_slot_entity(self, key = None):
         """
 

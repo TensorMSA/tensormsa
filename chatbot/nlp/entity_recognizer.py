@@ -17,11 +17,26 @@ class EntityRecognizer(ShareData):
     def parse(self, share_data):
         print("■■■■■■■■■■ NER 분석 전 : " + str(share_data.get_morphed_data()))
         ner_data = self._get_ner_data(' '.join(share_data.get_morphed_data()))
-        share_data = self._match_ngram_dict(share_data , share_data.get_morphed_data(), ner_data)
+        share_data = self._match_ngram_dict(share_data , share_data.get_convert_dict_data(), ner_data)
+        self._get_convert_data(ner_data, share_data)
         print("■■■■■■■■■■ NER 분석 결과 : " + str(ner_data))
         return share_data
 
-    # TODO : get BIO Tag from sentence
+    def _get_convert_data(self, ner_data, share_data):
+        """
+        make sentence for charn cnn intent prediction 
+        :param ner_data: 
+        :param share_data: 
+        :return: 
+        """
+        buff_list = []
+        for val_a, val_b in zip(ner_data, share_data.get_morphed_data()) :
+            if(val_a == 'O') :
+                buff_list.append(val_b)
+            else :
+                buff_list.append(val_a)
+        share_data.set_convert_data(sorted(set(buff_list), key=lambda x: buff_list.index(x)))
+
     def _get_ner_data(self, input_sentence):
         result = self.bilstmcrf_model.run(self.ner_model_id, {"input_data": input_sentence, "num": 0, "clean_ans": False})
         return result
@@ -55,7 +70,7 @@ class EntityRecognizer(ShareData):
                             result[key] = list(map(lambda x : x[0], model.search(val, threshold=0.2)))[0:4]
                     if(len(result[key]) == 0) :
                         result[key] = val
-                    share_data.set_story_slot_entity(key, result[key])
+                    share_data.update_story_slot_entity(key, result[key])
             return share_data
         except Exception as e :
             raise Exception ("Error on matching ngram afger bilstm crf : {0}".format(e))

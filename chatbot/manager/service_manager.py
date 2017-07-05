@@ -37,6 +37,7 @@ class ServiceManager:
             self.intent_analyzer = IntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_intent_model(),
                                                   self.chat_knowledge_data_dict.get_intent_conf())
+            self.service_mapper = (cb_id, self.chat_knowledge_data_dict.get_entity_uuid())
             self.service_mapper = ServiceMapper(cb_id, self.chat_knowledge_data_dict.get_entity_uuid())
 
             # self.decision_maker = DecisionMaker()
