@@ -93,3 +93,8 @@ class ChatKnowledgeDataDict:
         query_set = models.CB_ENTITY_RELATION_INFO.objects.filter(cb_id = self.cb_id)
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)
+
+    def get_intent_uuid(self):
+        query_set = models.CB_INTENT_LIST_INFO.objects.filter(cb_id = self.cb_id)
+        query_set = serial.serialize("json", query_set)
+        return json.loads(query_set)

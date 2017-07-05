@@ -55,7 +55,7 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/',
                         #tagging
                         "cb_id": "cb0001",
                         "pos_type": "mecab",
-                        "proper_noun": {"tagwc": [1, "/hoya_model_root/chatbot/wc.txt", false], "tagceo": [1, "/hoya_model_root/chatbot/ceo.txt", false], "tagloc": [1, "/hoya_model_root/chatbot/loc.txt", false], "tagorg": [1, "/hoya_model_root/chatbot/org.txt", false], "tagrot": [1, "/hoya_model_root/chatbot/rot.txt", false], "tagdate": [4, "/hoya_model_root/chatbot/super.txt", false], "taghead": [1, "/hoya_model_root/chatbot/head.txt", false], "tagname": [2, "/hoya_model_root/chatbot/name.txt", false], "tagrank": [1, "/hoya_model_root/chatbot/rank.txt", false], "tagcompany": [2, "/hoya_model_root/chatbot/company.txt", false]},
+                        "proper_noun": {"tagwc": [1, "/hoya_model_root/chatbot/wc.txt", False], "tagceo": [1, "/hoya_model_root/chatbot/ceo.txt", False], "tagloc": [1, "/hoya_model_root/chatbot/loc.txt", False], "tagorg": [1, "/hoya_model_root/chatbot/org.txt", False], "tagrot": [1, "/hoya_model_root/chatbot/rot.txt", False], "tagdate": [4, "/hoya_model_root/chatbot/super.txt", False], "taghead": [1, "/hoya_model_root/chatbot/head.txt", False], "tagname": [2, "/hoya_model_root/chatbot/name.txt", False], "tagrank": [1, "/hoya_model_root/chatbot/rank.txt", False], "tagcompany": [2, "/hoya_model_root/chatbot/company.txt", False]},
 
                         #entity relation
                         "cb_id": "cb0001",
