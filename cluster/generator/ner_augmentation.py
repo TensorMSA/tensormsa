@@ -94,8 +94,10 @@ class DataAugmentation :
                                 line = return_aug_sent[i].copy()
                                 for z, slot in enumerate(line):
                                     if(slot[0] == key) :
+                                        buffer = ""
                                         for wd in self.mecab.morphs(word) :
-                                            line[z] = (wd, key)
+                                            buffer = ' '.join([buffer,wd])
+                                            line[z] = (buffer, key)
                                 return_aug_sent.append(line)
                             del_idx.append(i)
 
