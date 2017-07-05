@@ -30,7 +30,10 @@ class SummrizeResult():
         :return: 
         """
         temp = list(filter(lambda x: x['fields']['intent_id'] == intent_id, self.intent_info))
-        return temp[0]['fields']['entity_list']['key'], temp[0]['fields']['entity_list']['extra']
+        if (temp == []):
+            return "",""
+        else:
+            return temp[0]['fields']['entity_list']['key'], temp[0]['fields']['entity_list']['extra']
 
     def get_intent_candidate(self, ner_keys):
         """

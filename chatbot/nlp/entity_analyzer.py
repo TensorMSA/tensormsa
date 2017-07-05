@@ -110,7 +110,8 @@ class EntityAnalyzer(ShareData):
         input_file = open(self.proper_noun.get(key)[1], 'r')
         if(input_file is not None):
             for line in input_file:
-                if(line.strip().find(value) > -1):
+                #if(line.strip().find(value) > -1):
+                if (line.strip() == value):
                     exist = True
                     break
             input_file.close()
