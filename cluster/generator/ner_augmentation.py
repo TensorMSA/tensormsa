@@ -155,10 +155,78 @@ class DataAugmentation :
                         f.write(''.join([word[0], ' ']))
                     f.write('\n')
 
+    def _intent_formatter(self, aug_data, key) :
+        """
+        save aug list as iob file format
+        :param aug_data: augmented list of sentence
+        :return: None
+        """
+        path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.csv'])
+
+        if (os.path.exists(path) == False) :
+            with open(path, "w")  as f :
+                f.write('encode,decode\n')
+
+        if (os.path.exists(path) == False or os.path.getsize(path) < self.max_file_size):
+            with open(path, "a")  as f :
+                for line in aug_data :
+                    for word in line :
+                        f.write(''.join([word[0], ' ']))
+                    f.write(',')
+                    f.write(str(key))
+                    f.write('\n')
+        else :
+            self.aug_file_cnt = self.aug_file_cnt + 1
+            path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.csv'])
+            with open(path, "w")  as f :
+                for line in aug_data :
+                    for word in line :
+                        f.write(''.join([word[0], ' ']))
+                    f.write(',')
+                    f.write(str(key))
+                    f.write('\n')
+
     def convert_data(self) :
         """
         augment data with entity list and pattern
         :return: None
+        """
+        if (self.out_format_type == 'intent'):
+            self._conv_type_b()
+        else :
+            self._conv_type_a()
+
+    def _conv_type_b(self):
+        """
+        
+        :return: 
+        """
+        df_csv_read = pd.read_csv(self.pattern_data_path,
+                                  skipinitialspace=True,
+                                  engine="python",
+                                  encoding='utf-8-sig')
+
+        i = 0
+        for key, line in zip(df_csv_read['decode'].values, df_csv_read['encode'].values) :
+            words = []
+            if (self.use_mecab):
+                self.mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
+                pos = self.mecab.pos(line)
+                for word, tag in pos:
+                    words.append(word)
+            else:
+                words = str(line).split(' ')
+            print("===={0} line job start".format(i))
+            match_keys = self._check_all_match(words)
+            aug_data = self._aug_sent(match_keys, words, [])
+            self._intent_formatter(aug_data, key)
+            print("===={0} line job done".format(i))
+            i = i + 1
+
+    def _conv_type_a(self):
+        """
+        
+        :return: 
         """
         with codecs.open( self.pattern_data_path, "r", "utf-8" ) as fileObj :
             document = fileObj.readlines()
