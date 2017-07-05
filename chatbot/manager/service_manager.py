@@ -7,6 +7,7 @@ from chatbot.nlp.intend_analyzer import IntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
 from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
 from chatbot.manager.service_mapper import ServiceMapper
+from chatbot.decision.summrize_result import SummrizeResult
 from chatbot.services.service_provider import ServiceProvider
 from chatbot.story.story_board_manager import StoryBoardManager
 from chatbot.decision.decision_maker import DecisionMaker
@@ -37,11 +38,10 @@ class ServiceManager:
             self.intent_analyzer = IntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_intent_model(),
                                                   self.chat_knowledge_data_dict.get_intent_conf())
-            self.service_mapper = (cb_id, self.chat_knowledge_data_dict.get_entity_uuid())
             self.service_mapper = ServiceMapper(cb_id,
                                                 self.chat_knowledge_data_dict.get_entity_uuid(),
                                                 self.chat_knowledge_data_dict.get_intent_uuid())
-
+            self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
             # self.decision_maker = DecisionMaker()
             # self.service_provider = ServiceProvider()
             # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
@@ -55,23 +55,29 @@ class ServiceManager:
         """
         try :
             print("■■■■■■■■■■ 챗봇 시작 ■■■■■■■■■■")
-            # 1. set parms from client
+            ### 1. UUID mapping ###
+
+            ### 2. set parms from client ###
             share_ctx = self.chat_share_data.load_json(req_ctx)
 
-            # 2. nlp process
+            ### 3. nlp process ###
             # Preprocess
             share_ctx = self.entity_analyzer.parse(share_ctx)
             # NER
             share_ctx = self.entity_recognizer.parse(share_ctx)
             # Intent
             share_ctx = self.intent_analyzer.parse(share_ctx)
-            # UUID mapping
+            # summrize result
+            share_ctx = self.summrize_result.parse(share_ctx)
+
+            ### 4. UUID mapping ###
             share_ctx = self.service_mapper.run(share_ctx)
 
-            # 3. decision maker
+            ### 5. decision maker ###
             #share_ctx = self.decision_maker.run(share_ctx)
+
             print("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
-            # 4. return result as json
+            ### 4. return result as json ###
             return share_ctx.to_json()
         except Exception as e:
             raise Exception (e)
