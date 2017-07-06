@@ -12,8 +12,7 @@ class AugNlpConf(APIView):
         """
         try:
             da = DataAugmentation(request.data)
-            da.load_dict()
-            da.convert_data()
+            da.run()
             return Response(json.dumps("True"))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

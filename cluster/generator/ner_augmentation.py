@@ -26,17 +26,29 @@ class DataAugmentation :
         self.out_format_type = conf.get("out_format_type")
         self.ner_dicts = {}
         self.gpu_use = True
+        self.dict_sample_size = int(conf.get("dict_sample_size"))
+        self.dict_sample_iter = int(conf.get("dict_sample_iter"))
+
+    def run(self):
+        """
+        run 
+        :return: 
+        """
+        for _ in range(self.dict_sample_iter) :
+            self.load_dict()
+            self.convert_data()
 
     def load_dict(self):
         """
         load dict list from csv file
         :return:
         """
+        self.ner_dicts = {}
         df_csv_read = pd.read_csv(self.dict_path,
                                   skipinitialspace=True,
                                   engine="python",
                                   encoding='utf-8-sig')
-
+        df_csv_read = df_csv_read.sample(n=self.dict_sample_size)
         for col in df_csv_read.keys() :
             self.ner_dicts[col] = []
             for val in list(set(df_csv_read[col])) :
@@ -193,10 +205,13 @@ class DataAugmentation :
         augment data with entity list and pattern
         :return: None
         """
-        if (self.out_format_type == 'intent'):
-            self._conv_type_b()
-        else :
-            self._conv_type_a()
+        try :
+            if (self.out_format_type == 'intent'):
+                self._conv_type_b()
+            else :
+                self._conv_type_a()
+        except Exception as e :
+            print("error log : " + e)
 
     def _conv_type_b(self):
         """
@@ -255,3 +270,15 @@ class DataAugmentation :
                 else :
                     raise Exception (' '.join(['not', 'plain', 'or iob']))
                 print("===={0} line job done".format(i))
+
+# da = DataAugmentation({
+#                      "use_mecab": True,
+#                      "max_file_size": 10000000,
+#                      "pattern_data_path": "/hoya_data_root/aug/pattern.csv",
+#                      "augmented_out_path": "/hoya_model_root/",
+#                      "dict_path": "/hoya_data_root/aug/dict.csv",
+#                      "out_format_type": "intent",
+#                      "dict_sample_size" : 10,
+#                      "dict_sample_iter" : 10
+#                  })
+# da.run()
