@@ -15,18 +15,19 @@ class ShareData(ChatBotConfManager):
         """
         # self.unique_id = ""             # mobile device unique id
         # self.package_id = ""            # mobile app package id
-        self.input_data = None          # prediction requested data
-        self.convert_data = None        # convert data
-        self.output_data = None         # output data
-        self.edit_history = []          # data change history (preprocess -> tag -> NER)
-        self.intent_history = []        # intent change history (changes on intent model)
-        self.request_type = ""          # text, image, voice
-        self.intent_id = ""             # current intent id
+        self.input_data = None            # prediction requested data
+        self.convert_data = None          # convert data
+        self.output_data = None           # output data
+        self.edit_history = []            # data change history (preprocess -> tag -> NER)
+        self.intent_history = []          # intent change history (changes on intent model)
+        self.request_type = ""            # text, image, voice
+        self.intent_id = ""               # current intent id
         # self.intent_name = ""           # current intent name
-        self.service_type = ""          # I:Intent, N:NER
-        self.story_board_id = ""        # current working story board
-        self.story_key_entity = []      # required key list
-        self.story_slot_entity = {}     # key : val
+        self.service_type = ""            # I:Intent, N:NER
+        self.story_board_id = ""          # current working story board
+        self.story_key_entity = []        # required key list
+        self.story_slot_entity = {}       # key : val
+        self.story_ner_entity = {}        # key : val
         self.morphed_data = []
         self.convert_dict_data =[]
         # self.opt_sel_list = {}          # intent option list when intent anl result is not clear
@@ -48,7 +49,7 @@ class ShareData(ChatBotConfManager):
         :return:
         """
         self._check_json_validation(object)
-        self.__dict__ = object
+        self.__dict__.update(object)
         return self
 
     def _check_json_validation(self, object):
@@ -357,6 +358,14 @@ class ShareData(ChatBotConfManager):
         """
         self.story_slot_entity[key] = val
 
+    def replace_story_slot_entity(self, obj):
+        """
+        manage result of ner(bilstmcrf algoritm) result 
+        :param data:
+        :return:
+        """
+        self.story_slot_entity = obj
+
     def update_story_slot_entity(self, key, val):
         """
 
@@ -387,6 +396,31 @@ class ShareData(ChatBotConfManager):
         self.set_request_data("")
         self.initialize_story_entity()
         self.set_request_type("")
+
+    def get_story_ner_entity(self):
+        """
+        manage result of ner(bilstmcrf algoritm) result 
+        :param data:
+        :return:
+        """
+        return self.story_ner_entity
+
+    def set_story_ner_entity(self, key, val):
+        """
+        manage result of ner(bilstmcrf algoritm) result 
+        :param data:
+        :return:
+        """
+        self.story_ner_entity[key] = val
+
+    def replace_story_ner_entity(self, obj):
+        """
+        manage result of ner(bilstmcrf algoritm) result 
+        :param data:
+        :return:
+        """
+        self.story_ner_entity = obj
+
 
     # def set_intent_option_list(self, key, val):
     #     """

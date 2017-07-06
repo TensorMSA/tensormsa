@@ -50,16 +50,59 @@ class SummrizeResult():
         :param intent_id: 
         :return: 
         """
-        ner_keys = list(share_data.get_story_slot_entity().keys())
-        essence, extra = self.get_entity_name(intent_id)
+        try :
+            dict_obj = share_data.get_story_slot_entity()
+            ner_obj = share_data.get_story_ner_entity()
+            dict_keys = list(dict_obj.keys())
+            ner_keys = list(ner_obj.keys())
+            essence, extra = self.get_entity_name(intent_id)
+            common_keys = list(set(dict_keys).intersection(ner_keys))
 
-        if(len(list(set(essence) - set(ner_keys))) > 0 ) :
-            logging.info("### 분석된 의도에서 요구하는 필수 파라메터를 충족하지 못함 ###")
+            # case0 : if there is no intent essential parms
+            if (len(list(set(essence))) == 0):
+                logging.info("Case0 : cannot understand intent")
+                share_data.set_intent_id("-1")
+
+            # case1 : best case, predicted intent and common ner anal result sync well
+            if (len(list(set(essence) - set(common_keys))) == 0):
+                # trim entities fit to intent slot
+                logging.info("Case1 : perfect case all matches!")
+                del_keys = set(common_keys) - set(essence) - set(extra)
+                for key in list(del_keys):
+                    del ner_obj[key]
+                share_data.replace_story_slot_entity(ner_obj)
+
+            # case2 : intent and dict result matches
+            elif (len(list(set(essence) - set(dict_keys))) == 0):
+                # trim entities fit to intent slot
+                logging.info("Case2 : intent and dict result matches")
+                del_keys = set(dict_keys) - set(essence) - set(extra)
+                for key in list(del_keys):
+                    del dict_obj[key]
+                share_data.replace_story_slot_entity(dict_obj)
+
+            # case3 : predicted intent and bilstm anal matches
+            elif (len(list(set(essence) - set(ner_keys))) == 0):
+                # trim entities fit to intent slot
+                logging.info("Case3 : intent and ner result matches")
+                del_keys = set(common_keys.keys()) - set(essence) - set(extra)
+                for key in list(del_keys):
+                    del ner_obj[key]
+                share_data.replace_story_slot_entity(ner_obj)
+
+            # case4 : predicted intent and ner result do not match but common ner exists
+            elif (len(common_keys) > 0):
+                # get multiple intent which matches with ner result
+                logging.info("Case4 : intent do not match but ner matches")
+                c_intent_id = self.get_intent_candidate(common_keys)
+                share_data.set_intent_id(c_intent_id)
+
+            # case5 : error
+            else :
+                logging.info("Case5 : cannot understand input at all")
+                share_data.set_intent_id("-1")
+        except Exception as e :
+            logging.info("Error : Error on summerize result")
             share_data.set_intent_id("-1")
-
-        if (len(list((set(ner_keys)) - set(essence) - set(extra))) > 0) :
-            logging.info("### 분석된 의도에서 요구하는 파라메터 외의 Entitiy 추출 ###")
-            share_data.set_intent_id(self.get_intent_candidate(ner_keys))
-
-        return share_data
-
+        finally:
+            return share_data

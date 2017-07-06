@@ -5,9 +5,9 @@ from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
-from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
 from chatbot.manager.service_mapper import ServiceMapper
 from chatbot.decision.summrize_result import SummrizeResult
+import threading, logging
 from chatbot.services.service_provider import ServiceProvider
 from chatbot.story.story_board_manager import StoryBoardManager
 from chatbot.decision.decision_maker import DecisionMaker
@@ -48,25 +48,49 @@ class ServiceManager:
         except Exception as e :
             raise Exception ("error on ChatBot ServiceManager init process : {0}".format(e))
 
-    def run_chatbot(self, req_ctx):
+    class ThreadCls(threading.Thread) :
+        def __init__(self, input, func):
+            threading.Thread.__init__(self)
+            self.input = input
+            self.ret = None
+            self.func = func
+
+        def run(self):
+            self.ret = self.func(self.input)
+
+        def join(self):
+            threading.Thread.join(self)
+            return self.ret
+
+
+    def run_chatbot(self, req_ctx, mode='thread'):
         """
         execute chatbot as api mode
         :return:
         """
         try :
-            print("■■■■■■■■■■ 챗봇 시작 ■■■■■■■■■■")
+            logging.info("■■■■■■■■■■ 챗봇 시작 ■■■■■■■■■■")
             ### 1. UUID mapping ###
 
             ### 2. set parms from client ###
             share_ctx = self.chat_share_data.load_json(req_ctx)
+            share_ctx = self.entity_analyzer.parse(share_ctx)
 
             ### 3. nlp process ###
-            # Preprocess
-            share_ctx = self.entity_analyzer.parse(share_ctx)
-            # NER
-            share_ctx = self.entity_recognizer.parse(share_ctx)
-            # Intent
-            share_ctx = self.intent_analyzer.parse(share_ctx)
+            if(mode == 'thread') :
+                logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
+                job_list = [self.ThreadCls(share_ctx, self.entity_recognizer.parse),
+                            self.ThreadCls(share_ctx, self.intent_analyzer.parse)]
+                for job in job_list :
+                    job.start()
+
+                for job in job_list:
+                    share_ctx.__dict__.update(job.join().__dict__)
+            else :
+                logging.info("■■■■■■■■■■ None Thread Mode ■■■■■■■■■■")
+                share_ctx = self.entity_recognizer.parse(share_ctx)
+                share_ctx = self.intent_analyzer.parse(share_ctx)
+
             # summrize result
             share_ctx = self.summrize_result.parse(share_ctx)
 
@@ -76,7 +100,7 @@ class ServiceManager:
             ### 5. decision maker ###
             #share_ctx = self.decision_maker.run(share_ctx)
 
-            print("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
+            logging.info("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
             ### 4. return result as json ###
             return share_ctx.to_json()
         except Exception as e:
