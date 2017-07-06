@@ -93,6 +93,7 @@ class DataAugmentation :
                             slot = slot.replace(rep, '')
                         if(key in slot) :
                             for wd in self.mecab.morphs(word):
+                                wd = wd.replace(' ', '')
                                 line.append((wd, key))
                         else :
                             line.append((slot, 'O'))
@@ -108,7 +109,12 @@ class DataAugmentation :
                                     if(slot[0] == key) :
                                         buffer = ""
                                         for wd in self.mecab.morphs(word) :
-                                            buffer = ' '.join([buffer,wd])
+                                            wd = wd.replace(' ', '')
+                                            if(len(buffer) > 0 ) :
+                                                buffer = ''.join([buffer,' ', wd])
+                                            else :
+                                                buffer = wd
+                                        if (len(buffer) > 1 ):
                                             line[z] = (buffer, key)
                                 return_aug_sent.append(line)
                             del_idx.append(i)
@@ -273,12 +279,12 @@ class DataAugmentation :
 
 # da = DataAugmentation({
 #                      "use_mecab": True,
-#                      "max_file_size": 10000000,
-#                      "pattern_data_path": "/hoya_data_root/aug/pattern.csv",
-#                      "augmented_out_path": "/hoya_model_root/",
+#                      "max_file_size": 100000000,
+#                      "pattern_data_path": "/hoya_data_root/aug/pattern.txt",
+#                      "augmented_out_path": "/hoya_data_root/",
 #                      "dict_path": "/hoya_data_root/aug/dict.csv",
-#                      "out_format_type": "intent",
+#                      "out_format_type": "plain",
 #                      "dict_sample_size" : 10,
-#                      "dict_sample_iter" : 10
+#                      "dict_sample_iter" : 50
 #                  })
 # da.run()
