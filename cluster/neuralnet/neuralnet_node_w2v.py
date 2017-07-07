@@ -1,7 +1,7 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from gensim.models import word2vec
 from master.workflow.netconf.workflow_netconf_w2v import WorkFlowNetConfW2V
-import os, json
+import os, json, logging
 import numpy as np
 from konlpy.tag import Mecab
 
@@ -53,6 +53,7 @@ class NeuralNetNodeWord2Vec(NeuralNetNode):
             model.save(self._get_model_path())
             return True
         except Exception as e:
+            logging.info("[Word2vec Train Process] : {0}".format(e))
             raise Exception(e)
 
     def _init_node_parm(self, node_id):

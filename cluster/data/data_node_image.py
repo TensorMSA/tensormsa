@@ -84,7 +84,7 @@ class DataNodeImage(DataNode):
         return xmin, ymin, xmax, ymax, class_num
 
     def yolo_detection(self):
-        println("run yolo")
+        logging.info("run yolo")
         set_filepaths(self.output_yolo)
         common_params = {'image_size': self.x_size, 'num_classes': 20, 'batch_size': 1}
         net_params = {'cell_size': 7, 'boxes_per_cell': 2, 'weight_decay': 0.0005}
@@ -129,7 +129,7 @@ class DataNodeImage(DataNode):
                             self.download_file_from_google_drive(self.tiny_url, self.yolo_tiny)
                             self.download_file_from_google_drive(self.face_url, self.yolo_face)
                         except:
-                            println("Error : yolo_tiny,ckpt down.")
+                            logging.info("Error : yolo_tiny,ckpt down.")
 
                     saver, self.predicts, self.img_ph = self.yolo_detection()
                     saver.restore(sess, self.yolo_model)
@@ -173,7 +173,7 @@ class DataNodeImage(DataNode):
         # yolo
         if self.yolo == "Y" or self.yolo == "y":
             if self.x_size<385 or self.y_size<385:
-                println("Error : The Yolo x_size or y_size must be greater than 385 pixel")
+                logging.info("Error : The Yolo x_size or y_size must be greater than 385 pixel")
 
             else:
                 try:
@@ -201,7 +201,7 @@ class DataNodeImage(DataNode):
 
     def run(self, conf_data):
         try:
-            println("run DataNodeImage")
+            logging.info("run DataNodeImage")
             nnid = conf_data['nn_id']
             node_id = conf_data['node_id']
             wf_ver = conf_data['wf_ver']
@@ -209,10 +209,10 @@ class DataNodeImage(DataNode):
             netconf = WorkFlowDataImage().get_step_source(net_conf_id)
             dataconf = WorkFlowDataImage().get_step_source(node_id)
             if dataconf == {}:
-                println("/cluster/data/data_node_image DataNodeImage run dataconf("+node_id+") is not Exist")
+                logging.info("/cluster/data/data_node_image DataNodeImage run dataconf("+node_id+") is not Exist")
                 return
             else:
-                println(node_id)
+                logging.info(node_id)
 
             directory = dataconf["source_path"]
             output_directory = dataconf["store_path"]
@@ -254,7 +254,7 @@ class DataNodeImage(DataNode):
                     try:
                         filelist = os.listdir(directory + '/' + forder)
                     except Exception as e:
-                        println(e)
+                        logging.info(e)
                         continue
 
                     for filename in filelist:
@@ -303,7 +303,7 @@ class DataNodeImage(DataNode):
             return None
 
         except Exception as e:
-            println(e)
+            logging.info(e)
             raise Exception(e)
 
 

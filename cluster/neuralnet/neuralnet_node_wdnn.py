@@ -152,13 +152,10 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #feature_map, target = train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue, 128)
             print("end")
             #with tf.Session() as sess:
-
+            return None
         except Exception as e:
-            logging.error("Error Message : {0}".format(e))
+            logging.info("[Wide and Deep Train Process] : {0}".format(e))
             raise Exception(e)
-
-
-        return None
 
     def generator_len(self, it):
         """

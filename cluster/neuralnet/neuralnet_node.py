@@ -197,7 +197,6 @@ class NeuralNetNode(WorkFlowCommonNode):
         file_data_arr = []
         try:
             for file in filelist:
-                # println(file)
                 value = file[1]
                 filename = file[1].name
 
@@ -232,10 +231,10 @@ class NeuralNetNode(WorkFlowCommonNode):
             one[i][1] = logits[0][i]
 
         onesort = sorted(one, key=operator.itemgetter(1, 0), reverse=True)
-        # println("############################################")
-        # println(onesort)
+        # logging.info("############################################")
+        # logging.info(onesort)
         # print("filename=" + file_name + " predict=" + labels[int(onesort[0][0])])
-        # println(onesort)
+        # logging.info(onesort)
         data_sub = {}
         data_sub_key = []
         data_sub_val = []
@@ -326,10 +325,10 @@ class NeuralNetNode(WorkFlowCommonNode):
 
         x_batch = np.reshape(x_batch, (-1, x_size, y_size, channel))
 
-        # println("Image Label ////////////////////////////////////////////////")
-        # println(label_data_batch)
-        # println(y_batch)
-        # println("Image /////////////////////////////////////////////////")
-        # println(x_batch)
+        # logging.info("Image Label ////////////////////////////////////////////////")
+        # logging.info(label_data_batch)
+        # logging.info(y_batch)
+        # logging.info("Image /////////////////////////////////////////////////")
+        # logging.info(x_batch)
 
         return x_batch, y_batch, n_batch

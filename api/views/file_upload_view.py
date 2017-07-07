@@ -15,11 +15,8 @@ class FileUploadView(APIView):
     # parser_classes = (FileUploadParser,MultiPartParser, )
 
     def post(self, request, nnid, ver, dir):
-
         try:
-            # println("post file upload:"+dir)
             return_data = {}
-
             if len(request.FILES.keys()) > 0:
                 i = 0
                 return_data_sub = {}
@@ -43,29 +40,13 @@ class FileUploadView(APIView):
                         fp.write(chunk)
                     fp.close()
                     return_data_sub["File"] = "File Create.(" + filename + ")"
-                    # println(return_data_sub)
                     return_data["File"+str(i)] = return_data_sub
                     i += 1
             else :
                 raise Exception("not supported type")
                 return_data = {"status": "200", "result": "fail"}
-            # println(return_data)
             return Response(json.dumps(return_data))
-            # up_file = request.FILES['file']
-            # payload = MultipartEncoder({up_file.name: up_file})
-
-            # r = requests.post("url",
-            #                   data=payload,
-            #                   headers = {"Content-Type": payload.content_type})
-            #
-            # fs = FileSystemStorage()
-            # filename = fs.save(up_file.name,up_file)
-            # uploaded_file_url = fs.url(filename)
-            # return Response(json.dumps(return_data))
-            # return render(request,'',{'uploaded_file_url': uploaded_file_url })
-
         except Exception as e:
-            println("file upload post except")
             return_data = None
             return Response(json.dumps(return_data))
 

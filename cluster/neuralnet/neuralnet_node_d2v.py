@@ -1,7 +1,7 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from gensim.models import doc2vec
 from master.workflow.netconf.workflow_netconf_d2v import WorkFlowNetConfD2V
-import os, json
+import os, json, logging
 from konlpy.tag import Mecab
 
 class NeuralNetNodeDoc2Vec(NeuralNetNode):
@@ -38,9 +38,9 @@ class NeuralNetNodeDoc2Vec(NeuralNetNode):
 
             os.makedirs(self.md_store_path, exist_ok=True)
             model.save(''.join([self.md_store_path, '/model.bin']))
-            print(len(model.raw_vocab))
             return len(model.raw_vocab)
         except Exception as e:
+            logging.info("[Doc2Vector Train Process] : {0}".format(e))
             raise Exception(e)
 
     def _init_node_parm(self, node_id):

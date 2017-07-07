@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import operator
-import datetime
+import datetime, logging
 from cluster.common.train_summary_info import TrainSummaryInfo
 import keras
 from keras.preprocessing.image import ImageDataGenerator
@@ -63,8 +63,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
             self.model_path = self.netconf["modelpath"]
             self.modelname = self.netconf["modelname"]
         except Exception as e:
-            println("NetConf is not exist.")
-            println(e)
+            logging.info("NetConf is not exist.")
+            logging.info(e)
 
     def _set_dataconf_parm(self, dataconf):
         self.dataconf = dataconf
@@ -81,7 +81,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
         msg = "Global Step: " + str(self.g_train_cnt)
         msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
         msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
-        println(msg)
+        logging.info(msg)
 
         config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
         result = TrainSummaryAccLossInfo(config)
@@ -115,7 +115,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
         try:
             self.model = keras.models.load_model(last_chk_path)
-            println("Train Restored checkpoint from:" + last_chk_path)
+            logging.info("Train Restored checkpoint from:" + last_chk_path)
         except Exception as e:
             if numoutputs == 18:
                 self.model = resnet.ResnetBuilder.build_resnet_18((channel, x_size, y_size), num_classes)
@@ -129,8 +129,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
                 self.model = resnet.ResnetBuilder.build_resnet_152((channel, x_size, y_size), num_classes)
             elif numoutputs == 200:
                 self.model = resnet.ResnetBuilder.build_resnet_200((channel, x_size, y_size), num_classes)
-            println("None to restore checkpoint. Initializing variables instead." + last_chk_path)
-            println(e)
+            logging.info("None to restore checkpoint. Initializing variables instead." + last_chk_path)
+            logging.info(e)
 
         self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
@@ -139,9 +139,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
         data_augmentation = self.netconf["param"]["augmentation"]
         try:
             if data_augmentation == "N" or data_augmentation == "n":
-                println('Not using data augmentation.')
+                logging.info('Not using data augmentation.')
             else:
-                println('Using real-time data augmentation.')
+                logging.info('Using real-time data augmentation.')
 
             while (input_data.has_next()):
                 data_set = input_data[0:input_data.data_size()]
@@ -191,16 +191,16 @@ class NeuralNetNodeReNet(NeuralNetNode):
                     self.val_acc = history.history["val_acc"][0]
 
                     self.g_train_cnt += 1
-                    println("Save Train Count=" + str(self.g_train_cnt))
+                    logging.info("Save Train Count=" + str(self.g_train_cnt))
                     self.set_saver_model()
 
                 input_data.next()
         except Exception as e:
-            println("Error[400] ..............................................")
-            println(e)
+            logging.info("Error[400] ..............................................")
+            logging.info(e)
 
     def run(self, conf_data):
-        println("run NeuralNetNodeResnet Train")
+        logging.info("run NeuralNetNodeResnet Train")
         # init data setup
         self._init_train_parm(conf_data)
         self._init_value()
@@ -236,7 +236,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             predlog = self.netconf["param"]["predictlog"]
         except:
             predlog = "N"
-        # println(labels)
+        # logging.info(labels)
         t_cnt_arr = []
         f_cnt_arr = []
         for i in range(len(labels)):
@@ -267,53 +267,53 @@ class NeuralNetNodeReNet(NeuralNetNode):
                             t_cnt_arr[idx] = t_cnt_arr[idx] + 1
                             strLog = "[True] : "
                             if (predlog == "TT"):
-                                println(strLog + true_name + " FileName=" + file_name)
-                                println(retrun_data["key"])
-                                println(retrun_data["val"])
+                                logging.info(strLog + true_name + " FileName=" + file_name)
+                                logging.info(retrun_data["key"])
+                                logging.info(retrun_data["val"])
                         else:
                             f_cnt_arr[idx] = f_cnt_arr[idx] + 1
                             strLog = "[False] : "
                             if (predlog == "FF"):
-                                println(strLog + true_name + " FileName=" + file_name)
-                                println(retrun_data["key"])
-                                println(retrun_data["val"])
+                                logging.info(strLog + true_name + " FileName=" + file_name)
+                                logging.info(retrun_data["key"])
+                                logging.info(retrun_data["val"])
                         if (predlog == "AA"):
-                            println(strLog + true_name + " FileName=" + file_name)
-                            println(retrun_data["key"])
-                            println(retrun_data["val"])
+                            logging.info(strLog + true_name + " FileName=" + file_name)
+                            logging.info(retrun_data["key"])
+                            logging.info(retrun_data["val"])
                     else:
                         try:
                             listTF = retrun_data["key"].index(true_name)
                             t_cnt_arr[idx] = t_cnt_arr[idx] + 1
                             strLog = "[True] : "
                             if (predlog == "T"):
-                                println(strLog + true_name + " FileName=" + file_name)
-                                println(retrun_data["key"])
-                                println(retrun_data["val"])
+                                logging.info(strLog + true_name + " FileName=" + file_name)
+                                logging.info(retrun_data["key"])
+                                logging.info(retrun_data["val"])
                         except:
                             f_cnt_arr[idx] = f_cnt_arr[idx] + 1
                             strLog = "[False] : "
                             if (predlog == "F"):
-                                println(strLog + true_name + " FileName=" + file_name)
-                                println(retrun_data["key"])
-                                println(retrun_data["val"])
+                                logging.info(strLog + true_name + " FileName=" + file_name)
+                                logging.info(retrun_data["key"])
+                                logging.info(retrun_data["val"])
                         if (predlog == "A"):
-                            println(strLog + true_name + " FileName=" + file_name)
-                            println(retrun_data["key"])
-                            println(retrun_data["val"])
+                            logging.info(strLog + true_name + " FileName=" + file_name)
+                            logging.info(retrun_data["key"])
+                            logging.info(retrun_data["val"])
 
                     self.eval_data.set_result_info(true_name, pred_name)
 
             except Exception as e:
-                println(e)
-                println("None to restore checkpoint. Initializing variables instead.")
+                logging.info(e)
+                logging.info("None to restore checkpoint. Initializing variables instead.")
 
             input_data.next()
 
         self.eval_print(labels, t_cnt_arr, f_cnt_arr)
 
     def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
-        println(
+        logging.info(
             "####################################################################################################")
         result = []
         strResult = "['Eval ......................................................']"
@@ -332,23 +332,23 @@ class NeuralNetNodeReNet(NeuralNetNode):
             totCnt += t_cnt_arr[i] + f_cnt_arr[i]
             tCnt += t_cnt_arr[i]
             fCnt += f_cnt_arr[i]
-            println(strResult)
+            logging.info(strResult)
             result.append(strResult)
         strResult = "---------------------------------------------------------------------------------------------------"
-        println(strResult)
+        logging.info(strResult)
         strResult = "Total Category=" + self.spaceprint(str(len(labels)), 11) + " "
         strResult += "TotalCnt=" + self.spaceprint(str(totCnt), 8) + " "
         strResult += "TrueCnt=" + self.spaceprint(str(tCnt), 8) + " "
         strResult += "FalseCnt=" + self.spaceprint(str(fCnt), 8) + " "
         if totCnt != 0:
             strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(tCnt / totCnt * 100)) + "%"
-        println(strResult)
+        logging.info(strResult)
         result.append(strResult)
-        println(
+        logging.info(
             "###################################################################################################")
 
     def eval(self, node_id, conf_data, data=None, result=None):
-        println("run NeuralNetNodeCnn eval")
+        logging.info("run NeuralNetNodeCnn eval")
         if data == None:
             self.eval_flag = "T"
         else:
@@ -371,7 +371,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
     def predict(self, node_id, filelist):
         """
         """
-        println("run NeuralNetNodeCnn Predict")
+        logging.info("run NeuralNetNodeCnn Predict")
         self.node_id = node_id
         self._init_value()
         # net, data config setup
@@ -387,7 +387,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.load_batch = self.get_active_batch(self.node_id)
         unique_key = '_'.join([node_id, self.load_batch])
 
-        println("getModelPath:"+self.model_path + "/" + self.load_batch+self.file_end)
+        logging.info("getModelPath:"+self.model_path + "/" + self.load_batch+self.file_end)
 
         ## create tensorflow graph
         if (NeuralNetModel.dict.get(unique_key)):
@@ -410,7 +410,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
             pred_cnt = self.netconf["param"]["predictcnt"]
             retrun_data = self.set_predict_return_cnn_img(labels, logits, pred_cnt)
             pred_return_data[file_name] = retrun_data
-            println("Return Data.......................................")
-            println(pred_return_data)
+            logging.info("Return Data.......................................")
+            logging.info(pred_return_data)
 
         return pred_return_data

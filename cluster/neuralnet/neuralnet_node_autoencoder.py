@@ -7,8 +7,6 @@ from common.utils import *
 from konlpy.tag import Mecab
 from common.graph.nn_graph_manager import NeuralNetModel
 import logging
-from celery.utils.log import get_task_logger
-logger = get_task_logger(__name__)
 
 class NeuralNetNodeAutoEncoder(NeuralNetNode):
     """
@@ -63,6 +61,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
                 saver.save(sess, path)
             return node_id
         except Exception as e:
+            logging.info("[Stacked AutoEncoder Train Process] : {0}".format(e))
             raise Exception(e)
         finally :
             # copy data feeder's parm to netconf
@@ -154,7 +153,6 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
         try :
             _, cost_val = sess.run([self.optimizer, self.cost], feed_dict={self.x: data_set})
             logging.info('Avg. cost = {0}'.format(cost_val / self.n_input))
-            logger.info('Avg. cost = {0}'.format(cost_val / self.n_input))
         except Exception as e :
             raise Exception ('autoencoder run_train step error : {0}'.foramt(e) )
 

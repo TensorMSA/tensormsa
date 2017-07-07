@@ -3,6 +3,7 @@ from master.workflow.netconf.workflow_netconf_seq2seq import WorkFlowNetConfSeq2
 from cluster.service.service_predict_w2v import PredictNetW2V
 import numpy as np
 import tensorflow as tf
+import logging
 from common.utils import *
 from konlpy.tag import Mecab
 from common.graph.nn_graph_manager import NeuralNetModel
@@ -52,6 +53,7 @@ class NeuralNetNodeSeq2Seq(NeuralNetNode):
                 set_filepaths(path)
                 saver.save(sess, path)
         except Exception as e :
+            logging.info("[BasicSeq2Seq Train Process] : {0}".format(e))
             raise Exception (e)
         finally :
             if (self.word_embed_type == 'onehot'):

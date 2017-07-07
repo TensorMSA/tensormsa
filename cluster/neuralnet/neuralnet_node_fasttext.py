@@ -1,6 +1,6 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from master.workflow.netconf.workflow_netconf_fasttext import WorkFlowNetConfFastText as ft_conf
-import os, json
+import os, json,logging
 import numpy as np
 from konlpy.tag import Mecab
 from gensim.models.wrappers import FastText
@@ -24,4 +24,5 @@ class NeuralNetNodeFastText(NeuralNetNode):
                     print(data_set)
 
         except Exception as e :
+            logging.info("[FastText Train Process] : {0}".format(e))
             raise Exception ("error on fast text tain process : {0}".format(e))

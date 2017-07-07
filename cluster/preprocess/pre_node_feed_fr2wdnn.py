@@ -405,7 +405,7 @@ class PreNodeFeedFr2Wdnn(PreNodeFeed):
 
                     # for i in range(nrows // chunksize + 1):
                     chunk = store.select('table1')
-                    print(chunk)
+                    logging.info(chunk)
                 except Exception as e:
                     raise Exception(e)
                 finally:

@@ -81,7 +81,7 @@ class YoloSolver(Solver):
 
     summary_writer = tf.summary.FileWriter(self.train_dir, sess.graph)
 
-    for step in xrange(self.max_iterators):
+    for step in range(self.max_iterators):
       start_time = time.time()
       np_images, np_labels, np_objects_num = self.dataset.batch()
 

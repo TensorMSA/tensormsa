@@ -198,7 +198,7 @@ class DataAugmentation :
         else :
             self.aug_file_cnt = self.aug_file_cnt + 1
             path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.csv'])
-            with open(path, "w")  as f :
+            with open(path, "a")  as f :
                 for line in aug_data :
                     for word in line :
                         f.write(''.join([word[0], ' ']))
@@ -275,16 +275,16 @@ class DataAugmentation :
                     self._iob_formatter(aug_data)
                 else :
                     raise Exception (' '.join(['not', 'plain', 'or iob']))
-                print("===={0} line job done".format(i))
+                print("===={0} line job done".format (i))
 
 # da = DataAugmentation({
 #                      "use_mecab": True,
 #                      "max_file_size": 100000000,
 #                      "pattern_data_path": "/hoya_data_root/aug/pattern.txt",
-#                      "augmented_out_path": "/hoya_data_root/",
+#                      "augmented_out_path": "/hoya_model_root/aug/",
 #                      "dict_path": "/hoya_data_root/aug/dict.csv",
-#                      "out_format_type": "plain",
-#                      "dict_sample_size" : 10,
-#                      "dict_sample_iter" : 50
+#                      "out_format_type": "iob",
+#                      "dict_sample_size" : 5,
+#                      "dict_sample_iter" : 700
 #                  })
 # da.run()

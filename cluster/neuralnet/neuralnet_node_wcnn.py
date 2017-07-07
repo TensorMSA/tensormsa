@@ -131,6 +131,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                 saver.save(sess, path)
             return ""
         except Exception as e:
+            logging.info("[WCNN Train Process] : {0}".format(e))
             raise Exception ("error on train : {0}".format(e))
         finally:
             # copy data feeder's parm to netconf

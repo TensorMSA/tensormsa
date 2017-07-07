@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import operator
-import datetime
+import datetime, logging
 from cluster.common.train_summary_info import TrainSummaryInfo
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 from common.graph.nn_graph_manager import NeuralNetModel
@@ -68,10 +68,10 @@ class NeuralNetNodeCnn(NeuralNetNode):
             self.step_gap = int(step[1]) + 1
             saver = tf.train.Saver()
             saver.restore(sess, save_path=last_chk_path)
-            println("Train Restored checkpoint from:" + last_chk_path)
+            logging.info("Train Restored checkpoint from:" + last_chk_path)
         except:
             self.step_gap = 1
-            println("None to restore checkpoint. Initializing variables instead.")
+            logging.info("None to restore checkpoint. Initializing variables instead.")
 
         self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
 
@@ -84,7 +84,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         batch_accR = round(self.batch_acc * 100, 2)
         msg = "Global Step: " + str(self.step_gap) + ", Training Batch Accuracy: " + str(
             batch_accR) + "%" + ", Cost: " + str(self.i_cost)
-        println(msg)
+        logging.info(msg)
 
         config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
         result = TrainSummaryAccLossInfo(config)
@@ -133,7 +133,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             try:
                 layercnt = layer["layercnt"]
                 for i in range(layercnt):
-                    # println(layer)
+                    # logging.info(layer)
                     if prenumoutputs == 1:
                         prenumoutputs = numoutputs
                     else:
@@ -170,20 +170,20 @@ class NeuralNetNodeCnn(NeuralNetNode):
                     if droprate > 0.0 and type == "T":
                         model = tf.nn.dropout(model, droprate)
 
-                    # println(model)
+                    # logging.info(model)
             except Exception as e:
-                println("Error[200] Model Create Fail.")
-                println(e)
+                logging.info("Error[200] Model Create Fail.")
+                logging.info(e)
 
         reout = int(model.shape[1]) * int(model.shape[2]) * int(model.shape[3])
         model = tf.reshape(model, [-1, reout])
-        # println(model)
+        # logging.info(model)
         W1 = tf.Variable(tf.truncated_normal([reout, node_out], stddev=0.1))
         model = tf.nn.relu(tf.matmul(model, W1))
 
         W5 = tf.Variable(tf.truncated_normal([node_out, num_classes], stddev=0.1))
         model = tf.matmul(model, W5)
-        # println(model)
+        # logging.info(model)
         if type == "P":
             model = tf.nn.softmax(model)
         cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
@@ -218,49 +218,52 @@ class NeuralNetNodeCnn(NeuralNetNode):
                             _, self.i_cost, self.batch_acc = sess.run([self.optimizer, self.cost, self.accuracy], feed_dict=feed_dict_train)
 
                             self.g_epoch_cnt += 1
-                            println("Epoch Count=" + str(self.g_epoch_cnt))
+                            logging.info("Epoch Count=" + str(self.g_epoch_cnt))
 
                         self.g_train_cnt += 1
-                        println("Save Train Count=" + str(self.g_train_cnt))
+                        logging.info("Save Train Count=" + str(self.g_train_cnt))
                         self.set_saver_model(sess)
 
                 input_data.next()
         except Exception as e:
-            println("Error[400] ..............................................")
-            println(e)
+            logging.info("Error[400] ..............................................")
+            logging.info(e)
 
         return self.train_return_data
 
     def run(self, conf_data):
-        println("run NeuralNetNodeCnn Train")
-        # init data setup
-        self._init_train_parm(conf_data)
-        self._init_value()
-        # set batch
-        self.train_batch, self.batch = self.make_batch(self.node_id)
+        try :
+            logging.info("run NeuralNetNodeCnn Train")
+            # init data setup
+            self._init_train_parm(conf_data)
+            self._init_value()
+            # set batch
+            self.train_batch, self.batch = self.make_batch(self.node_id)
 
-        # get data & dataconf
-        test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
-        input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
+            # get data & dataconf
+            test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
+            input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
 
-        # set netconf, dataconf
-        self._set_netconf_parm()
-        self._set_dataconf_parm(dataconf)
+            # set netconf, dataconf
+            self._set_netconf_parm()
+            self._set_dataconf_parm(dataconf)
 
-        self.get_model_cnn("T")
+            self.get_model_cnn("T")
 
-        # train
-        with tf.Session() as sess:
-            sess = self.get_saver_model(sess)
-            sess.run(tf.global_variables_initializer())
-            self.train_run_cnn(sess, input_data, test_data)
+            # train
+            with tf.Session() as sess:
+                sess = self.get_saver_model(sess)
+                sess.run(tf.global_variables_initializer())
+                self.train_run_cnn(sess, input_data, test_data)
 
-        self.train_return_data["TrainResult"] = self.train_return_arr
+            self.train_return_data["TrainResult"] = self.train_return_arr
 
-        if self.epoch == 0 or self.train_cnt == 0:
-            self.eval(self.node_id, self.conf_data, None, None)
+            if self.epoch == 0 or self.train_cnt == 0:
+                self.eval(self.node_id, self.conf_data, None, None)
 
-        return self.train_return_data
+            return self.train_return_data
+        except Exception as e :
+            logging.info("[Basic CNN Train Process] : {0}".format(e))
 
     ####################################################################################################################
     def eval_run(self, sess, input_data):
@@ -271,7 +274,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             predlog = self.netconf["param"]["predlog"]
         except:
             predlog = "N"
-        # println(labels)
+        # logging.info(labels)
         t_cnt_arr = []
         f_cnt_arr = []
         for i in range(len(labels)):
@@ -304,54 +307,54 @@ class NeuralNetNodeCnn(NeuralNetNode):
                                 t_cnt_arr[idx] = t_cnt_arr[idx] + 1
                                 strLog = "[True] : "
                                 if (predlog == "TT"):
-                                    println(strLog + true_name + " FileName=" + file_name)
-                                    println(retrun_data["key"])
-                                    println(retrun_data["val"])
+                                    logging.info(strLog + true_name + " FileName=" + file_name)
+                                    logging.info(retrun_data["key"])
+                                    logging.info(retrun_data["val"])
                             else:
                                 f_cnt_arr[idx] = f_cnt_arr[idx] + 1
                                 strLog = "[False] : "
                                 if (predlog == "FF"):
-                                    println(strLog + true_name + " FileName=" + file_name)
-                                    println(retrun_data["key"])
-                                    println(retrun_data["val"])
+                                    logging.info(strLog + true_name + " FileName=" + file_name)
+                                    logging.info(retrun_data["key"])
+                                    logging.info(retrun_data["val"])
                             if (predlog == "AA"):
-                                println(strLog + true_name + " FileName=" + file_name)
-                                println(retrun_data["key"])
-                                println(retrun_data["val"])
+                                logging.info(strLog + true_name + " FileName=" + file_name)
+                                logging.info(retrun_data["key"])
+                                logging.info(retrun_data["val"])
                         else:
                             try:
                                 listTF = retrun_data["key"].index(true_name)
                                 t_cnt_arr[idx] = t_cnt_arr[idx] + 1
                                 strLog = "[True] : "
                                 if (predlog == "T"):
-                                    println(strLog + true_name + " FileName=" + file_name)
-                                    println(retrun_data["key"])
-                                    println(retrun_data["val"])
+                                    logging.info(strLog + true_name + " FileName=" + file_name)
+                                    logging.info(retrun_data["key"])
+                                    logging.info(retrun_data["val"])
                             except:
                                 f_cnt_arr[idx] = f_cnt_arr[idx] + 1
                                 strLog = "[False] : "
                                 if (predlog == "F"):
-                                    println(strLog + true_name + " FileName=" + file_name)
-                                    println(retrun_data["key"])
-                                    println(retrun_data["val"])
+                                    logging.info(strLog + true_name + " FileName=" + file_name)
+                                    logging.info(retrun_data["key"])
+                                    logging.info(retrun_data["val"])
                             if(predlog == "A"):
-                                println(strLog + true_name + " FileName=" + file_name)
-                                println(retrun_data["key"])
-                                println(retrun_data["val"])
+                                logging.info(strLog + true_name + " FileName=" + file_name)
+                                logging.info(retrun_data["key"])
+                                logging.info(retrun_data["val"])
 
 
                         self.eval_data.set_result_info(true_name, pred_name)
 
                 except Exception as e:
-                    println(e)
-                    println("None to restore checkpoint. Initializing variables instead.")
+                    logging.info(e)
+                    logging.info("None to restore checkpoint. Initializing variables instead.")
 
             input_data.next()
 
         self.eval_print(labels, t_cnt_arr, f_cnt_arr)
 
     def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
-        println("####################################################################################################")
+        logging.info("####################################################################################################")
         result = []
         strResult = "['Eval ......................................................']"
         result.append(strResult)
@@ -369,22 +372,22 @@ class NeuralNetNodeCnn(NeuralNetNode):
             totCnt += t_cnt_arr[i] + f_cnt_arr[i]
             tCnt += t_cnt_arr[i]
             fCnt += f_cnt_arr[i]
-            println(strResult)
+            logging.info(strResult)
             result.append(strResult)
         strResult = "---------------------------------------------------------------------------------------------------"
-        println(strResult)
+        logging.info(strResult)
         strResult = "Total Category=" + self.spaceprint(str(len(labels)), 11) + " "
         strResult += "TotalCnt=" + self.spaceprint(str(totCnt), 8) + " "
         strResult += "TrueCnt=" + self.spaceprint(str(tCnt), 8) + " "
         strResult += "FalseCnt=" + self.spaceprint(str(fCnt), 8) + " "
         if totCnt != 0:
             strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(tCnt / totCnt * 100)) + "%"
-        println(strResult)
+        logging.info(strResult)
         result.append(strResult)
-        println("###################################################################################################")
+        logging.info("###################################################################################################")
 
     def eval(self, node_id, conf_data, data=None, result=None):
-        println("run NeuralNetNodeCnn eval")
+        logging.info("run NeuralNetNodeCnn eval")
         if data == None:
             self.eval_flag = "T"
         else:
@@ -425,13 +428,13 @@ class NeuralNetNodeCnn(NeuralNetNode):
             pred_cnt = self.netconf["param"]["predictcnt"]
             retrun_data = self.set_predict_return_cnn_img(labels, logits, pred_cnt)
             self.pred_return_data[file_name] = retrun_data
-            println("Return Data.......................................")
-            println(self.pred_return_data)
+            logging.info("Return Data.......................................")
+            logging.info(self.pred_return_data)
 
     def predict(self, node_id, filelist):
         """
         """
-        println("run NeuralNetNodeCnn Predict")
+        logging.info("run NeuralNetNodeCnn Predict")
         # init data setup
         self.node_id = node_id
         self._init_value()

@@ -21,8 +21,8 @@ class ServiceManagerPredict(APIView):
         - desc : insert cnn configuration data
         """
         try:
-            println("1. ServiceManagerPredict Start >>>>>>>>>>")
-            println(request)
+            logging.info("1. ServiceManagerPredict Start >>>>>>>>>>")
+            logging.info(request)
             if(ver == 'active') :
                 if(type == 'w2v') :
                     return_data = PredictNetW2V().run(nnid, request.data)

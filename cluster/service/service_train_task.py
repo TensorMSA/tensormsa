@@ -4,7 +4,6 @@ from celery import shared_task
 from master import models
 from cluster.common.common_node import WorkFlowCommonNode
 from common.utils import *
-from celery.utils.log import get_task_logger
 import logging
 from logging import FileHandler
 from django.conf import settings
@@ -94,10 +93,12 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                     conf_data['nn_id'] = nn_id
                     conf_data['wf_ver'] = wf_ver
                     conf_data['cls_pool'] = cls_list
-                    search_info[2]
+                    logging.info("[Node Start] {0}".format(search_info[2].node_name))
                     result_info.append(search_info[2].run(conf_data))
+                    logging.info("[Node End] {0}".format(search_info[2].node_name))
             return result_info
         except Exception as e :
+            logging.error("Error on node [{0}][{1}]".format(search_info[2].node_name, e))
             raise Exception (e)
 
     def _search_next_node(self, graph_node):

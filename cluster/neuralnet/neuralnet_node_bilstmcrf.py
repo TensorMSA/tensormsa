@@ -1,8 +1,7 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from master.workflow.netconf.workflow_netconf_bilstmcrf import WorkFlowNetConfBiLstmCrf
-import os, json
+import os, json, logging
 import numpy as np
-import logging
 import tensorflow as tf
 from cluster.common.neural_common_bilismcrf import BiLstmCommon
 from common.graph.nn_graph_manager import NeuralNetModel
@@ -21,9 +20,9 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             best_score = 0
             with tf.Session() as sess:
                 while (train_data_set.has_next()):
-                    print("------------------------------")
-                    print(train_data_set.get_file_name())
-                    print("------------------------------")
+                    logging.info("------------------------------")
+                    logging.info(train_data_set.get_file_name())
+                    logging.info("------------------------------")
                     # create dataset
                     dev = self.CoNLLDataset(train_data_set.get_file_name(),
                                             self.processing_word,
@@ -45,6 +44,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                     train_data_set.next()
             return [best_score]
         except Exception as e :
+            logging.info("[BiLstmCrf Train Process] : {0}".format(e))
             raise Exception ("error on fast text tain process : {0}".format(e))
 
     def _init_node_parm(self, node_id):

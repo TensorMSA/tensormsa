@@ -29,7 +29,7 @@ class RunManagerSingleRequest(APIView):
         - desc : get data
         """
         try:
-            println("RunManager get...........................")
+            logging.info("RunManager get...........................")
             return_data = ""
             return Response(json.dumps(return_data))
         except Exception as e:
