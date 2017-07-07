@@ -38,6 +38,7 @@ class ChatKnowledgeDataDict:
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)
 
+    #TODO:add similar word
     def initialize(self, cb_id, type='ngram'):
         """
         initialize ChatKnowlodgeMemdict Class 
@@ -48,7 +49,7 @@ class ChatKnowledgeDataDict:
                 query_set = self.get_proper_tagging(type=type)
                 self.proper_key_list = sorted(query_set.keys(),
                                               key=lambda x: query_set[x][0],
-                                              reverse=True)
+                                              reverse=False)
                 self.proper_noun = query_set
                 ChatKnowledgeMemDict.data[cb_id] = {}
                 for key in self.proper_key_list :

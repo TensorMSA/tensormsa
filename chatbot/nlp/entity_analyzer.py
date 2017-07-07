@@ -16,7 +16,7 @@ class EntityAnalyzer(ShareData):
         """
         init global variables
         """
-        self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=True) #Sorted Key Priority
+        self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=False) #Sorted Key Priority
         self.proper_noun = proper_noun     # key : [values]
         #self._load_proper_noun(proper_noun.keys(), proper_noun)
         #self.bilstmcrf_model = PredictNetBiLstmCrf()
@@ -82,7 +82,6 @@ class EntityAnalyzer(ShareData):
                 if(self.proper_noun[key_check[0]][2]):
                     key_slot = share_data.get_story_slot_entity(key_check[0]) + pos_tags[0] if share_data.get_story_slot_entity(key_check[0]) is not None else "" + pos_tags[0]
                 share_data.set_story_slot_entity(key_check[0], key_slot)
-                #convert_dict_data = '['+ key_check[0] +']'
                 convert_dict_data = key_check[0]
 
         return pos_tags[0], convert_dict_data
@@ -110,8 +109,10 @@ class EntityAnalyzer(ShareData):
         input_file = open(self.proper_noun.get(key)[1], 'r')
         if(input_file is not None):
             for line in input_file:
-                #if(line.strip().find(value) > -1):
-                if (line.strip() == value):
+                if(self.proper_noun.get(key)[2] and line.strip().find(value) > -1):
+                    exist = True
+                    break
+                elif(line.strip() == value):
                     exist = True
                     break
             input_file.close()
