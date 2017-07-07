@@ -32,6 +32,7 @@ class ChatBotConfManager:
         #TODO:need to get data from cache server and chatbot model DB
         self.pos_type = "mecab"
         self.word_embed_model = "nn00002"
+        self.pattern_intent_analyze_model = self.get_model_conf(cb_id, 'PIntent')['nn_id']
         self.intent_analyze_model = self.get_model_conf(cb_id, 'Intent')['nn_id']
         self.ner_analyze_model = self.get_model_conf(cb_id, 'NER')['nn_id']
         self.resp_gen_model = ""
@@ -45,6 +46,14 @@ class ChatBotConfManager:
             return json.loads(query_set)[0]['fields']
         except Exception as e :
             raise Exception ("Model for {0} is required : {1}".format(purpose, e))
+
+    def get_pattern_intent_model(self):
+        """
+        tag type mecab, twitter, etc
+        :param data:
+        :return:
+        """
+        return self.pattern_intent_analyze_model
 
     def get_intent_model(self):
         """

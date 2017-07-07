@@ -280,11 +280,11 @@ class DataAugmentation :
 # da = DataAugmentation({
 #                      "use_mecab": True,
 #                      "max_file_size": 100000000,
-#                      "pattern_data_path": "/hoya_data_root/aug/pattern.txt",
+#                      "pattern_data_path": "/hoya_data_root/aug/pattern.csv",
 #                      "augmented_out_path": "/hoya_model_root/aug/",
 #                      "dict_path": "/hoya_data_root/aug/dict.csv",
-#                      "out_format_type": "iob",
+#                      "out_format_type": "intent",
 #                      "dict_sample_size" : 5,
-#                      "dict_sample_iter" : 700
+#                      "dict_sample_iter" : 250
 #                  })
 # da.run()

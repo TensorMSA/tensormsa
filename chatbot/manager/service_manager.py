@@ -4,6 +4,7 @@ from chatbot.common.chat_share_data import ShareData
 from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
+from chatbot.nlp.pattern_intent_analyzer import PatternIntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
 from chatbot.manager.service_mapper import ServiceMapper
 from chatbot.decision.summrize_result import SummrizeResult
@@ -37,6 +38,9 @@ class ServiceManager:
                                                       self.chatbot_conf.get_ner_model())
             self.intent_analyzer = IntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_intent_model(),
+                                                  self.chat_knowledge_data_dict.get_intent_conf())
+            self.pattern_intent_analyzer = PatternIntendAnalyzer(cb_id,
+                                                  self.chatbot_conf.get_pattern_intent_model(),
                                                   self.chat_knowledge_data_dict.get_intent_conf())
             self.service_mapper = ServiceMapper(cb_id,
                                                 self.chat_knowledge_data_dict.get_entity_uuid(),
@@ -80,7 +84,8 @@ class ServiceManager:
             if(mode == 'thread') :
                 logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
                 job_list = [self.ThreadCls(share_ctx, self.entity_recognizer.parse),
-                            self.ThreadCls(share_ctx, self.intent_analyzer.parse)]
+                            self.ThreadCls(share_ctx, self.intent_analyzer.parse),
+                            self.ThreadCls(share_ctx, self.pattern_intent_analyzer.parse)]
                 for job in job_list :
                     job.start()
 

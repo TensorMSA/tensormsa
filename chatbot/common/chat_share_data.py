@@ -142,6 +142,22 @@ class ShareData(ChatBotConfManager):
         """
         return self.intent_id
 
+    def set_pattern_intent_id(self, data):
+        """
+
+        :param data:
+        :return:
+        """
+        self.pattern_intent_id = data
+
+    def get_pattern_intent_id(self):
+        """
+
+        :param data:
+        :return:
+        """
+        return self.pattern_intent_id
+
     # def set_intent_name(self, data):
     #     """
     #
