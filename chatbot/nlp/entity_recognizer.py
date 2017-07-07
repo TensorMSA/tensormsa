@@ -60,14 +60,24 @@ class EntityRecognizer(ShareData):
                         continue
                     model = ngram.NGram(cb_data.get(key))
                     if(dist_keys.get(key) > 1) :
-                        ner_conv = ' '.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
+                        ner_conv = ''.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
                         result[key] = list(map(lambda x : x[0], model.search(ner_conv, threshold=1.0)))
                         if(len(result[key]) == 0) :
-                            result[key] = list(map(lambda x : x[0], model.search(ner_conv, threshold=0.2)))[0:4]
+                            result[key] = list(map(lambda x : x[0], model.search(ner_conv, threshold=0.4)))[0:4]
+                        if (len(result[key]) == 0):
+                            data, id = self.check_all_dict(ner_conv, cb_data)
+                            if(key != None) :
+                                result[id] = data
+                                key = id
                     else :
                         result[key] = list(map(lambda x: x[0], model.search(val, threshold=1.0)))
                         if (len(result[key]) == 0):
-                            result[key] = list(map(lambda x : x[0], model.search(val, threshold=0.2)))[0:4]
+                            result[key] = list(map(lambda x : x[0], model.search(val, threshold=0.4)))[0:4]
+                        if (len(result[key]) == 0):
+                            data, id = self.check_all_dict(ner_conv, cb_data)
+                            if (key != None):
+                                result[id] = data
+                                key = id
                     if(len(result[key]) == 0) :
                         del result[key]
                     else :
@@ -75,3 +85,17 @@ class EntityRecognizer(ShareData):
             return share_data
         except Exception as e :
             raise Exception ("Error on matching ngram afger bilstm crf : {0}".format(e))
+
+    def check_all_dict(self, ner_conv, cb_data):
+        """
+        check other dict when failed to find matching value
+        :param ner_conv: 
+        :return: 
+        """
+        result = []
+        for key in list(cb_data.keys()) :
+            model = ngram.NGram(cb_data.get(key))
+            result = list(map(lambda x: x[0], model.search(ner_conv, threshold=0.7)))[0:4]
+            if(len(result) > 0 ) :
+                return result, key
+        return result, None
