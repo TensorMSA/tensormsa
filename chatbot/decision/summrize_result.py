@@ -62,8 +62,8 @@ class SummrizeResult():
             self.common_keys = list(set(self.dict_keys).intersection(self.ner_keys))
 
             # get each intent's score
-            share_data1, score1 = self.get_score(essence, extra, share_data)
-            share_data2, score2 = self.get_score(p_essence, p_extra, share_data)
+            share_data1, score1 = self.get_score(essence, extra, share_data, intent_id)
+            share_data2, score2 = self.get_score(p_essence, p_extra, share_data, pattern_intent_id)
 
             # use higher score intent
             if(score1 > score2) :
@@ -76,12 +76,13 @@ class SummrizeResult():
         finally:
             return share_data
 
-    def get_score(self, essence, extra, share_data):
+    def get_score(self, essence, extra, share_data, intent_id):
         """
         
         :return: 
         """
         score = 0
+        share_data.set_intent_id(intent_id)
 
         # case0 : if there is no intent essential parms
         if (len(list(set(essence))) == 0):
@@ -97,7 +98,7 @@ class SummrizeResult():
             for key in list(del_keys):
                 del self.ner_obj[key]
             share_data.replace_story_slot_entity(self.ner_obj)
-            score = 10
+            score = 10 + len(essence)
 
         # case2 : intent and dict result matches
         elif (len(list(set(essence) - set(self.dict_keys))) == 0):
@@ -107,7 +108,7 @@ class SummrizeResult():
             for key in list(del_keys):
                 del self.dict_obj[key]
             share_data.replace_story_slot_entity(self.dict_obj)
-            score = 8
+            score = 7 + len(essence)
 
         # case3 : predicted intent and bilstm anal matches
         elif (len(list(set(essence) - set(self.ner_keys))) == 0):
@@ -117,7 +118,7 @@ class SummrizeResult():
             for key in list(del_keys):
                 del self.ner_obj[key]
             share_data.replace_story_slot_entity(self.ner_obj)
-            score = 7
+            score = 8 + len(essence)
 
         # case4 : predicted intent and ner result do not match but common ner exists
         elif (len(self.common_keys) > 0):

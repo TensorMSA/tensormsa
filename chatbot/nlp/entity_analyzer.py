@@ -3,6 +3,7 @@ from chatbot.common.chat_share_data import ShareData
 # from konlpy.tag import Twitter
 from konlpy.tag import Mecab
 from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
+import logging
 
 class EntityAnalyzer(ShareData):
     """
@@ -55,7 +56,7 @@ class EntityAnalyzer(ShareData):
         # TODO : Add Intent and NER divide call from service_type 
         input_data = share_data.get_request_data()
         pos_tags = self._pos_tagger(input_data)
-        print ("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
+        logging.info("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
         result = list(map(lambda x : self._preprocess_data(share_data,x), pos_tags))
         # Remove preposition
         result = list(filter(lambda x : x[0] != "", result))
@@ -63,16 +64,16 @@ class EntityAnalyzer(ShareData):
         morphed_data = list(map(lambda x : x[0] ,result))
         share_data.set_convert_dict_data(convert_dict_data)
         share_data.set_morphed_data(morphed_data)
-        print ("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
+        logging.info("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
         return share_data
 
     #Custom Case : ex)안녕 and len < 3
     def _preprocess_data(self, share_data, pos_tags):
         #except meaningless
         convert_dict_data = pos_tags[0]
-        if (pos_tags[1] in ['SY', 'SF']):
+        if (pos_tags[1] in ['SY','EC','EP','VA','VX','XSV+EC','VX+EC','VX+EF','SF']):
             return "",""
-        elif (pos_tags[1] in ['NNG', 'NNP'] and len(pos_tags[0]) > 1): #Check only Noun
+        elif (pos_tags[1] in ['NNG', 'NNP','SL'] and len(pos_tags[0]) > 1): #Check only Noun
             key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
             if(key_check == []):
                 pass

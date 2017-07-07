@@ -30,6 +30,7 @@ class ShareData(ChatBotConfManager):
         self.story_ner_entity = {}        # key : val
         self.morphed_data = []
         self.convert_dict_data =[]
+        self.pattern_intent_id = ""
         # self.opt_sel_list = {}          # intent option list when intent anl result is not clear
         # self.ontology_id = ""           # current working ontology id
         # self.ontology_req_parms = {}    # key : val

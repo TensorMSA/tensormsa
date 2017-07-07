@@ -74,7 +74,7 @@ class EntityRecognizer(ShareData):
                         if (len(result[key]) == 0):
                             result[key] = list(map(lambda x : x[0], model.search(val, threshold=0.4)))[0:4]
                         if (len(result[key]) == 0):
-                            data, id = self.check_all_dict(ner_conv, cb_data)
+                            data, id = self.check_all_dict(val, cb_data)
                             if (key != None):
                                 result[id] = data
                                 key = id
