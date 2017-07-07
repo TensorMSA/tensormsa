@@ -244,8 +244,8 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                         i_global, _, i_cost, batch_acc = sess.run([self.global_step, self.optimizer, self.cost, self.accuracy],
                                                                   feed_dict={self.X: x_batch, self.Y: y_batch})
                         g_total_cnt += 1
-                        print(i_cost)
-                        # TODO : save loss, acc on train preprocess
+                    if (g_total_cnt % 100 == 0) :
+                        logging.info("count : {0} , Cost : {1}, Acc : {2}".format(i_global, i_cost, batch_acc))
                 input_data.next()
             input_data.reset_pointer()
         except Exception as e:
