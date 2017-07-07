@@ -323,7 +323,6 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                 graph = tf.get_default_graph()
 
             with tf.Session(graph=graph) as sess :
-                sess.run(self.init_val)
                 return self._run_predict(sess,
                                          parm['input_data'],
                                          batch_ver='eval',  # TODO : need to manage predict version too
@@ -363,7 +362,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                         word_list = [pad_size * [('#')] + list(map(lambda x : x, x_input.split(' ')))]
                     else:
                         word_list = [x_input.split(' ')]
-                    print("Predict Parsed Data : {0}".format(word_list))
+                    logging.info("Predict Parsed Data : {0}".format(word_list))
                 word_list = self._word_embed_data('onehot',
                                                   np.array(word_list),
                                                   cls=self.input_onehot,

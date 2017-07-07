@@ -85,14 +85,6 @@ class WorkFlowNetConfWideCnn(WorkFlowNetConf):
         return self.conf.get("param").get("batch_size")
 
     @property
-    def batch_size(self):
-        """
-        getter for wide and cnn
-        :return:
-        """
-        return self.conf.get("config").get("num_classes")
-
-    @property
     def labels(self):
         """
         getter for wide and cnn
