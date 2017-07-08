@@ -41,8 +41,8 @@ class PatternIntendAnalyzer(ShareData):
             # if(intent_model == -1):
             #     intent_model = intent_rule
             #
-            # share_data.set_pattern_intent_id(intent_model)
-            # share_data.set_intent_history(intent_model)
+            share_data.set_pattern_intent_id(intent_model)
+            share_data.set_intent_history(intent_model)
 
         return share_data
 

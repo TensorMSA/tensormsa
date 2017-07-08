@@ -53,24 +53,24 @@ class EntityRecognizer(ShareData):
                 logging.info("■■■■■■■■■■ 길이 차이로 NER 처리 불가 ■■■■■■■■■■")
                 pass
 
-            if(ChatKnowledgeMemDict.ngram.get(self.cb_id) == None) :
+            if(ChatKnowledgeMemDict.ngram.get(self.cb_id) == None):
                 cb_data = ChatKnowledgeMemDict.data.get(self.cb_id)
                 dist_keys = dict(Counter(ner_data))
                 for key, val in zip(ner_data, input_sentence) :
-                    if (key == 'O') :
+                    if (key == 'O'):
                         continue
                     model = ngram.NGram(cb_data.get(key))
-                    if(dist_keys.get(key) > 1) :
+                    if(dist_keys.get(key) > 1):
                         ner_conv = ''.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
                         result[key] = list(map(lambda x : x[0], model.search(ner_conv, threshold=1.0)))
                         if(len(result[key]) == 0) :
                             result[key] = list(map(lambda x : x[0], model.search(ner_conv, threshold=0.4)))[0:4]
-                        if (len(result[key]) == 0):
+                        if(len(result[key]) == 0):
                             data, id = self.check_all_dict(ner_conv, cb_data)
                             if(key != None) :
                                 result[id] = data
                                 key = id
-                    else :
+                    else:
                         result[key] = list(map(lambda x: x[0], model.search(val, threshold=1.0)))
                         if (len(result[key]) == 0):
                             result[key] = list(map(lambda x : x[0], model.search(val, threshold=0.4)))[0:4]
@@ -79,7 +79,7 @@ class EntityRecognizer(ShareData):
                             if (key != None):
                                 result[id] = data
                                 key = id
-                    if(len(result[key]) == 0) :
+                    if(len(result[key]) == 0):
                         del result[key]
                     else :
                         share_data.set_story_ner_entity(key, result[key])
