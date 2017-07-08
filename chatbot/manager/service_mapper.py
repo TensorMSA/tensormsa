@@ -1,4 +1,5 @@
 from chatbot.common.chat_share_data import ShareData
+import logging
 
 class ServiceMapper(ShareData):
 
@@ -9,6 +10,9 @@ class ServiceMapper(ShareData):
 
     def run(self, share_data):
         story_slot = share_data.get_story_slot_entity()
+        logging.info("■■■■■■■■■■ 의도 최종 결과 : " + share_data.get_intent_id())
+        logging.info("■■■■■■■■■■ Slot 최종 결과 : " + str(list(story_slot)))
+
         self._replace_intent_uuid(share_data)
         self._replace_entity_uuid(story_slot)
         return share_data

@@ -16,7 +16,7 @@ class SummrizeResult():
         :param share_data:
         :return:
         """
-        try :
+        try:
             intent_id = share_data.get_intent_id()
             pattern_intent_id = share_data.get_pattern_intent_id()
             share_data = self.check_result(pattern_intent_id, intent_id, share_data)

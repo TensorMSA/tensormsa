@@ -104,7 +104,7 @@ class OneHotEncoder :
         """
         sorted_list = sorted(vector, reverse = True)
         idx = np.where(vector==sorted_list[prob_idx])[0][0]
-        print("■■■■■■■■■■ Accuracy 출력 : " + str(vector[idx]))
+        #print("■■■■■■■■■■ Accuracy 출력 : " + str(vector[idx]))
         #print("■■■■■■■■■■ 예측 Label intex 값 : " + str(idx-2))
         if(vector[idx] > min_prob) :
             return self.dict_list[idx]
