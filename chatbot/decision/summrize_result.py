@@ -19,7 +19,11 @@ class SummrizeResult():
         try:
             intent_id = share_data.get_intent_id()
             pattern_intent_id = share_data.get_pattern_intent_id()
-            share_data = self.check_result(pattern_intent_id, intent_id, share_data)
+            #Rule intent is exist then pass
+            if(intent_id is not "" and pattern_intent_id is ""):
+                pass
+            else:
+                share_data = self.check_result(pattern_intent_id, intent_id, share_data)
             return share_data
         except Exception as e:
             raise Exception(e)

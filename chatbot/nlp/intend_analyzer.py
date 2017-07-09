@@ -35,12 +35,6 @@ class IntendAnalyzer(ShareData):
             intent_model = self.get_intent_model(' '.join(convert_data))
             logging.info("■■■■■■■■■■ Raw 의도 분석 결과(Model) : " + intent_model)
 
-            # intent_rule = self.get_rule_value(convert_data)
-            # logging.info("■■■■■■■■■■ 의도 분석 결과(Rule) : " + str(intent_rule))
-
-            # if(intent_model == -1):
-            #     intent_model = intent_rule
-
             share_data.set_intent_id(intent_model)
             share_data.set_intent_history(intent_model)
 
@@ -50,11 +44,3 @@ class IntendAnalyzer(ShareData):
         # result = self.seq2seq_model.run(self.nn_id , {"input_data": convert_data, "num": 0, "clean_ans": False})[0][1][0]
         intent_model = str(self.wcnn_model.run(self.nn_id, {"input_data": convert_data, "num": 0, "clean_ans": False})[0])
         return intent_model
-
-    # def get_rule_value(self, convert_data):
-    #     intent_list = list(filter(lambda x: x["fields"]["intent_type"] == "custom" and any(
-    #         key in convert_data for key in x["fields"]["rule_value"]["value"]), self.intent_conf))
-    #     intent_list = list(map(lambda x : x["fields"]["intent_id"], intent_list))
-    #     #custom intent is only one
-    #     intent_rule = intent_list[0] if len(intent_list) > 0 else "-1"
-    #     return intent_rule

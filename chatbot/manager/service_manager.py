@@ -3,6 +3,7 @@ from chatbot.common.chat_conf_manager import ChatBotConfManager
 from chatbot.common.chat_share_data import ShareData
 from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
+from chatbot.nlp.rule_intent_analyzer import RuleIntentAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
 from chatbot.nlp.pattern_intent_analyzer import PatternIntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
@@ -34,6 +35,7 @@ class ServiceManager:
             self.chat_knowledge_data_dict.initialize(cb_id)
             self.chat_share_data = ShareData()
             self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging())
+            self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf())
             self.entity_recognizer = EntityRecognizer(cb_id,
                                                       self.chatbot_conf.get_ner_model())
             self.intent_analyzer = IntendAnalyzer(cb_id,
@@ -79,7 +81,7 @@ class ServiceManager:
             ### 2. set parms from client ###
             share_ctx = self.chat_share_data.load_json(req_ctx)
             share_ctx = self.entity_analyzer.parse(share_ctx)
-
+            share_ctx = self.rule_intent_analyzer.parse(share_ctx)
             ### 3. nlp process ###
             if(mode == 'thread') :
                 logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
