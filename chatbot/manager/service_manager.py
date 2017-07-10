@@ -82,10 +82,12 @@ class ServiceManager:
             share_ctx = self.chat_share_data.load_json(req_ctx)
             share_ctx = self.entity_analyzer.parse(share_ctx)
             share_ctx = self.rule_intent_analyzer.parse(share_ctx)
+            share_ctx = self.entity_recognizer.parse(share_ctx)
+
             ### 3. nlp process ###
             if(mode == 'thread') :
                 logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
-                job_list = [self.ThreadCls(share_ctx, self.entity_recognizer.parse),
+                job_list = [
                             self.ThreadCls(share_ctx, self.intent_analyzer.parse),
                             self.ThreadCls(share_ctx, self.pattern_intent_analyzer.parse)]
                 for job in job_list :

@@ -1,6 +1,6 @@
 from chatbot.common.chat_share_data import ShareData
 from chatbot.story.story_board_manager import StoryBoardManager
-import logging
+import logging, copy
 
 class SummrizeResult():
     """
@@ -66,8 +66,8 @@ class SummrizeResult():
             self.common_keys = list(set(self.dict_keys).intersection(self.ner_keys))
 
             # get each intent's score
-            share_data1, score1 = self.get_score(essence, extra, share_data, intent_id)
-            share_data2, score2 = self.get_score(p_essence, p_extra, share_data, pattern_intent_id)
+            share_data1, score1 = self.get_score(essence, extra, copy.deepcopy(share_data), intent_id)
+            share_data2, score2 = self.get_score(p_essence, p_extra, copy.deepcopy(share_data), pattern_intent_id)
 
             # use higher score intent
             if(score1 > score2) :
@@ -118,7 +118,7 @@ class SummrizeResult():
         elif(len(list(set(essence) - set(self.ner_keys))) == 0):
             # trim entities fit to intent slot
             logging.info("Case3 : intent and ner result matches")
-            del_keys = set(self.common_keys.keys()) - set(essence) - set(extra)
+            del_keys = set(self.common_keys) - set(essence) - set(extra)
             for key in list(del_keys):
                 del self.ner_obj[key]
             share_data.replace_story_slot_entity(self.ner_obj)
