@@ -72,6 +72,14 @@ class CB_ENTITY_RELATION_INFO(models.Model):
     entity_uuid = models.CharField(max_length=100, blank=True)
     entity_desc = models.CharField(max_length=100, blank=True)
 
+class CB_ENTITY_SYNONYM_LIST(models.Model):
+    cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
+    entity_id = models.CharField(max_length=50, blank=True)
+    slot_type = JSONField()
+    represent_value = models.CharField(max_length=100, blank=True)
+    synonym_value = models.CharField(max_length=100, blank=True)
+    synonym_desc = models.CharField(max_length=100, blank=True)
+
 class CB_ONTOLOGY_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     ontology_id = models.CharField(max_length=10, blank=True)

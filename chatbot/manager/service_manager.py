@@ -1,6 +1,7 @@
 from cluster.service.service_predict_cnn import PredictNetCnn
 from chatbot.common.chat_conf_manager import ChatBotConfManager
 from chatbot.common.chat_share_data import ShareData
+from chatbot.nlp.entity_synonym import EntitySynonym
 from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.rule_intent_analyzer import RuleIntentAnalyzer
@@ -34,7 +35,8 @@ class ServiceManager:
             self.chat_knowledge_data_dict = ChatKnowledgeDataDict(cb_id)
             self.chat_knowledge_data_dict.initialize(cb_id)
             self.chat_share_data = ShareData()
-            self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging())
+            self.entity_synonym = EntitySynonym(cb_id)
+            self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging(), self.entity_synonym)
             self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf())
             self.entity_recognizer = EntityRecognizer(cb_id,
                                                       self.chatbot_conf.get_ner_model())

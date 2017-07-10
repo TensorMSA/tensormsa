@@ -1,6 +1,7 @@
 from chatbot.common.chat_share_data import ShareData
 # from konlpy.tag import Kkma
 # from konlpy.tag import Twitter
+from chatbot.nlp.entity_synonym import EntitySynonym
 from konlpy.tag import Mecab
 from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 import logging
@@ -13,12 +14,13 @@ class EntityAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, proper_noun):
+    def __init__(self, proper_noun, entity_synonym):
         """
         init global variables
         """
         self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=False) #Sorted Key Priority
         self.proper_noun = proper_noun     # key : [values]
+        self.entity_synonym = entity_synonym
         #self._load_proper_noun(proper_noun.keys(), proper_noun)
         #self.bilstmcrf_model = PredictNetBiLstmCrf()
 
@@ -74,7 +76,8 @@ class EntityAnalyzer(ShareData):
     def _preprocess_data(self, share_data, pos_tags):
         #except meaningless
         convert_dict_data = pos_tags[0]
-        if (pos_tags[1] in ['SY','EC','EP','VA','VX','XSV+EC','VX+EC','VX+EF','SF']):
+        pos_tags_0 = pos_tags[0]
+        if (pos_tags[1] in ['SY','EC','EP','VA','VX','XSV+EC','VX+EC','VX+EF','SF','VCP+EF']):
             return "",""
         elif (pos_tags[1] in ['NNG', 'NNP','SL'] and len(pos_tags[0]) > 1): #Check only Noun
             key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
@@ -82,13 +85,16 @@ class EntityAnalyzer(ShareData):
                 pass
             else: #proper noun priority
                 key_slot = pos_tags[0]
-                # except duplicated
-                if(self.proper_noun[key_check[0]][2]):
-                    key_slot = share_data.get_story_slot_entity(key_check[0])[0] + pos_tags[0] if share_data.get_story_slot_entity(key_check[0]) is not None else "" + pos_tags[0]
-                share_data.set_story_slot_entity(key_check[0], [key_slot])
+                #Check Synonym
+                if(self.entity_synonym.get_synonym_key(key_check[0], key_slot)):
+                    pos_tags_0 = self.entity_synonym.make_represent(share_data, key_check[0], key_slot)
+                else:
+                    # except duplicated
+                    if(self.proper_noun[key_check[0]][2]):
+                        key_slot = share_data.get_story_slot_entity(key_check[0]) + pos_tags[0] if share_data.get_story_slot_entity(key_check[0]) is not None else "" + pos_tags[0]
+                    share_data.set_story_slot_entity(key_check[0], key_slot)
                 convert_dict_data = key_check[0]
-
-        return pos_tags[0], convert_dict_data
+        return pos_tags_0, convert_dict_data
 
     def _pos_tagger(self, input, type ='mecab'):
         """

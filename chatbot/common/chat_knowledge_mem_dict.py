@@ -6,3 +6,4 @@ class ChatKnowledgeMemDict:
     # cc_id - entitiy_id -value list
     data = {}
     ngram = {}
+    synonym = {}

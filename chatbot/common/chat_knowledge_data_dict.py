@@ -52,8 +52,12 @@ class ChatKnowledgeDataDict:
                                               reverse=False)
                 self.proper_noun = query_set
                 ChatKnowledgeMemDict.data[cb_id] = {}
-                for key in self.proper_key_list :
+                for key in self.proper_key_list:
                     ChatKnowledgeMemDict.data[cb_id][key] = self._get_entity_values(key)
+
+                ChatKnowledgeMemDict.synonym[cb_id] = {}
+                ChatKnowledgeMemDict.synonym[cb_id] = self._get_synonym_value()
+
         except Exception as e :
             raise Exception ("error on chatbot dict init : {0}".format(e))
 
@@ -62,11 +66,11 @@ class ChatKnowledgeDataDict:
         check if data is already loaded 
         :return: boolean
         """
-        if(len(list(ChatKnowledgeMemDict.data.keys())) <= 0 ) :
+        if(len(list(ChatKnowledgeMemDict.data.keys())) <= 0 ):
             return True
         if(cb_id in ChatKnowledgeMemDict.data.keys()) :
             return False
-        else :
+        else:
             return True
 
     def _get_entity_values(self, key):
@@ -92,5 +96,10 @@ class ChatKnowledgeDataDict:
 
     def get_intent_uuid(self):
         query_set = models.CB_INTENT_LIST_INFO.objects.filter(cb_id = self.cb_id)
+        query_set = serial.serialize("json", query_set)
+        return json.loads(query_set)
+
+    def _get_synonym_value(self):
+        query_set = models.CB_ENTITY_SYNONYM_LIST.objects.filter(cb_id = self.cb_id)
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)

@@ -87,7 +87,9 @@ delete from django_migrations where app = 'master';
 ### Chatbot Drop Table and Create Table Again
 delete /chatbot/migrations/*.py (except __init__.py)
 ```sh
-drop table Chatbot_CB_ONTOLOGY_INFO,
+drop table
+Chatbot_CB_ENTITY_SYNONYM_LIST,
+Chatbot_CB_ONTOLOGY_INFO,
 Chatbot_CB_TAGGING_INFO,
 Chatbot_CB_RESPONSE_LIST_INFO,
 Chatbot_CB_SERVICE_LIST_INFO,
@@ -102,6 +104,12 @@ make migrations
 ```sh
 ./manage.py makemigrations chatbot
 ./manage.py migrate --fake chatbot zero
+./manage.py migrate chatbot
+```
+### Sync Table
+```sh
+./manage.py migrate --fake (Model.py before add something)
+./manage.py makemigrations chatbot
 ./manage.py migrate chatbot
 ```
 
