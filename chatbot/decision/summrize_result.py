@@ -111,18 +111,20 @@ class SummrizeResult():
                 del_keys = set(self.common_keys) - set(essence) - set(extra)
                 for key in list(del_keys):
                     del ner_obj[key]
+                extra_score = len((set(extra) - set(self.ner_keys)))
                 share_data.replace_story_slot_entity(ner_obj)
-                score = 10 + len(essence)
+                score = 10 + len(essence)  - extra_score
 
             # case2 : intent and dict result matches
-            elif(len(list(set(essence) - set(dict_obj))) == 0):
+            elif(len(list(set(essence) - set(self.dict_keys))) == 0):
                 # trim entities fit to intent slot
                 logging.info("Case2 : intent and dict result matches")
-                del_keys = set(dict_obj) - set(essence) - set(extra)
+                del_keys = set(self.dict_keys) - set(essence) - set(extra)
                 for key in list(del_keys):
                     del dict_obj[key]
+                extra_score = len((set(extra) - set(self.ner_keys)))
                 share_data.replace_story_slot_entity(dict_obj)
-                score = 7 + len(essence)
+                score = 7 + len(essence)  - extra_score
 
             # case3 : predicted intent and bilstm anal matches
             elif(len(list(set(essence) - set(self.ner_keys))) == 0):
@@ -132,7 +134,8 @@ class SummrizeResult():
                 for key in list(del_keys):
                     del ner_obj[key]
                 share_data.replace_story_slot_entity(ner_obj)
-                score = 8 + len(essence)
+                extra_score = len((set(extra) - set(self.ner_keys)))
+                score = 8 + len(essence)  - extra_score
 
             # case4 : predicted intent and ner result do not match but common ner exists
             elif(len(self.common_keys) > 0):
@@ -140,12 +143,14 @@ class SummrizeResult():
                 logging.info("Case4 : intent do not match but ner matches")
                 c_intent_id = self.get_intent_candidate(self.common_keys)
                 share_data.set_intent_id(c_intent_id)
+                if(len(share_data.get_intent_id()) == 0 ) :
+                    share_data.set_intent_id("-1")
                 score = 5
 
             # case5 : error
             else:
                 logging.info("Case5 : cannot understand input at all")
-                #share_data.set_intent_id("-1")
+                share_data.set_intent_id("-1")
                 score = -1
 
             return share_data, score

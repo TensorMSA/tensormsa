@@ -102,6 +102,7 @@ class ServiceManager:
 
             # summrize result
             share_ctx = self.summrize_result.parse(share_ctx)
+            share_ctx.add_test_client_data()
 
             ### 4. UUID mapping ###
             share_ctx = self.service_mapper.run(share_ctx)

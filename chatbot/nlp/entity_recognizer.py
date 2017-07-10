@@ -71,18 +71,19 @@ class EntityRecognizer(ShareData):
                                 result[id] = data
                                 key = id
                     else:
-                        result[key] = list(map(lambda x: x[0], model.search(val, threshold=1.0)))
+                        ner_conv = val
+                        result[key] = list(map(lambda x: x[0], model.search(ner_conv, threshold=1.0)))
                         if (len(result[key]) == 0):
-                            result[key] = list(map(lambda x : x[0], model.search(val, threshold=0.4)))[0:4]
+                            result[key] = list(map(lambda x : x[0], model.search(ner_conv, threshold=0.4)))[0:4]
                         if (len(result[key]) == 0):
-                            data, id = self.check_all_dict(val, cb_data)
+                            data, id = self.check_all_dict(ner_conv, cb_data)
                             if (key != None):
                                 result[id] = data
                                 key = id
                     if(len(result[key]) == 0):
                         del result[key]
                     else :
-                        share_data.set_story_ner_entity(key, [val] + result[key])
+                        share_data.set_story_ner_entity(key, [ner_conv] + result[key])
             return share_data
         except Exception as e :
             raise Exception ("Error on matching ngram afger bilstm crf : {0}".format(e))

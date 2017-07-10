@@ -451,10 +451,16 @@ class ShareData(ChatBotConfManager):
         add extra data for client 
         :return: 
         """
-        self.test_intent_id = self.intent_id
         self.story_slot_entity = self.convert_to_list_shape(self.story_slot_entity)
         self.story_ner_entity = self.convert_to_list_shape(self.story_ner_entity)
+        return self
 
+    def add_test_client_data(self):
+        """
+        add unchanged info for client test
+        :return: 
+        """
+        self.test_intent_id = self.intent_id
         return self
 
     def convert_to_list_shape(self, input):
