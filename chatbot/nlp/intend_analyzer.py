@@ -35,8 +35,8 @@ class IntendAnalyzer(ShareData):
             intent_model = self.get_intent_model(' '.join(convert_data))
             logging.info("■■■■■■■■■■ Raw 의도 분석 결과(Model) : " + intent_model)
 
-            share_data.set_intent_id(intent_model)
-            share_data.set_intent_history(intent_model)
+            share_data.set_intent_id([intent_model])
+            share_data.set_intent_history({"i" : intent_model})
 
         return share_data
 

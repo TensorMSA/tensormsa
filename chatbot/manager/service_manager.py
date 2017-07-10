@@ -111,6 +111,7 @@ class ServiceManager:
 
             logging.info("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
             ### 4. return result as json ###
+            share_ctx = share_ctx.add_extra_client_data()
             return share_ctx.to_json()
         except Exception as e:
             raise Exception (e)

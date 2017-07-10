@@ -53,19 +53,22 @@ class EntityAnalyzer(ShareData):
         :param share_data:
         :return:
         """
-        # TODO : Add Intent and NER divide call from service_type 
-        input_data = share_data.get_request_data()
-        pos_tags = self._pos_tagger(input_data)
-        logging.info("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
-        result = list(map(lambda x : self._preprocess_data(share_data,x), pos_tags))
-        # Remove preposition
-        result = list(filter(lambda x : x[0] != "", result))
-        convert_dict_data = list(map(lambda x : x[1] ,result))
-        morphed_data = list(map(lambda x : x[0] ,result))
-        share_data.set_convert_dict_data(convert_dict_data)
-        share_data.set_morphed_data(morphed_data)
-        logging.info("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
-        return share_data
+        try :
+            # TODO : Add Intent and NER divide call from service_type
+            input_data = share_data.get_request_data()
+            pos_tags = self._pos_tagger(input_data)
+            logging.info("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
+            result = list(map(lambda x : self._preprocess_data(share_data,x), pos_tags))
+            # Remove preposition
+            result = list(filter(lambda x : x[0] != "", result))
+            convert_dict_data = list(map(lambda x : x[1] ,result))
+            morphed_data = list(map(lambda x : x[0] ,result))
+            share_data.set_convert_dict_data(convert_dict_data)
+            share_data.set_morphed_data(morphed_data)
+            logging.info("■■■■■■■■■■ Entity 분석 결과 : " + str(convert_dict_data))
+            return share_data
+        except Exception as e :
+            raise Exception ("error on entity anal : {0}".format(e))
 
     #Custom Case : ex)안녕 and len < 3
     def _preprocess_data(self, share_data, pos_tags):
@@ -81,8 +84,8 @@ class EntityAnalyzer(ShareData):
                 key_slot = pos_tags[0]
                 # except duplicated
                 if(self.proper_noun[key_check[0]][2]):
-                    key_slot = share_data.get_story_slot_entity(key_check[0]) + pos_tags[0] if share_data.get_story_slot_entity(key_check[0]) is not None else "" + pos_tags[0]
-                share_data.set_story_slot_entity(key_check[0], key_slot)
+                    key_slot = share_data.get_story_slot_entity(key_check[0])[0] + pos_tags[0] if share_data.get_story_slot_entity(key_check[0]) is not None else "" + pos_tags[0]
+                share_data.set_story_slot_entity(key_check[0], [key_slot])
                 convert_dict_data = key_check[0]
 
         return pos_tags[0], convert_dict_data

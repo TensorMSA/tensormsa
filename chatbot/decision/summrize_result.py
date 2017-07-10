@@ -34,7 +34,7 @@ class SummrizeResult():
         :param intent: 
         :return: 
         """
-        temp = list(filter(lambda x: x['fields']['intent_id'] == intent_id, self.intent_info))
+        temp = list(filter(lambda x: x['fields']['intent_id'] == intent_id[0], self.intent_info))
         if (temp == []):
             return "",""
         else:
@@ -79,6 +79,13 @@ class SummrizeResult():
             share_data.set_intent_id("-1")
         finally:
             return share_data
+
+    # def match_avail_slot(self, share_data, dict_obj, ner_obj):
+    #     """
+    #     match all availabel slot for intent with given ner result
+    #     :return:
+    #     """
+    #     dict_obj
 
     def get_score(self, essence, extra, share_data, intent_id):
         """

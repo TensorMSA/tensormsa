@@ -31,6 +31,8 @@ class ShareData(ChatBotConfManager):
         self.morphed_data = []
         self.convert_dict_data =[]
         self.pattern_intent_id = ""
+        self.test_intent_id = ""
+
         # self.opt_sel_list = {}          # intent option list when intent anl result is not clear
         # self.ontology_id = ""           # current working ontology id
         # self.ontology_req_parms = {}    # key : val
@@ -49,7 +51,7 @@ class ShareData(ChatBotConfManager):
         :param object:
         :return:
         """
-        self._check_json_validation(object)
+        object = self._check_json_validation(object)
         self.__dict__.update(object)
         return self
 
@@ -63,6 +65,11 @@ class ShareData(ChatBotConfManager):
         for key in ['input_data', 'intent_id']:
             if key not in object :
                 raise Exception (''.join([key, ' not exist!']))
+
+        for key in ['story_slot_entity', 'story_ner_entity'] :
+            if key in list(object.keys()) :
+                object[key] = {}
+        return object
 
     def merge_share_data(self, output_share_data):
         """
@@ -439,21 +446,24 @@ class ShareData(ChatBotConfManager):
         self.story_ner_entity = obj
 
 
-    # def set_intent_option_list(self, key, val):
-    #     """
-    #     return option list when intend is not clear
-    #     :param data:
-    #     :return:
-    #     """
-    #     self.opt_sel_list[key] = val
-    #
-    # def get_intent_option_list(self, key = None):
-    #     """
-    #     return option list when intend is not clear
-    #     :param data:
-    #     :return:
-    #     """
-    #     if(key) :
-    #         return self.opt_sel_list.get(key)
-    #     else :
-    #         return self.opt_sel_list
+    def add_extra_client_data(self):
+        """
+        add extra data for client 
+        :return: 
+        """
+        self.test_intent_id = self.intent_id
+        self.story_slot_entity = self.convert_to_list_shape(self.story_slot_entity)
+        self.story_ner_entity = self.convert_to_list_shape(self.story_ner_entity)
+
+        return self
+
+    def convert_to_list_shape(self, input):
+        """
+        convert dict to list-dict (client developer request) 
+        :param input: 
+        :return: 
+        """
+        buffer = []
+        for key in input.keys() :
+            buffer.append({key:input[key]})
+        return buffer

@@ -82,7 +82,7 @@ class EntityRecognizer(ShareData):
                     if(len(result[key]) == 0):
                         del result[key]
                     else :
-                        share_data.set_story_ner_entity(key, result[key])
+                        share_data.set_story_ner_entity(key, [val] + result[key])
             return share_data
         except Exception as e :
             raise Exception ("Error on matching ngram afger bilstm crf : {0}".format(e))

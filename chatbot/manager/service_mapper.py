@@ -18,11 +18,11 @@ class ServiceMapper(ShareData):
         return share_data
 
     def _replace_intent_uuid(self, share_data):
-        intent_uuid = list(filter(lambda x: x["pk"] == str(share_data.get_intent_id()), self.intent_uuid_list))
-        if (intent_uuid == []):
-            pass
-        else:
-            share_data.set_intent_id(intent_uuid[0]['fields']['intent_uuid'])
+        intent_uuid = []
+        for intent_id in share_data.get_intent_id() :
+            intent_uuid = intent_uuid + list(filter(lambda x: x["pk"] == str(intent_id), self.intent_uuid_list))
+        intent_uuid =  list(map(lambda x : x['fields']['intent_uuid'], intent_uuid))
+        share_data.set_intent_id(intent_uuid)
 
     def _replace_entity_uuid(self, story_slot):
         slot_key_list = list(story_slot.keys())
