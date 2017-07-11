@@ -251,31 +251,34 @@ class DataAugmentation :
         
         :return: 
         """
-        with codecs.open( self.pattern_data_path, "r", "utf-8" ) as fileObj :
-            document = fileObj.readlines()
-            return_arr = []
+        df_csv_read = pd.read_csv(self.pattern_data_path,
+                                  skipinitialspace=True,
+                                  engine="python",
+                                  encoding='utf-8-sig')
+        i = 0
+        for line in df_csv_read['encode'].values:
 
-            for i, line in enumerate(document) :
-                words = []
-                if(self.use_mecab) :
-                    self.mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
-                    pos = self.mecab.pos(line)
-                    for word, tag in pos:
-                        words.append(word)
-                else :
-                    words = str(line).split(' ')
+            words = []
+            if(self.use_mecab) :
+                self.mecab = Mecab('/usr/local/lib/mecab/dic/mecab-ko-dic')
+                pos = self.mecab.pos(line)
+                for word, tag in pos:
+                    words.append(word)
+            else :
+                words = str(line).split(' ')
 
-                print("===={0} line job start".format(i))
-                match_keys = self._check_all_match(words)
-                if(self.out_format_type == 'plain') :
-                    aug_data = self._aug_sent(match_keys, words, [])
-                    self._plain_formatter(aug_data)
-                elif(self.out_format_type == 'iob') :
-                    aug_data = self._aug_sent(match_keys, words, [])
-                    self._iob_formatter(aug_data)
-                else :
-                    raise Exception (' '.join(['not', 'plain', 'or iob']))
-                print("===={0} line job done".format (i))
+            print("===={0} line job start".format(i))
+            match_keys = self._check_all_match(words)
+            if(self.out_format_type == 'plain') :
+                aug_data = self._aug_sent(match_keys, words, [])
+                self._plain_formatter(aug_data)
+            elif(self.out_format_type == 'iob') :
+                aug_data = self._aug_sent(match_keys, words, [])
+                self._iob_formatter(aug_data)
+            else :
+                raise Exception (' '.join(['not', 'plain', 'or iob']))
+            print("===={0} line job done".format (i))
+            i = i + 1
 
 # da = DataAugmentation({
 #                      "use_mecab": True,
@@ -283,8 +286,8 @@ class DataAugmentation :
 #                      "pattern_data_path": "/hoya_data_root/aug/pattern.csv",
 #                      "augmented_out_path": "/hoya_model_root/aug/",
 #                      "dict_path": "/hoya_data_root/aug/dict.csv",
-#                      "out_format_type": "intent",
-#                      "dict_sample_size" : 5,
-#                      "dict_sample_iter" : 250
+#                      "out_format_type": "iob",
+#                      "dict_sample_size" : 3,
+#                      "dict_sample_iter" : 2000
 #                  })
 # da.run()

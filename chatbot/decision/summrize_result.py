@@ -96,7 +96,7 @@ class SummrizeResult():
             score = 0
             share_data.set_intent_id(intent_id)
             ner_obj = self.ner_obj.copy()
-            dict_obj = self.ner_obj.copy()
+            dict_obj = self.dict_obj.copy()
 
             # case0 : if there is no intent essential parms
             if(len(list(set(essence))) == 0):
@@ -108,12 +108,19 @@ class SummrizeResult():
             if(len(list(set(essence) - set(self.common_keys))) == 0):
                 # trim entities fit to intent slot
                 logging.info("Case1 : perfect case all matches!")
-                del_keys = set(self.common_keys) - set(essence) - set(extra)
-                for key in list(del_keys):
+                del_ner_keys = set(self.ner_keys) - set(essence) - set(extra)
+                for key in list(del_ner_keys):
                     del ner_obj[key]
-                extra_score = len((set(extra) - set(self.ner_keys)))
-                share_data.replace_story_slot_entity(ner_obj)
-                score = 10 + len(essence)  - extra_score
+                del_dict_keys = set(self.ner_keys) - set(essence) - set(extra)
+                for key in list(del_dict_keys):
+                    del dict_obj[key]
+                if(len(list(ner_obj.keys())) > len(list(dict_obj.keys()))) :
+                    extra_score = len((set(extra) - set(self.ner_keys)))
+                    share_data.replace_story_slot_entity(ner_obj)
+                else :
+                    extra_score = len((set(extra) - set(self.dict_keys)))
+                    share_data.replace_story_slot_entity(dict_obj)
+                score = 10 + len(essence) - extra_score * 0.3
 
             # case2 : intent and dict result matches
             elif(len(list(set(essence) - set(self.dict_keys))) == 0):
@@ -124,18 +131,18 @@ class SummrizeResult():
                     del dict_obj[key]
                 extra_score = len((set(extra) - set(self.ner_keys)))
                 share_data.replace_story_slot_entity(dict_obj)
-                score = 7 + len(essence)  - extra_score
+                score = 7 + len(essence)  - extra_score * 0.3
 
             # case3 : predicted intent and bilstm anal matches
             elif(len(list(set(essence) - set(self.ner_keys))) == 0):
                 # trim entities fit to intent slot
                 logging.info("Case3 : intent and ner result matches")
-                del_keys = set(self.common_keys) - set(essence) - set(extra)
+                del_keys = set(self.ner_keys) - set(essence) - set(extra)
                 for key in list(del_keys):
                     del ner_obj[key]
                 share_data.replace_story_slot_entity(ner_obj)
                 extra_score = len((set(extra) - set(self.ner_keys)))
-                score = 8 + len(essence)  - extra_score
+                score = 8 + len(essence)  - extra_score * 0.3
 
             # case4 : predicted intent and ner result do not match but common ner exists
             elif(len(self.common_keys) > 0):
