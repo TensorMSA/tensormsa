@@ -101,7 +101,6 @@ class SummrizeResult():
             # case0 : if there is no intent essential parms
             if(len(list(set(essence))) == 0):
                 logging.info("Case0 : cannot understand intent")
-                #share_data.set_intent_id("-1")
                 score = -1
 
             # case1 : best case, predicted intent and common ner anal result sync well
@@ -151,13 +150,13 @@ class SummrizeResult():
                 c_intent_id = self.get_intent_candidate(self.common_keys)
                 share_data.set_intent_id(c_intent_id)
                 if(len(share_data.get_intent_id()) == 0 ) :
-                    share_data.set_intent_id("-1")
+                    share_data.set_intent_id(["-1"])
                 score = 5
 
             # case5 : error
             else:
                 logging.info("Case5 : cannot understand input at all")
-                share_data.set_intent_id("-1")
+                share_data.set_intent_id(["-1"])
                 score = -1
 
             return share_data, score

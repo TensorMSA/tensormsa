@@ -32,6 +32,7 @@ class ShareData(ChatBotConfManager):
         self.convert_dict_data =[]
         self.pattern_intent_id = ""
         self.test_intent_id = ""
+        self.test_slot_entity = {}
 
         # self.opt_sel_list = {}          # intent option list when intent anl result is not clear
         # self.ontology_id = ""           # current working ontology id
@@ -66,7 +67,7 @@ class ShareData(ChatBotConfManager):
             if key not in object :
                 raise Exception (''.join([key, ' not exist!']))
 
-        for key in ['story_slot_entity', 'story_ner_entity'] :
+        for key in ['story_slot_entity', 'story_ner_entity', 'test_slot_entity'] :
             if key in list(object.keys()) :
                 object[key] = {}
         return object
@@ -453,6 +454,7 @@ class ShareData(ChatBotConfManager):
         """
         self.story_slot_entity = self.convert_to_list_shape(self.story_slot_entity)
         self.story_ner_entity = self.convert_to_list_shape(self.story_ner_entity)
+        self.test_slot_entity = self.convert_to_list_shape(self.test_slot_entity)
         return self
 
     def add_test_client_data(self):
@@ -460,7 +462,8 @@ class ShareData(ChatBotConfManager):
         add unchanged info for client test
         :return: 
         """
-        self.test_intent_id = self.intent_id
+        self.test_intent_id = self.intent_id.copy()
+        self.test_slot_entity = self.story_slot_entity.copy()
         return self
 
     def convert_to_list_shape(self, input):
@@ -471,5 +474,5 @@ class ShareData(ChatBotConfManager):
         """
         buffer = []
         for key in input.keys() :
-            buffer.append({key:input[key]})
+            buffer.append({"key" : key, "val" :input[key]})
         return buffer
