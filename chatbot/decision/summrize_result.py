@@ -110,10 +110,10 @@ class SummrizeResult():
                 del_ner_keys = set(self.ner_keys) - set(essence) - set(extra)
                 for key in list(del_ner_keys):
                     del ner_obj[key]
-                del_dict_keys = set(self.ner_keys) - set(essence) - set(extra)
+                del_dict_keys = set(self.dict_keys) - set(essence) - set(extra)
                 for key in list(del_dict_keys):
                     del dict_obj[key]
-                if(len(list(ner_obj.keys())) > len(list(dict_obj.keys()))) :
+                if(len(list(ner_obj.keys())) >= len(list(dict_obj.keys()))) :
                     extra_score = len((set(extra) - set(self.ner_keys)))
                     share_data.replace_story_slot_entity(ner_obj)
                 else :
