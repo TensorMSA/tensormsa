@@ -1,6 +1,7 @@
 from chatbot.common.chat_share_data import ShareData
 from chatbot.story.story_board_manager import StoryBoardManager
 import logging, copy
+from functools import reduce
 
 class SummrizeResult():
     """
@@ -79,13 +80,7 @@ class SummrizeResult():
             share_data.set_intent_id("-1")
         finally:
             return share_data
-
-    # def match_avail_slot(self, share_data, dict_obj, ner_obj):
-    #     """
-    #     match all availabel slot for intent with given ner result
-    #     :return:
-    #     """
-    #     dict_obj
+            return share_data
 
     def get_score(self, essence, extra, share_data, intent_id):
         """
@@ -114,12 +109,14 @@ class SummrizeResult():
                 for key in list(del_dict_keys):
                     del dict_obj[key]
                 if(len(list(ner_obj.keys())) >= len(list(dict_obj.keys()))) :
-                    extra_score = len((set(extra) - set(self.ner_keys)))
+                    extra_score = len(list(ner_obj.keys()))
+                    len_score = reduce(lambda x,y : x+y, list(map(lambda x : len(self.ner_obj[x][0]), ner_obj.keys())))
                     share_data.replace_story_slot_entity(ner_obj)
                 else :
-                    extra_score = len((set(extra) - set(self.dict_keys)))
+                    extra_score = len(list(dict_obj.keys()))
+                    len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.ner_obj[x][0]), ner_obj.keys())))
                     share_data.replace_story_slot_entity(dict_obj)
-                score = 10 + len(essence) - extra_score * 0.3
+                score = 10 + len(essence) + extra_score * 0.3 + len_score * 0.001
 
             # case2 : intent and dict result matches
             elif(len(list(set(essence) - set(self.dict_keys))) == 0):
@@ -128,9 +125,10 @@ class SummrizeResult():
                 del_keys = set(self.dict_keys) - set(essence) - set(extra)
                 for key in list(del_keys):
                     del dict_obj[key]
-                extra_score = len((set(extra) - set(self.ner_keys)))
+                extra_score = len(list(dict_obj.keys()))
+                len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.ner_obj[x][0]), ner_obj.keys())))
                 share_data.replace_story_slot_entity(dict_obj)
-                score = 7 + len(essence)  - extra_score * 0.3
+                score = 7 + len(essence)  + extra_score * 0.3 + len_score * 0.001
 
             # case3 : predicted intent and bilstm anal matches
             elif(len(list(set(essence) - set(self.ner_keys))) == 0):
@@ -140,8 +138,9 @@ class SummrizeResult():
                 for key in list(del_keys):
                     del ner_obj[key]
                 share_data.replace_story_slot_entity(ner_obj)
-                extra_score = len((set(extra) - set(self.ner_keys)))
-                score = 8 + len(essence)  - extra_score * 0.3
+                len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.ner_obj[x][0]), ner_obj.keys())))
+                extra_score = len(list(ner_obj.keys()))
+                score = 8 + len(essence)  + extra_score * 0.3 + len_score * 0.001
 
             # case4 : predicted intent and ner result do not match but common ner exists
             elif(len(self.common_keys) > 0):
