@@ -128,7 +128,7 @@ class SummrizeResult():
                 extra_score = len(list(dict_obj.keys()))
                 len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.dict_obj[x][0]), dict_obj.keys())))
                 share_data.replace_story_slot_entity(dict_obj)
-                score = 7 + len(essence)  + extra_score * 0.3 + len_score * 0.001
+                score = 9 + len(essence)  + extra_score * 0.3 + len_score * 0.001
 
             # case3 : predicted intent and bilstm anal matches
             elif(len(list(set(essence) - set(self.ner_keys))) == 0):
@@ -140,7 +140,7 @@ class SummrizeResult():
                 share_data.replace_story_slot_entity(ner_obj)
                 len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.ner_obj[x][0]), ner_obj.keys())))
                 extra_score = len(list(ner_obj.keys()))
-                score = 8 + len(essence)  + extra_score * 0.3 + len_score * 0.001
+                score = 9 + len(essence)  + extra_score * 0.3 + len_score * 0.001
 
             # case4 : predicted intent and ner result do not match but common ner exists
             elif(len(self.common_keys) > 0):

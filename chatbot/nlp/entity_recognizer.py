@@ -64,7 +64,7 @@ class EntityRecognizer(ShareData):
                         ner_conv = ' '.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
                         result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=1.0)))
                         if(len(result[key]) == 0) :
-                            result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.4)))[0:4]
+                            result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.2)))[0:4]
                         if(len(result[key]) == 0):
                             data, id = self.check_all_dict(ner_conv.replace(' ',''), cb_data)
                             if(key != None) :
@@ -97,7 +97,7 @@ class EntityRecognizer(ShareData):
         result = []
         for key in list(cb_data.keys()) :
             model = ngram.NGram(cb_data.get(key))
-            result = list(map(lambda x: x[0], model.search(ner_conv, threshold=0.4)))[0:4]
+            result = list(map(lambda x: x[0], model.search(ner_conv, threshold=0.7)))[0:4]
             if(len(result) > 0 ) :
                 return result, key
         return result, None
