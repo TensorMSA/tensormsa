@@ -12,13 +12,12 @@ class IntendAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, cb_id, nn_id, intent_conf):
+    def __init__(self, cb_id, nn_id):
         """
         init global variables
         """
         self.cb_id = cb_id
         self.nn_id = nn_id
-        self.intent_conf = intent_conf
         #self.seq2seq_model = PredictNetSeq2Seq()
         self.wcnn_model = PredictNetWcnn()
 

@@ -37,15 +37,13 @@ class ServiceManager:
             self.chat_share_data = ShareData()
             self.entity_synonym = EntitySynonym(cb_id)
             self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging(), self.entity_synonym)
-            self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf())
+            self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf("custom"))
             self.entity_recognizer = EntityRecognizer(cb_id,
                                                       self.chatbot_conf.get_ner_model())
             self.intent_analyzer = IntendAnalyzer(cb_id,
-                                                  self.chatbot_conf.get_intent_model(),
-                                                  self.chat_knowledge_data_dict.get_intent_conf())
+                                                  self.chatbot_conf.get_intent_model())
             self.pattern_intent_analyzer = PatternIntendAnalyzer(cb_id,
-                                                  self.chatbot_conf.get_pattern_intent_model(),
-                                                  self.chat_knowledge_data_dict.get_intent_conf())
+                                                  self.chatbot_conf.get_pattern_intent_model())
             self.service_mapper = ServiceMapper(cb_id,
                                                 self.chat_knowledge_data_dict.get_entity_uuid(),
                                                 self.chat_knowledge_data_dict.get_intent_uuid())
@@ -78,38 +76,43 @@ class ServiceManager:
         """
         try :
             logging.info("■■■■■■■■■■ 챗봇 시작 ■■■■■■■■■■")
-            ### 1. UUID mapping ###
+            ### UUID mapping ###
 
-            ### 2. set parms from client ###
+            ### set parms from client ###
             share_ctx = self.chat_share_data.load_json(req_ctx)
-            share_ctx = self.entity_analyzer.parse(share_ctx)
-            share_ctx = self.rule_intent_analyzer.parse(share_ctx)
-            share_ctx = self.entity_recognizer.parse(share_ctx)
 
-            ### 3. nlp process ###
-            if(mode == 'thread') :
-                logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
-                job_list = [
-                            self.ThreadCls(share_ctx, self.intent_analyzer.parse),
-                            self.ThreadCls(share_ctx, self.pattern_intent_analyzer.parse)]
-                for job in job_list :
-                    job.start()
+            ### get rule intent ###
+            rule_intent = self.rule_intent_analyzer.parse(share_ctx)
 
-                for job in job_list:
-                    share_ctx.__dict__.update(job.join().__dict__)
-            else :
-                logging.info("■■■■■■■■■■ None Thread Mode ■■■■■■■■■■")
+            ### nlp process ###
+            if(not rule_intent):
+                share_ctx = self.entity_analyzer.parse(share_ctx)
                 share_ctx = self.entity_recognizer.parse(share_ctx)
-                share_ctx = self.intent_analyzer.parse(share_ctx)
 
-            # summrize result
-            share_ctx = self.summrize_result.parse(share_ctx)
+                if(mode == 'thread') :
+                    logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
+                    job_list = [
+                                self.ThreadCls(share_ctx, self.intent_analyzer.parse),
+                                self.ThreadCls(share_ctx, self.pattern_intent_analyzer.parse)]
+                    for job in job_list :
+                        job.start()
+
+                    for job in job_list:
+                        share_ctx.__dict__.update(job.join().__dict__)
+                else :
+                    logging.info("■■■■■■■■■■ None Thread Mode ■■■■■■■■■■")
+                    share_ctx = self.entity_recognizer.parse(share_ctx)
+                    share_ctx = self.intent_analyzer.parse(share_ctx)
+
+                ### summrize result ###
+                share_ctx = self.summrize_result.parse(share_ctx)
+
             share_ctx.add_test_client_data()
 
-            ### 4. UUID mapping ###
+            ### UUID mapping ###
             share_ctx = self.service_mapper.run(share_ctx)
 
-            ### 5. decision maker ###
+            ### decision maker ###
             #share_ctx = self.decision_maker.run(share_ctx)
 
             logging.info("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")

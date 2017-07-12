@@ -33,8 +33,8 @@ class ChatKnowledgeDataDict:
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)[0]['fields']['proper_noun'] #JSON Type
 
-    def get_intent_conf(self):
-        query_set = models.CB_INTENT_LIST_INFO.objects.filter(cb_id = self.cb_id)
+    def get_intent_conf(self, type):
+        query_set = models.CB_INTENT_LIST_INFO.objects.filter(cb_id = self.cb_id, intent_type = type)
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)
 
