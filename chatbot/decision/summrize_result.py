@@ -114,7 +114,7 @@ class SummrizeResult():
                     share_data.replace_story_slot_entity(ner_obj)
                 else :
                     extra_score = len(list(dict_obj.keys()))
-                    len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.ner_obj[x][0]), ner_obj.keys())))
+                    len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.dict_obj[x][0]), dict_obj.keys())))
                     share_data.replace_story_slot_entity(dict_obj)
                 score = 10 + len(essence) + extra_score * 0.3 + len_score * 0.001
 
@@ -126,7 +126,7 @@ class SummrizeResult():
                 for key in list(del_keys):
                     del dict_obj[key]
                 extra_score = len(list(dict_obj.keys()))
-                len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.ner_obj[x][0]), ner_obj.keys())))
+                len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.dict_obj[x][0]), dict_obj.keys())))
                 share_data.replace_story_slot_entity(dict_obj)
                 score = 7 + len(essence)  + extra_score * 0.3 + len_score * 0.001
 
