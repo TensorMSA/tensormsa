@@ -9,7 +9,7 @@ class EntitySynonym(ShareData):
     def make_represent(self, share_data, key, synonym):
         synonym_list = ChatKnowledgeMemDict.synonym.get(self.cb_id)
         represent_value = list(filter(lambda x: x["fields"]["synonym_value"] == synonym ,synonym_list))
-        share_data.set_story_slot_entity(key, [represent_value[0]["fields"]["slot_type"]])
+        share_data.set_story_slot_entity(key, [represent_value[0]["fields"]["represent_value"]])
         return represent_value[0]["fields"]["represent_value"]
 
     def get_synonym_key(self, key, synonym):
