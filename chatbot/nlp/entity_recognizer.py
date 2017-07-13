@@ -56,6 +56,7 @@ class EntityRecognizer(ShareData):
 
             if(ChatKnowledgeMemDict.ngram.get(self.cb_id) == None):
                 cb_data = ChatKnowledgeMemDict.data.get(self.cb_id)
+                cb_data_order = ChatKnowledgeMemDict.data_order.get(self.cb_id)
                 dist_keys = dict(Counter(ner_data))
                 index = 0
                 for key, val in zip(ner_data, input_sentence) :
@@ -71,7 +72,7 @@ class EntityRecognizer(ShareData):
                         #     result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.1)))[0:8]
                         if(len(result[key]) == 0):
                             logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
-                            data, id = self.check_all_dict(ner_conv.replace(' ',''), cb_data)
+                            data, id = self.check_all_dict(ner_conv.replace(' ',''), cb_data, cb_data_order)
                             if(id != None) :
                                 result[id] = data
                                 key = id
@@ -85,7 +86,7 @@ class EntityRecognizer(ShareData):
                         #     result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.1)))[0:8]
                         if (len(result[key]) == 0):
                             logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
-                            data, id = self.check_all_dict(ner_conv, cb_data)
+                            data, id = self.check_all_dict(ner_conv, cb_data, cb_data_order)
                             if (id != None):
                                 result[id] = data
                                 key = id
@@ -100,14 +101,14 @@ class EntityRecognizer(ShareData):
         except Exception as e :
             raise Exception ("Error on matching ngram afger bilstm crf : {0}".format(e))
 
-    def check_all_dict(self, ner_conv, cb_data):
+    def check_all_dict(self, ner_conv, cb_data, cb_data_order):
         """
         check other dict when failed to find matching value
         :param ner_conv: 
         :return: 
         """
         result = []
-        for key in list(cb_data.keys()) :
+        for key in cb_data_order :
             model = ngram.NGram(cb_data.get(key))
             result = list(map(lambda x: x[0], model.search(ner_conv, threshold=0.7)))[0:4]
             if(len(result) > 0 ) :

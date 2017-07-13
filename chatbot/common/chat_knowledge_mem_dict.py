@@ -7,3 +7,4 @@ class ChatKnowledgeMemDict:
     data = {}
     ngram = {}
     synonym = {}
+    data_order = {}

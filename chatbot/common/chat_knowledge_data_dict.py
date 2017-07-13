@@ -52,6 +52,8 @@ class ChatKnowledgeDataDict:
                                               reverse=False)
                 self.proper_noun = query_set
                 ChatKnowledgeMemDict.data[cb_id] = {}
+                ChatKnowledgeMemDict.data_order[cb_id] = []
+                ChatKnowledgeMemDict.data_order[cb_id] = self.proper_key_list
                 for key in self.proper_key_list:
                     ChatKnowledgeMemDict.data[cb_id][key] = self._get_entity_values(key)
 
@@ -81,6 +83,12 @@ class ChatKnowledgeDataDict:
                     for line in input_file.read().splitlines():
                         values.append(line)
             return values
+        except Exception as e :
+            raise Exception (e)
+
+    def _get_entity_order(self, key):
+        try :
+            return self.proper_noun.get(key)[0]
         except Exception as e :
             raise Exception (e)
 
