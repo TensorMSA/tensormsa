@@ -44,7 +44,7 @@ class ServiceManager:
                                                   self.chatbot_conf.get_intent_model())
             self.pattern_intent_analyzer = PatternIntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_pattern_intent_model())
-            self.service_mapper = ServiceMapper(cb_id,
+            self.service_mapper = ServiceMapper(cb_id, self.entity_synonym,
                                                 self.chat_knowledge_data_dict.get_entity_uuid(),
                                                 self.chat_knowledge_data_dict.get_intent_uuid())
             self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
