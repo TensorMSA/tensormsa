@@ -17,7 +17,8 @@ class ServiceMapper(ShareData):
         #    convert_dict_data = self.entity_synonym.make_represent(share_data, key_slot)
 
         logging.info("■■■■■■■■■■ 의도 최종 결과 : " + str(share_data.get_intent_id()))
-        logging.info("■■■■■■■■■■ Slot 최종 결과 : " + str(list(story_slot)))
+        logging.info("■■■■■■■■■■ Slot 최종 결과 : " + str(story_slot))
+        self._store_train_data(share_data)
 
         self._replace_intent_uuid(share_data)
         self._replace_entity_uuid(story_slot)
@@ -35,3 +36,9 @@ class ServiceMapper(ShareData):
         for key in slot_key_list:
             entity_uuid = list(filter(lambda x: x["fields"]["entity_id"] == key, self.entity_uuid_list))
             story_slot[entity_uuid[0]['fields']['entity_uuid']] = story_slot.pop(key)
+
+    def _store_train_data(self,share_data):
+        file = open("/hoya_data_root/log/log.txt", 'a')
+        data = "[%s , %s , %s , %s]\n"  % ( str(share_data.get_request_data()), str(share_data.get_story_slot_entity()) , str(share_data.get_intent_id()), str(share_data.get_intent_history()))
+        file.write(data)
+        file.close()

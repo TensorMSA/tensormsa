@@ -92,7 +92,7 @@ class EntityAnalyzer(ShareData):
                     key_slot = share_data.get_story_slot_entity(key_check[0])[0] + " " + pos_tags[0] if share_data.get_story_slot_entity(key_check[0]) is not None else "" + pos_tags[0]
                 share_data.set_story_slot_entity(key_check[0], [key_slot])
                 convert_dict_data = key_check[0]
-        elif (pos_tags[1] in ['SY', 'EC', 'EP', 'VA', 'VX', 'XSV+EC', 'VX+EC', 'VX+EF', 'SF', 'VCP+EF', 'ETN', 'ETM', 'JKO', 'EF','VCP+EC','SSO','SSC']):
+        elif (pos_tags[1] in ['SY', 'EC', 'EP', 'VA', 'VX', 'XSV+EC', 'VX+EC', 'VX+EF', 'SF', 'VCP+EF', 'ETN', 'ETM', 'JKO', 'EF','VCP+EC','SSO','SSC','EP+EF']):
             return "",""
         return pos_tags_0, convert_dict_data
 
