@@ -50,6 +50,18 @@ class SummrizeResult():
         temp = list(filter(lambda x: len(list(set(x['fields']['entity_list']['key']) - set(ner_keys))) == 0, self.intent_info))
         return list(map(lambda x : x['fields']['intent_id'], temp))
 
+    def get_intent_match(self, keys):
+        """
+        get all intent ids matchs with ner anal result 
+        :param intent: 
+        :return: 
+        """
+        temp = list(filter(lambda x: len(list(set(keys)
+                                              - set(x['fields']['entity_list']['key'])
+                                              - set(x['fields']['entity_list']['extra']))) == 0
+                                     , self.intent_info))
+        return list(map(lambda x : x['fields']['intent_id'], temp))
+
     def check_result(self, pattern_intent_id, intent_id, share_data):
         """
         check all preprocessed result and make final result 
@@ -73,18 +85,17 @@ class SummrizeResult():
             # use higher score intent
             if(score1 > score2) :
                 share_data = share_data1
+                return share_data
             else :
                 share_data = share_data2
+                return share_data
         except Exception as e :
             logging.info("Error : Error on summerize result")
             share_data.set_intent_id("-1")
-        finally:
-            return share_data
-            return share_data
 
     def get_score(self, essence, extra, share_data, intent_id):
         """
-        
+        calculate score with share_data and intent slots 
         :return: 
         """
         try :
@@ -110,13 +121,13 @@ class SummrizeResult():
                     del dict_obj[key]
                 if(len(list(ner_obj.keys())) >= len(list(dict_obj.keys()))) :
                     extra_score = len(list(ner_obj.keys()))
-                    len_score = reduce(lambda x,y : x+y, list(map(lambda x : len(self.ner_obj[x][0]), ner_obj.keys())))
+                    len_score = reduce(lambda x,y : x + y, list(map(lambda x : len(self.ner_obj[x][0]), ner_obj.keys())))
                     share_data.replace_story_slot_entity(ner_obj)
                 else :
                     extra_score = len(list(dict_obj.keys()))
                     len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(self.dict_obj[x][0]), dict_obj.keys())))
                     share_data.replace_story_slot_entity(dict_obj)
-                score = 10 + len(essence) + extra_score * 0.3 + len_score * 0.001
+                score = 9.6 + len(essence) + extra_score * 0.3 + len_score * 0.001
 
             # case2 : intent and dict result matches
             elif(len(list(set(essence) - set(self.dict_keys))) == 0):
@@ -142,17 +153,37 @@ class SummrizeResult():
                 extra_score = len(list(ner_obj.keys()))
                 score = 9.5 + len(essence)  + extra_score * 0.3 + len_score * 0.001
 
-            # case4 : predicted intent and ner result do not match but common ner exists
+            # case4 : check dict key matching intent
+            elif (len(self.dict_keys) > 0):
+                # get multiple intent which matches with ner result
+                logging.info("Case5 : find intent with ner keys ")
+                c_intent_id = self.get_intent_match(self.dict_keys)
+                share_data.set_intent_id(list(set(c_intent_id + intent_id)))
+                if (len(share_data.get_intent_id()) == 0):
+                    share_data.set_intent_id(["-1"])
+                score = 5 + len(self.dict_keys)
+
+            # case5 : check ner key matching intent
+            elif (len(self.ner_keys) > 0):
+                # get multiple intent which matches with ner result
+                logging.info("Case4 : find intent with ner keys ")
+                c_intent_id = self.get_intent_match(self.ner_keys)
+                share_data.set_intent_id(list(set(c_intent_id + intent_id)))
+                if (len(share_data.get_intent_id()) == 0):
+                    share_data.set_intent_id(["-1"])
+                score = 5 + len(self.ner_keys)
+
+            # case6 : predicted intent and ner result do not match but common ner exists
             elif(len(self.common_keys) > 0):
                 # get multiple intent which matches with ner result
-                logging.info("Case4 : intent do not match but ner matches")
+                logging.info("Case6 : intent do not match but ner matches")
                 c_intent_id = self.get_intent_candidate(self.common_keys)
-                share_data.set_intent_id(c_intent_id)
+                share_data.set_intent_id(c_intent_id + intent_id)
                 if(len(share_data.get_intent_id()) == 0 ) :
                     share_data.set_intent_id(["-1"])
-                score = 5
+                score = 5.1 + len(self.common_keys)
 
-            # case5 : error
+            # case7 : error
             else:
                 logging.info("Case5 : cannot understand input at all")
                 share_data.set_intent_id(["-1"])
