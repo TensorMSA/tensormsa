@@ -47,7 +47,7 @@ class SummrizeResult():
         :param intent: 
         :return: 
         """
-        temp = list(filter(lambda x: len(list(set(x['fields']['entity_list']['key']) - set(ner_keys))) == 0, self.intent_info))
+        temp = list(filter(lambda x: len(list(set(ner_keys) - set(x['fields']['entity_list']['key']))) == 0, self.intent_info))
         return list(map(lambda x : x['fields']['intent_id'], temp))
 
     def get_intent_match(self, keys):
@@ -189,16 +189,6 @@ class SummrizeResult():
                     share_data.set_intent_id(["-1"])
                 score = 5 + len(self.ner_keys)
 
-            # case7 : predicted intent and ner result do not match but common ner exists
-            elif(len(self.common_keys) > 0):
-                # get multiple intent which matches with ner result
-                logging.info("Case7 : intent do not match but ner matches")
-                c_intent_id = self.get_intent_candidate(self.common_keys)
-                share_data.set_intent_id(c_intent_id + intent_id)
-                if(len(share_data.get_intent_id()) == 0 ) :
-                    share_data.set_intent_id(["-1"])
-                score = 5.1 + len(self.common_keys)
-
             # case8 : make combine key with dict result and ner result
             elif ((str(self.dict_keys) != str(self.ner_keys))):
                 # get multiple intent which matches with ner result
@@ -228,6 +218,16 @@ class SummrizeResult():
                     len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(comb_obj[x][0]), comb_obj.keys())))
                     extra_score = len(list(comb_obj.keys()))
                     score = 9.5 + len(essence)  + extra_score * 0.3 + len_score * 0.001
+
+            # case7 : predicted intent and ner result do not match but common ner exists
+            elif (len(self.common_keys) > 0):
+                # get multiple intent which matches with ner result
+                logging.info("Case7 : intent do not match but ner matches")
+                c_intent_id = self.get_intent_candidate(self.common_keys)
+                share_data.set_intent_id(c_intent_id + intent_id)
+                if (len(share_data.get_intent_id()) == 0):
+                    share_data.set_intent_id(["-1"])
+                score = 5.1 + len(self.common_keys)
 
             # case9 : error
             else:
