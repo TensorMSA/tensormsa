@@ -153,39 +153,85 @@ class SummrizeResult():
                 extra_score = len(list(ner_obj.keys()))
                 score = 9.5 + len(essence)  + extra_score * 0.3 + len_score * 0.001
 
-            # case4 : check dict key matching intent
-            elif (len(self.dict_keys) > 0):
+            # case5 : check dict key matching intent
+            elif (len(self.dict_keys) > 0 and (len(self.dict_keys) > len(self.ner_keys))):
                 # get multiple intent which matches with ner result
                 logging.info("Case5 : find intent with ner keys ")
                 c_intent_id = self.get_intent_match(self.dict_keys)
                 share_data.set_intent_id(list(set(c_intent_id + intent_id)))
+
+                # delete unnecessary keys
+                del_dict_keys = set(self.dict_keys) - set(essence)
+                for key in list(del_dict_keys):
+                    del dict_obj[key]
+                share_data.replace_story_slot_entity(dict_obj)
+
+                # set -1 when there is no alternative option
                 if (len(share_data.get_intent_id()) == 0):
                     share_data.set_intent_id(["-1"])
                 score = 5 + len(self.dict_keys)
 
-            # case5 : check ner key matching intent
-            elif (len(self.ner_keys) > 0):
+            # case6 : check ner key matching intent
+            elif (len(self.ner_keys) > 0 and (len(self.ner_keys) > len(self.dict_keys))):
                 # get multiple intent which matches with ner result
-                logging.info("Case4 : find intent with ner keys ")
+                logging.info("Case6 : find intent with ner keys ")
                 c_intent_id = self.get_intent_match(self.ner_keys)
                 share_data.set_intent_id(list(set(c_intent_id + intent_id)))
+
+                #delete unnecessary keys
+                del_ner_keys = set(self.ner_keys) - set(essence)
+                for key in list(del_ner_keys):
+                    del ner_obj[key]
+                share_data.replace_story_slot_entity(ner_obj)
+
+                # set -1 when there is no alternative option
                 if (len(share_data.get_intent_id()) == 0):
                     share_data.set_intent_id(["-1"])
                 score = 5 + len(self.ner_keys)
 
-            # case6 : predicted intent and ner result do not match but common ner exists
+            # case7 : predicted intent and ner result do not match but common ner exists
             elif(len(self.common_keys) > 0):
                 # get multiple intent which matches with ner result
-                logging.info("Case6 : intent do not match but ner matches")
+                logging.info("Case7 : intent do not match but ner matches")
                 c_intent_id = self.get_intent_candidate(self.common_keys)
                 share_data.set_intent_id(c_intent_id + intent_id)
                 if(len(share_data.get_intent_id()) == 0 ) :
                     share_data.set_intent_id(["-1"])
                 score = 5.1 + len(self.common_keys)
 
-            # case7 : error
+            # case8 : make combine key with dict result and ner result
+            elif ((str(self.dict_keys) != str(self.ner_keys))):
+                # get multiple intent which matches with ner result
+                logging.info("Case8 : find intent with combined keys ")
+                comb_keys = list(set(self.ner_keys + self.dict_keys))
+                comb_obj = {}
+                for key in comb_keys :
+                    if (dict_obj.get(key) == None and ner_obj.get(key) == None) :
+                        break
+                    elif (dict_obj.get(key) == None):
+                        comb_obj[key] = ner_obj[key]
+                    elif (ner_obj.get(key) == None):
+                        comb_obj[key] = dict_obj[key]
+                    elif (ner_obj.get(key) == dict_obj.get(key)):
+                        comb_obj[key] = dict_obj[key]
+                    elif (len(ner_obj.get(key)) >= len(dict_obj.get(key))):
+                        comb_obj[key] = ner_obj[key]
+                    elif (len(dict_obj.get(key)) >= len(ner_obj.get(key))):
+                        comb_obj[key] = dict_obj[key]
+
+                if (len(list(set(essence) - set(comb_keys))) == 0):
+                    # trim entities fit to intent slot
+                    del_keys = set(comb_keys) - set(essence)
+                    for key in list(del_keys):
+                        del comb_obj[key]
+                    share_data.replace_story_slot_entity(comb_obj)
+                    len_score = reduce(lambda x, y: x + y, list(map(lambda x: len(comb_obj[x][0]), comb_obj.keys())))
+                    extra_score = len(list(comb_obj.keys()))
+                    score = 9.5 + len(essence)  + extra_score * 0.3 + len_score * 0.001
+
+            # case9 : error
             else:
-                logging.info("Case5 : cannot understand input at all")
+                logging.info("Case8 : cannot understand input at all")
                 share_data.set_intent_id(["-1"])
                 score = -1
 
