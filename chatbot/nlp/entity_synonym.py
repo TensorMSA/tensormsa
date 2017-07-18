@@ -16,7 +16,13 @@ class EntitySynonym(ShareData):
         exist = False
         synonym_list = ChatKnowledgeMemDict.synonym.get(self.cb_id)
         key_list = list(filter(lambda x: x["fields"]["entity_id"] == key and x["fields"]["synonym_value"] in synonym , synonym_list))
+
+        for i, syn in enumerate(synonym) :
+            for key in key_list :
+                if (syn == key['fields']['synonym_value']) :
+                    synonym[i] = key['fields']['represent_value']
+
         if(len(key_list) > 0):
-            share_data.set_story_slot_entity(key_list[0]["fields"]["entity_id"],[key_list[0]["fields"]["represent_value"]])
+            share_data.set_story_slot_entity(key_list[0]["fields"]["entity_id"], synonym)
             exist = True
         return exist
