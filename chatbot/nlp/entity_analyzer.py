@@ -3,7 +3,6 @@ from chatbot.common.chat_share_data import ShareData
 # from konlpy.tag import Twitter
 from chatbot.nlp.entity_synonym import EntitySynonym
 from konlpy.tag import Mecab
-from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 import logging
 
 class EntityAnalyzer(ShareData):
@@ -21,33 +20,6 @@ class EntityAnalyzer(ShareData):
         self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=False) #Sorted Key Priority
         self.proper_noun = proper_noun     # key : [values]
         self.entity_synonym = entity_synonym
-        #self._load_proper_noun(proper_noun.keys(), proper_noun)
-        #self.bilstmcrf_model = PredictNetBiLstmCrf()
-
-    # Compare load all file and Step by Step (Step is faster
-    # def _load_proper_noun(self, key_list, proper_noun):
-    #     """
-    #     load entity lists
-    #     :return:
-    #     """
-    #     if (len(key_list) == 0) :
-    #         raise Exception ("")
-    #
-    #     for key in key_list :
-    #         if key in proper_noun :
-    #             self.peoper_noun_values[key] = proper_noun[key]
-    #             #compare file r/w
-    #             #self._load_proper_file(key, proper_noun[key])
-    #         else :
-    #             self.peoper_noun_values[key] = []
-    #
-    # def _load_proper_file(self, key, path):
-    #     input_file = open(path, 'r')
-    #     noun_values=[]
-    #     for line in input_file:
-    #         noun_values.append(line)
-    #     self.peoper_noun_values[key] = noun_values
-    #     input_file.close()
 
     def parse(self, share_data):
         """
@@ -56,7 +28,6 @@ class EntityAnalyzer(ShareData):
         :return:
         """
         try :
-            # TODO : Add Intent and NER divide call from service_type
             input_data = share_data.get_request_data()
             pos_tags = self._pos_tagger(input_data)
             logging.info("■■■■■■■■■■ 형태소 분석 결과 : " + str(pos_tags))
@@ -72,17 +43,13 @@ class EntityAnalyzer(ShareData):
         except Exception as e :
             raise Exception ("error on entity anal : {0}".format(e))
 
-    #Custom Case : ex)안녕 and len < 3
+    #Custom Case : ex)"hi and hello" and len < 3
     def _preprocess_data(self, share_data, pos_tags):
         #except meaningless
         convert_dict_data = pos_tags[0]
         pos_tags_0 = pos_tags[0]
         if (pos_tags[1] in ['NNG', 'NNP','SL'] and len(pos_tags[0]) > 1): #Check only Noun
             key_slot = pos_tags[0]
-            # Check Synonym
-            # if (self.entity_synonym.get_synonym_key( key_slot)):
-            #     convert_dict_data = self.entity_synonym.make_represent(share_data, key_slot)
-            # else:
             key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
             if(key_check == []):
                 pass
@@ -115,7 +82,6 @@ class EntityAnalyzer(ShareData):
 
     def _extract_proper_entity(self, value, key):
         exist = False
-        #input_file = open('/home/dev/hoyai/demo/data/name.txt', 'r')
         input_file = open(self.proper_noun.get(key)[1], 'r')
         if(input_file is not None):
             for line in input_file:
