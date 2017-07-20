@@ -62,7 +62,7 @@ class WorkFlowSimpleManager :
         if(type == 'cnn'):
             self._create_predefined_nodes_cnn(state_id)
             self._create_path_folder(nn_id, wf_ver)
-        elif(type == 'renet'):
+        elif(type == 'resnet'):
             self._create_predefined_nodes_renet(state_id)
         elif(type == 'word2vec'):
             self._create_predefined_nodes_word2vec(state_id)
@@ -89,7 +89,7 @@ class WorkFlowSimpleManager :
         elif (type == 'fasttext_txt'):
             self._create_predefined_nodes_fasttext_txt(state_id)
         else :
-            raise Exception ("Error : Not defined type ")
+            raise Exception ("Error : Not defined type ("+type+")")
 
         return type
 

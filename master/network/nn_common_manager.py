@@ -12,8 +12,32 @@ class NNCommonManager :
     2. table
         NN_DEF_LIST_INFO
         NN_VER_WFLIST_INFO
-        NN_VER_BATCHLIST_INFO
+        NN_VER_BATCHLIST_INFOs
     """
+    def get_nn_id_max(self):
+        try:
+            query_set = models.NN_DEF_LIST_ID_INFO.objects.filter().aggregate(Max('id'))
+            return_value = query_set['id__max']
+            if query_set['id__max'] == None:
+                return_value = 0
+            return return_value
+
+        except Exception as e:
+            raise Exception(e)
+
+    def get_nn_id_info(self, nn_id):
+        """
+        update nn_info
+        :param nn_id:
+        :param obj : json object
+        :return:
+        """
+        try:
+            query_set = models.NN_DEF_LIST_INFO.objects.filter(nn_id=nn_id)
+            query_set = serial.serialize("json", query_set)
+            return json.loads(query_set)
+        except Exception as e:
+            raise Exception(e)
 
     def get_nn_info(self, condition):
         """
@@ -87,16 +111,23 @@ class NNCommonManager :
             raise Exception(e)
 
 
-    def insert_nn_info(self, req):
+    def insert_nn_info(self, req, reqs):
         """
         insert nn_info
         :param req: json object
         :return:
         """
         try:
-            serializer = serializers.NN_DEF_LIST_INFO_Serializer(data=req)
-            if serializer.is_valid():
-                serializer.save()
+            serializer1 = serializers.NN_DEF_LIST_INFO_Serializer(data=req)
+            if serializer1.is_valid():
+                serializer1.save()
+        except Exception as e:
+            raise Exception(e)
+
+        try:
+            serializer2 = serializers.NN_DEF_LIST_ID_INFO_Serializer(data=reqs)
+            if serializer2.is_valid():
+                serializer2.save()
         except Exception as e:
             raise Exception(e)
         finally:
@@ -116,7 +147,7 @@ class NNCommonManager :
         except Exception as e:
             raise Exception(e)
         finally:
-            return req["nn_id"]
+            return req["nn_wf_ver_id"]
 
     def update_nn_wf_info(self, nn_id, up_data):
         """

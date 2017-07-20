@@ -13,11 +13,22 @@ class CommonNNInfoList(APIView):
         """
         try:
             input_parm = request.data
+            max_nnid = NNCommonManager().get_nn_id_max() + 1
+            if nnid == "":
+                nnid = "nn" + str(max_nnid).zfill(8)
+            else:
+                return_data = NNCommonManager().get_nn_id_info(nnid)
+                if return_data != []:
+                    return Response(json.dumps(nnid+" Network ID already exists"))
             input_parm['nn_id'] = nnid
             input_parm['automl_parms'] = {}
             input_parm['automl_runtime'] = {}
             input_parm['automl_stat'] = {}
-            return_data = NNCommonManager().insert_nn_info(input_parm)
+
+            input_parm_s = {}
+            input_parm_s['id'] = max_nnid
+            input_parm_s['nn_id'] = nnid
+            return_data = NNCommonManager().insert_nn_info(input_parm, input_parm_s)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
@@ -32,6 +43,8 @@ class CommonNNInfoList(APIView):
             condition['nn_id'] = nnid
             if str(nnid).lower() == 'all':
                 condition['nn_id'] = '%'
+            elif str(nnid).lower() == 'seq':
+                condition['nn_id'] = 'seq'
             return_data = NNCommonManager().get_nn_info(condition)
             logging.info(return_data)
             return Response(json.dumps(return_data, cls=DjangoJSONEncoder))

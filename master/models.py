@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
+
 # Create your models here.
 class NN_DEF_LIST_INFO(models.Model):
     nn_id = models.CharField(max_length=50, blank=False, primary_key=True)
@@ -14,6 +15,13 @@ class NN_DEF_LIST_INFO(models.Model):
     automl_parms = JSONField()
     automl_runtime = JSONField()
     automl_stat = JSONField()
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update_date = models.DateTimeField(auto_now=True)
+    created_by = models.IntegerField(default=0)
+    last_updated_by = models.IntegerField(default=0)
+
+class NN_DEF_LIST_ID_INFO(models.Model):
+    nn_id = models.ForeignKey(NN_DEF_LIST_INFO, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)

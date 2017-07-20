@@ -11,6 +11,14 @@ class NN_DEF_LIST_INFO_Serializer(serializers.ModelSerializer):
         fields = ('nn_id', 'biz_cate', 'biz_sub_cate', 'nn_title', 'nn_desc', 'use_flag', 'dir', 'config',
                   'automl_parms', 'automl_runtime', 'automl_stat')
 
+class NN_DEF_LIST_ID_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : NN_DEF_LIST_ID_INFO
+    """
+    class Meta:
+        model = models.NN_DEF_LIST_ID_INFO
+        fields = ('id', 'nn_id')
+
 class NN_VER_WFLIST_INFO_Serializer(serializers.ModelSerializer):
     """
     Table : NN_VER_WFLIST_INFO
