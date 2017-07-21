@@ -21,9 +21,12 @@ class CommonNNInfoList(APIView):
                 if return_data != []:
                     return Response(json.dumps(nnid+" Network ID already exists"))
             input_parm['nn_id'] = nnid
-            input_parm['automl_parms'] = {}
-            input_parm['automl_runtime'] = {}
-            input_parm['automl_stat'] = {}
+            if input_parm.get('automl_parms') == None:
+                input_parm['automl_parms'] = {}
+            if input_parm.get('automl_runtime') == None:
+                input_parm['automl_runtime'] = {}
+            if input_parm.get('automl_stat') == None:
+                input_parm['automl_stat'] = {}
 
             input_parm_s = {}
             input_parm_s['id'] = max_nnid
@@ -59,9 +62,12 @@ class CommonNNInfoList(APIView):
         try:
             input_parm = request.data
             input_parm['nn_id'] = nnid
-            input_parm['automl_parms'] = {}
-            input_parm['automl_runtime'] = {}
-            input_parm['automl_stat'] = {}
+            if input_parm.get('automl_parms') == None:
+                input_parm['automl_parms'] = {}
+            if input_parm.get('automl_runtime') == None:
+                input_parm['automl_runtime'] = {}
+            if input_parm.get('automl_stat') == None:
+                input_parm['automl_stat'] = {}
             return_data = NNCommonManager().update_nn_info(input_parm)
             return Response(json.dumps(return_data))
         except Exception as e:
