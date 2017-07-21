@@ -6,7 +6,6 @@ from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.rule_intent_analyzer import RuleIntentAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
-from chatbot.nlp.pattern_intent_analyzer import PatternIntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
 from chatbot.manager.service_mapper import ServiceMapper
 from chatbot.decision.summrize_result import SummrizeResult
