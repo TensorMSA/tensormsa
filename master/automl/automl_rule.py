@@ -71,7 +71,6 @@ class AutoMlRule:
         finally:
             return True
 
-
     def update_graph_type_list(self, graph_flow_id, input_data):
         """
         set net config data edited on view
@@ -79,12 +78,20 @@ class AutoMlRule:
         :return:
         """
         try:
-            obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=graph_flow_id)
-            data_set = getattr(obj, "graph_flow_data")
-            data_set.update(input_data)
-            setattr(obj, "graph_flow_data", data_set)
-            obj.save()
+            if graph_flow_id == "graph_flow_desc":
+                for i in input_data:
+                    obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=i)
+                    setattr(obj, graph_flow_id, input_data[i])
+                    obj.save()
+            else:
+                obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=graph_flow_id)
+                data_set = getattr(obj, "graph_flow_data")
+                data_set.update(input_data)
+                setattr(obj, "graph_flow_data", data_set)
+                obj.save()
+
             return input_data
         except Exception as e:
             raise Exception(e)
         return None
+
