@@ -6,7 +6,6 @@ from chatbot.common.chat_knowledge_data_dict import ChatKnowledgeDataDict
 from chatbot.nlp.entity_analyzer import EntityAnalyzer
 from chatbot.nlp.rule_intent_analyzer import RuleIntentAnalyzer
 from chatbot.nlp.intend_analyzer import IntendAnalyzer
-from chatbot.nlp.pattern_intent_analyzer import PatternIntendAnalyzer
 from chatbot.nlp.entity_recognizer import EntityRecognizer
 from chatbot.manager.service_mapper import ServiceMapper
 from chatbot.decision.summrize_result import SummrizeResult
@@ -40,9 +39,9 @@ class ServiceManager:
             self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf("custom"))
             self.entity_recognizer = EntityRecognizer(cb_id,
                                                       self.chatbot_conf.get_ner_model())
-            self.intent_analyzer = IntendAnalyzer(cb_id,
+            self.intent_analyzer_rule = IntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_intent_model())
-            self.pattern_intent_analyzer = PatternIntendAnalyzer(cb_id,
+            self.intent_analyzer_ner = IntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_pattern_intent_model())
             self.service_mapper = ServiceMapper(cb_id, self.entity_synonym,
                                                 self.chat_knowledge_data_dict.get_entity_uuid(),
@@ -55,14 +54,15 @@ class ServiceManager:
             raise Exception ("error on ChatBot ServiceManager init process : {0}".format(e))
 
     class ThreadCls(threading.Thread) :
-        def __init__(self, input, func):
+        def __init__(self, input, func, type):
             threading.Thread.__init__(self)
             self.input = input
             self.ret = None
             self.func = func
+            self.type = type
 
         def run(self):
-            self.ret = self.func(self.input)
+            self.ret = self.func(self.input, self.type)
 
         def join(self):
             threading.Thread.join(self)
@@ -89,20 +89,20 @@ class ServiceManager:
                 share_ctx = self.entity_analyzer.parse(share_ctx)
                 share_ctx = self.entity_recognizer.parse(share_ctx)
 
-                if(mode == 'thread') :
+                if(mode == 'thread'):
                     logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
                     job_list = [
-                                self.ThreadCls(share_ctx, self.intent_analyzer.parse),
-                                self.ThreadCls(share_ctx, self.pattern_intent_analyzer.parse)]
-                    for job in job_list :
+                                self.ThreadCls(share_ctx, self.intent_analyzer_rule.parse, 'Rule'),
+                                self.ThreadCls(share_ctx, self.intent_analyzer_ner.parse, 'NER')]
+                    for job in job_list:
                         job.start()
 
                     for job in job_list:
                         share_ctx.__dict__.update(job.join().__dict__)
                 else :
                     logging.info("■■■■■■■■■■ None Thread Mode ■■■■■■■■■■")
-                    share_ctx = self.entity_recognizer.parse(share_ctx)
-                    share_ctx = self.intent_analyzer.parse(share_ctx)
+                    share_ctx = self.intent_analyzer_rule.parse(share_ctx, 'Rule')
+                    share_ctx = self.intent_analyzer_ner.parse(share_ctx, 'NER')
 
                 ### summrize result ###
                 share_ctx = self.summrize_result.parse(share_ctx)

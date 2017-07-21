@@ -362,7 +362,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                         word_list = [pad_size * [('#')] + list(map(lambda x : x, x_input.split(' ')))]
                     else:
                         word_list = [x_input.split(' ')]
-                    logging.info("Predict Parsed Data : {0}".format(word_list))
+                    #logging.info("Predict Parsed Data : {0}".format(word_list))
                 word_list = self._word_embed_data('onehot',
                                                   np.array(word_list),
                                                   cls=self.input_onehot,

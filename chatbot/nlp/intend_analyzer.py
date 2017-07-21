@@ -21,7 +21,7 @@ class IntendAnalyzer(ShareData):
         #self.seq2seq_model = PredictNetSeq2Seq()
         self.wcnn_model = PredictNetWcnn()
 
-    def parse(self, share_data):
+    def parse(self, share_data, type):
         """
         run intent analyzer
         :param context:
@@ -30,12 +30,21 @@ class IntendAnalyzer(ShareData):
         if (share_data.get_intent_id() != ""):
             logging.info("■■■■■■■■■■ 의도 존재  : " + share_data.get_intent_id())
         else :
-            convert_data = share_data.get_convert_data()
-            intent_model = self.get_intent_model(' '.join(convert_data))
-            logging.info("■■■■■■■■■■ Raw 의도 분석 결과(Model) : " + intent_model)
+            if(type == 'Rule'):
+                convert_data = share_data.get_convert_dict_data()
+                logging.info("■■■■■■■■■■ Rule 의도 분석 Input Data : " + ' '.join(convert_data))
+                intent_model = self.get_intent_model(' '.join(convert_data))
+                logging.info("■■■■■■■■■■ Rule 의도 분석 결과(Model) : " + intent_model)
+                share_data.set_pattern_intent_id([intent_model])
+                share_data.set_intent_history({"P": intent_model})
 
-            share_data.set_intent_id([intent_model])
-            share_data.set_intent_history({"i" : intent_model})
+            elif(type == 'NER'):
+                convert_data = share_data.get_convert_data()
+                logging.info("■■■■■■■■■■ NER 의도 분석 Input Data : " + ' '.join(convert_data))
+                intent_model = self.get_intent_model(' '.join(convert_data))
+                logging.info("■■■■■■■■■■ NER 의도 분석 결과(Model) : " + intent_model)
+                share_data.set_intent_id([intent_model])
+                share_data.set_intent_history({"i" : intent_model})
 
         return share_data
 
