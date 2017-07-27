@@ -68,8 +68,9 @@ class EntityRecognizer(ShareData):
                     if (cb_data.get(key) == None) :
                         continue
 
-                    conv_dict = reduce(lambda x,y : dict(x.items() | y.items()) , list(map(lambda x: {x.lower() : x}, cb_data.get(key))))
-                    model = ngram.NGram(list(map(lambda x : x.lower(), cb_data.get(key))))
+                    model = ngram.NGram(key=self.lower)
+                    model.update(cb_data.get(key))
+
                     if(dist_keys.get(key) > 1):
                         ner_conv = ' '.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
                         ner_conv = ner_conv.lower()
@@ -100,9 +101,9 @@ class EntityRecognizer(ShareData):
                         del result[key]
                     else :
                         if(key is not None and key == 'tagorg') :
-                            share_data.set_story_ner_entity(key, [ner_conv] + list(map(lambda x : conv_dict.get(x) , result[key])))
+                            share_data.set_story_ner_entity(key, [ner_conv] + result[key])
                         else :
-                            share_data.set_story_ner_entity(key, list(map(lambda x : conv_dict.get(x) , result[key])))
+                            share_data.set_story_ner_entity(key, result[key])
 
                     index = index + 1
             return share_data, ner_data_input
@@ -122,3 +123,7 @@ class EntityRecognizer(ShareData):
             if(len(result) > 0 ) :
                 return result, key
         return result, None
+
+
+    def lower(self, s) :
+        return s.lower()

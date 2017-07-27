@@ -165,6 +165,10 @@ class BiLstmCommon :
         """
 
         def f(word):
+            # 1. preprocess word
+            if (lowercase):
+                word = word.lower()
+
             # 0. get chars of words
             if vocab_chars is not None and chars == True:
                 char_ids = []
@@ -172,10 +176,6 @@ class BiLstmCommon :
                     # ignore chars out of vocabulary
                     if char in vocab_chars:
                         char_ids += [vocab_chars[char]]
-
-            # 1. preprocess word
-            if (lowercase):
-                word = word.lower()
 
             # 2. get id of word
             if vocab_words is not None:
