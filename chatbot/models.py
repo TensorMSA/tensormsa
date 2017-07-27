@@ -27,6 +27,7 @@ class CB_INTENT_LIST_INFO(models.Model):
 class CB_STORYBOARD_LIST_INFO(models.Model):
     intent_id = models.ForeignKey(CB_INTENT_LIST_INFO, on_delete=models.CASCADE)
     story_id = models.CharField(max_length=10, blank=False, primary_key=True)
+    story_type = models.CharField(max_length=10, blank=True)
     story_desc = models.CharField(max_length=50, blank=True)
 
 class CB_ENTITY_LIST_INFO(models.Model):
