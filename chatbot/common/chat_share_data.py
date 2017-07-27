@@ -469,6 +469,7 @@ class ShareData(ChatBotConfManager):
         add unchanged info for client test
         :return: 
         """
+        self.intent_id = list(set(self.intent_id))
         self.test_intent_id = self.intent_id.copy()
         self.test_slot_entity = self.story_slot_entity.copy()
         return self
