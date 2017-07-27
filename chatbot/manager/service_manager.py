@@ -69,7 +69,7 @@ class ServiceManager:
             return self.ret
 
 
-    def run_chatbot(self, req_ctx, mode='thread'):
+    def run_chatbot(self, req_ctx, mode='none'):
         """
         execute chatbot as api mode
         :return:

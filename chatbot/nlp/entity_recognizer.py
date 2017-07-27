@@ -62,14 +62,16 @@ class EntityRecognizer(ShareData):
                 for key, val in zip(ner_data, input_sentence) :
                     if (key == 'O'):
                         continue
-                    model = ngram.NGram(cb_data.get(key))
+                    if (result.get(key)) :
+                        continue
+
+                    model = ngram.NGram(list(map(lambda x : x.lower(), cb_data.get(key))))
                     if(dist_keys.get(key) > 1):
                         ner_conv = ' '.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
+                        ner_conv = ner_conv.lower()
                         result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=1.0)))
                         if(len(result[key]) == 0) :
-                            result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.3)))[0:4]
-                        # if (len(result[key]) == 0):
-                        #     result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.1)))[0:8]
+                            result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.15)))[0:4]
                         if(len(result[key]) == 0):
                             logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
                             data, id = self.check_all_dict(ner_conv.replace(' ',''), cb_data, cb_data_order)
@@ -78,12 +80,10 @@ class EntityRecognizer(ShareData):
                                 key = id
                                 ner_data_input[index] = id
                     else:
-                        ner_conv = val
+                        ner_conv = val.lower()
                         result[key] = list(map(lambda x: x[0], model.search(ner_conv, threshold=1.0)))
                         if (len(result[key]) == 0):
                             result[key] = list(map(lambda x : x[0], model.search(ner_conv, threshold=0.4)))[0:4]
-                        # if (len(result[key]) == 0):
-                        #     result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ',''), threshold=0.1)))[0:8]
                         if (len(result[key]) == 0):
                             logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
                             data, id = self.check_all_dict(ner_conv, cb_data, cb_data_order)
@@ -91,10 +91,14 @@ class EntityRecognizer(ShareData):
                                 result[id] = data
                                 key = id
                                 ner_data_input[index] = id
+
                     if(len(result[key]) == 0):
                         del result[key]
                     else :
-                        share_data.set_story_ner_entity(key, result[key])
+                        if(key is not None and key == 'tagorg') :
+                            share_data.set_story_ner_entity(key, [ner_conv] + result[key])
+                        else :
+                            share_data.set_story_ner_entity(key, result[key])
 
                     index = index + 1
             return share_data, ner_data_input

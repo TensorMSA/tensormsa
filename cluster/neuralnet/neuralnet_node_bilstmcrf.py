@@ -496,36 +496,37 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
             # get unique key
             unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
 
-            # set init params
-            self._init_node_parm(node_id)
-            idx_to_tag = {idx: tag for tag, idx in iter(self.vocab_tags.items())}
-
             ## create tensorflow graph
             if (NeuralNetModel.dict.get(unique_key)):
                 self = NeuralNetModel.dict.get(unique_key)
                 graph = NeuralNetModel.graph.get(unique_key)
             else:
+                # set init params
+                self._init_node_parm(node_id)
+                self.idx_to_tag = {idx: tag for tag, idx in iter(self.vocab_tags.items())}
                 self.build_graph()
-                NeuralNetModel.dict[unique_key] = self
-                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
                 graph = tf.get_default_graph()
 
-            with tf.Session(graph=graph) as sess:
+            if (NeuralNetModel.sess.get(unique_key) == None) :
+                sess = tf.Session(graph=graph)
                 # load trained model
                 if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
                     self.saver.restore(sess, self.model_output)
+                    NeuralNetModel.dict[unique_key] = self
+                    NeuralNetModel.graph[unique_key] = graph
+                    NeuralNetModel.sess[unique_key] = sess
                 else:
                     raise Exception("bilstm crf error : no pretrained model exist")
+            else :
+                sess = NeuralNetModel.sess.get(unique_key)
 
-                input_arr = parm["input_data"].split(' ')
-                words = list(map(lambda x: self.processing_word(x), input_arr))
-                if type(words[0]) == tuple:
-                    words = zip(*words)
-                pred_ids, _ = self.predict_batch(sess, [words])
-                preds = list(map(lambda idx: idx_to_tag[idx], list(pred_ids[0])))
+            input_arr = parm["input_data"].split(' ')
+            words = list(map(lambda x: self.processing_word(x), input_arr))
+            if type(words[0]) == tuple:
+                words = zip(*words)
+            pred_ids, _ = self.predict_batch(sess, [words])
+            preds = list(map(lambda idx: self.idx_to_tag[idx], list(pred_ids[0])))
 
-                return preds
+            return preds
         except Exception as e:
             raise Exception(e)
-        finally:
-            sess.close()

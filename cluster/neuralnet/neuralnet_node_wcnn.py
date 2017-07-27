@@ -318,16 +318,28 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                 graph = NeuralNetModel.graph.get(unique_key)
             else:
                 self.get_model(self.netconf, "P")
-                NeuralNetModel.dict[unique_key] = self
-                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
                 graph = tf.get_default_graph()
 
-            with tf.Session(graph=graph) as sess :
-                return self._run_predict(sess,
-                                         parm['input_data'],
-                                         batch_ver='eval',  # TODO : need to manage predict version too
-                                         type='raw',
-                                         saver=self.saver)
+            if (NeuralNetModel.sess.get(unique_key) == None):
+                sess = tf.Session(graph=graph)
+                batch_ver_name = self.get_eval_batch(self.node_id)
+
+                if (self.check_batch_exist(self.node_id)):
+                    self.saver.restore(sess, ''.join([self.model_path, '/', batch_ver_name, '/']))
+                    NeuralNetModel.dict[unique_key] = self
+                    NeuralNetModel.graph[unique_key] = graph
+                    NeuralNetModel.sess[unique_key] = sess
+                else:
+                    raise Exception("error : no pretrained model exist")
+            else :
+                sess = NeuralNetModel.sess.get(unique_key)
+
+            return self._run_predict(sess,
+                                     parm['input_data'],
+                                     batch_ver='eval',  # TODO : need to manage predict version too
+                                     type='raw',
+                                     saver=self.saver)
+
         except Exception as e :
             raise Exception ("wcnn predict prepare process error : {0}".format(e))
 
@@ -338,19 +350,6 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         :return:
         """
         try :
-            #restore model
-            if (saver == None) :
-                tf.train.Saver(tf.all_variables())
-            if (batch_ver == 'eval') :
-                batch_ver_name = self.get_eval_batch(self.node_id)
-            else :
-                batch_ver_name = self.get_active_batch(self.node_id)
-
-            if (self.check_batch_exist(self.node_id)):
-                saver.restore(sess, ''.join([self.model_path , '/', batch_ver_name, '/']))
-            else :
-                raise Exception ("error : no pretrained model exist")
-
             #preprocess input data if necessary
             word_list = []
             if(type == 'raw'):
@@ -362,7 +361,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                         word_list = [pad_size * [('#')] + list(map(lambda x : x, x_input.split(' ')))]
                     else:
                         word_list = [x_input.split(' ')]
-                    #logging.info("Predict Parsed Data : {0}".format(word_list))
+
                 word_list = self._word_embed_data('onehot',
                                                   np.array(word_list),
                                                   cls=self.input_onehot,
@@ -377,7 +376,6 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             responses = []
             logits, outputs = sess.run([self.model, self.y_pred_cls], feed_dict={self.X: word_list})
             responses.append(self.lable_onehot.get_vocab(logits[0]))
-            #responses.append(self.lable_onehot.dict_list[outputs])
             return responses
         except Exception as e :
             raise Exception(e)

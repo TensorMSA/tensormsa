@@ -49,6 +49,5 @@ class IntendAnalyzer(ShareData):
         return share_data
 
     def get_intent_model(self, convert_data):
-        # result = self.seq2seq_model.run(self.nn_id , {"input_data": convert_data, "num": 0, "clean_ans": False})[0][1][0]
         intent_model = str(self.wcnn_model.run(self.nn_id, {"input_data": convert_data, "num": 0, "clean_ans": False})[0])
         return intent_model
