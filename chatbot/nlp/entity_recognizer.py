@@ -4,6 +4,7 @@ import ngram
 from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
 from collections import Counter
 import logging
+from functools import reduce
 
 class EntityRecognizer(ShareData):
 
@@ -67,6 +68,7 @@ class EntityRecognizer(ShareData):
                     if (cb_data.get(key) == None) :
                         continue
 
+                    conv_dict = reduce(lambda x,y : dict(x.items() | y.items()) , list(map(lambda x: {x.lower() : x}, cb_data.get(key))))
                     model = ngram.NGram(list(map(lambda x : x.lower(), cb_data.get(key))))
                     if(dist_keys.get(key) > 1):
                         ner_conv = ' '.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
@@ -98,9 +100,9 @@ class EntityRecognizer(ShareData):
                         del result[key]
                     else :
                         if(key is not None and key == 'tagorg') :
-                            share_data.set_story_ner_entity(key, [ner_conv] + result[key])
+                            share_data.set_story_ner_entity(key, [ner_conv] + list(map(lambda x : conv_dict.get(x) , result[key])))
                         else :
-                            share_data.set_story_ner_entity(key, result[key])
+                            share_data.set_story_ner_entity(key, list(map(lambda x : conv_dict.get(x) , result[key])))
 
                     index = index + 1
             return share_data, ner_data_input
