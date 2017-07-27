@@ -64,6 +64,8 @@ class EntityRecognizer(ShareData):
                         continue
                     if (result.get(key)) :
                         continue
+                    if (cb_data.get(key) == None) :
+                        continue
 
                     model = ngram.NGram(list(map(lambda x : x.lower(), cb_data.get(key))))
                     if(dist_keys.get(key) > 1):
