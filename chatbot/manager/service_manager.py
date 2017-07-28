@@ -47,7 +47,7 @@ class ServiceManager:
                                                 self.chat_knowledge_data_dict.get_entity_uuid(),
                                                 self.chat_knowledge_data_dict.get_intent_uuid())
             self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
-            # self.decision_maker = DecisionMaker()
+            #self.decision_maker = DecisionMaker()
             # self.service_provider = ServiceProvider()
             # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
         except Exception as e :
@@ -109,11 +109,12 @@ class ServiceManager:
 
             share_ctx.add_test_client_data()
 
+            ### decision maker ###
+            #share_ctx = self.decision_maker.run(share_ctx)
+
             ### UUID mapping ###
             share_ctx = self.service_mapper.run(share_ctx)
 
-            ### decision maker ###
-            #share_ctx = self.decision_maker.run(share_ctx)
 
             logging.info("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
             ### 4. return result as json ###

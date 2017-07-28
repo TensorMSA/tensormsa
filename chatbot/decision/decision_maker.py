@@ -1,5 +1,6 @@
 from chatbot.common.chat_share_data import ShareData
 from chatbot.story.story_board_manager import StoryBoardManager
+from chatbot.common.chat_story_conf_data import ChatStoryConfData
 
 class DecisionMaker(ShareData):
     """
@@ -13,6 +14,14 @@ class DecisionMaker(ShareData):
         :return:
         """
         try :
+            #Intent_conf = ChatStoryConfData(share_data.get_intent_id()[0])
+            Intent_conf = ChatStoryConfData('1')
+
+            if(Intent_conf.get_intent_story()[0]['fields']['story_type'] == 'response'):
+                response_story = Intent_conf.get_story_response(Intent_conf.get_intent_story()[0]['pk'])
+            elif(Intent_conf.get_intent_story()[0]['fields']['story_type'] == 'service'):
+                service_story = Intent_conf.get_story_service(Intent_conf.get_intent_story()[0]['pk'])
+
             self.__dict__ = share_data.__dict__
 
             if ("타입" in share_data.get_story_slot_entity().keys()) :

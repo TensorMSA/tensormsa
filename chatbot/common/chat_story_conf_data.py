@@ -7,7 +7,7 @@ class ChatStoryConfData:
     def __init__(self, intent_id):
         self.intent_id = intent_id
 
-    def _get_intent_story(self):
+    def get_intent_story(self):
         query_set = models.CB_STORYBOARD_LIST_INFO.objects.filter(intent_id = self.intent_id)
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)

@@ -24,7 +24,23 @@ class CB_STORYBOARD_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.CB_STORYBOARD_LIST_INFO
-        fields = ('intent_id', 'story_id', 'story_desc')
+        fields = ('intent_id', 'story_id', 'story_desc', 'story_type')
+
+class CB_RESPONSE_LIST_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : CB_RESPONSE_LIST_INFO
+    """
+    class Meta:
+        model = models.CB_RESPONSE_LIST_INFO
+        fields = ('story_id', 'response_type', 'output_entity', 'output_data', 'nn_id')
+
+class CB_SERVICE_LIST_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : CB_SERVICE_LIST_INFO
+    """
+    class Meta:
+        model = models.CB_SERVICE_LIST_INFO
+        fields = ('story_id', 'service_name', 'service_type', 'url')
 
 class CB_ENTITY_LIST_INFO_Serializer(serializers.ModelSerializer):
     """
