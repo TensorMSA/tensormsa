@@ -6,6 +6,9 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64, io
 
 class ServiceProvider(ShareData):
+
+    def __init__(self, service_story):
+        self.service_story = service_story
     """
     class handle service models
     """
