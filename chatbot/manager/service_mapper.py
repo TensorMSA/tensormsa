@@ -13,8 +13,6 @@ class ServiceMapper(ShareData):
         story_slot = share_data.get_story_slot_entity()
         if(len(list(filter(lambda x : self.entity_synonym.convert_synonym_value(share_data, x, story_slot.get(x)) , sorted(story_slot.keys())))) > 0):
             logging.info("■■■■■■■■■■ 유의어 변화 결과 : " + str(list(story_slot.values())))
-        #if (self.entity_synonym.get_synonym_key(key_slot)): sorted(share_data.get_story_slot_entity())
-        #    convert_dict_data = self.entity_synonym.make_represent(share_data, key_slot)
 
         logging.info("■■■■■■■■■■ 의도 최종 결과 : " + str(share_data.get_intent_id()))
         logging.info("■■■■■■■■■■ Slot 최종 결과 : " + str(story_slot))
@@ -39,6 +37,7 @@ class ServiceMapper(ShareData):
 
     def _store_train_data(self,share_data):
         file = open("/hoya_data_root/log/log.txt", 'a')
-        data = "[%s , %s , %s , %s]\n"  % ( str(share_data.get_request_data()), str(share_data.get_story_slot_entity()) , str(share_data.get_intent_id()), str(share_data.get_intent_history()))
+        data = "[%s , %s , %s , %s]\n"  % ( str(share_data.get_request_data()), str(share_data.get_story_slot_entity())
+                                            , str(share_data.get_intent_id()), str(share_data.get_intent_history()))
         file.write(data)
         file.close()

@@ -22,6 +22,9 @@ from api import views as rest_view
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
+    url(r'^api/v1/type/server/target/restart/',
+        csrf_exempt(rest_view.CommonServerRestart.as_view())),
+
     # (?P<target>.*) : etl, master, cluster  , (?P<type>.*) : local, s3, rdb, etc
     url(r'^api/v1/type/server/target/(?P<target>.*)/type/(?P<type>.*)/',
         csrf_exempt(rest_view.ConfServerData.as_view())),

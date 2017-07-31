@@ -494,7 +494,7 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
         """
         try:
             # get unique key
-            unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
+            unique_key = '__'.join([node_id, self.get_eval_batch(node_id)])
 
             ## create tensorflow graph
             if (NeuralNetModel.dict.get(unique_key)):
@@ -512,9 +512,9 @@ class NeuralNetNodeBiLstmCrf(NeuralNetNode, BiLstmCommon):
                 # load trained model
                 if (self.check_batch_exist(self.node_id) and os.path.exists(self.model_output)):
                     self.saver.restore(sess, self.model_output)
-                    NeuralNetModel.dict[unique_key] = self
-                    NeuralNetModel.graph[unique_key] = graph
-                    NeuralNetModel.sess[unique_key] = sess
+                    NeuralNetModel.set_dict(unique_key, self)
+                    NeuralNetModel.set_graph(unique_key, graph)
+                    NeuralNetModel.set_sess(unique_key, sess)
                 else:
                     raise Exception("bilstm crf error : no pretrained model exist")
             else :

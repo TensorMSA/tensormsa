@@ -303,7 +303,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             self._set_dataconf_parm(self.netconf)
 
             # get unique key
-            unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
+            unique_key = '__'.join([node_id, self.get_eval_batch(node_id)])
 
             # set init params
             self.node_id = node_id
@@ -326,9 +326,9 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
 
                 if (self.check_batch_exist(self.node_id)):
                     self.saver.restore(sess, ''.join([self.model_path, '/', batch_ver_name, '/']))
-                    NeuralNetModel.dict[unique_key] = self
-                    NeuralNetModel.graph[unique_key] = graph
-                    NeuralNetModel.sess[unique_key] = sess
+                    NeuralNetModel.set_dict(unique_key, self)
+                    NeuralNetModel.set_graph(unique_key, graph)
+                    NeuralNetModel.set_sess(unique_key,sess)
                 else:
                     raise Exception("error : no pretrained model exist")
             else :
