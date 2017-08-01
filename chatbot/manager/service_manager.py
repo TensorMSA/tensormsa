@@ -10,12 +10,7 @@ from chatbot.nlp.entity_recognizer import EntityRecognizer
 from chatbot.manager.service_mapper import ServiceMapper
 from chatbot.decision.summrize_result import SummrizeResult
 import threading, logging
-from chatbot.services.service_provider import ServiceProvider
-from chatbot.story.story_board_manager import StoryBoardManager
 from chatbot.decision.decision_maker import DecisionMaker
-from chatbot.nlp.response_generator import ResponseGenerator
-from chatbot.nlp.syntax_analyzer import Syntaxanalyzer
-from chatbot.ontology.ontology_manager import OntologyManager
 import json
 
 class ServiceManager:
@@ -47,9 +42,7 @@ class ServiceManager:
                                                 self.chat_knowledge_data_dict.get_entity_uuid(),
                                                 self.chat_knowledge_data_dict.get_intent_uuid())
             self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
-            #self.decision_maker = DecisionMaker()
-            # self.service_provider = ServiceProvider()
-            # self.story_board = StoryBoardManager(cb_id, self.chatbot_conf.get_story_board())
+            #self.decision_maker = DecisionMaker(self.chat_knowledge_data_dict)
         except Exception as e :
             raise Exception ("error on ChatBot ServiceManager init process : {0}".format(e))
 
@@ -114,7 +107,6 @@ class ServiceManager:
 
             ### UUID mapping ###
             share_ctx = self.service_mapper.run(share_ctx)
-
 
             logging.info("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
             ### 4. return result as json ###

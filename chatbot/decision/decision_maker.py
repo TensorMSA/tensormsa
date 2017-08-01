@@ -11,7 +11,6 @@ class DecisionMaker(ShareData):
     """
     def __init__(self, dict_conf):
         self.dict_conf = dict_conf
-        self.intent_info = self.dict_conf.get_entity_key("1")
 
     def run(self, share_data):
         """
@@ -20,27 +19,30 @@ class DecisionMaker(ShareData):
         :return:
         """
         try :
-            #Intent_conf = ChatStoryConfData(share_data.get_intent_id()[0])
-            Intent_conf = ChatStoryConfData('1')
-
-            if (not self._check_essential_entity(share_data.get_story_slot_entity().keys(), share_data)):
+            if(len(share_data.get_intent_id()) > 1):
                 pass
-            elif(Intent_conf.get_intent_story()[0]['fields']['story_type'] == 'response'):
-                response_story = Intent_conf.get_story_response(Intent_conf.get_intent_story()[0]['pk'])
-                share_data = StoryBoardManager(response_story).run(share_data)
-            elif(Intent_conf.get_intent_story()[0]['fields']['story_type'] == 'service'):
-                service_story = Intent_conf.get_story_service(Intent_conf.get_intent_story()[0]['pk'])
-                share_data = ServiceProvider(service_story).run(share_data)
-            else:
+            elif(len(share_data.get_intent_id()) == 1):
+                intent_conf = ChatStoryConfData(share_data.get_intent_id()[0])
+                if (not self._check_essential_entity(share_data.get_story_slot_entity().keys(), share_data)):
+                    pass
+                elif(intent_conf.get_intent_story()[0]['fields']['story_type'] == 'response'):
+                    response_story = intent_conf.get_story_response(intent_conf.get_intent_story()[0]['pk'])
+                    share_data = StoryBoardManager(response_story).run(share_data)
+                elif(intent_conf.get_intent_story()[0]['fields']['story_type'] == 'service'):
+                    service_story = intent_conf.get_story_service(intent_conf.get_intent_story()[0]['pk'])
+                    share_data = ServiceProvider(service_story).run(share_data)
+                else:
+                    share_data.set_output_data("무슨말인지 모르겠어요")
+                share_data.initialize_story()
+            else: #intent 3개 이상
                 share_data.set_output_data("무슨말인지 모르겠어요")
-            share_data.initialize_story()
             return share_data
         except Exception as e:
             raise Exception(e)
 
     def _check_essential_entity(self, entity_list, share_data):
         check_value = True
-        for entity in self.intent_info :
+        for entity in self.dict_conf.get_entity_key(share_data.get_intent_id()[0]):
             if (entity in entity_list):
                 pass
             else :

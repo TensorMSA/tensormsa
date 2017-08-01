@@ -8,18 +8,11 @@ class StoryBoardManager(ShareData):
 
     def run(self, share_data):
         try:
-            if (share_data.get_service_type() == "find_image") :
-                share_data = self._call_service_provider(share_data)
-            else :
-                if (share_data.get_output_data() == ""):
-                    share_data = share_data.set_output_data("자세히 말씀해 주세요")
-                    #share_data._initailize_story()
+            if (len(self.response_story) > 0):
+                share_data.set_output_data(self.response_story[0]['fields']['output_data'])
             return share_data
         except Exception as e:
             raise Exception(e)
 
-    def _call_service_provider(self, share_data):
-        share_data = ServiceProvider().run(share_data)
-        return share_data
 
 
