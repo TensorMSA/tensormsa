@@ -4,12 +4,34 @@ from rest_framework.views import APIView
 from chatbot.manager.service_manager import ServiceManager
 from common.utils import *
 import datetime
+import coreapi
 
 class ChatbotServiceManager(APIView):
     """
     """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
     def post(self, request, cbid):
+        """
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
 
+        # Description:
+            - name: name
+              description: Foobar long description goes here
+        """
         try:
             #TODO: request prediction with files (swkim)
             #Get Cache
@@ -20,7 +42,15 @@ class ChatbotServiceManager(APIView):
             return Response(json.dumps(return_data))
 
     def put(self, request, cbid):
+        """
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
 
+        # Description:
+            - name: name
+              description: Foobar long description goes here
+        """
         try:
             self.init_time = datetime.datetime.now()
             print("Start:" + str((datetime.datetime.now() - self.init_time).total_seconds() * 1000))

@@ -3,13 +3,31 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.automl.automl_rule import AutoMlRule
 from django.core import serializers
+import coreapi
 
 class RunManagerAutoRule(APIView):
-    """
-    """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
     def post(self, request, graph_id):
         """
-        - desc : insert cnn configuration data
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
+
+        # Description:
+            - name: name
+              description: Foobar long description goes here
         """
         try:
             return_data = AutoMlRule().set_graph_type_list(graph_id, request.data)
@@ -20,7 +38,13 @@ class RunManagerAutoRule(APIView):
 
     def get(self, request, graph_id):
         """
-        - desc : get cnn configuration data
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
+
+        # Description:
+            - name: name
+              description: Foobar long description goes here
         """
         try:
             if (graph_id == 'all') :
@@ -36,7 +60,13 @@ class RunManagerAutoRule(APIView):
 
     def put(self, request, graph_id):
         """
-        - desc ; update cnn configuration data
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
+
+        # Description:
+            - name: name
+              description: Foobar long description goes here
         """
         try:
             return_data = AutoMlRule().update_graph_type_list(graph_id, request.data)
@@ -47,7 +77,13 @@ class RunManagerAutoRule(APIView):
 
     def delete(self, request, graph_id):
         """
-        - desc : delete cnn configuration data
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
+
+        # Description:
+            - name: name
+              description: Foobar long description goes here
         """
         try:
             return_data = ""

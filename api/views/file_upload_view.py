@@ -4,17 +4,37 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.files.storage import FileSystemStorage
 from common.utils import *
-# from requests_toolbelt import MultipartEncoder
-# import requests
-
+import coreapi
 from rest_framework.parsers import FileUploadParser,MultiPartParser
+
 # from rest_framework import status
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
 
 class FileUploadView(APIView):
-    # parser_classes = (FileUploadParser,MultiPartParser, )
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
 
     def post(self, request, nnid, ver, dir):
+        """
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
+
+        # Description:
+            - name: name
+              description: Foobar long description goes here
+        """
         try:
             return_data = {}
             if len(request.FILES.keys()) > 0:
@@ -51,5 +71,14 @@ class FileUploadView(APIView):
             return Response(json.dumps(return_data))
 
     def get(self, request, nnid, ver, dir):
+        """
+        Your docs
+        ---
+        # Class Name (must be separated by `---`)
+
+        # Description:
+            - name: name
+              description: Foobar long description goes here
+        """
         return_data = WorkFlowDataImage().get_data_node_info(nnid, ver, dir)
         return Response(json.dumps(return_data))

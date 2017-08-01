@@ -5,10 +5,22 @@ from cluster.service.service_single_task import WorkFlowSingleTask
 from cluster.service.service_single_task import single_run
 from common.utils import *
 import traceback
+import coreapi
 
 class RunManagerSingleRequest(APIView):
-    """
-    """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
 
     def post(self, request, nnid, ver, node):
         """

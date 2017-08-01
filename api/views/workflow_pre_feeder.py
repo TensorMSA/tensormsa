@@ -6,11 +6,22 @@ from master.workflow.preprocess.workflow_feed_fr2wv import WorkflowFeedFr2Wv
 from master.workflow.preprocess.workflow_feed_fr2auto import WorkflowFeedFr2Auto
 from master.workflow.preprocess.workflow_feed_fr2wcnn import WorkflowFeedFr2Wcnn
 from master.workflow.preprocess.workflow_feed_iob2bilstmcrf import WorkflowFeedIob2BiLstmCrf
+import coreapi
 
 class WorkFlowPreFeeder(APIView) :
-    """
-
-    """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
     def post(self, request, src, net, nnid, ver, node):
         """
         - desc : insert data

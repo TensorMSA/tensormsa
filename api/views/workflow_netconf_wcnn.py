@@ -3,12 +3,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.netconf.workflow_netconf_wcnn import WorkFlowNetConfWideCnn as WcnnConf
 from common.utils import *
-
+import coreapi
 
 class WorkFlowNetConfWcnn(APIView) :
-    """
-
-    """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
     def post(self, request, nnid, ver, node):
         """
         - desc : insert data

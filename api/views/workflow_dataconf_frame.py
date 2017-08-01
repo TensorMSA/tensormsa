@@ -2,10 +2,22 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.dataconf.workflow_dataconf_frame import WorkflowDataConfFrame as data_conf_frm
+import coreapi
 
 class WorkFlowDataConfFrame(APIView):
-    """
-    """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
 
     #url(r'^api/v1/type/wf/state/dataconf/detail/frame/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
     def post(self, request, nnid, ver, node):

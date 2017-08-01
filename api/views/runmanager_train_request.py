@@ -5,10 +5,22 @@ from cluster.service.service_train_task import train
 from celery.task.control import inspect
 from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
+import coreapi
 
 class RunManagerTrainRequest(APIView):
-    """
-    """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
     def post(self, request, nnid, ver):
         """
         - desc : insert data

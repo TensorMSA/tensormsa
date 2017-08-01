@@ -12,10 +12,22 @@ from cluster.service.service_predict_anomaly import PredictNetAnomaly
 from cluster.service.service_predict_wcnn import PredictNetWcnn
 from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 from common.utils import *
+import coreapi
 
 class ServiceManagerPredict(APIView):
-    """
-    """
+    # TODO:add document sample for swagger (need to update)
+    coreapi_fields = (
+        coreapi.Field(
+            name='parm1',
+            required=True,
+            schema=str,
+        ),
+        coreapi.Field(
+            name='parm2',
+            required=True,
+            schema=str,
+        ),
+    )
     def post(self, request, type, nnid, ver):
         """
         - desc : insert cnn configuration data

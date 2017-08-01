@@ -18,8 +18,11 @@ from django.contrib import admin
 from django.views.decorators.csrf import csrf_exempt
 
 from api import views as rest_view
+from api.comon.swagger_schema_view import SwaggerSchemaView
 
 urlpatterns = [
+    #url(r'^docs/', get_swagger_view(title='tensormsa API')),
+    url(r'^docs/', SwaggerSchemaView.as_view()),
     url(r'^admin/', admin.site.urls),
 
     url(r'^api/v1/type/server/target/restart/',
