@@ -12,14 +12,17 @@ class ChatbotServiceManager(APIView):
     # TODO:add document sample for swagger (need to update)
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
+            name='parm3',
             required=True,
-            schema=str,
+            schema=coreapi.Field(name='parm3',
+                                 required=True,
+                                 description='haha',
+                                 type='float')
         ),
         coreapi.Field(
             name='parm2',
             required=True,
-            schema=str,
+            type='string',
         ),
     )
     def post(self, request, cbid):

@@ -14,12 +14,12 @@ class WorkFlowPreFeeder(APIView) :
         coreapi.Field(
             name='parm1',
             required=True,
-            schema=str,
+            type='string',
         ),
         coreapi.Field(
             name='parm2',
             required=True,
-            schema=str,
+            type='string',
         ),
     )
     def post(self, request, src, net, nnid, ver, node):

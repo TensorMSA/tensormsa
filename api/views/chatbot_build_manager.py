@@ -12,12 +12,15 @@ class ChatbotBuildManager(APIView):
         coreapi.Field(
             name='parm1',
             required=True,
-            schema=str,
+            schema=coreapi.Field(name='parm3',
+                                 required=True,
+                                 description='haha',
+                                 type=str)
         ),
         coreapi.Field(
             name='parm2',
             required=True,
-            schema=str,
+            type='string',
         ),
     )
     def post(self, request):
