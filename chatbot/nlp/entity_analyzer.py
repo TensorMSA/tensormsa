@@ -82,13 +82,14 @@ class EntityAnalyzer(ShareData):
 
     def _extract_proper_entity(self, value, key):
         exist = False
+        value = value.lower()
         input_file = open(self.proper_noun.get(key)[1], 'r')
         if(input_file is not None):
             for line in input_file:
-                if(self.proper_noun.get(key)[2] and line.strip().find(value) > -1):
+                if(self.proper_noun.get(key)[2] and line.lower().strip().find(value) > -1):
                     exist = True
                     break
-                elif(line.strip() == value):
+                elif(line.lower().strip() == value):
                     exist = True
                     break
             input_file.close()
