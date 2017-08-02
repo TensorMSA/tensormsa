@@ -57,7 +57,7 @@ easy and simple
 # Tensorflow Jupyter Sample Codes *[(Link)](https://github.com/TensorMSA/hoyai_jupyter)* 
 Tensorflow version upgrades really fast and seems like usages changes fast too, our goal on the project is build various kind of samples codes works on latest Tensorflow version. And also with basic tensorflow with python example, we are going to provide HOYA api examples codes step by step 
 
-# REST API / JAVA API Documents </br>
+# REST API *[(Link)](http://13.124.133.117:8000/docs)* 
 All functions (100%) developed on this project linked to REST API, so that you can access it via console, jupyter or UI/UX 
 
 # Contributions *[(Desigin Link)](https://docs.google.com/presentation/d/105lw-nC9a37qJvKXsyBh045pGaBa7lqbCUI4V2mfjKc/pub?start=false&loop=false&delayms=3000)*
