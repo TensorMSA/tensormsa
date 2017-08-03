@@ -208,3 +208,18 @@ class NNCommonManager :
             return json.loads(query_set)
         except Exception as e:
             raise Exception(e)
+
+    def get_nn_node_info(self, nn_id, ver, desc):
+        """
+        update nn_info
+        :param nn_id:
+        :param obj : json object
+        :return:
+        """
+        try:
+            state_id = nn_id+"_"+ver
+            query_set = models.NN_WF_NODE_INFO.objects.filter(wf_state_id=state_id, nn_wf_node_desc=desc )
+            query_set = serial.serialize("json", query_set)
+            return json.loads(query_set)
+        except Exception as e:
+            raise Exception(e)

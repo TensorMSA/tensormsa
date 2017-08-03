@@ -47,6 +47,8 @@ urlpatterns = [
         csrf_exempt(rest_view.CommonNNInfoList.as_view())),
 
     # workflow init
+    url(r'^api/v1/type/wf/target/init/mode/simple/(?P<nnid>.*)/wfver/(?P<wfver>.*)/desc/(?P<desc>.*)/',
+        csrf_exempt(rest_view.WorkFlowInitSimple.as_view())),
     url(r'^api/v1/type/wf/target/init/mode/simple/(?P<nnid>.*)/wfver/(?P<wfver>.*)/',
         csrf_exempt(rest_view.WorkFlowInitSimple.as_view())),
     url(r'^api/v1/type/wf/target/init/mode/easy/(?P<nnid>.*)/',

@@ -12,6 +12,7 @@ import tensorflow as tf
 from third_party.yolo.yolo.net.yolo_tiny_net import YoloTinyNet
 import cv2
 import requests
+import logging
 
 class DataNodeImage(DataNode):
     """
@@ -84,7 +85,7 @@ class DataNodeImage(DataNode):
         return xmin, ymin, xmax, ymax, class_num
 
     def yolo_detection(self):
-        logging.info("run yolo")
+        # logging.info("run yolo")
         set_filepaths(self.output_yolo)
         common_params = {'image_size': self.x_size, 'num_classes': 20, 'batch_size': 1}
         net_params = {'cell_size': 7, 'boxes_per_cell': 2, 'weight_decay': 0.0005}
