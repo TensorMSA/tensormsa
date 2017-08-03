@@ -23,7 +23,7 @@ class ChatbotBuildManager(APIView):
             type='string',
         ),
     )
-    def post(self, request):
+    def post(self, request,type):
         """
         Your docs
         ---
@@ -34,7 +34,7 @@ class ChatbotBuildManager(APIView):
               description: Foobar long description goes here
         """
         try:
-            result = BotBuilder().run_builder(request.data)
+            result = BotBuilder().run_builder(request.data,type=type)
             return Response(json.dumps(result))
 
         except Exception as e:

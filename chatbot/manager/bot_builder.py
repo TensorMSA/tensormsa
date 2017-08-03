@@ -1,59 +1,45 @@
 from chatbot import serializers
 from rest_framework.views import APIView
+from chatbot.botbuilder.bot_def_list_info import BotDefListInfo
+from chatbot.botbuilder.bot_entity_list_info import BotEntityListInfo
+from chatbot.botbuilder.bot_model_list_info import BotModelListInfo
+from chatbot.botbuilder.bot_intent_list_info import BotIntentListInfo
+from chatbot.botbuilder.bot_story_list_info import BotStoryListInfo
+from chatbot.botbuilder.bot_tagging_info import BotTaggingInfo
+from chatbot.botbuilder.bot_entity_relation_info import BotEntityRelationInfo
 
 class BotBuilder(APIView):
 
-    def run_builder(self, data):
+    def run_builder(self, data, type):
         """
         insert nn_info version data
         :param req:
         :return:
         """
         try:
-            serializer_def = serializers.CB_DEF_LIST_INFO_Serializer(data=data)
-            serializer_intent = serializers.CB_INTENT_LIST_INFO_Serializer(data=data)
-            #serializer_story = serializers.CB_STORYBOARD_LIST_INFO_Serializer(data=data)
-            serializer_entity = serializers.CB_ENTITY_LIST_INFO_Serializer(data=data)
-            serializer_tagging = serializers.CB_TAGGING_INFO_Serializer(data=data)
-            serializer_model = serializers.CB_MODEL_LIST_INFO_Serializer(data=data)
-            serializer_entity_relation = serializers.CB_ENTITY_RELATION_INFO_Serializer(data=data)
 
-            if serializer_def.is_valid():
-                serializer_def.save()
-            else :
-                return serializer_def.is_valid(raise_exception=True)
+            if type == "def":
+                return_value = BotDefListInfo.run_def_builder(self,data=data)
 
-            if serializer_intent.is_valid():
-                serializer_intent.save()
-            else :
-                return serializer_intent.is_valid(raise_exception=True)
+            elif type == "intent":
+                return_value = BotIntentListInfo.run_intent_builder(self,data=data)
 
-            # if serializer_story.is_valid():
-            #     serializer_story.save()
-            # else :
-            #     return serializer_story.is_valid(raise_exception=True)
+            elif type == "entitylist":
+                return_value = BotEntityListInfo.run_entity_builder(self,data=data)
 
-            if serializer_entity.is_valid():
-                serializer_entity.save()
-            else :
-                return serializer_def.is_valid(raise_exception=True)
+            elif type == "model":
+                return_value = BotModelListInfo.run_model_builder(self,data=data)
 
-            if serializer_tagging.is_valid():
-                serializer_tagging.save()
-            else :
-                return serializer_tagging.is_valid(raise_exception=True)
+            elif type == "tagging":
+                return_value = BotTaggingInfo.run_tagging_builder(self,data=data)
 
-            if serializer_model.is_valid():
-                serializer_model.save()
-            else :
-                return serializer_model.is_valid(raise_exception=True)
+            elif type == "story":
+                return_value = BotStoryListInfo.run_story_builder(self,data=data)
 
-            if serializer_entity_relation.is_valid():
-                serializer_entity_relation.save()
-            else :
-                return serializer_entity_relation.is_valid(raise_exception=True)
+            elif type == "entityrelation":
+                return_value = BotEntityRelationInfo.run_entity_relation_builder()
 
-            return data["cb_id"]
+            return return_value
 
         except Exception as e:
             raise Exception(e)
