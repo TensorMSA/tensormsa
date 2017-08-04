@@ -47,7 +47,8 @@ class SummrizeResult():
         :param intent: 
         :return: 
         """
-        temp = list(filter(lambda x: len(list(set(ner_keys) - set(x['fields']['entity_list']['key']))) == 0, self.intent_info))
+        temp = list(filter(lambda x: len(list(set(ner_keys) - set(
+            x['fields']['entity_list']['key'] if 'key' in x['fields']['entity_list'] else []))) == 0, self.intent_info))
         return list(map(lambda x : x['fields']['intent_id'], temp))
 
     def get_intent_match(self, keys):

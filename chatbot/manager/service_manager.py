@@ -30,7 +30,7 @@ class ServiceManager:
             self.chat_knowledge_data_dict.initialize(cb_id)
             self.chat_share_data = ShareData()
             self.entity_synonym = EntitySynonym(cb_id)
-            self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict.get_proper_tagging(), self.entity_synonym)
+            self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict._get_proper_tagging(), self.cb_id)
             self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf("custom"))
             self.entity_recognizer = EntityRecognizer(cb_id,
                                                       self.chatbot_conf.get_ner_model())

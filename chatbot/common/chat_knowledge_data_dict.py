@@ -27,7 +27,7 @@ class ChatKnowledgeDataDict:
         query_set = json.loads(query_set)[0]['fields']['entity_list']
         return query_set.get('extra')
 
-    def get_proper_tagging(self, type='dict'):
+    def _get_proper_tagging(self, type='dict'):
         query_set = models.CB_TAGGING_INFO.objects.filter(cb_id = self.cb_id,
                                                           pos_type = type)
         query_set = serial.serialize("json", query_set)
@@ -45,8 +45,8 @@ class ChatKnowledgeDataDict:
         :return: none
         """
         try :
-            if(self.check_dict(cb_id)) :
-                query_set = self.get_proper_tagging(type=type)
+            if(self.check_dict(cb_id)):
+                query_set = self._get_proper_tagging(type=type)
                 self.proper_key_list = sorted(query_set.keys(),
                                               key=lambda x: query_set[x][0],
                                               reverse=False)
@@ -83,7 +83,7 @@ class ChatKnowledgeDataDict:
                     for line in input_file.read().splitlines():
                         values.append(line)
             return values
-        except Exception as e :
+        except Exception as e:
             raise Exception (e)
 
     def _get_entity_order(self, key):

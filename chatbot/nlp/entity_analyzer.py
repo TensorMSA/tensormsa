@@ -1,7 +1,7 @@
 from chatbot.common.chat_share_data import ShareData
 # from konlpy.tag import Kkma
 # from konlpy.tag import Twitter
-from chatbot.nlp.entity_synonym import EntitySynonym
+from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
 from konlpy.tag import Mecab
 import logging
 
@@ -13,13 +13,13 @@ class EntityAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, proper_noun, entity_synonym):
+    def __init__(self, proper_noun, cb_id):
         """
         init global variables
         """
         self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=False) #Sorted Key Priority
         self.proper_noun = proper_noun     # key : [values]
-        self.entity_synonym = entity_synonym
+        self.cb_id = cb_id
 
     def parse(self, share_data):
         """
@@ -83,7 +83,7 @@ class EntityAnalyzer(ShareData):
     def _extract_proper_entity(self, value, key):
         exist = False
         value = value.lower()
-        input_file = open(self.proper_noun.get(key)[1], 'r')
+        input_file = ChatKnowledgeMemDict.data.get(self.cb_id).get(key)
         if(input_file is not None):
             for line in input_file:
                 if(self.proper_noun.get(key)[2] and line.lower().strip().find(value) > -1):
@@ -92,5 +92,4 @@ class EntityAnalyzer(ShareData):
                 elif(line.lower().strip() == value):
                     exist = True
                     break
-            input_file.close()
         return exist
