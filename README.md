@@ -60,7 +60,7 @@ Tensorflow version upgrades really fast and seems like usages changes fast too, 
 # REST API *[(Link)](http://13.124.133.117:8989/docs)* 
 All functions (100%) developed on this project linked to REST API, so that you can access it via console, jupyter or UI/UX 
 
-# Contributions *[(Desigin Link)](https://docs.google.com/presentation/d/105lw-nC9a37qJvKXsyBh045pGaBa7lqbCUI4V2mfjKc/pub?start=false&loop=false&delayms=3000)*
+# Contributions *[(Desigin Link)](https://docs.google.com/presentation/d/1SKYQ85l29PApQu8aUOFbkTMpxxefpJH3NhiR_GYr66I/pub?start=false&loop=false&delayms=3000)*
  <p align="center">
   <img src="https://github.com/TensorMSA/tensormsa_old/blob/master/HOYA%20F_W%20Design%20Document.jpg?raw=true" width="750"/>
  </p>
