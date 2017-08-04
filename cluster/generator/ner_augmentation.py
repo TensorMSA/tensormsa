@@ -3,6 +3,7 @@ import pandas as pd
 from konlpy.tag import Mecab
 from numba import *
 import numpy as np
+import threading, logging
 
 class DataAugmentation :
     """
@@ -12,6 +13,21 @@ class DataAugmentation :
     test.load_dict()
     test.convert_data()
     """
+
+    class ThreadCls(threading.Thread) :
+        def __init__(self, obj, idx):
+            threading.Thread.__init__(self)
+            self.obj = obj
+            self.idx = idx
+
+        def run(self):
+            for _ in range(self.obj.dict_sample_iter):
+                self.obj.load_dict()
+                self.obj.convert_data(self.idx)
+
+        def join(self):
+            threading.Thread.join(self)
+            return True
 
     def __init__(self, conf):
         """
@@ -28,15 +44,23 @@ class DataAugmentation :
         self.gpu_use = True
         self.dict_sample_size = int(conf.get("dict_sample_size"))
         self.dict_sample_iter = int(conf.get("dict_sample_iter"))
+        self.thread_num = int(conf.get("thread_num"))
 
     def run(self):
         """
         run 
         :return: 
         """
-        for _ in range(self.dict_sample_iter) :
-            self.load_dict()
-            self.convert_data()
+        job_list = []
+        for idx, _ in enumerate(range(self.thread_num)) :
+            job_list.append(self.ThreadCls(self, idx))
+
+        for job in job_list:
+            job.start()
+
+        for job in job_list:
+            job.join()
+
 
     def load_dict(self):
         """
@@ -125,13 +149,13 @@ class DataAugmentation :
         except Exception as e :
             print("error on nlp data augmentation :{0}".format(e))
 
-    def _iob_formatter(self, aug_data) :
+    def _iob_formatter(self, aug_data, idx) :
         """
         save aug list as iob file format
         :param aug_data: augmented list of sentence
         :return: None
         """
-        path = ''.join([self.augmented_out_path, 'Test' , str(self.aug_file_cnt) , '.iob'])
+        path = ''.join([self.augmented_out_path, '/'+str(idx),'Test' , str(self.aug_file_cnt) , '.iob'])
         if(os.path.exists(path) == False or os.path.getsize(path) < self.max_file_size) :
             with open(path, "a")  as f :
                 for line in aug_data :
@@ -143,7 +167,7 @@ class DataAugmentation :
                     f.write('\n')
         else :
             self.aug_file_cnt = self.aug_file_cnt + 1
-            path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.iob'])
+            path = ''.join([self.augmented_out_path, '/'+str(idx),'Test', str(self.aug_file_cnt), '.iob'])
             with open(path, "w")  as f :
                 for line in aug_data :
                     for word in line :
@@ -153,13 +177,13 @@ class DataAugmentation :
                             f.write('\n')
                     f.write('\n')
 
-    def _plain_formatter(self, aug_data) :
+    def _plain_formatter(self, aug_data, idx) :
         """
         save aug list as iob file format
         :param aug_data: augmented list of sentence
         :return: None
         """
-        path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.out'])
+        path = ''.join([self.augmented_out_path, '/'+str(idx),'Test', str(self.aug_file_cnt), '.out'])
         if (os.path.exists(path) == False or os.path.getsize(path) < self.max_file_size):
             with open(path, "a")  as f :
                 for line in aug_data :
@@ -168,20 +192,20 @@ class DataAugmentation :
                     f.write('\n')
         else :
             self.aug_file_cnt = self.aug_file_cnt + 1
-            path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.out'])
+            path = ''.join([self.augmented_out_path, '/'+str(idx),'Test', str(self.aug_file_cnt), '.out'])
             with open(path, "w")  as f :
                 for line in aug_data :
                     for word in line :
                         f.write(''.join([word[0], ' ']))
                     f.write('\n')
 
-    def _intent_formatter(self, aug_data, key) :
+    def _intent_formatter(self, aug_data, key, idx) :
         """
         save aug list as iob file format
         :param aug_data: augmented list of sentence
         :return: None
         """
-        path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.csv'])
+        path = ''.join([self.augmented_out_path, '/'+str(idx),'Test', str(self.aug_file_cnt), '.csv'])
 
         if (os.path.exists(path) == False) :
             with open(path, "w")  as f :
@@ -197,7 +221,7 @@ class DataAugmentation :
                     f.write('\n')
         else :
             self.aug_file_cnt = self.aug_file_cnt + 1
-            path = ''.join([self.augmented_out_path, 'Test', str(self.aug_file_cnt), '.csv'])
+            path = ''.join([self.augmented_out_path, '/'+str(idx),'Test', str(self.aug_file_cnt), '.csv'])
             with open(path, "a")  as f :
                 for line in aug_data :
                     for word in line :
@@ -206,20 +230,20 @@ class DataAugmentation :
                     f.write(str(key))
                     f.write('\n')
 
-    def convert_data(self) :
+    def convert_data(self, idx) :
         """
         augment data with entity list and pattern
         :return: None
         """
         try :
             if (self.out_format_type == 'intent'):
-                self._conv_type_b()
+                self._conv_type_b(idx)
             else :
-                self._conv_type_a()
+                self._conv_type_a(idx)
         except Exception as e :
             print("error log : " + e)
 
-    def _conv_type_b(self):
+    def _conv_type_b(self, idx):
         """
         
         :return: 
@@ -242,11 +266,11 @@ class DataAugmentation :
             print("===={0} line job start".format(i))
             match_keys = self._check_all_match(words)
             aug_data = self._aug_sent(match_keys, words, [])
-            self._intent_formatter(aug_data, key)
+            self._intent_formatter(aug_data, key, idx)
             print("===={0} line job done".format(i))
             i = i + 1
 
-    def _conv_type_a(self):
+    def _conv_type_a(self, idx):
         """
         
         :return: 
@@ -271,10 +295,10 @@ class DataAugmentation :
             match_keys = self._check_all_match(words)
             if(self.out_format_type == 'plain') :
                 aug_data = self._aug_sent(match_keys, words, [])
-                self._plain_formatter(aug_data)
+                self._plain_formatter(aug_data,idx)
             elif(self.out_format_type == 'iob') :
                 aug_data = self._aug_sent(match_keys, words, [])
-                self._iob_formatter(aug_data)
+                self._iob_formatter(aug_data,idx)
             else :
                 raise Exception (' '.join(['not', 'plain', 'or iob']))
             print("===={0} line job done".format (i))
@@ -283,11 +307,12 @@ class DataAugmentation :
 # da = DataAugmentation({
 #                      "use_mecab": True,
 #                      "max_file_size": 100000000,
-#                      "pattern_data_path": "/hoya_data_root/aug/pattern.csv",
-#                      "augmented_out_path": "/hoya_model_root/aug/",
-#                      "dict_path": "/hoya_data_root/aug/dict.csv",
+#                      "pattern_data_path": "/hoya_model_root/aug/pattern.csv",
+#                      "augmented_out_path": "/hoya_model_root/aug/augtest/",
+#                      "dict_path": "/hoya_model_root/aug/dict.csv",
 #                      "out_format_type": "iob",
 #                      "dict_sample_size" : 3,
-#                      "dict_sample_iter" : 2000
+#                      "dict_sample_iter" : 2000,
+#                      "thread_num" : 8
 #                  })
 # da.run()
