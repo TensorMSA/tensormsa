@@ -23,14 +23,13 @@ class ServiceManager:
         :param cb_id:
         """
         try :
-            # TODO : need to use cache for better rsponse time
             self.cb_id = cb_id
             self.chatbot_conf = ChatBotConfManager(cb_id)
             self.chat_knowledge_data_dict = ChatKnowledgeDataDict(cb_id)
             self.chat_knowledge_data_dict.initialize(cb_id)
             self.chat_share_data = ShareData()
             self.entity_synonym = EntitySynonym(cb_id)
-            self.entity_analyzer = EntityAnalyzer(self.chat_knowledge_data_dict._get_proper_tagging(), self.cb_id)
+            self.entity_analyzer = EntityAnalyzer(cb_id)
             self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf("custom"))
             self.entity_recognizer = EntityRecognizer(cb_id,
                                                       self.chatbot_conf.get_ner_model())
@@ -38,9 +37,7 @@ class ServiceManager:
                                                   self.chatbot_conf.get_intent_model())
             self.intent_analyzer_ner = IntendAnalyzer(cb_id,
                                                   self.chatbot_conf.get_pattern_intent_model())
-            self.service_mapper = ServiceMapper(cb_id, self.entity_synonym,
-                                                self.chat_knowledge_data_dict.get_entity_uuid(),
-                                                self.chat_knowledge_data_dict.get_intent_uuid())
+            self.service_mapper = ServiceMapper(cb_id, self.entity_synonym)
             self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
             #self.decision_maker = DecisionMaker(self.chat_knowledge_data_dict)
         except Exception as e :

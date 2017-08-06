@@ -130,6 +130,5 @@ class EntityRecognizer(ShareData):
                 return result, key
         return result, None
 
-
     def lower(self, s) :
         return s.lower()

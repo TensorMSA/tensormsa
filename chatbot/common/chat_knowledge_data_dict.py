@@ -60,6 +60,12 @@ class ChatKnowledgeDataDict:
                 ChatKnowledgeMemDict.synonym[cb_id] = {}
                 ChatKnowledgeMemDict.synonym[cb_id] = self._get_synonym_value()
 
+                ChatKnowledgeMemDict.data[cb_id]["proper_noun"] = self.proper_noun
+
+                ChatKnowledgeMemDict.data_conf[cb_id] = {}
+                ChatKnowledgeMemDict.data_conf[cb_id]['intent_uuid'] = self._get_intent_uuid()
+                ChatKnowledgeMemDict.data_conf[cb_id]['entity_uuid'] = self._get_entity_uuid()
+
         except Exception as e :
             raise Exception ("error on chatbot dict init : {0}".format(e))
 
@@ -92,18 +98,13 @@ class ChatKnowledgeDataDict:
         except Exception as e :
             raise Exception (e)
 
-    def get_intent_uuid(self):
+    def _get_intent_uuid(self):
         query_set = models.CB_INTENT_LIST_INFO.objects.filter(cb_id = self.cb_id)
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)
 
-    def get_entity_uuid(self):
+    def _get_entity_uuid(self):
         query_set = models.CB_ENTITY_RELATION_INFO.objects.filter(cb_id = self.cb_id)
-        query_set = serial.serialize("json", query_set)
-        return json.loads(query_set)
-
-    def get_intent_uuid(self):
-        query_set = models.CB_INTENT_LIST_INFO.objects.filter(cb_id = self.cb_id)
         query_set = serial.serialize("json", query_set)
         return json.loads(query_set)
 

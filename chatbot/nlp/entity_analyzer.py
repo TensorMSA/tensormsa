@@ -13,13 +13,14 @@ class EntityAnalyzer(ShareData):
     output : I bought a car [time]
     """
 
-    def __init__(self, proper_noun, cb_id):
+    def __init__(self, cb_id):
         """
         init global variables
         """
-        self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=False) #Sorted Key Priority
-        self.proper_noun = proper_noun     # key : [values]
+        #self.proper_key_list = sorted(proper_noun.keys(), key=lambda x : proper_noun[x][0], reverse=False) #Sorted Key Priority
         self.cb_id = cb_id
+        self.proper_key_list = ChatKnowledgeMemDict.data_order.get(self.cb_id)
+        self.proper_noun = ChatKnowledgeMemDict.data.get(self.cb_id).get('proper_noun')     # key : [values]
 
     def parse(self, share_data):
         """

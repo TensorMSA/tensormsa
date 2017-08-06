@@ -1,13 +1,15 @@
 from chatbot.common.chat_share_data import ShareData
+from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
+
 import logging
 
 class ServiceMapper(ShareData):
 
-    def __init__(self, cb_id, entity_synonym, entity_uuid_list, intent_uuid_list):
+    def __init__(self, cb_id, entity_synonym):
         self.cb_id = cb_id
         self.entity_synonym = entity_synonym
-        self.entity_uuid_list = entity_uuid_list
-        self.intent_uuid_list = intent_uuid_list
+        self.intent_uuid_list = ChatKnowledgeMemDict.data_conf.get(self.cb_id).get('intent_uuid')
+        self.entity_uuid_list = ChatKnowledgeMemDict.data_conf.get(self.cb_id).get('entity_uuid')
 
     def run(self, share_data):
         story_slot = share_data.get_story_slot_entity()
