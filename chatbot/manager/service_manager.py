@@ -33,10 +33,14 @@ class ServiceManager:
             self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf("custom"))
             self.entity_recognizer = EntityRecognizer(cb_id,
                                                       self.chatbot_conf.get_ner_model())
+            # self.intent_analyzer_rule = IntendAnalyzer(cb_id,
+            #                                       self.chatbot_conf.get_intent_model())
+            # self.intent_analyzer_ner = IntendAnalyzer(cb_id,
+            #                                       self.chatbot_conf.get_pattern_intent_model())
             self.intent_analyzer_rule = IntendAnalyzer(cb_id,
-                                                  self.chatbot_conf.get_intent_model())
+                                                  'wcnntest97')
             self.intent_analyzer_ner = IntendAnalyzer(cb_id,
-                                                  self.chatbot_conf.get_pattern_intent_model())
+                                                  'wcnntest97')
             self.service_mapper = ServiceMapper(cb_id, self.entity_synonym)
             self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
             #self.decision_maker = DecisionMaker(self.chat_knowledge_data_dict)

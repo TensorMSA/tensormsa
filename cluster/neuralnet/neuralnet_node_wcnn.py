@@ -149,79 +149,84 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         :return:
         """
         try :
-            prenumoutputs = 1
             global_step = tf.Variable(initial_value=10, name='global_step', trainable=False)
-            X = tf.placeholder(tf.float32, shape=[None, self.y_size, self.x_size, self.encode_channel], name='x')
-            Y = tf.placeholder(tf.float32, shape=[None, self.num_classes], name='y')
-            model = X
-            numoutputs = self.numoutputs
+            # placeholder is used for feeding data.
+            x = tf.placeholder("float", shape=[None, self.y_size, self.x_size, 1], name='x')
+            y_target = tf.placeholder("float", shape=[None, self.num_classes], name='y_target')
+            x_image = tf.reshape(x, [-1, self.y_size, self.x_size, 1], name="x_image")
+            # Keeping track of l2 regularization loss (optional)
+            l2_loss = tf.constant(0.0)
 
-            layers = netconf.get_layer_info
-            for layer in layers :
-                layercnt = layer["layercnt"]
-                for i in range(layercnt):
-                    if prenumoutputs == 1:
-                        prenumoutputs = numoutputs
-                    else:
-                        numoutputs = prenumoutputs * 2
-                        prenumoutputs = numoutputs
-                    active = str(layer["active"])
-                    convkernelsize = [int((layer["cnnfilter"][0])), int((layer["cnnfilter"][1]))]
-                    maxpkernelsize = [int((layer["maxpoolmatrix"][0])), int((layer["maxpoolmatrix"][1]))]
-                    stride = [int((layer["maxpoolstride"][0])), int((layer["maxpoolstride"][1]))]
-                    padding = str((layer["padding"]))
+            layer = netconf.get_layer_info
+            filter_sizes = layer["cnnfilter"]
+            num_filters = len(filter_sizes)
 
-                    if active == 'relu':
-                        activitaion = tf.nn.relu
-                    else:
-                        activitaion = tf.nn.relu
+            pooled_outputs = []
+            for i, filter_size in enumerate(filter_sizes):
+                with tf.name_scope("conv-maxpool-%s" % filter_size):
+                    # Convolution Layer
+                    filter_shape = [filter_size, self.x_size, 1, num_filters]
+                    W_conv1 = tf.Variable(tf.truncated_normal(filter_shape, stddev=0.1), name="W")
+                    b_conv1 = tf.Variable(tf.constant(0.1, shape=[num_filters]), name="b")
 
-                    if str(layer["droprate"]) is not "":
-                        droprate = float((layer["droprate"]))
-                    else:
-                        droprate = 0.0
+                    conv = tf.nn.conv2d(
+                        x_image,
+                        W_conv1,
+                        strides=[1, 1, 1, 1],
+                        padding="VALID",
+                        name="conv")
 
-                    model = tf.contrib.layers.conv2d(inputs=model
-                                                     , num_outputs=numoutputs
-                                                     , kernel_size=convkernelsize
-                                                     , activation_fn=activitaion
-                                                     , weights_initializer=tf.contrib.layers.xavier_initializer_conv2d()
-                                                     , padding=padding)
+                    # Apply nonlinearity
+                    h = tf.nn.relu(tf.nn.bias_add(conv, b_conv1), name="relu")
+                    # Maxpooling over the outputs
+                    pooled = tf.nn.max_pool(
+                        h,
+                        ksize=[1, self.y_size - filter_size + 1, 1, 1],
+                        strides=[1, 1, 1, 1],
+                        padding='VALID',
+                        name="pool")
+                    pooled_outputs.append(pooled)
 
-                    model = tf.contrib.layers.max_pool2d(inputs=model
-                                                         , kernel_size=maxpkernelsize
-                                                         , stride=stride
-                                                         , padding=padding)
+            # Combine all the pooled features
+            num_filters_total = num_filters * len(filter_sizes)
+            h_pool = tf.concat(pooled_outputs, 3)
+            h_pool_flat = tf.reshape(h_pool, [-1, num_filters_total])
 
-                    if droprate > 0.0 and type == "T":
-                        model = tf.nn.dropout(model, droprate)
+            # Add dropout
+            keep_prob = 1.0
+            if type == 'T' and str(layer["droprate"]) is not "":
+                keep_prob = float(layer["droprate"])
+                h_pool_flat = tf.nn.dropout(h_pool_flat, keep_prob)
 
+            # Final (unnormalized) scores and predictions
+            W_fc1 = tf.get_variable(
+                "W_fc1",
+                shape=[num_filters_total, self.num_classes],
+                initializer=tf.contrib.layers.xavier_initializer())
+            b_fc1 = tf.Variable(tf.constant(0.1, shape=[self.num_classes]), name="b")
+            l2_loss += tf.nn.l2_loss(W_fc1)
+            l2_loss += tf.nn.l2_loss(b_fc1)
+            y = tf.nn.xw_plus_b(h_pool_flat, W_fc1, b_fc1, name="scores")
+            predictions = tf.argmax(y, 1, name="predictions")
 
-            reout = int(model.shape[1]) * int(model.shape[2]) * int(model.shape[3])
-            model = tf.reshape(model, [-1, reout])
+            # CalculateMean cross-entropy loss
+            losses = tf.nn.softmax_cross_entropy_with_logits(logits=y, labels=y_target)
+            cross_entropy = tf.reduce_mean(losses)
 
-            W1 = tf.Variable(tf.truncated_normal([reout, self.fclayer["node_out"]], stddev=0.1))
-            model = tf.nn.relu(tf.matmul(model, W1))
+            train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy, global_step = global_step)
 
-            W5 = tf.Variable(tf.truncated_normal([self.fclayer["node_out"], self.num_classes], stddev=0.1))
-            model = tf.matmul(model, W5)
+            # Accuracy
+            correct_predictions = tf.equal(predictions, tf.argmax(y_target, 1))
+            accuracy = tf.reduce_mean(tf.cast(correct_predictions, "float"), name="accuracy")
 
-            if type == "P":
-                model = tf.nn.softmax(model)
-            cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
-            optimizer = tf.train.AdamOptimizer(learning_rate=self.learnrate).minimize(cost, global_step=global_step)
-            y_pred_cls = tf.argmax(model, 1)
-            check_prediction = tf.equal(y_pred_cls, tf.argmax(Y, 1))
-            accuracy = tf.reduce_mean(tf.cast(check_prediction, tf.float32))
-
-            self.model = model
-            self.X = X
-            self.Y = Y
-            self.optimizer = optimizer
-            self.y_pred_cls = y_pred_cls
+            self.model = y
+            self.X = x
+            self.Y = y_target
+            self.optimizer = train_step
+            self.y_pred_cls = predictions
             self.accuracy = accuracy
             self.global_step = global_step
-            self.cost = cost
+            self.cost = cross_entropy
             self.init_val = tf.initialize_all_variables()
             self.saver = tf.train.Saver(tf.all_variables())
         except Exception as e:
@@ -244,7 +249,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                         i_global, _, i_cost, batch_acc = sess.run([self.global_step, self.optimizer, self.cost, self.accuracy],
                                                                   feed_dict={self.X: x_batch, self.Y: y_batch})
                         g_total_cnt += 1
-                    if (g_total_cnt % 100 == 0) :
+                    if (g_total_cnt % 1 == 0) :
                         logging.info("count : {0} , Cost : {1}, Acc : {2}".format(i_global, i_cost, batch_acc))
                 input_data.next()
             input_data.reset_pointer()

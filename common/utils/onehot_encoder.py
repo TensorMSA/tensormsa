@@ -96,19 +96,21 @@ class OneHotEncoder :
         except Exception as e :
             raise Exception ("get vector error !")
 
-    def get_vocab(self, vector, prob_idx = 0, min_prob = 0.3):
+    def get_vocab(self, vector, prob_idx = 0, min_prob = 0.2):
         """
         get posb max item
         :param item: posb vector
         :return:
         """
-        sorted_list = sorted(vector, reverse = True)
-        idx = np.where(vector==sorted_list[prob_idx])[0][0]
-        #print("■■■■■■■■■■ Accuracy 출력 : " + str(vector[idx]))
-        #print("■■■■■■■■■■ 예측 Label intex 값 : " + str(idx-2))
-        if(vector[idx] > min_prob) :
-            return self.dict_list[idx]
-        else :
+        try :
+            sorted_list = sorted(vector, reverse = True)
+            idx = np.where(vector==sorted_list[prob_idx])[0][0]
+
+            if(vector[idx] > min_prob) :
+                return self.dict_list[idx]
+            else :
+                return "-1"
+        except Exception as e :
             return "-1"
 
 

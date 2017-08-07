@@ -14,7 +14,7 @@ class DataAugmentation :
     test.convert_data()
     """
 
-    class ThreadCls(threading.Thread) :
+    class ThreadClss(threading.Thread) :
         def __init__(self, obj, idx):
             threading.Thread.__init__(self)
             self.obj = obj
@@ -308,7 +308,7 @@ class DataAugmentation :
 #                      "use_mecab": True,
 #                      "max_file_size": 100000000,
 #                      "pattern_data_path": "/hoya_model_root/aug/pattern.csv",
-#                      "augmented_out_path": "/hoya_model_root/aug/augtest/",
+#                      "augmented_out_path": "/hoya_model_root/aug/aug_0805/",
 #                      "dict_path": "/hoya_model_root/aug/dict.csv",
 #                      "out_format_type": "iob",
 #                      "dict_sample_size" : 3,

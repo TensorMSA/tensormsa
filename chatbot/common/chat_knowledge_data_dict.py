@@ -39,33 +39,43 @@ class ChatKnowledgeDataDict:
         return json.loads(query_set)
 
     #TODO:add similar word
-    def initialize(self, cb_id, type='ngram'):
+    def initialize(self, cb_id):
         """
         initialize ChatKnowlodgeMemdict Class 
         :return: none
         """
         try :
             if(self.check_dict(cb_id)):
-                query_set = self._get_proper_tagging(type=type)
-                self.proper_key_list = sorted(query_set.keys(),
-                                              key=lambda x: query_set[x][0],
-                                              reverse=False)
-                self.proper_noun = query_set
+                # set dict
+                query_set = self._get_proper_tagging(type='dict')
+                proper_key_list = sorted(query_set.keys(),key=lambda x: query_set[x][0],reverse=False)
                 ChatKnowledgeMemDict.data[cb_id] = {}
                 ChatKnowledgeMemDict.data_order[cb_id] = []
-                ChatKnowledgeMemDict.data_order[cb_id] = self.proper_key_list
-                for key in self.proper_key_list:
-                    ChatKnowledgeMemDict.data[cb_id][key] = self._get_entity_values(key)
+                ChatKnowledgeMemDict.data_order[cb_id] = proper_key_list
+                for key in proper_key_list:
+                    ChatKnowledgeMemDict.data[cb_id][key] = self._get_entity_values(key, query_set)
+                ChatKnowledgeMemDict.data[cb_id]["proper_noun"] = query_set
 
+            if (self.check_ngram(cb_id)):
+                # set ngram
+                ngram_set = self._get_proper_tagging(type='ngram')
+                ngram_key_list = sorted(ngram_set.keys(),key=lambda x: ngram_set[x][0],reverse=False)
+                ChatKnowledgeMemDict.ngram[cb_id] = {}
+                ChatKnowledgeMemDict.ngram_conf[cb_id] = {}
+                ChatKnowledgeMemDict.ngram_order[cb_id] = []
+                ChatKnowledgeMemDict.ngram_order[cb_id] = ngram_key_list
+                for key in ngram_key_list:
+                    ChatKnowledgeMemDict.ngram[cb_id][key] = self._get_entity_values(key, ngram_set)
+                    ChatKnowledgeMemDict.ngram_conf[cb_id][key] = self._get_entity_conf(key, ngram_set)
+
+            if (self.check_synonym(cb_id)) :
                 ChatKnowledgeMemDict.synonym[cb_id] = {}
                 ChatKnowledgeMemDict.synonym[cb_id] = self._get_synonym_value()
 
-                ChatKnowledgeMemDict.data[cb_id]["proper_noun"] = self._get_proper_tagging(type='dict')
-
-                ChatKnowledgeMemDict.data_conf[cb_id] = {}
-                ChatKnowledgeMemDict.data_conf[cb_id]['intent_uuid'] = self._get_intent_uuid()
-                ChatKnowledgeMemDict.data_conf[cb_id]['entity_uuid'] = self._get_entity_uuid()
-
+            if (self.check_conf(cb_id)):
+                ChatKnowledgeMemDict.conf[cb_id] = {}
+                ChatKnowledgeMemDict.conf[cb_id]['intent_uuid'] = self._get_intent_uuid()
+                ChatKnowledgeMemDict.conf[cb_id]['entity_uuid'] = self._get_entity_uuid()
         except Exception as e :
             raise Exception ("error on chatbot dict init : {0}".format(e))
 
@@ -81,10 +91,55 @@ class ChatKnowledgeDataDict:
         else:
             return True
 
-    def _get_entity_values(self, key):
+    def check_ngram(self, cb_id):
+        """
+        check if data is already loaded 
+        :return: boolean
+        """
+        if(len(list(ChatKnowledgeMemDict.ngram.keys())) <= 0 ):
+            return True
+        if(cb_id in ChatKnowledgeMemDict.ngram.keys()) :
+            return False
+        else:
+            return True
+
+    def check_conf(self, cb_id):
+        """
+        check if data is already loaded 
+        :return: boolean
+        """
+        if(len(list(ChatKnowledgeMemDict.conf.keys())) <= 0 ):
+            return True
+        if(cb_id in ChatKnowledgeMemDict.conf.keys()) :
+            return False
+        else:
+            return True
+
+    def check_synonym(self, cb_id):
+        """
+        check if data is already loaded 
+        :return: boolean
+        """
+        if(len(list(ChatKnowledgeMemDict.synonym.keys())) <= 0 ):
+            return True
+        if(cb_id in ChatKnowledgeMemDict.synonym.keys()) :
+            return False
+        else:
+            return True
+
+    def _get_entity_conf(self, key, query_set):
+        try :
+            if(query_set.get(key)[2] != None and type(query_set.get(key)[2]) == float) :
+                return query_set.get(key)[2]
+            else :
+                return 0.4
+        except Exception as e:
+            raise Exception (e)
+
+    def _get_entity_values(self, key, query_set):
         try :
             values = []
-            with open(self.proper_noun.get(key)[1], 'r') as input_file :
+            with open(query_set.get(key)[1], 'r') as input_file :
                 if(input_file is not None):
                     for line in input_file.read().splitlines():
                         values.append(line)
@@ -92,9 +147,9 @@ class ChatKnowledgeDataDict:
         except Exception as e:
             raise Exception (e)
 
-    def _get_entity_order(self, key):
+    def _get_entity_order(self, key, query_set):
         try :
-            return self.proper_noun.get(key)[0]
+            return query_set.get(key)[0]
         except Exception as e :
             raise Exception (e)
 

@@ -55,62 +55,56 @@ class EntityRecognizer(ShareData):
                 logging.info("■■■■■■■■■■ 길이 차이로 NER 처리 불가 ■■■■■■■■■■")
                 pass
 
-            if(ChatKnowledgeMemDict.ngram.get(self.cb_id) == None):
-                cb_data = ChatKnowledgeMemDict.data.get(self.cb_id)
-                cb_data_order = ChatKnowledgeMemDict.data_order.get(self.cb_id)
-                dist_keys = dict(Counter(ner_data))
-                index = 0
-                for key, val in zip(ner_data, input_sentence) :
-                    if (key == 'O'):
-                        continue
-                    if (result.get(key)) :
-                        continue
-                    if (cb_data.get(key) == None) :
-                        continue
+            cb_data = ChatKnowledgeMemDict.ngram.get(self.cb_id)
+            cb_data_order = ChatKnowledgeMemDict.ngram_order.get(self.cb_id)
+            cb_data_th = ChatKnowledgeMemDict.ngram_conf.get(self.cb_id)
+            dist_keys = dict(Counter(ner_data))
+            index = 0
+            for key, val in zip(ner_data, input_sentence) :
+                if (key == 'O'):
+                    continue
+                if (result.get(key)) :
+                    continue
+                if (cb_data.get(key) == None) :
+                    continue
 
-                    model = ngram.NGram(key=self.lower)
-                    model.update(cb_data.get(key))
+                model = ngram.NGram(key=self.lower)
+                model.update(cb_data.get(key))
 
-                    if(dist_keys.get(key) > 1):
-                        ner_conv = ' '.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
-                        result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ','').lower(), threshold=1.0)))
-                        if(len(result[key]) == 0) :
-                            if (key == 'tagname') :
-                                result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ','').lower(),threshold=0.10)))[0:4]
-                            else :
-                                result[key] = list(map(lambda x: x[0], model.search(ner_conv.replace(' ', '').lower(),threshold=0.4)))[0:4]
-                        if(len(result[key]) == 0):
-                            logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
-                            data, id = self.check_all_dict(ner_conv.replace(' ','').lower(), cb_data, cb_data_order)
-                            if(id != None) :
-                                result[id] = data
-                                key = id
-                                ner_data_input[index] = id
-                    else:
-                        ner_conv = val
-                        result[key] = list(map(lambda x: x[0], model.search(ner_conv.lower(), threshold=1.0)))
-                        if (len(result[key]) == 0):
-                            if (key == 'tagname') :
-                                result[key] = list(map(lambda x : x[0], model.search(ner_conv.lower(),threshold=0.10)))[0:4]
-                            else :
-                                result[key] = list(map(lambda x: x[0], model.search(ner_conv.lower(),threshold=0.4)))[0:4]
-                        if (len(result[key]) == 0):
-                            logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
-                            data, id = self.check_all_dict(ner_conv.lower(), cb_data, cb_data_order)
-                            if (id != None):
-                                result[id] = data
-                                key = id
-                                ner_data_input[index] = id
-
+                if(dist_keys.get(key) > 1):
+                    ner_conv = ' '.join(list(map(lambda x : x[0], list(filter(lambda x : x[1] == key, zip(input_sentence,ner_data))))))
+                    result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ','').lower(), threshold=1.0)))
+                    if(len(result[key]) == 0) :
+                        result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ','').lower(),threshold=cb_data_th[key])))[0:4]
                     if(len(result[key]) == 0):
-                        del result[key]
-                    else :
-                        if(key is not None and key == 'tagorg') :
-                            share_data.set_story_ner_entity(key, [ner_conv] + result[key])
-                        else :
-                            share_data.set_story_ner_entity(key, result[key])
+                        logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
+                        data, id = self.check_all_dict(ner_conv.replace(' ','').lower(), cb_data, cb_data_order)
+                        if(id != None) :
+                            result[id] = data
+                            key = id
+                            ner_data_input[index] = id
+                else:
+                    ner_conv = val
+                    result[key] = list(map(lambda x: x[0], model.search(ner_conv.lower(), threshold=1.0)))
+                    if (len(result[key]) == 0):
+                        result[key] = list(map(lambda x : x[0], model.search(ner_conv.lower(),threshold=cb_data_th[key])))[0:4]
+                    if (len(result[key]) == 0):
+                        logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
+                        data, id = self.check_all_dict(ner_conv.lower(), cb_data, cb_data_order)
+                        if (id != None):
+                            result[id] = data
+                            key = id
+                            ner_data_input[index] = id
 
-                    index = index + 1
+                if(len(result[key]) == 0):
+                    del result[key]
+                else :
+                    if(key is not None and key in ['tagorg','tagname']) :
+                        share_data.set_story_ner_entity(key, [ner_conv] + result[key])
+                    else :
+                        share_data.set_story_ner_entity(key, result[key])
+
+                index = index + 1
             return share_data, ner_data_input
         except Exception as e :
             raise Exception ("Error on matching ngram afger bilstm crf : {0}".format(e))
