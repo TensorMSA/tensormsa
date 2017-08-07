@@ -60,7 +60,7 @@ class ChatKnowledgeDataDict:
                 ChatKnowledgeMemDict.synonym[cb_id] = {}
                 ChatKnowledgeMemDict.synonym[cb_id] = self._get_synonym_value()
 
-                ChatKnowledgeMemDict.data[cb_id]["proper_noun"] = self.proper_noun
+                ChatKnowledgeMemDict.data[cb_id]["proper_noun"] = self._get_proper_tagging(type='dict')
 
                 ChatKnowledgeMemDict.data_conf[cb_id] = {}
                 ChatKnowledgeMemDict.data_conf[cb_id]['intent_uuid'] = self._get_intent_uuid()
