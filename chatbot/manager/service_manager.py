@@ -31,19 +31,11 @@ class ServiceManager:
             self.entity_synonym = EntitySynonym(cb_id)
             self.entity_analyzer = EntityAnalyzer(cb_id)
             self.rule_intent_analyzer = RuleIntentAnalyzer(self.chat_knowledge_data_dict.get_intent_conf("custom"))
-            self.entity_recognizer = EntityRecognizer(cb_id,
-                                                      self.chatbot_conf.get_ner_model())
-            # self.intent_analyzer_rule = IntendAnalyzer(cb_id,
-            #                                       self.chatbot_conf.get_intent_model())
-            # self.intent_analyzer_ner = IntendAnalyzer(cb_id,
-            #                                       self.chatbot_conf.get_pattern_intent_model())
-            self.intent_analyzer_rule = IntendAnalyzer(cb_id,
-                                                  'wcnntest97')
-            self.intent_analyzer_ner = IntendAnalyzer(cb_id,
-                                                  'wcnntest97')
+            self.entity_recognizer = EntityRecognizer(cb_id,self.chatbot_conf.get_ner_model())
+            self.intent_analyzer_rule = IntendAnalyzer(cb_id,self.chatbot_conf.get_intent_model())
+            self.intent_analyzer_ner = IntendAnalyzer(cb_id,self.chatbot_conf.get_pattern_intent_model())
             self.service_mapper = ServiceMapper(cb_id, self.entity_synonym)
             self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
-            #self.decision_maker = DecisionMaker(self.chat_knowledge_data_dict)
         except Exception as e :
             raise Exception ("error on ChatBot ServiceManager init process : {0}".format(e))
 
