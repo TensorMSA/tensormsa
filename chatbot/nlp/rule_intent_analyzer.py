@@ -19,14 +19,32 @@ class RuleIntentAnalyzer(ShareData):
         return rule_exist
 
     def get_rule_intent(self, input_data, share_data):
-        intent_list = list(filter(lambda x: list(filter(lambda key: input_data.startswith(key), x["fields"]["rule_value"]["key"])), self.intent_conf))
-        # custom intent is only one
-        if(len(intent_list) > 0):
-            intent_rule = intent_list[0]["pk"]
-            for key in intent_list[0]["fields"]["rule_value"]["key"]:
-                if(input_data.count(key) > 0):
-                    input_data = input_data.replace( key, '').strip()
-            share_data.set_story_slot_entity(intent_list[0]["fields"]["rule_value"]["tag"], [input_data])
-        else:
-            intent_rule = ""
+
+        intent_rule = ""
+        for row in self.intent_conf:
+            if(row['fields']['nn_type'] == 'start'):
+                if(len(list(filter(lambda x: input_data.startswith(x) ,row["fields"]["rule_value"]["key"]))) == 1):
+                    intent_rule = row["pk"]
+                    for key in row["fields"]["rule_value"]["key"]:
+                        if (input_data.count(key) > 0):
+                            input_data = input_data.replace(key, '').strip()
+                            break
+                    share_data.set_story_slot_entity(row["fields"]["rule_value"]["tag"], [input_data])
+                    break
+            elif (row['fields']['nn_type'] == 'like'):
+                if(len(list(filter(lambda x: input_data.find(x)>-1 ,row["fields"]["rule_value"]["key"]))) == 1):
+                    intent_rule = row["pk"]
+                    for key in row["fields"]["rule_value"]["key"]:
+                        if (input_data.startswith(key) is True):
+                            input_data = input_data.replace(key, '').strip()
+                            break
+                        elif (input_data.count(key) > 0):
+                            input_data = input_data[0:input_data.index(key)].strip()
+                            break
+                    share_data.set_story_slot_entity(row["fields"]["rule_value"]["tag"], [input_data])
+                    break
+            else:
+                intent_rule = ""
+                pass
+
         return intent_rule
