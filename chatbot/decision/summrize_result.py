@@ -224,7 +224,7 @@ class SummrizeResult():
             elif (len(self.common_keys) > 0):
                 # get multiple intent which matches with ner result
                 logging.info("Case7 : intent do not match but ner matches")
-                c_intent_id = self.get_intent_candidate(self.common_keys)
+                c_intent_id = self.get_intent_match(self.common_keys)
                 share_data.set_intent_id(c_intent_id + intent_id)
                 if (len(share_data.get_intent_id()) == 0):
                     share_data.set_intent_id(["-1"])
