@@ -14,7 +14,7 @@ class DataAugmentation :
     test.convert_data()
     """
 
-    class ThreadClss(threading.Thread) :
+    class ThreadCls(threading.Thread) :
         def __init__(self, obj, idx):
             threading.Thread.__init__(self)
             self.obj = obj
@@ -155,6 +155,8 @@ class DataAugmentation :
         :param aug_data: augmented list of sentence
         :return: None
         """
+        if aug_data == None :
+            pass
         path = ''.join([self.augmented_out_path, '/'+str(idx),'Test' , str(self.aug_file_cnt) , '.iob'])
         if(os.path.exists(path) == False or os.path.getsize(path) < self.max_file_size) :
             with open(path, "a")  as f :
@@ -183,6 +185,8 @@ class DataAugmentation :
         :param aug_data: augmented list of sentence
         :return: None
         """
+        if aug_data == None :
+            pass
         path = ''.join([self.augmented_out_path, '/'+str(idx),'Test', str(self.aug_file_cnt), '.out'])
         if (os.path.exists(path) == False or os.path.getsize(path) < self.max_file_size):
             with open(path, "a")  as f :
@@ -205,6 +209,8 @@ class DataAugmentation :
         :param aug_data: augmented list of sentence
         :return: None
         """
+        if aug_data == None :
+            pass
         path = ''.join([self.augmented_out_path, '/'+str(idx),'Test', str(self.aug_file_cnt), '.csv'])
 
         if (os.path.exists(path) == False) :
@@ -233,7 +239,7 @@ class DataAugmentation :
     def convert_data(self, idx) :
         """
         augment data with entity list and pattern
-        :return: None
+        :return: Nones
         """
         try :
             if (self.out_format_type == 'intent'):
@@ -263,11 +269,12 @@ class DataAugmentation :
                     words.append(word)
             else:
                 words = str(line).split(' ')
-            print("===={0} line job start".format(i))
             match_keys = self._check_all_match(words)
             aug_data = self._aug_sent(match_keys, words, [])
             self._intent_formatter(aug_data, key, idx)
-            print("===={0} line job done".format(i))
+
+            if(i%100 == 0) :
+                print("====Therad{0} : {1} line job done".format(idx, i))
             i = i + 1
 
     def _conv_type_a(self, idx):
@@ -291,7 +298,6 @@ class DataAugmentation :
             else :
                 words = str(line).split(' ')
 
-            print("===={0} line job start".format(i))
             match_keys = self._check_all_match(words)
             if(self.out_format_type == 'plain') :
                 aug_data = self._aug_sent(match_keys, words, [])
@@ -301,18 +307,19 @@ class DataAugmentation :
                 self._iob_formatter(aug_data,idx)
             else :
                 raise Exception (' '.join(['not', 'plain', 'or iob']))
-            print("===={0} line job done".format (i))
+            if (i % 100 == 0):
+                print("====Therad{0} : {1} line job done".format(idx, i))
             i = i + 1
 
 # da = DataAugmentation({
 #                      "use_mecab": True,
 #                      "max_file_size": 100000000,
 #                      "pattern_data_path": "/hoya_model_root/aug/pattern.csv",
-#                      "augmented_out_path": "/hoya_model_root/aug/aug_0805/",
+#                      "augmented_out_path": "/hoya_model_root/aug/aug_0810/",
 #                      "dict_path": "/hoya_model_root/aug/dict.csv",
 #                      "out_format_type": "iob",
 #                      "dict_sample_size" : 3,
-#                      "dict_sample_iter" : 2000,
+#                      "dict_sample_iter" : 500,
 #                      "thread_num" : 8
 #                  })
 # da.run()

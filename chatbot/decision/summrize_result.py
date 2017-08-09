@@ -226,6 +226,12 @@ class SummrizeResult():
                 logging.info("Case7 : intent do not match but ner matches")
                 c_intent_id = self.get_intent_match(self.common_keys)
                 share_data.set_intent_id(c_intent_id + intent_id)
+
+                del_keys = set(self.ner_keys) - set(self.common_keys)
+                for key in list(del_keys):
+                    del ner_obj[key]
+                share_data.replace_story_slot_entity(ner_obj)
+
                 if (len(share_data.get_intent_id()) == 0):
                     share_data.set_intent_id(["-1"])
                 score = 5.1 + len(self.common_keys)
