@@ -247,7 +247,7 @@ class DataAugmentation :
             else :
                 self._conv_type_a(idx)
         except Exception as e :
-            print("error log : " + e)
+            print("error log : {0}".format(e))
 
     def _conv_type_b(self, idx):
         """

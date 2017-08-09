@@ -109,6 +109,7 @@ class SummrizeResult():
             if(len(list(set(essence))) == 0):
                 logging.info("Case0 : cannot understand intent")
                 score = -1
+                essence.append("dummy")
 
             # case1 : best case, predicted intent and common ner anal result sync well
             if(len(list(set(essence) - set(self.common_keys))) == 0):
