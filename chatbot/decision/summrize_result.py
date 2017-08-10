@@ -37,7 +37,7 @@ class SummrizeResult():
         """
         temp = list(filter(lambda x: x['fields']['intent_id'] == intent_id[0], self.intent_info))
         if (temp == []):
-            return "",""
+            return [],[]
         else:
             return temp[0]['fields']['entity_list']['key'], temp[0]['fields']['entity_list']['extra']
 
