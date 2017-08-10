@@ -78,7 +78,7 @@ class EntityRecognizer(ShareData):
                         result[key] = list(map(lambda x : x[0], model.search(ner_conv.replace(' ','').lower(),threshold=cb_data_th[key])))[0:4]
                     if(len(result[key]) == 0):
                         logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
-                        data, id = self.check_all_dict(ner_conv.replace(' ','').lower(), cb_data, cb_data_order)
+                        data, id = self.check_all_dict(ner_conv.replace(' ','').lower(), cb_data, cb_data_order, cb_data_th)
                         if(id != None) :
                             result[id] = data
                             key = id
@@ -90,7 +90,7 @@ class EntityRecognizer(ShareData):
                         result[key] = list(map(lambda x : x[0], model.search(ner_conv.lower(),threshold=cb_data_th[key])))[0:4]
                     if (len(result[key]) == 0):
                         logging.info("■■■■■■■■■■ NER 오류로 전수 조사 시작 (시간소요발생) ■■■■■■■■■■")
-                        data, id = self.check_all_dict(ner_conv.lower(), cb_data, cb_data_order)
+                        data, id = self.check_all_dict(ner_conv.lower(), cb_data, cb_data_order, cb_data_th)
                         if (id != None):
                             result[id] = data
                             key = id
@@ -109,7 +109,7 @@ class EntityRecognizer(ShareData):
         except Exception as e :
             raise Exception ("Error on matching ngram afger bilstm crf : {0}".format(e))
 
-    def check_all_dict(self, ner_conv, cb_data, cb_data_order):
+    def check_all_dict(self, ner_conv, cb_data, cb_data_order, cb_data_th):
         """
         check other dict when failed to find matching value
         :param ner_conv: 
@@ -119,7 +119,7 @@ class EntityRecognizer(ShareData):
         for key in cb_data_order :
             model = ngram.NGram(key=self.lower)
             model.update(cb_data.get(key))
-            result = list(map(lambda x: x[0], model.search(ner_conv, threshold=0.7)))[0:4]
+            result = list(map(lambda x: x[0], model.search(ner_conv, threshold=cb_data_th[key])))[0:4]
             if(len(result) > 0 ) :
                 return result, key
         return result, None
