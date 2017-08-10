@@ -226,7 +226,7 @@ class SummrizeResult():
                 # get multiple intent which matches with ner result
                 logging.info("Case7 : intent do not match but ner matches")
                 c_intent_id = self.get_intent_match(self.common_keys)
-                share_data.set_intent_id(c_intent_id + intent_id)
+                share_data.set_intent_id(c_intent_id)
 
                 del_keys = set(self.ner_keys) - set(self.common_keys)
                 for key in list(del_keys):
