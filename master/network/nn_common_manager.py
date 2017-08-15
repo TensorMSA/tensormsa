@@ -51,7 +51,7 @@ class NNCommonManager :
             query_list.append("FROM  master_NN_DEF_LIST_INFO NL LEFT OUTER JOIN master_NN_VER_WFLIST_INFO WF ")
             query_list.append("      ON NL.nn_id = WF.nn_id_id AND WF.active_flag = 'Y' ")
             query_list.append("      LEFT OUTER JOIN master_NN_VER_BATCHLIST_INFO BT ")
-            query_list.append("      ON WF.id = BT.nn_wf_ver_id_id ")
+            query_list.append("      ON wf.nn_id_id||'_'||wf.nn_wf_ver_id = substr(bt.nn_batch_ver_id,1,length(wf.nn_id_id||'_'||wf.nn_wf_ver_id)) ")
             if condition['nn_id'] == '%':
                 query_list.append("      AND BT.eval_flag = 'Y' ")
             else:
@@ -177,15 +177,55 @@ class NNCommonManager :
 
     def get_nn_wf_info(self, nn_id):
         """
-        update nn_info
-        :param nn_id:
-        :param obj : json object
+        search nn_wf_info
         :return:
         """
+
         try:
-            query_set = models.NN_VER_WFLIST_INFO.objects.filter(nn_id=nn_id)
-            query_set = serial.serialize("json", query_set)
-            return json.loads(query_set)
+            # make query string (use raw query only when cate is too complicated)
+            query_list = []
+            query_list.append(" select nn_wf.nn_id_id nn_id ")
+            query_list.append("	     ,nn_wf.nn_wf_ver_id ")
+            query_list.append("      ,nn_wf.wf_active_flag active_flag ")
+            query_list.append("      ,nn_wf.nn_batch_ver_id train_batch_ver_id ")
+            query_list.append("      ,nn_wf.train_acc_info ")
+            query_list.append("      ,nn_wf.train_loss_info ")
+            query_list.append("      ,btp.nn_batch_ver_id pred_batch_ver_id ")
+            query_list.append("      ,smp.acc_info pred_acc_info ")
+            query_list.append("      ,smp.loss_info pred_loss_info ")
+            query_list.append(" from( ")
+            query_list.append("      SELECT wf.nn_id_id ")
+            query_list.append("      	    ,wf.nn_wf_ver_id ")
+            query_list.append("      	    ,wf.nn_id_id||'_'||wf.nn_wf_ver_id as status_id ")
+            query_list.append("      	    ,wf.active_flag wf_active_flag ")
+            query_list.append("      	    ,btt.nn_batch_ver_id ")
+            query_list.append("      	    ,btt.active_flag bt_active_flag ")
+            query_list.append("      	    ,smt.acc_info train_acc_info ")
+            query_list.append("      	    ,smt.loss_info train_loss_info ")
+            query_list.append("      	FROM	master_NN_DEF_LIST_INFO nl ")
+            query_list.append("      			LEFT OUTER JOIN master_NN_VER_WFLIST_INFO wf ON nl.nn_id = wf.nn_id_id ")
+            query_list.append("      				LEFT OUTER JOIN master_NN_VER_BATCHLIST_INFO btt ")
+            query_list.append("      					ON wf.nn_id_id||'_'||wf.nn_wf_ver_id = substr(btt.nn_batch_ver_id,1,length(wf.nn_id_id||'_'||wf.nn_wf_ver_id)) ")
+            query_list.append("      					and btt.eval_flag = 'Y' ")
+            query_list.append("      					LEFT OUTER JOIN master_train_summary_accloss_info smt ")
+            query_list.append("      						ON btt.nn_batch_ver_id = smt.nn_batch_ver_id_id	) nn_wf ")
+            query_list.append("      		LEFT OUTER JOIN master_NN_VER_BATCHLIST_INFO btp ")
+            query_list.append("      			ON nn_wf.status_id = substr(btp.nn_batch_ver_id,1,length(nn_wf.status_id)) ")
+            query_list.append("      			and btp.active_flag = 'Y' ")
+            query_list.append("      			LEFT OUTER JOIN master_train_summary_accloss_info smp ")
+            query_list.append("      				ON btp.nn_batch_ver_id = smp.nn_batch_ver_id_id ")
+
+            query_list.append("WHERE nn_id_id like %s ")
+            query_list.append("  order by nn_wf.nn_id_id, nn_wf.nn_wf_ver_id ")
+
+            # parm_list : set parm value as list
+            parm_list = []
+            parm_list.append(nn_id)
+
+            with connection.cursor() as cursor:
+                cursor.execute(''.join(query_list), parm_list)
+                row = dictfetchall(cursor)
+            return row
         except Exception as e:
             raise Exception(e)
 
@@ -201,11 +241,57 @@ class NNCommonManager :
             raise Exception(e)
 
     def get_nn_batch_info(self, nn_id, ver):
+        """
+        search nn_batch_info
+        :return:
+        """
         try:
-            ver_id = models.NN_VER_WFLIST_INFO.objects.filter(nn_id=nn_id, nn_wf_ver_id=ver)
-            query_set = models.NN_VER_BATCHLIST_INFO.objects.filter(nn_wf_ver_id_id=ver_id)
-            query_set = serial.serialize("json", query_set)
-            return json.loads(query_set)
+            # make query string (use raw query only when cate is too complicated)
+            query_list = []
+            query_list.append(" select wf.nn_id_id ")
+            query_list.append("		    ,wf.nn_wf_ver_id ")
+            query_list.append("	        ,bt.nn_batch_ver_id ")
+            query_list.append("      	,bt.active_flag ")
+            query_list.append("      	,bt.eval_flag ")
+            query_list.append("      	,sm.acc_info ")
+            query_list.append("      	,sm.loss_info ")
+            query_list.append(" from master_NN_VER_WFLIST_INFO wf ")
+            query_list.append(" 	,master_NN_VER_BATCHLIST_INFO bt ")
+            query_list.append(" 		LEFT OUTER JOIN master_train_summary_accloss_info sm ")
+            query_list.append(" 			ON bt.nn_batch_ver_id = sm.nn_batch_ver_id_id ")
+            query_list.append(" where wf.nn_id_id||'_'||wf.nn_wf_ver_id = substr(bt.nn_batch_ver_id,1,length(wf.nn_id_id||'_'||wf.nn_wf_ver_id)) ")
+
+
+            query_list.append(" and wf.nn_id_id = %s ")
+            query_list.append(" and wf.nn_wf_ver_id = %s ")
+
+            # parm_list : set parm value as list
+            parm_list = []
+            parm_list.append(nn_id)
+            parm_list.append(ver)
+
+            with connection.cursor() as cursor:
+                cursor.execute(''.join(query_list), parm_list)
+                row = dictfetchall(cursor)
+            return row
+        except Exception as e:
+            raise Exception(e)
+
+    def update_nn_batch_info(self, nn_id, ver, up_data):
+        """
+        update nn_info
+        :param nn_id:
+        :param obj : json object
+        :return:
+        """
+        try:
+            # update user request
+            obj = models.NN_VER_BATCHLIST_INFO.objects.get(nn_batch_ver_id=str(up_data['nn_batch_ver_id']))
+            for key in up_data.keys():
+                if (up_data[key] != None):
+                    setattr(obj, key, up_data[key])
+            obj.save()
+            return str(up_data['nn_batch_ver_id'])
         except Exception as e:
             raise Exception(e)
 
@@ -218,8 +304,12 @@ class NNCommonManager :
         """
         try:
             state_id = nn_id+"_"+ver
-            query_set = models.NN_WF_NODE_INFO.objects.filter(wf_state_id=state_id, nn_wf_node_desc=desc )
+            if(desc != None and desc == "all"):
+                query_set = models.NN_WF_NODE_INFO.objects.filter(wf_state_id=state_id)
+            else:
+                query_set = models.NN_WF_NODE_INFO.objects.filter(wf_state_id=state_id, nn_wf_node_desc=desc )
             query_set = serial.serialize("json", query_set)
             return json.loads(query_set)
         except Exception as e:
             raise Exception(e)
+

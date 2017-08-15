@@ -95,6 +95,8 @@ urlpatterns = [
 
     url(r'^api/v1/type/wf/state/data/detail/reuse/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowDataReuse.as_view())),
+    url(r'^api/v1/type/wf/state/data/detail/upload/file/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/dir/(?P<dir>.*)/type/(?P<type>.*)',
+        csrf_exempt(rest_view.FileUploadView.as_view())),
     url(r'^api/v1/type/wf/state/data/detail/upload/file/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/dir/(?P<dir>.*)/',
         csrf_exempt(rest_view.FileUploadView.as_view())),
     # workflow - data config APIs

@@ -27,7 +27,7 @@ class FileUploadView(APIView):
         ),
     )
 
-    def post(self, request, nnid, ver, dir):
+    def post(self, request, nnid, ver, dir, type=None):
         """
         Your docs
         ---
@@ -46,6 +46,8 @@ class FileUploadView(APIView):
 
                     file = requestSingleFile
                     filepath = get_source_path(nnid, ver, dir)
+                    if type != None and type.find("store") >= 0:
+                        filepath = get_store_path(nnid, ver, dir)
                     filename = filepath + "/" + file.name
                     # payload = MultipartEncoder({})
                     # save file on file system
@@ -72,7 +74,7 @@ class FileUploadView(APIView):
             return_data = None
             return Response(json.dumps(return_data))
 
-    def get(self, request, nnid, ver, dir):
+    def get(self, request, nnid, ver, dir, type=None):
         """
         Your docs
         ---
@@ -82,9 +84,13 @@ class FileUploadView(APIView):
             - name: name
               description: Foobar long description goes here
         """
-        if nnid == "tmpFilePathTrain" or nnid == "tmpFilePathEval":
-            if ver != "list":
-                tmpfilepath = get_source_path(nnid, "1", "")
+        if(type != None):
+            # tmp 임시 저장소의 값을 만들어서 전달해줌.
+            if type.find("tmp") >= 0:
+                tmpfilepath = get_source_path(nnid, ver, "")
+                if type != None and type.find("store") >= 0:
+                    tmpfilepath = get_store_path(nnid, ver, "")
+
                 fileName = time.strftime('%Y%m%d')
                 stand = "1".zfill(10)
                 stcnt = int(fileName + stand)
@@ -100,11 +106,15 @@ class FileUploadView(APIView):
                         None
 
                 mxcnt = str(mxcnt)
-                tmpfilepath = get_source_path(nnid, "1", mxcnt)
+                # tmpfilepath = get_source_path(nnid, ver, mxcnt)
+                # if type.find("store") == 0:
+                #     tmpfilepath = get_store_path(nnid, ver, mxcnt)
                 return_data = {"path":mxcnt}
             else:
                 return_data = []
-                tmpfilepath = get_source_path(nnid, "1", dir)
+                tmpfilepath = get_source_path(nnid, ver, dir)
+                if type != None and type.find("store") >= 0:
+                    tmpfilepath = get_store_path(nnid, ver, dir)
                 for i in os.listdir(tmpfilepath):
                     resub = {"filename":i}
                     return_data.append(resub)
@@ -114,9 +124,9 @@ class FileUploadView(APIView):
         return Response(json.dumps(return_data))
 
     def put(self, request, nnid, ver, dir):
-        pretype = request.data["type"]
-        prepath = request.data["path"]
-        tmpfilepath = get_source_path(pretype, "1", prepath)
+        firsttmpfolder = request.data["first_tmp_folder"]
+        lasttmpfolder = request.data["last_tmp_folder"]
+        tmpfilepath = get_source_path(firsttmpfolder, "1", lasttmpfolder)
         filepath = get_source_path(nnid, ver, dir)
 
         for i in os.listdir(tmpfilepath):
@@ -132,7 +142,11 @@ class FileUploadView(APIView):
         try:
             file = request.data["filename"]
             filepath = get_source_path(nnid, ver, dir)
+
+            if request.data["type"] != None and request.data["type"].find("store") >= 0:
+                filepath = get_store_path(nnid, ver, dir)
             filepath = filepath + "/" + file
+
             os.remove(filepath)
             return_data = {"status": "200", "result": "Success"}
             return Response(json.dumps(return_data))

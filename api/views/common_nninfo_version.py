@@ -3,6 +3,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.network.nn_common_manager import NNCommonManager
 import coreapi
+from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
+from common.utils import *
+import os
 
 class CommonNNInfoVersion(APIView):
     """
@@ -55,8 +58,25 @@ class CommonNNInfoVersion(APIView):
         try:
             return_data = NNCommonManager().get_nn_wf_info(nnid)
             conv = []
+
+            node = WorkFlowSimpleManager().get_train_node()
+
             for row in return_data:
-                conv.append(row['fields'])
+                row["model"] = "N"
+                train_filename = row["train_batch_ver_id"]
+                pred_filename  = row["pred_batch_ver_id"]
+                ver = str(row["nn_wf_ver_id"])
+                model_path = get_model_path(nnid, ver, node)
+                for fn in os.listdir(model_path):
+                    fnsplit = fn.split(".")
+                    fnsplitName = fnsplit[0]
+                    if (fnsplitName == train_filename):
+                        row["train_model"] = fn
+                        row["train_model_exists"] = "Y"
+                    if (fnsplitName == pred_filename):
+                        row["pred_model"] = fn
+                        row["pred_model_exists"] = "Y"
+                conv.append(row)
             return Response(json.dumps(conv))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
