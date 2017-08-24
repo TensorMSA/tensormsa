@@ -147,7 +147,11 @@ class FileUploadView(APIView):
                 filepath = get_store_path(nnid, ver, dir)
             filepath = filepath + "/" + file
 
-            os.remove(filepath)
+            if (os.path.isfile(filepath)):
+                os.remove(filepath)
+            elif (os.path.exists(filepath)):
+                shutil.rmtree(filepath)
+
             return_data = {"status": "200", "result": "Success"}
             return Response(json.dumps(return_data))
         except Exception as e:

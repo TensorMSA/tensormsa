@@ -193,6 +193,8 @@ class NNCommonManager :
             query_list.append("      ,btp.nn_batch_ver_id pred_batch_ver_id ")
             query_list.append("      ,smp.acc_info pred_acc_info ")
             query_list.append("      ,smp.loss_info pred_loss_info ")
+            query_list.append("      ,smrt.result_info t_result_info ")
+            query_list.append("      ,smrf.result_info f_result_info ")
             query_list.append(" from( ")
             query_list.append("      SELECT wf.nn_id_id ")
             query_list.append("      	    ,wf.nn_wf_ver_id ")
@@ -214,6 +216,10 @@ class NNCommonManager :
             query_list.append("      			and btp.active_flag = 'Y' ")
             query_list.append("      			LEFT OUTER JOIN master_train_summary_accloss_info smp ")
             query_list.append("      				ON btp.nn_batch_ver_id = smp.nn_batch_ver_id_id ")
+            query_list.append("      		LEFT OUTER JOIN master_train_summary_result_info smrt ")
+            query_list.append("      		    ON nn_wf.nn_batch_ver_id = smrt.nn_batch_ver_id_id ")
+            query_list.append("      		LEFT OUTER JOIN master_train_summary_result_info smrf ")
+            query_list.append("      		    ON btp.nn_batch_ver_id = smrf.nn_batch_ver_id_id ")
 
             query_list.append("WHERE nn_id_id like %s ")
             query_list.append("  order by nn_wf.nn_id_id, nn_wf.nn_wf_ver_id ")
@@ -255,10 +261,13 @@ class NNCommonManager :
             query_list.append("      	,bt.eval_flag ")
             query_list.append("      	,sm.acc_info ")
             query_list.append("      	,sm.loss_info ")
+            query_list.append("      	,smr.result_info ")
             query_list.append(" from master_NN_VER_WFLIST_INFO wf ")
             query_list.append(" 	,master_NN_VER_BATCHLIST_INFO bt ")
             query_list.append(" 		LEFT OUTER JOIN master_train_summary_accloss_info sm ")
             query_list.append(" 			ON bt.nn_batch_ver_id = sm.nn_batch_ver_id_id ")
+            query_list.append(" 		LEFT OUTER JOIN master_train_summary_result_info smr ")
+            query_list.append(" 			ON bt.nn_batch_ver_id = smr.nn_batch_ver_id_id ")
             query_list.append(" where wf.nn_id_id||'_'||wf.nn_wf_ver_id = substr(bt.nn_batch_ver_id,1,length(wf.nn_id_id||'_'||wf.nn_wf_ver_id)) ")
 
 

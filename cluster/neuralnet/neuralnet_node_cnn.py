@@ -97,7 +97,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.step_gap = self.step_gap + self.g_epoch_cnt
         self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
 
-        self.model_file_delete(self.model_path, self.modelname)
+        # self.model_file_delete(self.model_path, self.modelname)
 
         self.train_return_arr.append(result)
 

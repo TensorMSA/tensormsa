@@ -91,7 +91,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
         result = [msg]
 
-        self.model_file_delete(self.model_path, self.modelname)
+        # self.model_file_delete(self.model_path, self.modelname)
 
         self.train_return_arr.append(result)
 
