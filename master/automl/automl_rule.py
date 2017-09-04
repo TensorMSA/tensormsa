@@ -78,7 +78,7 @@ class AutoMlRule:
         :return:
         """
         try:
-            if graph_flow_id == "graph_flow_desc":
+            if graph_flow_id == "graph_flow_desc" or graph_flow_id == "graph_flow_group_id":
                 for i in input_data:
                     obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=i)
                     setattr(obj, graph_flow_id, input_data[i])
