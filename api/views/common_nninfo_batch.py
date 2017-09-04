@@ -51,6 +51,25 @@ class CommonNNInfoBatch(APIView):
                     if (fnsplitName == filename):
                         row["model"] = fn
                         row["model_exists"] = "Y"
+                if row["result_info"] != None:
+                    predicts = row["result_info"]["predicts"]
+
+                    tfTot = 0
+                    fTot = 0
+                    tTot = 0
+                    for i in range(len(predicts)):
+                        for j in range(len(predicts[i])):
+                            if i == j:
+                                tTot += predicts[i][j]
+                            else:
+                                fTot += predicts[i][j]
+                    row["true_cnt"] = tTot
+                    row["false_cnt"] = fTot
+                    tfTot = tTot+fTot
+                    row["true_false_cnt"] = tfTot
+                    if tfTot == 0:
+                        tfTot = 1
+                    row["true_false_percent"] = round(tTot/tfTot*100)
 
                 conv.append(row)
             return Response(json.dumps(conv))

@@ -30,14 +30,7 @@ class EvalNodeExtra(EvalNode):
             result = net_node[0].eval(conf_data['node_id'], conf_data, data=data_node[0], result=result)
 
             # set parms for db store
-            input_data = {}
-            input_data['nn_id'] = result.get_nn_id()
-            input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
-            input_data['nn_batch_ver_id'] = result.get_nn_batch_ver_id()
-            input_data['result_info'] = result.get_result_info()
-            serializer = serializers.TRAIN_SUMMARY_RESULT_INFO_Serializer(data=input_data)
-            if serializer.is_valid():
-                serializer.save()
+            input_data = TrainSummaryInfo.save_result_info(self, result)
             return input_data['result_info']
         except Exception as e:
             logging.error(e)

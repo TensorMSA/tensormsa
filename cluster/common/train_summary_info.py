@@ -1,3 +1,6 @@
+from master import models
+from master import serializers
+
 class TrainSummaryInfo:
     def __init__(self, conf = None, type=None):
         """
@@ -80,3 +83,25 @@ class TrainSummaryInfo:
             self.result_info['answer'].append(label)
             self.result_info['predict'].append(predict)
             self.result_info['accuracy'].append(acc)
+
+    def save_result_info(self, result):
+        input_data = {}
+        input_data['nn_id'] = result.get_nn_id()
+        input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
+        input_data['nn_batch_ver_id'] = result.get_nn_batch_ver_id()
+
+        try:
+            input_data['result_info'] = result.get_result_info()
+
+            try:
+                obj = models.TRAIN_SUMMARY_RESULT_INFO.objects.get(nn_batch_ver_id=str(input_data['nn_batch_ver_id']))
+                setattr(obj, 'result_info', input_data['result_info'])
+                obj.save()
+            except Exception as e:
+                serializer = serializers.TRAIN_SUMMARY_RESULT_INFO_Serializer(data=input_data)
+                if serializer.is_valid():
+                    serializer.save()
+        except Exception as e:
+            raise Exception(e)
+
+        return input_data

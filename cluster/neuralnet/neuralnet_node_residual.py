@@ -204,9 +204,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
         # init data setup
         self._init_train_parm(conf_data)
         self._init_value()
-        # set batch
-        self.load_batch = self.get_eval_batch(self.node_id)
-        self.train_batch, self.batch = self.make_batch(self.node_id)
 
         # get data & dataconf
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
@@ -215,6 +212,13 @@ class NeuralNetNodeReNet(NeuralNetNode):
         # set netconf, dataconf
         self._set_netconf_parm()
         self._set_dataconf_parm(dataconf)
+
+        # set batch
+        self.load_batch = self.get_eval_batch(self.node_id)
+        if self.epoch != 0 and self.train_cnt != 0:
+            self.train_batch, self.batch = self.make_batch(self.node_id)
+        else:
+            self.batch = self.load_batch
 
         self.get_model_resnet()
 
@@ -244,6 +248,13 @@ class NeuralNetNodeReNet(NeuralNetNode):
             f_cnt_arr.append(0)
 
         input_data.pointer = 0
+        # eval
+        config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"],
+                  "nn_id": self.nn_id,
+                  "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
+
+        self.eval_data = TrainSummaryInfo(conf=config)
+
         while (input_data.has_next()):
             data_set = input_data[0:input_data.data_size()]
             x_batch, y_batch, n_batch = self.get_batch_img_data(data_set, "E")
@@ -310,6 +321,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
             input_data.next()
 
+        # set parms for db store
+        input_data = TrainSummaryInfo.save_result_info(self, self.eval_data)
+
         self.eval_print(labels, t_cnt_arr, f_cnt_arr)
 
     def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
@@ -349,16 +363,11 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
     def eval(self, node_id, conf_data, data=None, result=None):
         logging.info("run NeuralNetNodeCnn eval")
+
         if data == None:
             self.eval_flag = "T"
         else:
             self.eval_flag = "E"
-
-        # eval
-        config = {"type": self.netconf["config"]["eval_type"], "labels": self.netconf["labels"],
-                  "nn_id": self.nn_id,
-                  "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
-        self.eval_data = TrainSummaryInfo(conf=config)
 
         # get data & dataconf
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)

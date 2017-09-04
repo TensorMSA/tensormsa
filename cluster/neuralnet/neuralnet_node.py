@@ -139,20 +139,28 @@ class NeuralNetNode(WorkFlowCommonNode):
             return False
 
     def save_accloss_info(self, result):
+        input_data = {}
+        input_data['nn_id'] = result.get_nn_id()
+        input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
+        input_data['nn_batch_ver_id'] = result.get_nn_batch_ver_id()
+
         try:
-            input_data = {}
-            input_data['nn_id'] = result.get_nn_id()
-            input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
-            input_data['nn_batch_ver_id'] = result.get_nn_batch_ver_id()
             input_data['acc_info'] = result.get_acc_info()
             input_data['loss_info'] = result.get_loss_info()
-            serializer = serializers.TRAIN_SUMMARY_ACCLOSS_INFO_Serializer(data=input_data)
-            if serializer.is_valid():
-                serializer.save()
-            return input_data
+
+            try:
+                obj = models.TRAIN_SUMMARY_ACCLOSS_INFO.objects.get(nn_batch_ver_id=str(input_data['nn_batch_ver_id']))
+                setattr(obj, 'acc_info', input_data['acc_info'])
+                setattr(obj, 'loss_info', input_data['loss_info'])
+                obj.save()
+            except Exception as e:
+                serializer = serializers.TRAIN_SUMMARY_ACCLOSS_INFO_Serializer(data=input_data)
+                if serializer.is_valid():
+                    serializer.save()
         except Exception as e:
-            print(result)
             raise Exception(e)
+
+        return input_data
 
     def get_before_make_batch(self, node_id, nn_batch_ver_id):
         """
