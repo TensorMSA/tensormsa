@@ -176,7 +176,7 @@ class AUTO_ML_RULE(models.Model):
     graph_flow_id = models.CharField(max_length=20, blank=False, primary_key=True)
     graph_flow_data = JSONField()
     graph_flow_desc = models.CharField(max_length=5000, blank=True)
-    graph_flow_group_id = models.IntegerField(default=1)
+    graph_flow_group_id = models.CharField(max_length=100)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)
