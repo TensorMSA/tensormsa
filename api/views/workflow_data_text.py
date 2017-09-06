@@ -6,22 +6,40 @@ from common.utils import *
 import coreapi
 
 class WorkFlowDataText(APIView):
-    # TODO:add document sample for swagger (need to update)
+
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
+            name='type',
             required=True,
             type='string',
         ),
         coreapi.Field(
-            name='parm2',
+            name='source_server',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='source_sql',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='preprocess',
             required=True,
             type='string',
         ),
     )
     def post(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc : insert cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles text type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataText
+
+        # Description:
+            Set params for data source, preprocess method and etc
         """
         try:
             # save uploaded file on source folder
@@ -33,7 +51,16 @@ class WorkFlowDataText(APIView):
 
     def get(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc : get cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles text type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataText
+
+        # Description:
+            1. Search real data from the source in range (use datamanager instead)
+            2. See Data Node Parameters for selected nnid
         """
         try:
             if(prg == 'source') :
@@ -51,7 +78,16 @@ class WorkFlowDataText(APIView):
 
     def put(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc ; update cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles text type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataText
+
+        # Description:
+            1. Modify selected data (use datamanager instead)
+            2. Modify params for data source, preprocess method and etc
         """
         try:
             if (prg == 'source'):
@@ -67,7 +103,16 @@ class WorkFlowDataText(APIView):
 
     def delete(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc : delete cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles text type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataText
+
+        # Description:
+            1. Delete part of data (seleted by user ) conditions or rows (use datamanager instead)
+            2. Reset Node parameters
         """
         try:
             return_data = ""

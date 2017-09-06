@@ -6,28 +6,14 @@ import coreapi
 class ConfServerData(APIView):
     """
     """
-    # TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
     def post(self, request, nnid):
         """
-        Your docs
+        Manage Server info (master, slave, service and data servers)
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : ConfServerData
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            create, remove, update, delete server info via rest api
         """
         try:
             return_data = ""
@@ -38,13 +24,12 @@ class ConfServerData(APIView):
 
     def get(self, request, nnid):
         """
-        Your docs
+        Manage Server info (master, slave, service and data servers)
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : ConfServerData
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            create, remove, update, delete server info via rest api
         """
         try:
             return_data = ""
@@ -55,13 +40,12 @@ class ConfServerData(APIView):
 
     def put(self, request, nnid):
         """
-        Your docs
+        Manage Server info (master, slave, service and data servers)
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : ConfServerData
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            create, remove, update, delete server info via rest api
         """
         try:
             return_data = ""
@@ -72,13 +56,12 @@ class ConfServerData(APIView):
 
     def delete(self, request, nnid):
         """
-        Your docs
+        Manage Server info (master, slave, service and data servers)
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : ConfServerData
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            create, remove, update, delete server info via rest api
         """
         try:
             return_data = ""

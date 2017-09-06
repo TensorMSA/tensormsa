@@ -5,30 +5,16 @@ from cluster.generator.ner_augmentation import DataAugmentation
 import coreapi
 
 class AugNlpConf(APIView):
-    """
-    """
-    # TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
+
     def post(self, request, nnid, ver):
         """
-        Your docs
+        Augment text data with pattern and dict
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : AugNlpConf
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            This Rest API support to augment train data with pattern and dict, this will generate
+            real type of data for sequence labeling, wordembedding and supervised learning
         """
         try:
             da = DataAugmentation(request.data)

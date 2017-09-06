@@ -8,22 +8,22 @@ logger = get_task_logger(__name__)
 import coreapi
 
 class RunManagerTrainRequest(APIView):
-    # TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
+
     def post(self, request, nnid, ver):
         """
-        - desc : insert data
+        We can execute whole process from data extraction > data preprocessing > train model > eval
+        Process of execute single graph flow is like bellow
+        (1) Set Network Id  \n
+        (2) Set Version Id  \n
+        (3) Set set graph flow  \n
+        (4) Set each nodes params on graph  \n
+        (5) Run graph flow of certain version defined on (2)   <-- here .. this step    \n
+        (6) Service output model    \n
+        ---
+        # Class Name : RunManagerTrainRequest
+
+        # Description:
+            execute all process at once
         """
         try:
             if(self._same_request_check(nnid, ver) == 'run'):
@@ -41,7 +41,19 @@ class RunManagerTrainRequest(APIView):
 
     def get(self, request, nnid, ver):
         """
-        - desc : get data
+        We can execute whole process from data extraction > data preprocessing > train model > eval
+        Process of execute single graph flow is like bellow
+        (1) Set Network Id  \n
+        (2) Set Version Id  \n
+        (3) Set set graph flow  \n
+        (4) Set each nodes params on graph  \n
+        (5) Run graph flow of certain version defined on (2)   <-- here .. this step    \n
+        (6) Service output model    \n
+        ---
+        # Class Name : RunManagerTrainRequest
+
+        # Description:
+            get status of process (scheduled, active, reserved, done.. )
         """
         try:
             return_data = {}
@@ -64,18 +76,19 @@ class RunManagerTrainRequest(APIView):
 
     def put(self, request, nnid, ver):
         """
-        - desc ; update data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
+        We can execute whole process from data extraction > data preprocessing > train model > eval
+        Process of execute single graph flow is like bellow
+        (1) Set Network Id  \n
+        (2) Set Version Id  \n
+        (3) Set set graph flow  \n
+        (4) Set each nodes params on graph  \n
+        (5) Run graph flow of certain version defined on (2)   <-- here .. this step    \n
+        (6) Service output model    \n
+        ---
+        # Class Name : RunManagerTrainRequest
 
-    def delete(self, request, nnid, ver):
-        """
-        - desc : delete data
+        # Description:
+            Change status.. like stop processing task..
         """
         try:
             return_data = ""

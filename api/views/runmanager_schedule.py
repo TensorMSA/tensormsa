@@ -7,19 +7,37 @@ class RunManagerSchedule(APIView):
     # TODO:add document sample for swagger (need to update)
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
+            name='interval',
             required=True,
-            type='string',
+            type='time',
         ),
         coreapi.Field(
-            name='parm2',
+            name='start',
             required=True,
-            type='string',
+            type='date',
+        ),
+        coreapi.Field(
+            name='end',
+            required=True,
+            type='date',
+        ),
+        coreapi.Field(
+            name='repeat',
+            required=True,
+            type='int',
         ),
     )
     def post(self, request, nnid):
         """
-        - desc : insert cnn configuration data
+        Training Job schedule management
+        We have predefined set of graph flow.. on Scheduler you can set a schedule this graph flow
+        run on exact time. (everyday 1pm, every 5hours ... somting like this)
+        So that we can feed new data and update model automatically
+        ---
+        # Class Name : RunManagerSchedule
+
+        # Description:
+            create schedule params sets
         """
         try:
             return_data = ""
@@ -30,7 +48,15 @@ class RunManagerSchedule(APIView):
 
     def get(self, request, nnid):
         """
-        - desc : get cnn configuration data
+        Training Job schedule management
+        We have predefined set of graph flow.. on Scheduler you can set a schedule this graph flow
+        run on exact time. (everyday 1pm, every 5hours ... somting like this)
+        So that we can feed new data and update model automatically
+        ---
+        # Class Name : RunManagerSchedule
+
+        # Description:
+            get schedule params for selected nn_id
         """
         try:
             return_data = ""
@@ -41,7 +67,15 @@ class RunManagerSchedule(APIView):
 
     def put(self, request, nnid):
         """
-        - desc ; update cnn configuration data
+        Training Job schedule management
+        We have predefined set of graph flow.. on Scheduler you can set a schedule this graph flow
+        run on exact time. (everyday 1pm, every 5hours ... somting like this)
+        So that we can feed new data and update model automatically
+        ---
+        # Class Name : RunManagerSchedule
+
+        # Description:
+            modify schedule params for selected nn_id
         """
         try:
             return_data = ""
@@ -52,7 +86,15 @@ class RunManagerSchedule(APIView):
 
     def delete(self, request, nnid):
         """
-        - desc : delete cnn configuration data
+        Training Job schedule management
+        We have predefined set of graph flow.. on Scheduler you can set a schedule this graph flow
+        run on exact time. (everyday 1pm, every 5hours ... somting like this)
+        So that we can feed new data and update model automatically
+        ---
+        # Class Name : RunManagerSchedule
+
+        # Description:
+            delete schedule params for selected nn_id
         """
         try:
             return_data = ""

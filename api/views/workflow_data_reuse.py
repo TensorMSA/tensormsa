@@ -4,22 +4,25 @@ from rest_framework.views import APIView
 import coreapi
 
 class WorkFlowDataReuse(APIView):
-    # TODO:add document sample for swagger (need to update)
+
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
+            name='node_id',
             required=True,
             type='string',
         ),
     )
     def post(self, request, nnid):
         """
-        - desc : insert cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles reuse type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataReuse
+
+        # Description:
+            Set params which data node to reuse
         """
         try:
             return_data = ""
@@ -30,7 +33,16 @@ class WorkFlowDataReuse(APIView):
 
     def get(self, request, nnid):
         """
-        - desc : get cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles reuse type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataReuse
+
+        # Description:
+            You can see how the dataset looks like (use datamanager instead)
+            this will show youj reused data node id only
         """
         try:
             return_data = ""
@@ -39,24 +51,3 @@ class WorkFlowDataReuse(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def put(self, request, nnid):
-        """
-        - desc ; update cnn configuration data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-    def delete(self, request, nnid):
-        """
-        - desc : delete cnn configuration data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))

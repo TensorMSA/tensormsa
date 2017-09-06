@@ -13,15 +13,10 @@ import shutil
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
 
 class FileUploadView(APIView):
-    # TODO:add document sample for swagger (need to update)
+
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
+            name='file',
             required=True,
             type='string',
         ),
@@ -29,13 +24,12 @@ class FileUploadView(APIView):
 
     def post(self, request, nnid, ver, dir, type=None):
         """
-        Your docs
+        File Management Rest Service
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : FileUploadView
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            upload actual file via rest api
         """
         try:
             return_data = {}
@@ -76,13 +70,12 @@ class FileUploadView(APIView):
 
     def get(self, request, nnid, ver, dir, type=None):
         """
-        Your docs
+        File Management Rest Service
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : FileUploadView
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Get file counts or file name of given network id and version
         """
         if(type != None):
             # tmp 임시 저장소의 값을 만들어서 전달해줌.
@@ -99,16 +92,12 @@ class FileUploadView(APIView):
                     try:
                         if int(i) >= mxcnt:
                             mxcnt = int(i) + 1
-
                         if int(i) < stcnt:
                             shutil.rmtree(tmpfilepath + i)
                     except:
                         None
 
                 mxcnt = str(mxcnt)
-                # tmpfilepath = get_source_path(nnid, ver, mxcnt)
-                # if type.find("store") == 0:
-                #     tmpfilepath = get_store_path(nnid, ver, mxcnt)
                 return_data = {"path":mxcnt}
             else:
                 return_data = []
@@ -124,6 +113,14 @@ class FileUploadView(APIView):
         return Response(json.dumps(return_data))
 
     def put(self, request, nnid, ver, dir):
+        """
+        File Management Rest Service
+        ---
+        # Class Name : FileUploadView
+
+        # Description:
+            Get file counts or file name of given network id and version
+        """
         firsttmpfolder = request.data["first_tmp_folder"]
         lasttmpfolder = request.data["last_tmp_folder"]
         tmpfilepath = get_source_path(firsttmpfolder, "1", lasttmpfolder)
@@ -137,7 +134,12 @@ class FileUploadView(APIView):
 
     def delete(self, request, nnid, ver, dir):
         """
-        - desc : delete cnn configuration data
+        File Management Rest Service
+        ---
+        # Class Name : FileUploadView
+
+        # Description:
+            delete selected upload file
         """
         try:
             file = request.data["filename"]

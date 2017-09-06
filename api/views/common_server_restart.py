@@ -7,28 +7,14 @@ class CommonServerRestart(APIView):
     """
     
     """
-    #TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
     def post(self, request):
         """
-        Your docs
+        Request to restart all nginx threads
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonServerRestart
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            restart nginx threads via rest api
         """
         try:
             os.kill(os.getppid(), signal.SIGHUP)

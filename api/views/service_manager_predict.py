@@ -18,19 +18,24 @@ class ServiceManagerPredict(APIView):
     # TODO:add document sample for swagger (need to update)
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
+            name='input_data',
             required=True,
             type='string',
         ),
     )
     def post(self, request, type, nnid, ver):
         """
-        - desc : insert cnn configuration data
+        Request Deep Neural Network to predict result with given data   \n
+        input formats can be varies on type of networks     \n
+        but usually you can use it with parm input_data     \n
+        ---
+        # Class Name : ServiceManagerPredict
+
+        # Description:
+            request predict service via rest service
+            It caches the model and vectors on first request
+            It may can take some time at first for caching, after than we can response the request
+            within 1.0 sec
         """
         try:
             if(ver == 'active') :
@@ -78,39 +83,6 @@ class ServiceManagerPredict(APIView):
                 else:
                     raise Exception("Not defined type error")
 
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-    def get(self, request, type, nnid, ver):
-        """
-        - desc : get cnn configuration data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-    def put(self, request, type, nnid, ver):
-        """
-        - desc ; update cnn configuration data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
-
-    def delete(self, request, type, nnid, ver):
-        """
-        - desc : delete cnn configuration data
-        """
-        try:
-            return_data = ""
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

@@ -5,22 +5,24 @@ from master.workflow.evalconf.workflow_evalconf import WorkFlowEvalConfig
 import coreapi
 
 class WorkFlowEvalConf(APIView) :
-    # TODO:add document sample for swagger (need to update)
+
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
+            name='type',
             required=True,
             type='string',
         ),
     )
     def post(self, request, nnid, ver):
         """
-        - desc : insert data
+        This API is for set node parameters \n
+        This node is for evaluation of train result \n
+        You can choose 3 diffrent kind of test method (n fold, random, extra test set) \n
+        ---
+        # Class Name : WorkFlowEvalConf
+
+        # Description:
+            Set Test method and test data source
         """
         try:
             return_data = ""
@@ -31,7 +33,14 @@ class WorkFlowEvalConf(APIView) :
 
     def get(self, request, nnid):
         """
-        - desc : get data
+        This API is for set node parameters \n
+        This node is for evaluation of train result \n
+        You can choose 3 diffrent kind of test method (n fold, random, extra test set) \n
+        ---
+        # Class Name : WorkFlowEvalConf
+
+        # Description:
+            Get evaluation node configurations
         """
         try:
             return_data = ""
@@ -42,7 +51,14 @@ class WorkFlowEvalConf(APIView) :
 
     def put(self, request, nnid, ver, node):
         """
-        - desc ; update data
+        This API is for set node parameters \n
+        This node is for evaluation of train result \n
+        You can choose 3 diffrent kind of test method (n fold, random, extra test set) \n
+        ---
+        # Class Name : WorkFlowEvalConf
+
+        # Description:
+            modify evaluation node configurations
         """
         try:
             config_data = request.data
@@ -54,7 +70,14 @@ class WorkFlowEvalConf(APIView) :
 
     def delete(self, request, nnid):
         """
-        - desc : delete  data
+        This API is for set node parameters \n
+        This node is for evaluation of train result \n
+        You can choose 3 diffrent kind of test method (n fold, random, extra test set) \n
+        ---
+        # Class Name : WorkFlowEvalConf
+
+        # Description:
+            reset evaluation node configurations
         """
         try:
             return_data = ""

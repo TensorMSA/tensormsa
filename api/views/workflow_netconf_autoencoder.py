@@ -6,22 +6,45 @@ from common.utils import *
 import coreapi
 
 class WorkFlowNetConfAutoEncoder(APIView) :
-    # TODO:add document sample for swagger (need to update)
+
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
+            name='learning_rate',
             required=True,
-            type='string',
+            type='float',
         ),
         coreapi.Field(
-            name='parm2',
+            name='iter',
             required=True,
-            type='string',
+            type='int',
+        ),
+        coreapi.Field(
+            name='batch_size',
+            required=True,
+            type='int',
+        ),
+        coreapi.Field(
+            name='examples_to_show',
+            required=True,
+            type='10',
+        ),
+        coreapi.Field(
+            name='n_hidden',
+            required=True,
+            type='list',
         ),
     )
     def post(self, request, nnid):
         """
-        - desc : insert data
+        This API handles network node information \n
+        This is for Stacked AutoEncoder \n
+        We designed general form of Autoencoder \n
+        You can modify hyperparameters with rest api \n
+        ---
+        # Class Name : WorkFlowNetConfAutoEncoder
+
+        # Description:
+            Set Network configuration for AutoEncoder
         """
         try:
             return_data = ""
@@ -32,7 +55,15 @@ class WorkFlowNetConfAutoEncoder(APIView) :
 
     def get(self, request, nnid):
         """
-        - desc : get data
+        This API handles network node information \n
+        This is for Stacked AutoEncoder \n
+        We designed general form of Autoencoder \n
+        You can modify hyperparameters with rest api \n
+        ---
+        # Class Name : WorkFlowNetConfAutoEncoder
+
+        # Description:
+            Get Network configuration for AutoEncoder
         """
         try:
             return_data = ""
@@ -43,7 +74,15 @@ class WorkFlowNetConfAutoEncoder(APIView) :
 
     def put(self, request, nnid, ver, node):
         """
-        - desc ; update data
+        This API handles network node information \n
+        This is for Stacked AutoEncoder \n
+        We designed general form of Autoencoder \n
+        You can modify hyperparameters with rest api \n
+        ---
+        # Class Name : WorkFlowNetConfAutoEncoder
+
+        # Description:
+            Modify Network configuration for AutoEncoder
         """
         try:
             input_data = request.data
@@ -58,7 +97,15 @@ class WorkFlowNetConfAutoEncoder(APIView) :
 
     def delete(self, request, nnid):
         """
-        - desc : delete  data
+        This API handles network node information \n
+        This is for Stacked AutoEncoder \n
+        We designed general form of Autoencoder \n
+        You can modify hyperparameters with rest api \n
+        ---
+        # Class Name : WorkFlowNetConfAutoEncoder
+
+        # Description:
+            Reset Network configuration for AutoEncoder
         """
         try:
             return_data = ""

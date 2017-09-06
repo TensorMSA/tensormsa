@@ -11,12 +11,7 @@ class RunManagerSingleRequest(APIView):
     # TODO:add document sample for swagger (need to update)
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
+            name='flag',
             required=True,
             type='string',
         ),
@@ -24,11 +19,16 @@ class RunManagerSingleRequest(APIView):
 
     def post(self, request, nnid, ver, node):
         """
-        - desc : insert data
+        We can execute single node with this api
+        you must specify nnid, ver and node name for that purpose
+        ---
+        # Class Name : RunManagerSingleRequest
+
+        # Description:
+            request single node to be executed
         """
         try:
             #result = single_run.delay(nnid, ver, node)
-
             result = single_run(nnid, ver, node)
             return Response(json.dumps(result))
         except Exception as e:
@@ -38,10 +38,15 @@ class RunManagerSingleRequest(APIView):
 
     def get(self, request, nnid, ver, node):
         """
-        - desc : get data
+        We can execute single node with this api
+        you must specify nnid, ver and node name for that purpose
+        ---
+        # Class Name : RunManagerSingleRequest
+
+        # Description:
+            get status of single node (run, wait, done.. etc)
         """
         try:
-            logging.info("RunManager get...........................")
             return_data = ""
             return Response(json.dumps(return_data))
         except Exception as e:
@@ -50,18 +55,13 @@ class RunManagerSingleRequest(APIView):
 
     def put(self, request, nnid, ver, node):
         """
-        - desc ; update data
-        """
-        try:
-            return_data = ""
-            return Response(json.dumps(return_data))
-        except Exception as e:
-            return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data))
+        We can execute single node with this api
+        you must specify nnid, ver and node name for that purpose
+        ---
+        # Class Name : RunManagerSingleRequest
 
-    def delete(self, request, nnid, ver, node):
-        """
-        - desc : delete data
+        # Description:
+            edit status of single node
         """
         try:
             return_data = ""

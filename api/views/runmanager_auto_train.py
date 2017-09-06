@@ -5,28 +5,29 @@ from cluster.automl.automl_runmanager import AutoMlRunManager
 import coreapi
 
 class RunManagerAutoTrain(APIView):
-    # TODO:add document sample for swagger (need to update)
+
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
+            name='flag',
             required=True,
             type='string',
         ),
     )
     def post(self, request, nnid):
         """
-        Your docs
+        Bellow is the process of running automl on our framework
+        (1) Define AutoML Graph definition \n
+        (2) Select Type of Data \n
+        (3) Select Type of Anal algorithm \n
+        (4) Select range of hyper parameters \n
+        (5) Run - AutoML (<- for this step) \n
+        (6) Check result of each generation with UI/UX  \n
+        (7) Select Best model you want use and activate it \n
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : RunManagerAutoTrain
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            request train on selected automl id
         """
         try:
             return_data = AutoMlRunManager(nnid).run()
@@ -37,13 +38,19 @@ class RunManagerAutoTrain(APIView):
 
     def get(self, request, nnid):
         """
-        Your docs
+        Bellow is the process of running automl on our framework
+        (1) Define AutoML Graph definition \n
+        (2) Select Type of Data \n
+        (3) Select Type of Anal algorithm \n
+        (4) Select range of hyper parameters \n
+        (5) Run - AutoML (<- for this step) \n
+        (6) Check result of each generation with UI/UX  \n
+        (7) Select Best model you want use and activate it \n
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : RunManagerAutoTrain
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            get status of selected autol ml id
         """
         try:
             return_data = ""
@@ -54,13 +61,19 @@ class RunManagerAutoTrain(APIView):
 
     def put(self, request, nnid):
         """
-        Your docs
+        Bellow is the process of running automl on our framework
+        (1) Define AutoML Graph definition \n
+        (2) Select Type of Data \n
+        (3) Select Type of Anal algorithm \n
+        (4) Select range of hyper parameters \n
+        (5) Run - AutoML (<- for this step) \n
+        (6) Check result of each generation with UI/UX  \n
+        (7) Select Best model you want use and activate it \n
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : RunManagerAutoTrain
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            change status of automl id (like.. stop process while working..)
         """
         try:
             return_data = ""

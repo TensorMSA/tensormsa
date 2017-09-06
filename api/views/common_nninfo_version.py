@@ -10,28 +10,39 @@ import os
 class CommonNNInfoVersion(APIView):
     """
     """
+
     # TODO:add document sample for swagger (need to update)
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
+            name='nn_def_list_info_nn_id',
             required=True,
             type='string',
         ),
         coreapi.Field(
-            name='parm2',
+            name='nn_wf_ver_info',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='condition',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='active_flag',
             required=True,
             type='string',
         ),
     )
     def post(self, request, nnid):
         """
-        Your docs
+        Common Network Version Info Post Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoVersion
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : nninfo - <version> - batch version
+            need to define version info under network definition
         """
         try:
             input_data = request.data
@@ -47,13 +58,13 @@ class CommonNNInfoVersion(APIView):
 
     def get(self, request, nnid):
         """
-        Your docs
+        Common Network Version Info Get Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoVersion
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : nninfo - <version> - batch version
+            Get version information of selected nnid
         """
         try:
             return_data = NNCommonManager().get_nn_wf_info(nnid)
@@ -84,13 +95,13 @@ class CommonNNInfoVersion(APIView):
 
     def put(self, request, nnid):
         """
-        Your docs
+        Common Network Version Info Delete Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoVersion
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : nninfo - <version> - batch version
+            Modify seleted nnid's information
         """
         try:
             return_data = NNCommonManager().update_nn_wf_info(nnid, request.data)
@@ -101,13 +112,13 @@ class CommonNNInfoVersion(APIView):
 
     def delete(self, request, nnid):
         """
-        Your docs
+        Common Network Version Info Delete Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoVersion
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : nninfo - <version> - batch version
+            delete selected network info and related data
         """
         try:
 

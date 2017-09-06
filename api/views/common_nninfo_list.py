@@ -8,31 +8,57 @@ import coreapi
 class CommonNNInfoList(APIView):
     """
     """
-    # TODO:add document sample for swagger (need to update)
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
+            name='nn_id',
             required=True,
-            schema=coreapi.Field(name='parm3',
-                                 required=True,
-                                 description='haha',
-                                 type='float')
+            type="string"
         ),
         coreapi.Field(
-            name='parm2',
+            name='biz_cate',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='biz_sub_cate',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='nn_title',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='nn_desc',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='use_flag',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='dir',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='config',
             required=True,
             type='string',
         ),
     )
     def post(self, request, nnid):
         """
-        Your docs
+        Common Network Info Post Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : <nninfo> - version - batch version
+            Define new neural network process
         """
         try:
             input_parm = request.data
@@ -62,13 +88,13 @@ class CommonNNInfoList(APIView):
 
     def get(self, request, nnid):
         """
-        Your docs
+        Common Network Info Get Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : <nninfo> - version - batch version
+            Search deinfed list of neural networks
         """
         try:
             condition = {}
@@ -86,13 +112,13 @@ class CommonNNInfoList(APIView):
 
     def put(self, request, nnid):
         """
-        Your docs
+        Common Network Info Put Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : <nninfo> - version - batch version
+            Modifiy already defined neuralnetwork info
         """
         try:
             input_parm = request.data
@@ -111,13 +137,14 @@ class CommonNNInfoList(APIView):
 
     def delete(self, request, nnid):
         """
-        Your docs
+        Common Network Info Delete Method
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : CommonNNInfoList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Structure : <nninfo> - version - batch version
+            Delete selected neuralnetwork from list (careful cannot be undo)
+            Delete all related info list version, batch, model and etc
         """
         try:
             input_parm = request.data

@@ -4,22 +4,15 @@ from rest_framework.views import APIView
 import coreapi
 
 class ServiceManager(APIView):
-    # TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
+
     def post(self, request, nnid):
         """
-        - desc : insert cnn configuration data
+        Set configurations for predict service
+        ---
+        # Class Name : ServiceManager
+
+        # Description:
+            Set configurations for predict service (not implemented yet)
         """
         try:
             return_data = ""
@@ -30,7 +23,12 @@ class ServiceManager(APIView):
 
     def get(self, request, nnid):
         """
-        - desc : get cnn configuration data
+        Set configurations for predict service
+        ---
+        # Class Name : ServiceManager
+
+        # Description:
+            Set configurations for predict service (not implemented yet)
         """
         try:
             return_data = ""
@@ -41,7 +39,12 @@ class ServiceManager(APIView):
 
     def put(self, request, nnid):
         """
-        - desc ; update cnn configuration data
+        Set configurations for predict service
+        ---
+        # Class Name : ServiceManager
+
+        # Description:
+            Set configurations for predict service (not implemented yet)
         """
         try:
             return_data = ""
@@ -52,7 +55,12 @@ class ServiceManager(APIView):
 
     def delete(self, request, nnid):
         """
-        - desc : delete cnn configuration data
+        Set configurations for predict service
+        ---
+        # Class Name : ServiceManager
+
+        # Description:
+            Set configurations for predict service (not implemented yet)
         """
         try:
             return_data = ""

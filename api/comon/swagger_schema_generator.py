@@ -15,4 +15,4 @@ class CustomSchemaGenerator(SchemaGenerator):
         if(len(getattr(view, 'coreapi_fields', ())) > 0 ) :
             return getattr(view, 'coreapi_fields', ())
         else :
-            return ""
+            return getattr(view, '', ())

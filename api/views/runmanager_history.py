@@ -4,22 +4,15 @@ from rest_framework.views import APIView
 import coreapi
 
 class RunManagerHistory(APIView):
-    # TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
+
     def post(self, request, nnid):
         """
-        - desc : insert cnn configuration data
+        Check History of models
+        ---
+        # Class Name : RunManagerHistory
+
+        # Description:
+            manage history of training results
         """
         try:
             return_data = ""
@@ -30,7 +23,12 @@ class RunManagerHistory(APIView):
 
     def get(self, request, nnid):
         """
-        - desc : get cnn configuration data
+        Check History of models
+        ---
+        # Class Name : RunManagerHistory
+
+        # Description:
+            manage history of training results
         """
         try:
             return_data = ""
@@ -41,7 +39,12 @@ class RunManagerHistory(APIView):
 
     def put(self, request, nnid):
         """
-        - desc ; update cnn configuration data
+        Check History of models
+        ---
+        # Class Name : RunManagerHistory
+
+        # Description:
+            manage history of training results
         """
         try:
             return_data = ""
@@ -52,7 +55,12 @@ class RunManagerHistory(APIView):
 
     def delete(self, request, nnid):
         """
-        - desc : delete cnn configuration data
+        Check History of models
+        ---
+        # Class Name : RunManagerHistory
+
+        # Description:
+            manage history of training results
         """
         try:
             return_data = ""

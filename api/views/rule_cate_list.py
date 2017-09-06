@@ -4,28 +4,16 @@ from rest_framework.views import APIView
 import coreapi
 
 class RuleCateList(APIView):
-    # TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
+
     def post(self, request, nnid):
         """
-        Your docs
+        Manage simple rules for framework
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : RuleCateList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Manage simple rules in a dict format
+            Provide CRDU method for rules
         """
         try:
             return_data = ""
@@ -36,13 +24,13 @@ class RuleCateList(APIView):
 
     def get(self, request, nnid):
         """
-        Your docs
+        Manage simple rules for framework
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : RuleCateList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Manage simple rules in a dict format
+            Provide CRDU method for rules
         """
         try:
             return_data = ""
@@ -53,13 +41,13 @@ class RuleCateList(APIView):
 
     def put(self, request, nnid):
         """
-        Your docs
+        Manage simple rules for framework
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : RuleCateList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Manage simple rules in a dict format
+            Provide CRDU method for rules
         """
         try:
             return_data = ""
@@ -70,13 +58,13 @@ class RuleCateList(APIView):
 
     def delete(self, request, nnid):
         """
-        Your docs
+        Manage simple rules for framework
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : RuleCateList
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Manage simple rules in a dict format
+            Provide CRDU method for rules
         """
         try:
             return_data = ""

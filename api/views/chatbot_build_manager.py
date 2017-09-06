@@ -25,13 +25,13 @@ class ChatbotBuildManager(APIView):
     )
     def post(self, request,type):
         """
-        Your docs
+        ChatBot Build API
         ---
-        # Class Name (must be separated by `---`)
+        # Class Name : ChatbotBuildManager
 
         # Description:
-            - name: name
-              description: Foobar long description goes here
+            Build chatbot process include create chatbotId, StoryBoard, NeuralNet IDS (used on chatbot process)
+            This is a necessary step to use chatbot, you have to define all parms for chatbot before use it
         """
         try:
             result = BotBuilder().run_builder(request.data,type=type)

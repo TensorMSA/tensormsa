@@ -6,22 +6,40 @@ from common.utils import *
 import coreapi
 
 class WorkFlowDataImage(APIView):
-    # TODO:add document sample for swagger (need to update)
+
     coreapi_fields = (
         coreapi.Field(
-            name='parm1',
+            name='type',
             required=True,
             type='string',
         ),
         coreapi.Field(
-            name='parm2',
+            name='source_server',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='source_sql',
+            required=True,
+            type='string',
+        ),
+        coreapi.Field(
+            name='preprocess',
             required=True,
             type='string',
         ),
     )
     def post(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc : insert cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles image type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataImage
+
+        # Description:
+            Set params for data source, preprocess method and etc
         """
         try:
             # save uploaded file on source folder
@@ -33,7 +51,16 @@ class WorkFlowDataImage(APIView):
 
     def get(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc : get cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles image type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataImage
+
+        # Description:
+            1. Search real data from the source in range (use datamanager instead)
+            2. See Data Node Parameters for selected nnid
         """
         try:
             return_data = ""
@@ -44,7 +71,16 @@ class WorkFlowDataImage(APIView):
 
     def put(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc ; update cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles image type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataImage
+
+        # Description:
+            1. Modify selected data (use datamanager instead)
+            2. Modify params for data source, preprocess method and etc
         """
         try:
             if(prg == 'source') :
@@ -58,7 +94,16 @@ class WorkFlowDataImage(APIView):
 
     def delete(self, request, src, form, prg, nnid, ver, node):
         """
-        - desc : delete cnn configuration data
+        This API is for set node parameters \n
+        This node is for data extraction \n
+        This node especially handles image type data \n
+        You can set source server by set up parameters \n
+        ---
+        # Class Name : WorkFlowDataImage
+
+        # Description:
+            1. Delete part of data (seleted by user ) conditions or rows (use datamanager instead)
+            2. Reset Node parameters
         """
         try:
             return_data = ""

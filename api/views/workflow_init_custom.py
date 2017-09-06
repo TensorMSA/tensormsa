@@ -4,22 +4,16 @@ from rest_framework.views import APIView
 import coreapi
 
 class WorkFlowInitCustom(APIView) :
-    # TODO:add document sample for swagger (need to update)
-    coreapi_fields = (
-        coreapi.Field(
-            name='parm1',
-            required=True,
-            type='string',
-        ),
-        coreapi.Field(
-            name='parm2',
-            required=True,
-            type='string',
-        ),
-    )
+
     def post(self, request, nnid):
         """
-        - desc : insert data
+        [Still on development]
+        This will allow you to design your own graph path
+        ---
+        # Class Name : WorkFlowInitCustom
+
+        # Description:
+            still on development
         """
         try:
             return_data = ""
@@ -30,7 +24,13 @@ class WorkFlowInitCustom(APIView) :
 
     def get(self, request, nnid):
         """
-        - desc : get data
+        [Still on development]
+        This will allow you to design your own graph path
+        ---
+        # Class Name : WorkFlowInitCustom
+
+        # Description:
+            still on development
         """
         try:
             return_data = ""
@@ -41,7 +41,13 @@ class WorkFlowInitCustom(APIView) :
 
     def put(self, request, nnid):
         """
-        - desc ; update data
+        [Still on development]
+        This will allow you to design your own graph path
+        ---
+        # Class Name : WorkFlowInitCustom
+
+        # Description:
+            still on development
         """
         try:
             return_data = ""
@@ -52,7 +58,13 @@ class WorkFlowInitCustom(APIView) :
 
     def delete(self, request, nnid):
         """
-        - desc : delete  data
+        [Still on development]
+        This will allow you to design your own graph path
+        ---
+        # Class Name : WorkFlowInitCustom
+
+        # Description:
+            still on development
         """
         try:
             return_data = ""
