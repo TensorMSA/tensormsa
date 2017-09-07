@@ -81,24 +81,22 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         error_msg = ""
         if ('model_path' not in json_data):
             error_msg = ''.join([error_msg, 'model_path (str) not defined'])
-        if ('encoder_len' not in json_data):
-            error_msg = ''.join([error_msg, 'encoder_len (int) not defined'])
-        if ('decoder_len' not in json_data):
-            error_msg = ''.join([error_msg, 'decoder_len (int) not defined'])
-        if ('encoder_depth' not in json_data):
-            error_msg = ''.join([error_msg, 'encoder_depth (int) not defined'])
-        if ('decoder_depth' not in json_data):
-            error_msg = ''.join([error_msg, 'decoder_depth (int) not defined'])
-        if ('cell_type' not in json_data):
-            error_msg = ''.join([error_msg, 'cell_type (str) (vanila, lstm, gru) not defined'])
-        if ('drop_out' not in json_data):
-            error_msg = ''.join([error_msg, 'drop_out (float) not defined'])
-        if ('word_embed_type' not in json_data):
-            error_msg = ''.join([error_msg, 'word_embed_type (str) (w2v, onehot)not defined'])
-        if ('word_embed_id' not in json_data):
-            error_msg = ''.join([error_msg, 'word_embed_id (str) (net id) not defined'])
-        if ('model_path' not in json_data):
-            error_msg = ''.join([error_msg, 'model_path (str) (net id) not defined'])
+        # if ('encoder_len' not in json_data):
+        #     error_msg = ''.join([error_msg, 'encoder_len (int) not defined'])
+        # if ('decoder_len' not in json_data):
+        #     error_msg = ''.join([error_msg, 'decoder_len (int) not defined'])
+        # if ('encoder_depth' not in json_data):
+        #     error_msg = ''.join([error_msg, 'encoder_depth (int) not defined'])
+        # if ('decoder_depth' not in json_data):
+        #     error_msg = ''.join([error_msg, 'decoder_depth (int) not defined'])
+        # if ('cell_type' not in json_data):
+        #     error_msg = ''.join([error_msg, 'cell_type (str) (vanila, lstm, gru) not defined'])
+        # if ('drop_out' not in json_data):
+        #     error_msg = ''.join([error_msg, 'drop_out (float) not defined'])
+        # if ('word_embed_type' not in json_data):
+        #     error_msg = ''.join([error_msg, 'word_embed_type (str) (w2v, onehot)not defined'])
+        # if ('word_embed_id' not in json_data):
+        #     error_msg = ''.join([error_msg, 'word_embed_id (str) (net id) not defined'])
         if ('hidden_layers' not in json_data):
             error_msg = ''.join([error_msg, 'hidden_layers (list) (net id) not defined'])
         if ('activation_function' not in json_data):

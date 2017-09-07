@@ -30,6 +30,9 @@ class AutoMlRule:
             ids = []
             for row in query_set :
                 ids.append(row)
+
+            # obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=str(input_data['nn_id']))
+
             return ids
         except Exception as e:
             raise Exception(e)
