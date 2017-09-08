@@ -52,3 +52,4 @@ from .runmanager_auto_rule import RunManagerAutoRule
 from .aug_nlp_conf import AugNlpConf
 from .workflow_netconf_fasttext import WorkFlowNetConfFastText
 from .common_server_restart import CommonServerRestart
+from .runmanager_auto_parm import RunManagerAutoParm

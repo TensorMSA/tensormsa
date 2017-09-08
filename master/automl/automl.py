@@ -13,9 +13,10 @@ class AutoMlCommon:
         """
         if (key is not None):
             self.key = key
-            self.train_info = self.get_train_obj(key)
+            self.parm_info = self.get_parm_obj(key)
             self.conf_info = self.get_conf_obj(key)
             self.stat_info = self.get_stat_obj(key)
+            self.net_type = self.get_net_type(key)
 
 
     def get_conf_obj(self, nn_id):
@@ -64,15 +65,13 @@ class AutoMlCommon:
         """
         try:
             obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=nn_id)
-            data_set = getattr(obj, "automl_stat")
-            data_set.update(input_data)
-            setattr(obj, "automl_stat", data_set)
+            setattr(obj, "automl_stat", input_data)
             obj.save()
             return input_data
         except Exception as e:
             raise Exception(e)
 
-    def get_train_obj(self, nn_id):
+    def get_parm_obj(self, nn_id):
         """
         get view data for automl_parms
         :return:
@@ -83,7 +82,7 @@ class AutoMlCommon:
         except Exception as e:
             raise Exception(e)
 
-    def update_train_obj(self, nn_id, input_data):
+    def update_parm_obj(self, nn_id, input_data):
         """
         update json filed with given data
         :param obj:
@@ -94,6 +93,33 @@ class AutoMlCommon:
             data_set = getattr(obj, "automl_runtime")
             data_set.update(input_data)
             setattr(obj, "automl_runtime", data_set)
+            obj.save()
+            return input_data
+        except Exception as e:
+            raise Exception(e)
+
+    def get_net_type(self, nn_id):
+        """
+        get net type on data base
+        :return:
+        """
+        try:
+            obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=nn_id)
+            return getattr(obj, "dir")
+        except Exception as e:
+            raise Exception(e)
+
+    def update_net_type(self, nn_id, input_data):
+        """
+        update net type with given data
+        :param obj:
+        :return:
+        """
+        try:
+            obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=nn_id)
+            data_set = getattr(obj, "dir")
+            data_set.update(input_data)
+            setattr(obj, "dir", data_set)
             obj.save()
             return input_data
         except Exception as e:

@@ -1,52 +1,171 @@
 from master.automl.automl import AutoMlCommon
-import random
+from master.network.nn_common_manager import NNCommonManager
+from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
+from master.workflow.common.workflow_common import WorkFlowCommon
+import random, logging, copy
+from django.db import connection
+from common.utils import *
+from celery import shared_task
+from cluster.service.service_train_task import train
 
 class AutoMlRunManager :
     """
     automl runmanager with handles
     from create net ver, batch ver
     """
-
     def __init__(self, nn_id):
         """
         initialize parms need to run auto mode
         :return:
         """
+        self.nn_id = nn_id
         self.auto_ml_info = AutoMlCommon(nn_id)
         self.conf_info = self.auto_ml_info.conf_info
-        self.train_info = self.auto_ml_info.train_info
+        self.parm_info = self.auto_ml_info.parm_info
         self.stat_info = self.auto_ml_info.stat_info
+        self.net_type = self.auto_ml_info.net_type
 
     def run(self):
         """
         run automl
         :return:
         """
-        # Net Version create
-        # TODO : Net Version check and create new
-        # generate conf format for new train
-        node_confs = self._generate_random_case(self.conf_info)
-        # copy train data to new ver
-        # TODO : copy train data to new ver
-        # Find all nodes and set Data
-        # TODO : find all nodes and set Data
-        # run train with early termination
-        # TODO : run train with early termination
-        return node_confs
+        try :
+            # get genetic algorithm hyper parameters
+            generation = self.parm_info.get('generation')
+            population = self.parm_info.get('population')
+            survive = self.parm_info.get('survive')
 
-    def save_result(self):
+            # define gene list
+            networks = []
+
+            # iterate generation
+            for idx in range(generation) :
+                # create new generations
+                if(idx == 0) :
+                    networks = networks + self.create_networks(idx, population)
+                else :
+                    networks = networks + self.create_networks(idx, population - survive)
+
+                # train & evaluate networks
+                networks = self.train_networks(networks)
+
+                # sort & discard
+                networks = self.discard_inferior(networks, survive)
+            self.save_result(networks)
+            return networks
+        except Exception as e :
+            logging.error("Error on running AutoML alogorithm : {0}".format(e))
+
+    def discard_inferior(self, networks, survive):
         """
-        save each train result
+        discard inferior genes combinations
+        :param networks: network lists
+        :return: networks
+        """
+        networks = sorted(networks, key=lambda x : x.get('acc'), reverse=True)
+        return networks[0:survive]
+
+    def train_networks(self, networks):
+        """
+        train each networks on cluster server
+        :param networks: network lists
+        :return: networks
+        """
+        try :
+            #networks = list(map(lambda x : train(x.get('nn_id'), x.get('nn_wf_ver_id')), networks))
+            networks = list(map(lambda x: self.set_acc(x), networks))
+            return networks
+        except Exception as e :
+            logging.error("Error on training : {0} ".format(e))
+
+    def set_acc(self, net):
+        """
+        set accuracy for test (test function)
+        :param net: dict type data
+        :return: net
+        """
+        if(net['flag'] == False) :
+            net['acc'] = random.uniform(0.0,1.0)
+            net['falg'] = True
+            return net
+        else :
+            return net
+
+    def create_networks(self, generation, number):
+        """
+        We need to create new network for evluate our hyperparameter
+        :param generation:number of generation
+        :param population:number of population for each generation
+        :return:return list of network (nn_id and version)
+        """
+        try :
+            networks = []
+            for idx in range(number) :
+                # (1) create version
+                nn_wf_ver_id = self.create_version(str(generation))
+
+                # (2) create state & graph flow
+                WorkFlowSimpleManager().create_workflow(self.nn_id, nn_wf_ver_id, self.net_type)
+                all_node_list = self.get_all_nodes_list(self.nn_id, nn_wf_ver_id)
+
+                # (3) generate conf format for new train & set netconf node
+                node_confs = self._generate_random_case(copy.deepcopy(self.conf_info))
+
+                # (4) set node params
+                for node in all_node_list:
+                    node_name = node.get('nn_wf_node_name')
+                    WorkFlowCommon().set_view_obj('_'.join([str(self.nn_id), str(nn_wf_ver_id), node_name]),
+                                                  node_confs[node_name].get('format'))
+
+                # (5) return summary result
+                netdata = {}
+                netdata['nn_id'] = self.nn_id
+                netdata['generation'] = generation
+                netdata['nn_wf_ver_id'] = nn_wf_ver_id
+                netdata['acc'] = 0.0
+                netdata['flag'] = False
+                networks.append(netdata)
+            return networks
+        except Exception as e :
+            logging.error("Error AutoML create network : {0}".format(e))
+
+    def mutation(self, networks, number):
+        """
+        mutate gene with survived ones
+        :param networks: networks info
+        :param number: number of genes to generate
+        :return: networks
+        """
+        pass
+
+    def create_version(self, generation):
+        """
+        create version on database
+        :param generation:
         :return:
         """
-        pass
+        # Create Version
+        nnCommonManager = NNCommonManager()
+        nn_wf_ver_id = nnCommonManager.get_nn_max_ver(self.nn_id) + 1
+        input_data = {}
+        input_data['nn_wf_ver_id'] = nn_wf_ver_id
+        input_data['nn_def_list_info_nn_id'] = generation
+        input_data['condition'] = "1"
+        input_data['active_flag'] = "N"
+        input_data['nn_wf_ver_desc'] = "_".join([self.nn_id, generation, str(nn_wf_ver_id)])
+        input_data['nn_id'] = self.nn_id
 
-    def _generate_all_cases(self):
+        # Net Version create
+        nnCommonManager.insert_nn_wf_info(input_data)
+        return nn_wf_ver_id
+
+    def save_result(self, info):
         """
-        generate all cases on list
-        :return: list + json form for neural network
+        save best survived results
+        :return:
         """
-        pass
+        AutoMlCommon().update_stat_obj(self.nn_id, info)
 
     def _generate_random_case(self, conf_info):
         """
@@ -124,7 +243,6 @@ class AutoMlRunManager :
         else :
             return True
 
-
     def _format_conv(self, auto_form):
         """
         convert auto format which include automl flag and ranges
@@ -154,3 +272,28 @@ class AutoMlRunManager :
                     return auto_form.get('option')[num]
         except Exception as e :
             raise Exception ("error on automl format conv : {0}".format(e))
+
+    def get_all_nodes_list(self, nn_id, wf_ver):
+        """
+        get execute class path
+        :param node_id:
+        :return:
+        """
+        # make query string (use raw query only when cate is too complicated)
+        try:
+            query_list = []
+            query_list.append("SELECT ND.nn_wf_node_id, ND.wf_task_submenu_id_id, SB.wf_task_menu_id_id, ND.nn_wf_node_name   ")
+            query_list.append("FROM  master_NN_WF_NODE_INFO ND JOIN master_WF_TASK_SUBMENU_RULE SB   ")
+            query_list.append("      ON ND.wf_task_submenu_id_id =  SB.wf_task_submenu_id   ")
+            query_list.append("WHERE ND.wf_state_id_id = %s")
+
+            # parm_list : set parm value as list
+            parm_list = []
+            parm_list.append(str(nn_id) + "_" + str(wf_ver))
+
+            with connection.cursor() as cursor:
+                cursor.execute(''.join(query_list), parm_list)
+                row = dictfetchall(cursor)
+            return row
+        except Exception as e:
+            raise Exception(e)

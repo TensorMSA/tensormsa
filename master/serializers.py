@@ -25,7 +25,7 @@ class NN_VER_WFLIST_INFO_Serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = models.NN_VER_WFLIST_INFO
-        fields = ('nn_wf_ver_id', 'nn_def_list_info_nn_id', 'nn_wf_ver_info', 'condition', 'active_flag', 'nn_id')
+        fields = ('nn_wf_ver_id', 'nn_def_list_info_nn_id', 'nn_wf_ver_desc', 'condition', 'active_flag', 'nn_id')
 
 class NN_WF_NODE_INFO_Serializer(serializers.ModelSerializer):
     """

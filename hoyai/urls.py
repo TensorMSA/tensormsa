@@ -163,6 +163,8 @@ urlpatterns = [
         csrf_exempt(rest_view.RunManagerAutoStat.as_view())),
     url(r'^api/v1/type/automl/state/conf/nnid/(?P<nnid>.*)/',
         csrf_exempt(rest_view.RunManagerAutoConf.as_view())),
+    url(r'^api/v1/type/automl/state/parm/nnid/(?P<nnid>.*)/',
+        csrf_exempt(rest_view.RunManagerAutoParm.as_view())),
     url(r'^api/v1/type/automl/state/rule/graph_id/(?P<graph_id>.*)/',
         csrf_exempt(rest_view.RunManagerAutoRule.as_view())),
 

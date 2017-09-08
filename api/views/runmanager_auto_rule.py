@@ -23,6 +23,11 @@ class RunManagerAutoRule(APIView):
             required=True,
             type='string',
         ),
+        coreapi.Field(
+            name='evalnode',
+            required=True,
+            type='string',
+        ),
     )
     def post(self, request, graph_id):
         """
