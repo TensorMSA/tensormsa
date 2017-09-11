@@ -34,6 +34,7 @@ class ServiceManager:
             self.entity_recognizer = EntityRecognizer(cb_id,self.chatbot_conf.get_ner_model())
             self.intent_analyzer_rule = IntendAnalyzer(cb_id,self.chatbot_conf.get_intent_model())
             self.intent_analyzer_ner = IntendAnalyzer(cb_id,self.chatbot_conf.get_pattern_intent_model())
+            self.decision_maker = DecisionMaker(self.chat_knowledge_data_dict)
             self.service_mapper = ServiceMapper(cb_id, self.entity_synonym)
             self.summrize_result = SummrizeResult(self.chat_knowledge_data_dict)
         except Exception as e :
@@ -96,7 +97,7 @@ class ServiceManager:
             share_ctx.add_test_client_data()
 
             ### decision maker ###
-            #share_ctx = self.decision_maker.run(share_ctx)
+            share_ctx = self.decision_maker.run(share_ctx)
 
             ### UUID mapping ###
             share_ctx = self.service_mapper.run(share_ctx)

@@ -33,7 +33,7 @@ class DecisionMaker(ShareData):
                     share_data = ServiceProvider(service_story).run(share_data)
                 else:
                     share_data.set_output_data("무슨말인지 모르겠어요")
-                share_data.initialize_story()
+                    share_data.initialize_story()
             else: #intent 3개 이상
                 share_data.set_output_data("무슨말인지 모르겠어요")
             return share_data
