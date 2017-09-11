@@ -181,3 +181,5 @@ class AUTO_ML_RULE(models.Model):
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)
     last_updated_by = models.IntegerField(default=0)
+    train_file_path = models.CharField(max_length=100, blank=True)
+    eval_file_path = models.CharField(max_length=100, blank=True)
