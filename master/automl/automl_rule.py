@@ -18,18 +18,21 @@ class AutoMlRule:
             self.key = key
             self.conf = self.get_train_obj(key)
 
-    def get_graph_type_list(self):
+    def get_graph_type_list(self, graph_id):
         """
         get view data for net config
         :return:
         """
         try:
+            graph_id = str(graph_id)
             query_set = models.AUTO_ML_RULE.objects.all()
             query_set = serial.serialize("json", query_set)
             query_set = json.loads(query_set)
             ids = []
             for row in query_set :
-                ids.append(row)
+                grow = row["fields"]["graph_flow_group_id"]
+                if grow.find(graph_id) > -1:
+                    ids.append(row)
 
             # obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=str(input_data['nn_id']))
 

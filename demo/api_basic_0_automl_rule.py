@@ -262,11 +262,11 @@ resp = requests.put('http://' + url + '/api/v1/type/automl/state/rule/graph_id/g
                             ,"wcnn" : "WCNN Network Description"
                             ,"wdnn" : "WDNN Network Description"
                      })
-
+# Json Param 1 or 1,2 or 1,2,3
 resp = requests.put('http://' + url + '/api/v1/type/automl/state/rule/graph_id/graph_flow_group_id/',
                      json=
-                     {      "wdnn" : 1
-                            ,"cnn" : 2
-                            ,"resnet" : 2
-                            ,"wcnn" : 3
+                     {      "wdnn" : "1"
+                            ,"cnn" : "2"
+                            ,"resnet" : "2"
+                            ,"wcnn" : "3"
                      })

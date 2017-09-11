@@ -73,7 +73,7 @@ class RunManagerAutoRule(APIView):
         """
         try:
             if graph_id.isdigit() == True :
-                return_data = AutoMlRule().get_graph_type_list()
+                return_data = AutoMlRule().get_graph_type_list(graph_id)
             elif graph_id is not None :
                 return_data = AutoMlRule().get_graph_info(graph_id)
             else :
