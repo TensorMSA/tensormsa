@@ -1,8 +1,9 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from cluster.automl.automl_runmanager import AutoMlRunManager
+from cluster.automl.automl_runmanager import AutoMlRunManager, automl_run
 import coreapi
+import threading
 
 class RunManagerAutoTrain(APIView):
 
@@ -13,6 +14,15 @@ class RunManagerAutoTrain(APIView):
             type='string',
         ),
     )
+    class ThreadCls(threading.Thread) :
+        def __init__(self, input, func):
+            threading.Thread.__init__(self)
+            self.input = input
+            self.func = func
+
+        def run(self):
+            self.func(self.input)
+
     def post(self, request, nnid):
         """
         Bellow is the process of running automl on our framework
@@ -30,8 +40,9 @@ class RunManagerAutoTrain(APIView):
             request train on selected automl id
         """
         try:
-            return_data = AutoMlRunManager(nnid).run()
-            return Response(json.dumps(return_data))
+            #automl_run(nnid)
+            self.ThreadCls(nnid, automl_run).run()
+            return Response(json.dumps([True]))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))

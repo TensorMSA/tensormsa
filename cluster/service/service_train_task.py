@@ -26,10 +26,13 @@ def train(nn_id, wf_ver) :
     logger = logging.getLogger()
     task_handler = FileHandler(celery_log_file)
     logger.addHandler(task_handler)
-
-    logger.info("[Train Task] Start Celery Job {0} {1}".format(nn_id, wf_ver))
-
+    logging.info("=============================================================")
+    logging.info("[Train Task] Start Celery Job {0} {1}".format(nn_id, wf_ver))
+    logging.info("=============================================================")
     result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver)
+    logging.info("=============================================================")
+    logging.info("[Train Task] Done Celery Job {0} {1} : {2}".format(nn_id, wf_ver, result))
+    logging.info("=============================================================")
     return result
 
 def make_celery_dir_by_datetime(home_dir):
@@ -94,7 +97,8 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                     conf_data['wf_ver'] = wf_ver
                     conf_data['cls_pool'] = cls_list
                     logging.info("[Node Start] {0}".format(search_info[2].node_name))
-                    result_info[search_info[2].node_name] = search_info[2].run(conf_data)
+                    key = '_'.join([search_info[2].net_id, search_info[2].net_ver])
+                    result_info[key] = search_info[2].run(conf_data)
                     logging.info("[Node End] {0}".format(search_info[2].node_name))
             return result_info
         except Exception as e :

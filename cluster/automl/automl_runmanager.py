@@ -5,8 +5,12 @@ from master.workflow.common.workflow_common import WorkFlowCommon
 import random, logging, copy
 from django.db import connection
 from common.utils import *
-from celery import shared_task
 from cluster.service.service_train_task import train
+from celery import group
+from celery.task.control import inspect
+
+def automl_run(nnid) :
+    AutoMlRunManager(nnid).run()
 
 class AutoMlRunManager :
     """
@@ -24,6 +28,7 @@ class AutoMlRunManager :
         self.parm_info = self.auto_ml_info.parm_info
         self.stat_info = self.auto_ml_info.stat_info
         self.net_type = self.auto_ml_info.net_type
+        self.debug_mode = False
 
     def run(self):
         """
@@ -73,25 +78,27 @@ class AutoMlRunManager :
         :return: networks
         """
         try :
-            for network in networks :
-                gen_result = train.delay(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
-                network['acc'] = gen_result['_'.join([network['nn_id'], str(network['nn_wf_ver_id']), network['node_name']])].get('accuracy')
+            tasks = []
+            i = inspect()
+            #if (i.active() == None):
+            if (self.debug_mode):
+                for network in networks:
+                    result = train(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
+                    key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id']), network['node_name']])
+                    network['acc'] = result[key].get('accuracy')
+            else :
+                for network in networks :
+                    tasks.append(train.subtask((network.get('nn_id'), str(network.get('nn_wf_ver_id')))))
+                results = group(tasks).apply_async()
+                results = results.join()
+                for result in results :
+                    for network in networks :
+                        key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
+                        if(key in list(result.keys()) and result[key] is not None and result[key].get('accuracy') is not None) :
+                            network['acc'] = result[key].get('accuracy')
             return networks
         except Exception as e :
             logging.error("Error on training : {0} ".format(e))
-
-    def set_acc(self, net):
-        """
-        set accuracy for test (test function)
-        :param net: dict type data
-        :return: net
-        """
-        if(net['flag'] == False) :
-            net['acc'] = random.uniform(0.0,1.0)
-            net['falg'] = True
-            return net
-        else :
-            return net
 
     def create_networks(self, generation, number):
         """
@@ -139,7 +146,6 @@ class AutoMlRunManager :
                 netdata['nn_id'] = self.nn_id
                 netdata['generation'] = generation
                 netdata['nn_wf_ver_id'] = nn_wf_ver_id
-                netdata['node_name'] = node_name
                 netdata['acc'] = 0.0
                 netdata['flag'] = False
                 networks.append(netdata)
@@ -168,6 +174,7 @@ class AutoMlRunManager :
         input_data = {}
         input_data['nn_wf_ver_id'] = nn_wf_ver_id
         input_data['nn_def_list_info_nn_id'] = generation
+        input_data['automl_gen'] = generation
         input_data['condition'] = "1"
         input_data['active_flag'] = "N"
         input_data['nn_wf_ver_desc'] = "_".join([self.nn_id, generation, str(nn_wf_ver_id)])
