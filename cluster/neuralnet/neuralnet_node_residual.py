@@ -98,41 +98,44 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.eval(self.node_id, self.conf_data, None, None)
 
     def get_model_resnet(self):
-        keras.backend.tensorflow_backend.clear_session()
-        self.lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
-        self.early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
-        self.csv_logger = CSVLogger('resnet.csv')
-        num_classes = self.netconf["config"]["num_classes"]
-        numoutputs = self.netconf["config"]["layeroutputs"]
-        x_size = self.dataconf["preprocess"]["x_size"]
-        y_size = self.dataconf["preprocess"]["y_size"]
-        channel = self.dataconf["preprocess"]["channel"]
-        optimizer = self.netconf["config"]["optimizer"]
+        try :
+            keras.backend.tensorflow_backend.clear_session()
+            self.lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
+            self.early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
+            self.csv_logger = CSVLogger('resnet.csv')
+            num_classes = self.netconf["config"]["num_classes"]
+            numoutputs = self.netconf["config"]["layeroutputs"]
+            x_size = self.dataconf["preprocess"]["x_size"]
+            y_size = self.dataconf["preprocess"]["y_size"]
+            channel = self.dataconf["preprocess"]["channel"]
+            optimizer = self.netconf["config"]["optimizer"]
 
-        filelist = os.listdir(self.model_path)
-        filelist.sort(reverse=True)
-        last_chk_path = self.model_path + "/" + self.load_batch+self.file_end
+            filelist = os.listdir(self.model_path)
+            filelist.sort(reverse=True)
+            last_chk_path = self.model_path + "/" + self.load_batch+self.file_end
 
-        try:
-            self.model = keras.models.load_model(last_chk_path)
-            logging.info("Train Restored checkpoint from:" + last_chk_path)
-        except Exception as e:
-            if numoutputs == 18:
-                self.model = resnet.ResnetBuilder.build_resnet_18((channel, x_size, y_size), num_classes)
-            elif numoutputs == 34:
-                self.model = resnet.ResnetBuilder.build_resnet_34((channel, x_size, y_size), num_classes)
-            elif numoutputs == 50:
-                self.model = resnet.ResnetBuilder.build_resnet_50((channel, x_size, y_size), num_classes)
-            elif numoutputs == 101:
-                self.model = resnet.ResnetBuilder.build_resnet_101((channel, x_size, y_size), num_classes)
-            elif numoutputs == 152:
-                self.model = resnet.ResnetBuilder.build_resnet_152((channel, x_size, y_size), num_classes)
-            elif numoutputs == 200:
-                self.model = resnet.ResnetBuilder.build_resnet_200((channel, x_size, y_size), num_classes)
-            logging.info("None to restore checkpoint. Initializing variables instead." + last_chk_path)
-            logging.info(e)
+            try:
+                self.model = keras.models.load_model(last_chk_path)
+                logging.info("Train Restored checkpoint from:" + last_chk_path)
+            except Exception as e:
+                if numoutputs == 18:
+                    self.model = resnet.ResnetBuilder.build_resnet_18((channel, x_size, y_size), num_classes)
+                elif numoutputs == 34:
+                    self.model = resnet.ResnetBuilder.build_resnet_34((channel, x_size, y_size), num_classes)
+                elif numoutputs == 50:
+                    self.model = resnet.ResnetBuilder.build_resnet_50((channel, x_size, y_size), num_classes)
+                elif numoutputs == 101:
+                    self.model = resnet.ResnetBuilder.build_resnet_101((channel, x_size, y_size), num_classes)
+                elif numoutputs == 152:
+                    self.model = resnet.ResnetBuilder.build_resnet_152((channel, x_size, y_size), num_classes)
+                elif numoutputs == 200:
+                    self.model = resnet.ResnetBuilder.build_resnet_200((channel, x_size, y_size), num_classes)
+                logging.info("None to restore checkpoint. Initializing variables instead." + last_chk_path)
+                logging.info(e)
 
-        self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+            self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+        except Exception as e :
+            logging.error("===Error on Residualnet build model : {0}".format(e))
 
     ####################################################################################################################
     def train_run_resnet(self, input_data, test_data):
@@ -200,36 +203,39 @@ class NeuralNetNodeReNet(NeuralNetNode):
             logging.info(e)
 
     def run(self, conf_data):
-        logging.info("run NeuralNetNodeResnet Train")
-        # init data setup
-        self._init_train_parm(conf_data)
-        self._init_value()
+        try :
+            logging.info("run NeuralNetNodeResnet Train")
+            # init data setup
+            self._init_train_parm(conf_data)
+            self._init_value()
 
-        # get data & dataconf
-        test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
-        input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
+            # get data & dataconf
+            test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
+            input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
 
-        # set netconf, dataconf
-        self._set_netconf_parm()
-        self._set_dataconf_parm(dataconf)
+            # set netconf, dataconf
+            self._set_netconf_parm()
+            self._set_dataconf_parm(dataconf)
 
-        # set batch
-        self.load_batch = self.get_eval_batch(self.node_id)
-        if self.epoch != 0 and self.train_cnt != 0:
-            self.train_batch, self.batch = self.make_batch(self.node_id)
-        else:
-            self.batch = self.load_batch
+            # set batch
+            self.load_batch = self.get_eval_batch(self.node_id)
+            if self.epoch != 0 and self.train_cnt != 0:
+                self.train_batch, self.batch = self.make_batch(self.node_id)
+            else:
+                self.batch = self.load_batch
 
-        self.get_model_resnet()
+            self.get_model_resnet()
 
-        self.train_run_resnet(input_data, test_data)
+            self.train_run_resnet(input_data, test_data)
 
-        self.train_return_data["TrainResult"] = self.train_return_arr
+            self.train_return_data["TrainResult"] = self.train_return_arr
 
-        if self.epoch == 0 or self.train_cnt == 0:
-            self.eval(self.node_id, self.conf_data, None, None)
+            if self.epoch == 0 or self.train_cnt == 0:
+                self.eval(self.node_id, self.conf_data, None, None)
 
-        return self.train_return_data
+            return self.train_return_data
+        except Exception as e :
+            logging.info("===Error on running residualnet : {0}".format(e))
 
     ####################################################################################################################
     def eval_run(self, input_data):

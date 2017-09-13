@@ -92,7 +92,6 @@ class TrainSummaryInfo:
 
         try:
             input_data['result_info'] = result.get_result_info()
-
             try:
                 obj = models.TRAIN_SUMMARY_RESULT_INFO.objects.get(nn_batch_ver_id=str(input_data['nn_batch_ver_id']))
                 setattr(obj, 'result_info', input_data['result_info'])
@@ -105,3 +104,28 @@ class TrainSummaryInfo:
             raise Exception(e)
 
         return input_data
+
+    def get_accuracy(self):
+        """
+        return test accuracy
+        :return: float
+        """
+        if self.type == 'regression':
+            for labels, predicts in zip(self.result_info["labels"], self.result_info["predicts"]) :
+                gab = gab + (labels - predicts)
+            return float(gab/len(labels))
+
+        elif self.type == 'category':
+            correct = 0
+            sum = 0
+            for fd, fd_val in enumerate(self.result_info["predicts"]):
+                for sd, sd_val in enumerate(fd_val) :
+                    if(fd == sd) :
+                        correct = correct + sd_val
+                    sum = sum + sd_val
+            return float(sd_val/sum)
+
+        else :
+            return 0.0
+
+

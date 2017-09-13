@@ -77,7 +77,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
             first_node = self._find_first_node(node_graph_set)
 
             # execute nodes by sequece
-            result_info = []
+            result_info = {}
             while True :
                 search_info = self._search_next_node(first_node)
                 if(search_info[0] == False) :
@@ -94,7 +94,7 @@ class WorkFlowTrainTask(WorkFlowCommonNode):
                     conf_data['wf_ver'] = wf_ver
                     conf_data['cls_pool'] = cls_list
                     logging.info("[Node Start] {0}".format(search_info[2].node_name))
-                    result_info.append(search_info[2].run(conf_data))
+                    result_info[search_info[2].node_name] = search_info[2].run(conf_data)
                     logging.info("[Node End] {0}".format(search_info[2].node_name))
             return result_info
         except Exception as e :

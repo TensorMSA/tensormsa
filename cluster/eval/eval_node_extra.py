@@ -31,7 +31,8 @@ class EvalNodeExtra(EvalNode):
 
             # set parms for db store
             input_data = TrainSummaryInfo.save_result_info(self, result)
-            return input_data['result_info']
+            input_data['accuracy'] = result.get_accuracy()
+            return input_data
         except Exception as e:
             logging.error(e)
             raise Exception(e)

@@ -73,8 +73,9 @@ class AutoMlRunManager :
         :return: networks
         """
         try :
-            #networks = list(map(lambda x : train(x.get('nn_id'), x.get('nn_wf_ver_id')), networks))
-            networks = list(map(lambda x: self.set_acc(x), networks))
+            for network in networks :
+                gen_result = train.delay(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
+                network['acc'] = gen_result['_'.join([network['nn_id'], str(network['nn_wf_ver_id']), network['node_name']])].get('accuracy')
             return networks
         except Exception as e :
             logging.error("Error on training : {0} ".format(e))
@@ -115,14 +116,30 @@ class AutoMlRunManager :
                 # (4) set node params
                 for node in all_node_list:
                     node_name = node.get('nn_wf_node_name')
-                    WorkFlowCommon().set_view_obj('_'.join([str(self.nn_id), str(nn_wf_ver_id), node_name]),
-                                                  node_confs[node_name].get('format'))
+                    if(node_name in node_confs) :
+                        WorkFlowCommon().set_view_obj('_'.join([str(self.nn_id), str(nn_wf_ver_id), node_name]),
+                                                      node_confs[node_name])
+
+                        if (node.get('wf_task_menu_id_id') == "data") :
+                            update_data = {}
+                            update_data['source_path'] = get_source_path(str(self.nn_id), "common", node_name)
+                            update_data['store_path'] = get_store_path(str(self.nn_id), "common", node_name)
+                            WorkFlowCommon().update_view_obj('_'.join([str(self.nn_id), str(nn_wf_ver_id), node_name]),
+                                                             update_data)
+
+                        if (node.get('wf_task_menu_id_id') == "netconf") :
+                            update_data = {}
+                            update_data['model_path'] = get_model_path(str(self.nn_id), str(nn_wf_ver_id), node_name)
+                            update_data['modelpath'] = get_model_path(str(self.nn_id), str(nn_wf_ver_id), node_name)
+                            WorkFlowCommon().update_view_obj('_'.join([str(self.nn_id), str(nn_wf_ver_id), node_name]),
+                                                             update_data)
 
                 # (5) return summary result
                 netdata = {}
                 netdata['nn_id'] = self.nn_id
                 netdata['generation'] = generation
                 netdata['nn_wf_ver_id'] = nn_wf_ver_id
+                netdata['node_name'] = node_name
                 netdata['acc'] = 0.0
                 netdata['flag'] = False
                 networks.append(netdata)
@@ -252,24 +269,28 @@ class AutoMlRunManager :
         """
         try :
             if(auto_form.get('auto') == False) :
-                if(type(auto_form.get('option')) == list and len(auto_form.get('option')) > 0) :
-                    return auto_form.get('option')[0]
+                if(type(auto_form.get('option')) == list) :
+                    return auto_form.get('option')
                 elif(type(auto_form.get('option')) == str) :
+                    return auto_form.get('option')
+                elif (type(auto_form.get('option')) == int):
                     return auto_form.get('option')
             else :
                 if(auto_form.get('option') == None) :
                     st, en, ir = auto_form.get('auto')
                     if(type(st) == float or type(en) == float or type(ir) == float) :
-                        return random.uniform(st, en) % ir
+                        return random.uniform(st, en)
                     else :
                         if(en > st) :
-                            return random.randrange(st, en)%ir
+                            return random.randrange(st, en, ir)
                         else :
-                            return random.randrange(en, st) % ir
+                            return random.randrange(en, st, ir)
                 elif(type(auto_form.get('option')) == list) :
                     st, en, ir = auto_form.get('auto')
-                    num =  random.randrange(st, en)%ir
+                    num =  random.randrange(st, en, ir)
                     return auto_form.get('option')[num]
+                else :
+                    return auto_form.get('option')
         except Exception as e :
             raise Exception ("error on automl format conv : {0}".format(e))
 
