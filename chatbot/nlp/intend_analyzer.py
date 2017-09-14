@@ -30,7 +30,7 @@ class IntendAnalyzer(ShareData):
         if (share_data.get_intent_id() != ""):
             logging.info("■■■■■■■■■■ 의도 존재  : " + share_data.get_intent_id())
         else :
-            if(type == 'Rule'):
+            if(type == 'Rule' and self.nn_id != ''):
                 convert_data = share_data.get_convert_dict_data()
                 logging.info("■■■■■■■■■■ Rule 의도 분석 Input Data : " + ' '.join(convert_data))
                 intent_model = self.get_intent_model(' '.join(convert_data))
@@ -38,7 +38,7 @@ class IntendAnalyzer(ShareData):
                 share_data.set_pattern_intent_id([intent_model])
                 share_data.set_intent_history({"P": intent_model})
 
-            elif(type == 'NER'):
+            elif(type == 'NER' and self.nn_id != ''):
                 convert_data = share_data.get_convert_data()
                 logging.info("■■■■■■■■■■ NER 의도 분석 Input Data : " + ' '.join(convert_data))
                 intent_model = self.get_intent_model(' '.join(convert_data))

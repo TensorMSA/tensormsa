@@ -72,6 +72,7 @@ master_WF_TASK_MENU_RULE,
 master_WF_TASK_SUBMENU_RULE, 
 master_NN_WF_NODE_INFO, 
 master_WF_TASK_REALATION_RULE
+master_AUTO_ML_RULE
 ```
 make migrations
 ```sh

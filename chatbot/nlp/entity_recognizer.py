@@ -17,11 +17,12 @@ class EntityRecognizer(ShareData):
         self.bilstmcrf_model = PredictNetBiLstmCrf()
 
     def parse(self, share_data):
-        logging.info("■■■■■■■■■■ NER 분석 전 : " + str(share_data.get_morphed_data()))
-        ner_data = self._get_ner_data(' '.join(share_data.get_morphed_data()))
-        share_data, ner_data = self._match_ngram_dict(share_data , share_data.get_morphed_data(), ner_data)
-        self._get_convert_data(ner_data, share_data)
-        logging.info("■■■■■■■■■■ NER 분석 결과 : " + str(ner_data))
+        if(self.ner_model_id != ''):
+            logging.info("■■■■■■■■■■ NER 분석 전 : " + str(share_data.get_morphed_data()))
+            ner_data = self._get_ner_data(' '.join(share_data.get_morphed_data()))
+            share_data, ner_data = self._match_ngram_dict(share_data , share_data.get_morphed_data(), ner_data)
+            self._get_convert_data(ner_data, share_data)
+            logging.info("■■■■■■■■■■ NER 분석 결과 : " + str(ner_data))
         return share_data
 
     def _get_convert_data(self, ner_data, share_data):

@@ -19,10 +19,11 @@ class DecisionMaker(ShareData):
         :return:
         """
         try :
-            if(len(share_data.get_intent_id()) > 1):
+            intent_conf = ChatStoryConfData(share_data.get_intent_id()[0])
+            if(len(share_data.get_intent_id()) > 1 or len(intent_conf.get_intent_story()) == 0):
+                share_data.set_output_data("Story not Set")
                 pass
             elif(len(share_data.get_intent_id()) == 1):
-                intent_conf = ChatStoryConfData(share_data.get_intent_id()[0])
                 if (not self._check_essential_entity(share_data.get_story_slot_entity().keys(), share_data)):
                     pass
                 elif(intent_conf.get_intent_story()[0]['fields']['story_type'] == 'response'):
@@ -33,7 +34,7 @@ class DecisionMaker(ShareData):
                     share_data = ServiceProvider(service_story).run(share_data)
                 else:
                     share_data.set_output_data("무슨말인지 모르겠어요")
-                    share_data.initialize_story()
+                    #share_data.initialize_story()
             else: #intent 3개 이상
                 share_data.set_output_data("무슨말인지 모르겠어요")
             return share_data

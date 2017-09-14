@@ -22,6 +22,10 @@ class SummrizeResult():
             pattern_intent_id = share_data.get_pattern_intent_id()
             #Rule intent is exist then pass
             if(intent_id is not "" and pattern_intent_id is ""):
+                share_data.set_intent_id(share_data.get_intent_id())
+                pass
+            elif (intent_id is "" and pattern_intent_id is not ""):
+                share_data.set_intent_id(share_data.get_pattern_intent_id())
                 pass
             else:
                 share_data = self.check_result(pattern_intent_id, intent_id, share_data)

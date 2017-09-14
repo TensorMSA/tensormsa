@@ -32,9 +32,9 @@ class ChatBotConfManager:
         #TODO:need to get data from cache server and chatbot model DB
         self.pos_type = "mecab"
         self.word_embed_model = "nn00002"
-        self.pattern_intent_analyze_model = self.get_model_conf(cb_id, 'PIntent')['nn_id']
-        self.intent_analyze_model = self.get_model_conf(cb_id, 'Intent')['nn_id']
-        self.ner_analyze_model = self.get_model_conf(cb_id, 'NER')['nn_id']
+        self.pattern_intent_analyze_model = self.get_model_conf(cb_id, 'PIntent')
+        self.intent_analyze_model = self.get_model_conf(cb_id, 'Intent')
+        self.ner_analyze_model = self.get_model_conf(cb_id, 'NER')
         self.resp_gen_model = ""
         self.ton_gen_model = ""
         self.stroy_board = []
@@ -43,7 +43,7 @@ class ChatBotConfManager:
         try :
             query_set = models.CB_MODEL_LIST_INFO.objects.filter(cb_id = cb_id, nn_purpose = purpose)
             query_set = serial.serialize("json", query_set)
-            return json.loads(query_set)[0]['fields']
+            return '' if query_set == '[]' else json.loads(query_set)[0]['fields']['nn_id']
         except Exception as e :
             raise Exception ("Model for {0} is required : {1}".format(purpose, e))
 
