@@ -1,0 +1,912 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sklearn.preprocessing.label &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sklearn.preprocessing.label</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Authors: Alexandre Gramfort &lt;alexandre.gramfort@inria.fr&gt;</span>
+<span class="c1">#          Mathieu Blondel &lt;mathieu@mblondel.org&gt;</span>
+<span class="c1">#          Olivier Grisel &lt;olivier.grisel@ensta.org&gt;</span>
+<span class="c1">#          Andreas Mueller &lt;amueller@ais.uni-bonn.de&gt;</span>
+<span class="c1">#          Joel Nothman &lt;joel.nothman@gmail.com&gt;</span>
+<span class="c1">#          Hamzeh Alsalhi &lt;ha258@cornell.edu&gt;</span>
+<span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">array</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
+
+<span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+
+<span class="kn">from</span> <span class="nn">..utils.fixes</span> <span class="k">import</span> <span class="n">np_version</span>
+<span class="kn">from</span> <span class="nn">..utils.fixes</span> <span class="k">import</span> <span class="n">sparse_min_max</span>
+<span class="kn">from</span> <span class="nn">..utils.fixes</span> <span class="k">import</span> <span class="n">astype</span>
+<span class="kn">from</span> <span class="nn">..utils.fixes</span> <span class="k">import</span> <span class="n">in1d</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">column_or_1d</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="k">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="k">import</span> <span class="n">_num_samples</span>
+<span class="kn">from</span> <span class="nn">..utils.multiclass</span> <span class="k">import</span> <span class="n">unique_labels</span>
+<span class="kn">from</span> <span class="nn">..utils.multiclass</span> <span class="k">import</span> <span class="n">type_of_target</span>
+
+<span class="kn">from</span> <span class="nn">..externals</span> <span class="k">import</span> <span class="n">six</span>
+
+<span class="nb">zip</span> <span class="o">=</span> <span class="n">six</span><span class="o">.</span><span class="n">moves</span><span class="o">.</span><span class="n">zip</span>
+<span class="nb">map</span> <span class="o">=</span> <span class="n">six</span><span class="o">.</span><span class="n">moves</span><span class="o">.</span><span class="n">map</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;label_binarize&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LabelBinarizer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LabelEncoder&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MultiLabelBinarizer&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_check_numpy_unicode_bug</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check that user is not subject to an old numpy bug</span>
+
+<span class="sd">    Fixed in master before 1.7.0:</span>
+
+<span class="sd">      https://github.com/numpy/numpy/pull/243</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np_version</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;U&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;NumPy &lt; 1.7.0 does not implement searchsorted&quot;</span>
+                           <span class="s2">&quot; on unicode data correctly. Please upgrade&quot;</span>
+                           <span class="s2">&quot; NumPy to use LabelEncoder with unicode inputs.&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">LabelEncoder</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Encode labels with value between 0 and n_classes-1.</span>
+
+<span class="sd">    Read more in the :ref:`User Guide &lt;preprocessing_targets&gt;`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    classes_ : array of shape (n_class,)</span>
+<span class="sd">        Holds the label for each class.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    `LabelEncoder` can be used to normalize labels.</span>
+
+<span class="sd">    &gt;&gt;&gt; from sklearn import preprocessing</span>
+<span class="sd">    &gt;&gt;&gt; le = preprocessing.LabelEncoder()</span>
+<span class="sd">    &gt;&gt;&gt; le.fit([1, 2, 2, 6])</span>
+<span class="sd">    LabelEncoder()</span>
+<span class="sd">    &gt;&gt;&gt; le.classes_</span>
+<span class="sd">    array([1, 2, 6])</span>
+<span class="sd">    &gt;&gt;&gt; le.transform([1, 1, 2, 6]) #doctest: +ELLIPSIS</span>
+<span class="sd">    array([0, 0, 1, 2]...)</span>
+<span class="sd">    &gt;&gt;&gt; le.inverse_transform([0, 0, 1, 2])</span>
+<span class="sd">    array([1, 1, 2, 6])</span>
+
+<span class="sd">    It can also be used to transform non-numerical labels (as long as they are</span>
+<span class="sd">    hashable and comparable) to numerical labels.</span>
+
+<span class="sd">    &gt;&gt;&gt; le = preprocessing.LabelEncoder()</span>
+<span class="sd">    &gt;&gt;&gt; le.fit([&quot;paris&quot;, &quot;paris&quot;, &quot;tokyo&quot;, &quot;amsterdam&quot;])</span>
+<span class="sd">    LabelEncoder()</span>
+<span class="sd">    &gt;&gt;&gt; list(le.classes_)</span>
+<span class="sd">    [&#39;amsterdam&#39;, &#39;paris&#39;, &#39;tokyo&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; le.transform([&quot;tokyo&quot;, &quot;tokyo&quot;, &quot;paris&quot;]) #doctest: +ELLIPSIS</span>
+<span class="sd">    array([2, 2, 1]...)</span>
+<span class="sd">    &gt;&gt;&gt; list(le.inverse_transform([2, 2, 1]))</span>
+<span class="sd">    [&#39;tokyo&#39;, &#39;tokyo&#39;, &#39;paris&#39;]</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    sklearn.preprocessing.OneHotEncoder : encode categorical integer features</span>
+<span class="sd">        using a one-hot aka one-of-K scheme.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit label encoder</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : array-like of shape (n_samples,)</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns an instance of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">column_or_1d</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_check_numpy_unicode_bug</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit label encoder and return encoded labels</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : array-like of shape [n_samples]</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : array-like of shape [n_samples]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">column_or_1d</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_check_numpy_unicode_bug</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform labels to normalized encoding.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : array-like of shape [n_samples]</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : array-like of shape [n_samples]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;classes_&#39;</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">column_or_1d</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">_check_numpy_unicode_bug</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">):</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y contains new labels: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">diff</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform labels back to original encoding.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : numpy array of shape [n_samples]</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : numpy array of shape [n_samples]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;classes_&#39;</span><span class="p">)</span>
+
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y contains new labels: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">diff</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">LabelBinarizer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Binarize labels in a one-vs-all fashion</span>
+
+<span class="sd">    Several regression and binary classification algorithms are</span>
+<span class="sd">    available in the scikit. A simple way to extend these algorithms</span>
+<span class="sd">    to the multi-class classification case is to use the so-called</span>
+<span class="sd">    one-vs-all scheme.</span>
+
+<span class="sd">    At learning time, this simply consists in learning one regressor</span>
+<span class="sd">    or binary classifier per class. In doing so, one needs to convert</span>
+<span class="sd">    multi-class labels to binary labels (belong or does not belong</span>
+<span class="sd">    to the class). LabelBinarizer makes this process easy with the</span>
+<span class="sd">    transform method.</span>
+
+<span class="sd">    At prediction time, one assigns the class for which the corresponding</span>
+<span class="sd">    model gave the greatest confidence. LabelBinarizer makes this easy</span>
+<span class="sd">    with the inverse_transform method.</span>
+
+<span class="sd">    Read more in the :ref:`User Guide &lt;preprocessing_targets&gt;`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    neg_label : int (default: 0)</span>
+<span class="sd">        Value with which negative labels must be encoded.</span>
+
+<span class="sd">    pos_label : int (default: 1)</span>
+<span class="sd">        Value with which positive labels must be encoded.</span>
+
+<span class="sd">    sparse_output : boolean (default: False)</span>
+<span class="sd">        True if the returned array from transform is desired to be in sparse</span>
+<span class="sd">        CSR format.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    classes_ : array of shape [n_class]</span>
+<span class="sd">        Holds the label for each class.</span>
+
+<span class="sd">    y_type_ : str,</span>
+<span class="sd">        Represents the type of the target data as evaluated by</span>
+<span class="sd">        utils.multiclass.type_of_target. Possible type are &#39;continuous&#39;,</span>
+<span class="sd">        &#39;continuous-multioutput&#39;, &#39;binary&#39;, &#39;multiclass&#39;,</span>
+<span class="sd">        &#39;multiclass-multioutput&#39;, &#39;multilabel-indicator&#39;, and &#39;unknown&#39;.</span>
+
+<span class="sd">    sparse_input_ : boolean,</span>
+<span class="sd">        True if the input data to transform is given as a sparse matrix, False</span>
+<span class="sd">        otherwise.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn import preprocessing</span>
+<span class="sd">    &gt;&gt;&gt; lb = preprocessing.LabelBinarizer()</span>
+<span class="sd">    &gt;&gt;&gt; lb.fit([1, 2, 6, 4, 2])</span>
+<span class="sd">    LabelBinarizer(neg_label=0, pos_label=1, sparse_output=False)</span>
+<span class="sd">    &gt;&gt;&gt; lb.classes_</span>
+<span class="sd">    array([1, 2, 4, 6])</span>
+<span class="sd">    &gt;&gt;&gt; lb.transform([1, 6])</span>
+<span class="sd">    array([[1, 0, 0, 0],</span>
+<span class="sd">           [0, 0, 0, 1]])</span>
+
+<span class="sd">    Binary targets transform to a column vector</span>
+
+<span class="sd">    &gt;&gt;&gt; lb = preprocessing.LabelBinarizer()</span>
+<span class="sd">    &gt;&gt;&gt; lb.fit_transform([&#39;yes&#39;, &#39;no&#39;, &#39;no&#39;, &#39;yes&#39;])</span>
+<span class="sd">    array([[1],</span>
+<span class="sd">           [0],</span>
+<span class="sd">           [0],</span>
+<span class="sd">           [1]])</span>
+
+<span class="sd">    Passing a 2D matrix for multilabel classification</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; lb.fit(np.array([[0, 1, 1], [1, 0, 0]]))</span>
+<span class="sd">    LabelBinarizer(neg_label=0, pos_label=1, sparse_output=False)</span>
+<span class="sd">    &gt;&gt;&gt; lb.classes_</span>
+<span class="sd">    array([0, 1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; lb.transform([0, 1, 2, 1])</span>
+<span class="sd">    array([[1, 0, 0],</span>
+<span class="sd">           [0, 1, 0],</span>
+<span class="sd">           [0, 0, 1],</span>
+<span class="sd">           [0, 1, 0]])</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    label_binarize : function to perform the transform operation of</span>
+<span class="sd">        LabelBinarizer with fixed classes.</span>
+<span class="sd">    sklearn.preprocessing.OneHotEncoder : encode categorical integer features</span>
+<span class="sd">        using a one-hot aka one-of-K scheme.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">neg_label</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sparse_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">neg_label</span> <span class="o">&gt;=</span> <span class="n">pos_label</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;neg_label=</span><span class="si">{0}</span><span class="s2"> must be strictly less than &quot;</span>
+                             <span class="s2">&quot;pos_label=</span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">neg_label</span><span class="p">,</span> <span class="n">pos_label</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">sparse_output</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pos_label</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">neg_label</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sparse binarization is only supported with non &quot;</span>
+                             <span class="s2">&quot;zero pos_label and zero neg_label, got &quot;</span>
+                             <span class="s2">&quot;pos_label=</span><span class="si">{0}</span><span class="s2"> and neg_label=</span><span class="si">{1}</span><span class="s2">&quot;</span>
+                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pos_label</span><span class="p">,</span> <span class="n">neg_label</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">neg_label</span> <span class="o">=</span> <span class="n">neg_label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos_label</span> <span class="o">=</span> <span class="n">pos_label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparse_output</span> <span class="o">=</span> <span class="n">sparse_output</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit label binarizer</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : numpy array of shape (n_samples,) or (n_samples, n_classes)</span>
+<span class="sd">            Target values. The 2-d matrix should only contain 0 and 1,</span>
+<span class="sd">            represents multilabel classification.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns an instance of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_type_</span> <span class="o">=</span> <span class="n">type_of_target</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;multioutput&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_type_</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Multioutput target data is not supported with &quot;</span>
+                             <span class="s2">&quot;label binarization&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_num_samples</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;y has 0 samples: </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparse_input_</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">unique_labels</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform multi-class labels to binary labels</span>
+
+<span class="sd">        The output of transform is sometimes referred to by some authors as the</span>
+<span class="sd">        1-of-K coding scheme.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : numpy array or sparse matrix of shape (n_samples,) or</span>
+<span class="sd">            (n_samples, n_classes) Target values. The 2-d matrix should only</span>
+<span class="sd">            contain 0 and 1, represents multilabel classification. Sparse</span>
+<span class="sd">            matrix can be CSR, CSC, COO, DOK, or LIL.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Y : numpy array or CSR matrix of shape [n_samples, n_classes]</span>
+<span class="sd">            Shape will be [n_samples, 1] for binary problems.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;classes_&#39;</span><span class="p">)</span>
+
+        <span class="n">y_is_multilabel</span> <span class="o">=</span> <span class="n">type_of_target</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;multilabel&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">y_is_multilabel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_type_</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;multilabel&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The object was not fitted with multilabel&quot;</span>
+                             <span class="s2">&quot; input.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">label_binarize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span>
+                              <span class="n">pos_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pos_label</span><span class="p">,</span>
+                              <span class="n">neg_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">neg_label</span><span class="p">,</span>
+                              <span class="n">sparse_output</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sparse_output</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform binary labels back to multi-class labels</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Y : numpy array or sparse matrix with shape [n_samples, n_classes]</span>
+<span class="sd">            Target values. All sparse matrices are converted to CSR before</span>
+<span class="sd">            inverse transformation.</span>
+
+<span class="sd">        threshold : float or None</span>
+<span class="sd">            Threshold used in the binary and multi-label cases.</span>
+
+<span class="sd">            Use 0 when:</span>
+<span class="sd">                - Y contains the output of decision_function (classifier)</span>
+<span class="sd">            Use 0.5 when:</span>
+<span class="sd">                - Y contains the output of predict_proba</span>
+
+<span class="sd">            If None, the threshold is assumed to be half way between</span>
+<span class="sd">            neg_label and pos_label.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : numpy array or CSR matrix of shape [n_samples] Target values.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        In the case when the binary labels are fractional</span>
+<span class="sd">        (probabilistic), inverse_transform chooses the class with the</span>
+<span class="sd">        greatest value. Typically, this allows to use the output of a</span>
+<span class="sd">        linear model&#39;s decision_function method directly as the input</span>
+<span class="sd">        of inverse_transform.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;classes_&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos_label</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">neg_label</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_type_</span> <span class="o">==</span> <span class="s2">&quot;multiclass&quot;</span><span class="p">:</span>
+            <span class="n">y_inv</span> <span class="o">=</span> <span class="n">_inverse_binarize_multiclass</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y_inv</span> <span class="o">=</span> <span class="n">_inverse_binarize_thresholding</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_type_</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_input_</span><span class="p">:</span>
+            <span class="n">y_inv</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">y_inv</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">y_inv</span><span class="p">):</span>
+            <span class="n">y_inv</span> <span class="o">=</span> <span class="n">y_inv</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">y_inv</span>
+
+
+<span class="k">def</span> <span class="nf">label_binarize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">neg_label</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sparse_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Binarize labels in a one-vs-all fashion</span>
+
+<span class="sd">    Several regression and binary classification algorithms are</span>
+<span class="sd">    available in the scikit. A simple way to extend these algorithms</span>
+<span class="sd">    to the multi-class classification case is to use the so-called</span>
+<span class="sd">    one-vs-all scheme.</span>
+
+<span class="sd">    This function makes it possible to compute this transformation for a</span>
+<span class="sd">    fixed set of class labels known ahead of time.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array-like</span>
+<span class="sd">        Sequence of integer labels or multilabel data to encode.</span>
+
+<span class="sd">    classes : array-like of shape [n_classes]</span>
+<span class="sd">        Uniquely holds the label for each class.</span>
+
+<span class="sd">    neg_label : int (default: 0)</span>
+<span class="sd">        Value with which negative labels must be encoded.</span>
+
+<span class="sd">    pos_label : int (default: 1)</span>
+<span class="sd">        Value with which positive labels must be encoded.</span>
+
+<span class="sd">    sparse_output : boolean (default: False),</span>
+<span class="sd">        Set to true if output binary array is desired in CSR sparse format</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Y : numpy array or CSR matrix of shape [n_samples, n_classes]</span>
+<span class="sd">        Shape will be [n_samples, 1] for binary problems.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.preprocessing import label_binarize</span>
+<span class="sd">    &gt;&gt;&gt; label_binarize([1, 6], classes=[1, 2, 4, 6])</span>
+<span class="sd">    array([[1, 0, 0, 0],</span>
+<span class="sd">           [0, 0, 0, 1]])</span>
+
+<span class="sd">    The class ordering is preserved:</span>
+
+<span class="sd">    &gt;&gt;&gt; label_binarize([1, 6], classes=[1, 6, 4, 2])</span>
+<span class="sd">    array([[1, 0, 0, 0],</span>
+<span class="sd">           [0, 1, 0, 0]])</span>
+
+<span class="sd">    Binary targets transform to a column vector</span>
+
+<span class="sd">    &gt;&gt;&gt; label_binarize([&#39;yes&#39;, &#39;no&#39;, &#39;no&#39;, &#39;yes&#39;], classes=[&#39;no&#39;, &#39;yes&#39;])</span>
+<span class="sd">    array([[1],</span>
+<span class="sd">           [0],</span>
+<span class="sd">           [0],</span>
+<span class="sd">           [1]])</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    LabelBinarizer : class used to wrap the functionality of label_binarize and</span>
+<span class="sd">        allow for fitting to classes independently of the transform operation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># XXX Workaround that will be removed when list of list format is</span>
+        <span class="c1"># dropped</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_num_samples</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;y has 0 samples: </span><span class="si">%r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">neg_label</span> <span class="o">&gt;=</span> <span class="n">pos_label</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;neg_label=</span><span class="si">{0}</span><span class="s2"> must be strictly less than &quot;</span>
+                         <span class="s2">&quot;pos_label=</span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">neg_label</span><span class="p">,</span> <span class="n">pos_label</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">sparse_output</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pos_label</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">neg_label</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sparse binarization is only supported with non &quot;</span>
+                         <span class="s2">&quot;zero pos_label and zero neg_label, got &quot;</span>
+                         <span class="s2">&quot;pos_label=</span><span class="si">{0}</span><span class="s2"> and neg_label=</span><span class="si">{1}</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pos_label</span><span class="p">,</span> <span class="n">neg_label</span><span class="p">))</span>
+
+    <span class="c1"># To account for pos_label == 0 in the dense case</span>
+    <span class="n">pos_switch</span> <span class="o">=</span> <span class="n">pos_label</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">pos_switch</span><span class="p">:</span>
+        <span class="n">pos_label</span> <span class="o">=</span> <span class="o">-</span><span class="n">neg_label</span>
+
+    <span class="n">y_type</span> <span class="o">=</span> <span class="n">type_of_target</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;multioutput&#39;</span> <span class="ow">in</span> <span class="n">y_type</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Multioutput target data is not supported with label &quot;</span>
+                         <span class="s2">&quot;binarization&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y_type</span> <span class="o">==</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The type of target data is not known&quot;</span><span class="p">)</span>
+
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">y_type</span> <span class="o">==</span> <span class="s2">&quot;binary&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_classes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sparse_output</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+                <span class="n">Y</span> <span class="o">+=</span> <span class="n">neg_label</span>
+                <span class="k">return</span> <span class="n">Y</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">y_type</span> <span class="o">=</span> <span class="s2">&quot;multiclass&quot;</span>
+
+    <span class="n">sorted_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">y_type</span> <span class="o">==</span> <span class="s2">&quot;multilabel-indicator&quot;</span> <span class="ow">and</span> <span class="n">classes</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;classes </span><span class="si">{0}</span><span class="s2"> missmatch with the labels </span><span class="si">{1}</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;found in the data&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">unique_labels</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="n">y_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;binary&quot;</span><span class="p">,</span> <span class="s2">&quot;multiclass&quot;</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">column_or_1d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># pick out the known labels from y</span>
+        <span class="n">y_in_classes</span> <span class="o">=</span> <span class="n">in1d</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">classes</span><span class="p">)</span>
+        <span class="n">y_seen</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">y_in_classes</span><span class="p">]</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">sorted_class</span><span class="p">,</span> <span class="n">y_seen</span><span class="p">)</span>
+        <span class="n">indptr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">y_in_classes</span><span class="p">)))</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">pos_label</span><span class="p">)</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indptr</span><span class="p">),</span>
+                          <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">y_type</span> <span class="o">==</span> <span class="s2">&quot;multilabel-indicator&quot;</span><span class="p">:</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pos_label</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">pos_label</span><span class="p">)</span>
+            <span class="n">Y</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> target data is not supported with label &quot;</span>
+                         <span class="s2">&quot;binarization&quot;</span> <span class="o">%</span> <span class="n">y_type</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sparse_output</span><span class="p">:</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">astype</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">neg_label</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Y</span><span class="p">[</span><span class="n">Y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">neg_label</span>
+
+        <span class="k">if</span> <span class="n">pos_switch</span><span class="p">:</span>
+            <span class="n">Y</span><span class="p">[</span><span class="n">Y</span> <span class="o">==</span> <span class="n">pos_label</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Y</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">astype</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># preserve label ordering</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">classes</span> <span class="o">!=</span> <span class="n">sorted_class</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">sorted_class</span><span class="p">,</span> <span class="n">classes</span><span class="p">)</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[:,</span> <span class="n">indices</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">y_type</span> <span class="o">==</span> <span class="s2">&quot;binary&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sparse_output</span><span class="p">:</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Y</span>
+
+
+<span class="k">def</span> <span class="nf">_inverse_binarize_multiclass</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">classes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inverse label binarization transformation for multiclass.</span>
+
+<span class="sd">    Multiclass uses the maximal score instead of a threshold.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="c1"># Find the argmax for each row in y where y is a CSR matrix</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_outputs</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_outputs</span><span class="p">)</span>
+        <span class="n">row_max</span> <span class="o">=</span> <span class="n">sparse_min_max</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">row_nnz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">indptr</span><span class="p">)</span>
+
+        <span class="n">y_data_repeated_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">row_max</span><span class="p">,</span> <span class="n">row_nnz</span><span class="p">)</span>
+        <span class="c1"># picks out all indices obtaining the maximum per row</span>
+        <span class="n">y_i_all_argmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">y_data_repeated_max</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># For corner case where last row has a max of 0</span>
+        <span class="k">if</span> <span class="n">row_max</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">y_i_all_argmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_i_all_argmax</span><span class="p">,</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">data</span><span class="p">)])</span>
+
+        <span class="c1"># Gets the index of the first argmax in each row from y_i_all_argmax</span>
+        <span class="n">index_first_argmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">y_i_all_argmax</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">indptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># first argmax of each row</span>
+        <span class="n">y_ind_ext</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">y_i_argmax</span> <span class="o">=</span> <span class="n">y_ind_ext</span><span class="p">[</span><span class="n">y_i_all_argmax</span><span class="p">[</span><span class="n">index_first_argmax</span><span class="p">]]</span>
+        <span class="c1"># Handle rows of all 0</span>
+        <span class="n">y_i_argmax</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">row_nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Handles rows with max of 0 that contain negative numbers</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)[(</span><span class="n">row_nnz</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span>
+                                       <span class="p">(</span><span class="n">row_max</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">y</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="n">y_i_argmax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">classes</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">ind</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">classes</span><span class="p">[</span><span class="n">y_i_argmax</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">classes</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;clip&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_inverse_binarize_thresholding</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">output_type</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inverse label binarization transformation using thresholding.&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;binary&quot;</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;output_type=&#39;binary&#39;, but y.shape = </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span>
+                         <span class="nb">format</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">!=</span> <span class="s2">&quot;binary&quot;</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of class is not equal to the number of &quot;</span>
+                         <span class="s2">&quot;dimension of y.&quot;</span><span class="p">)</span>
+
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+
+    <span class="c1"># Perform thresholding</span>
+    <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">threshold</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="s1">&#39;csc&#39;</span><span class="p">):</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="c1"># Inverse transform data</span>
+    <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;binary&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">classes</span><span class="p">[</span><span class="n">y</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">classes</span><span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]</span>
+
+    <span class="k">elif</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;multilabel-indicator&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> format is not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_type</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">MultiLabelBinarizer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform between iterable of iterables and a multilabel format</span>
+
+<span class="sd">    Although a list of sets or tuples is a very intuitive format for multilabel</span>
+<span class="sd">    data, it is unwieldy to process. This transformer converts between this</span>
+<span class="sd">    intuitive format and the supported multilabel format: a (samples x classes)</span>
+<span class="sd">    binary matrix indicating the presence of a class label.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    classes : array-like of shape [n_classes] (optional)</span>
+<span class="sd">        Indicates an ordering for the class labels</span>
+
+<span class="sd">    sparse_output : boolean (default: False),</span>
+<span class="sd">        Set to true if output binary array is desired in CSR sparse format</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    classes_ : array of labels</span>
+<span class="sd">        A copy of the `classes` parameter where provided,</span>
+<span class="sd">        or otherwise, the sorted set of classes found when fitting.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.preprocessing import MultiLabelBinarizer</span>
+<span class="sd">    &gt;&gt;&gt; mlb = MultiLabelBinarizer()</span>
+<span class="sd">    &gt;&gt;&gt; mlb.fit_transform([(1, 2), (3,)])</span>
+<span class="sd">    array([[1, 1, 0],</span>
+<span class="sd">           [0, 0, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; mlb.classes_</span>
+<span class="sd">    array([1, 2, 3])</span>
+
+<span class="sd">    &gt;&gt;&gt; mlb.fit_transform([set([&#39;sci-fi&#39;, &#39;thriller&#39;]), set([&#39;comedy&#39;])])</span>
+<span class="sd">    array([[0, 1, 1],</span>
+<span class="sd">           [1, 0, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; list(mlb.classes_)</span>
+<span class="sd">    [&#39;comedy&#39;, &#39;sci-fi&#39;, &#39;thriller&#39;]</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    sklearn.preprocessing.OneHotEncoder : encode categorical integer features</span>
+<span class="sd">        using a one-hot aka one-of-K scheme.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sparse_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparse_output</span> <span class="o">=</span> <span class="n">sparse_output</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the label sets binarizer, storing `classes_`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : iterable of iterables</span>
+<span class="sd">            A set of labels (any orderable and hashable object) for each</span>
+<span class="sd">            sample. If the `classes` parameter is set, `y` will not be</span>
+<span class="sd">            iterated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns this MultiLabelBinarizer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">classes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">)</span> <span class="k">else</span> <span class="nb">object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">classes</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the label sets binarizer and transform the given label sets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : iterable of iterables</span>
+<span class="sd">            A set of labels (any orderable and hashable object) for each</span>
+<span class="sd">            sample. If the `classes` parameter is set, `y` will not be</span>
+<span class="sd">            iterated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_indicator : array or CSR matrix, shape (n_samples, n_classes)</span>
+<span class="sd">            A matrix such that `y_indicator[i, j] = 1` iff `classes_[j]` is in</span>
+<span class="sd">            `y[i]`, and 0 otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Automatically increment on new class</span>
+        <span class="n">class_mapping</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">class_mapping</span><span class="o">.</span><span class="n">default_factory</span> <span class="o">=</span> <span class="n">class_mapping</span><span class="o">.</span><span class="n">__len__</span>
+        <span class="n">yt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">class_mapping</span><span class="p">)</span>
+
+        <span class="c1"># sort classes and reorder columns</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">class_mapping</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">class_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>
+
+        <span class="c1"># (make safe for tuples)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">)</span> <span class="k">else</span> <span class="nb">object</span>
+        <span class="n">class_mapping</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">class_mapping</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">inverse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">class_mapping</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># ensure yt.indices keeps its current dtype</span>
+        <span class="n">yt</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inverse</span><span class="p">[</span><span class="n">yt</span><span class="o">.</span><span class="n">indices</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">yt</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                              <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_output</span><span class="p">:</span>
+            <span class="n">yt</span> <span class="o">=</span> <span class="n">yt</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">yt</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform the given label sets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : iterable of iterables</span>
+<span class="sd">            A set of labels (any orderable and hashable object) for each</span>
+<span class="sd">            sample. If the `classes` parameter is set, `y` will not be</span>
+<span class="sd">            iterated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_indicator : array or CSR matrix, shape (n_samples, n_classes)</span>
+<span class="sd">            A matrix such that `y_indicator[i, j] = 1` iff `classes_[j]` is in</span>
+<span class="sd">            `y[i]`, and 0 otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;classes_&#39;</span><span class="p">)</span>
+
+        <span class="n">class_to_index</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">))))</span>
+        <span class="n">yt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">class_to_index</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_output</span><span class="p">:</span>
+            <span class="n">yt</span> <span class="o">=</span> <span class="n">yt</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">yt</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">class_mapping</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transforms the label sets with a given mapping</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : iterable of iterables</span>
+<span class="sd">        class_mapping : Mapping</span>
+<span class="sd">            Maps from label to column index in label indicator matrix</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_indicator : sparse CSR matrix, shape (n_samples, n_classes)</span>
+<span class="sd">            Label indicator matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">)</span>
+        <span class="n">indptr</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">class_mapping</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">))</span>
+            <span class="n">indptr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indptr</span><span class="p">),</span>
+                             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indptr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_mapping</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform the given indicator matrix into label sets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yt : array or sparse matrix of shape (n_samples, n_classes)</span>
+<span class="sd">            A matrix containing only 1s ands 0s.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : list of tuples</span>
+<span class="sd">            The set of labels for each sample such that `y[i]` consists of</span>
+<span class="sd">            `classes_[j]` for each `yt[i, j] == 1`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;classes_&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected indicator for </span><span class="si">{0}</span><span class="s1"> classes, but got </span><span class="si">{1}</span><span class="s1">&#39;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">),</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">yt</span><span class="p">):</span>
+            <span class="n">yt</span> <span class="o">=</span> <span class="n">yt</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yt</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">yt</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected only 0s and 1s in label indicator.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">yt</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]))</span>
+                    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">yt</span><span class="o">.</span><span class="n">indptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">yt</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unexpected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">yt</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unexpected</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected only 0s and 1s in label indicator. &#39;</span>
+                                 <span class="s1">&#39;Also got </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unexpected</span><span class="p">))</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">indicators</span><span class="p">))</span> <span class="k">for</span> <span class="n">indicators</span>
+                    <span class="ow">in</span> <span class="n">yt</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

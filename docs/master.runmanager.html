@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.runmanager package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="master-runmanager-package">
+<h1>master.runmanager package<a class="headerlink" href="#master-runmanager-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-master.runmanager.run_manager">
+<span id="master-runmanager-run-manager-module"></span><h2>master.runmanager.run_manager module<a class="headerlink" href="#module-master.runmanager.run_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.runmanager.run_manager.RunManager">
+<em class="property">class </em><code class="descclassname">master.runmanager.run_manager.</code><code class="descname">RunManager</code><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<ol class="arabic">
+<li><dl class="first docutils">
+<dt>definition</dt>
+<dd><p class="first last">-manage job list
+-manage cluster tarin server status
+-manage cluster job and result</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>table</dt>
+<dd><p class="first last">CONF_SERV_CLUSTER_INFO
+COMMON_JOB_LIST_INFO
+NN_VER_BARCHLIST_INFO</p>
+</dd>
+</dl>
+</li>
+</ol>
+<dl class="method">
+<dt id="master.runmanager.run_manager.RunManager.get_view_obj">
+<code class="descname">get_view_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager.get_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager.get_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get view data for net config
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager.RunManager.regist_train_request">
+<code class="descname">regist_train_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager.regist_train_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager.regist_train_request" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager.RunManager.set_job_error">
+<code class="descname">set_job_error</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager.set_job_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager.set_job_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager.RunManager.set_job_finish">
+<code class="descname">set_job_finish</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager.set_job_finish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager.set_job_finish" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager.RunManager.set_job_init">
+<code class="descname">set_job_init</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager.set_job_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager.set_job_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager.RunManager.set_job_start">
+<code class="descname">set_job_start</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager.set_job_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager.set_job_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager.RunManager.set_view_obj">
+<code class="descname">set_view_obj</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager.html#RunManager.set_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager.RunManager.set_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set net config data edited on view
+:param obj:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.runmanager.run_manager_history">
+<span id="master-runmanager-run-manager-history-module"></span><h2>master.runmanager.run_manager_history module<a class="headerlink" href="#module-master.runmanager.run_manager_history" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.runmanager.run_manager_history.RunManagerHistory">
+<em class="property">class </em><code class="descclassname">master.runmanager.run_manager_history.</code><code class="descname">RunManagerHistory</code><a class="reference internal" href="_modules/master/runmanager/run_manager_history.html#RunManagerHistory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_history.RunManagerHistory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#master.runmanager.run_manager.RunManager" title="master.runmanager.run_manager.RunManager"><code class="xref py py-class docutils literal"><span class="pre">master.runmanager.run_manager.RunManager</span></code></a></p>
+<dl class="method">
+<dt id="master.runmanager.run_manager_history.RunManagerHistory.get_view_obj">
+<code class="descname">get_view_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager_history.html#RunManagerHistory.get_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_history.RunManagerHistory.get_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get view data for net config
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager_history.RunManagerHistory.set_view_obj">
+<code class="descname">set_view_obj</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager_history.html#RunManagerHistory.set_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_history.RunManagerHistory.set_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set net config data edited on view
+:param obj:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.runmanager.run_manager_schedule">
+<span id="master-runmanager-run-manager-schedule-module"></span><h2>master.runmanager.run_manager_schedule module<a class="headerlink" href="#module-master.runmanager.run_manager_schedule" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.runmanager.run_manager_schedule.RunManagerSchedule">
+<em class="property">class </em><code class="descclassname">master.runmanager.run_manager_schedule.</code><code class="descname">RunManagerSchedule</code><a class="reference internal" href="_modules/master/runmanager/run_manager_schedule.html#RunManagerSchedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_schedule.RunManagerSchedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#master.runmanager.run_manager.RunManager" title="master.runmanager.run_manager.RunManager"><code class="xref py py-class docutils literal"><span class="pre">master.runmanager.run_manager.RunManager</span></code></a></p>
+<dl class="method">
+<dt id="master.runmanager.run_manager_schedule.RunManagerSchedule.get_view_obj">
+<code class="descname">get_view_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager_schedule.html#RunManagerSchedule.get_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_schedule.RunManagerSchedule.get_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get view data for net config
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager_schedule.RunManagerSchedule.set_view_obj">
+<code class="descname">set_view_obj</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager_schedule.html#RunManagerSchedule.set_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_schedule.RunManagerSchedule.set_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set net config data edited on view
+:param obj:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.runmanager.run_manager_workflow">
+<span id="master-runmanager-run-manager-workflow-module"></span><h2>master.runmanager.run_manager_workflow module<a class="headerlink" href="#module-master.runmanager.run_manager_workflow" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.runmanager.run_manager_workflow.RunManagerWorkFlow">
+<em class="property">class </em><code class="descclassname">master.runmanager.run_manager_workflow.</code><code class="descname">RunManagerWorkFlow</code><a class="reference internal" href="_modules/master/runmanager/run_manager_workflow.html#RunManagerWorkFlow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_workflow.RunManagerWorkFlow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#master.runmanager.run_manager.RunManager" title="master.runmanager.run_manager.RunManager"><code class="xref py py-class docutils literal"><span class="pre">master.runmanager.run_manager.RunManager</span></code></a></p>
+<dl class="method">
+<dt id="master.runmanager.run_manager_workflow.RunManagerWorkFlow.get_view_obj">
+<code class="descname">get_view_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager_workflow.html#RunManagerWorkFlow.get_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_workflow.RunManagerWorkFlow.get_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get view data for net config
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.runmanager.run_manager_workflow.RunManagerWorkFlow.set_view_obj">
+<code class="descname">set_view_obj</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/runmanager/run_manager_workflow.html#RunManagerWorkFlow.set_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.runmanager.run_manager_workflow.RunManagerWorkFlow.set_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set net config data edited on view
+:param obj:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.runmanager">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-master.runmanager" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">master.runmanager package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-master.runmanager.run_manager">master.runmanager.run_manager module</a></li>
+<li><a class="reference internal" href="#module-master.runmanager.run_manager_history">master.runmanager.run_manager_history module</a></li>
+<li><a class="reference internal" href="#module-master.runmanager.run_manager_schedule">master.runmanager.run_manager_schedule module</a></li>
+<li><a class="reference internal" href="#module-master.runmanager.run_manager_workflow">master.runmanager.run_manager_workflow module</a></li>
+<li><a class="reference internal" href="#module-master.runmanager">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/master.runmanager.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/master.runmanager.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

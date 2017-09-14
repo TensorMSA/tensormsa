@@ -1,0 +1,618 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.neuralnet.neuralnet_node_bilstmcrf &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.neuralnet.neuralnet_node_bilstmcrf</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cluster.neuralnet.neuralnet_node</span> <span class="k">import</span> <span class="n">NeuralNetNode</span>
+<span class="kn">from</span> <span class="nn">master.workflow.netconf.workflow_netconf_bilstmcrf</span> <span class="k">import</span> <span class="n">WorkFlowNetConfBiLstmCrf</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">cluster.common.neural_common_bilismcrf</span> <span class="k">import</span> <span class="n">BiLstmCommon</span>
+<span class="kn">from</span> <span class="nn">common.graph.nn_graph_manager</span> <span class="k">import</span> <span class="n">NeuralNetModel</span>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf">[docs]</a><span class="k">class</span> <span class="nc">NeuralNetNodeBiLstmCrf</span><span class="p">(</span><span class="n">NeuralNetNode</span><span class="p">,</span> <span class="n">BiLstmCommon</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.run"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">])</span>
+
+            <span class="c1"># build graph</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build_graph</span><span class="p">()</span>
+
+            <span class="c1"># get prev node for load data</span>
+            <span class="n">train_data_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_linked_prev_node_with_grp</span><span class="p">(</span><span class="s1">&#39;preprocess&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">best_score</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+                <span class="k">while</span> <span class="p">(</span><span class="n">train_data_set</span><span class="o">.</span><span class="n">has_next</span><span class="p">()):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;------------------------------&quot;</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">train_data_set</span><span class="o">.</span><span class="n">get_file_name</span><span class="p">())</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;------------------------------&quot;</span><span class="p">)</span>
+                    <span class="c1"># create dataset</span>
+                    <span class="n">dev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoNLLDataset</span><span class="p">(</span><span class="n">train_data_set</span><span class="o">.</span><span class="n">get_file_name</span><span class="p">(),</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">processing_tag</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span>
+                    <span class="n">train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoNLLDataset</span><span class="p">(</span><span class="n">train_data_set</span><span class="o">.</span><span class="n">get_file_name</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">processing_tag</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span>
+                    <span class="c1"># train</span>
+                    <span class="n">best_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_tags</span><span class="p">,</span> <span class="n">sess</span><span class="p">)</span>
+
+                    <span class="c1"># save model</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">md_store_path</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;/&#39;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)</span>
+
+                    <span class="n">train_data_set</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">best_score</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[BiLstmCrf Train Process] : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;error on fast text tain process : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initialze parms for autoencoder</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">wf_conf</span> <span class="o">=</span> <span class="n">WorkFlowNetConfBiLstmCrf</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">node_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">md_store_path</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_model_store_path</span>
+
+            <span class="c1"># create dict folder for ner if not exists</span>
+            <span class="n">dict_path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">md_store_path</span><span class="p">,</span> <span class="s1">&#39;/dict/&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dict_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dict_path</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">trimmed_filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dict_path</span><span class="p">,</span> <span class="s1">&#39;words.vec&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">charembed_filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dict_path</span><span class="p">,</span> <span class="s1">&#39;char.vec&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">words_filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dict_path</span><span class="p">,</span> <span class="s1">&#39;words.txt&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tags_filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dict_path</span><span class="p">,</span> <span class="s1">&#39;tags.txt&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chars_filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">dict_path</span><span class="p">,</span> <span class="s1">&#39;chars.txt&#39;</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_trimmed_glove_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trimmed_filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_trimmed_glove_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">charembed_filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocab_words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_vocab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words_filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocab_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_vocab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags_filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocab_chars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_vocab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chars_filename</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">nchars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_chars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ntags</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_tags</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">lowercase</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">max_iter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crf</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">crf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chars</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">chars</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_processing_word</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_words</span><span class="p">,</span>
+                                                            <span class="bp">self</span><span class="o">.</span><span class="n">vocab_chars</span><span class="p">,</span>
+                                                            <span class="n">lowercase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span><span class="p">,</span>
+                                                            <span class="n">chars</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_processing_word</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_tags</span><span class="p">,</span>
+                                                           <span class="n">lowercase</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">dim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dim_char</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">dim_char</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_embeddings</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">train_embeddings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nepochs</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">nepochs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_dropout</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">p_dropout</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">batch_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_lr</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">p_lr</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lr_decay</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">lr_decay</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nepoch_no_imprv</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">nepoch_no_imprv</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">hidden_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_hidden_size</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">char_hidden_size</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_batch_exist</span><span class="p">(</span><span class="n">node_id</span><span class="p">))</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">md_store_path</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="n">node_id</span><span class="p">),</span> <span class="s1">&#39;/&#39;</span><span class="p">])</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">md_store_path</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_batch</span><span class="p">(</span><span class="n">node_id</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;/&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">+</span> <span class="s2">&quot;/log/log.txt&quot;</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_placeholders"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_placeholders">[docs]</a>    <span class="k">def</span> <span class="nf">add_placeholders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds placeholders to self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># shape = (batch size, max length of sentence in batch)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_ids</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;word_ids&quot;</span><span class="p">)</span>
+        <span class="c1"># shape = (batch size)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence_lengths</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sequence_lengths&quot;</span><span class="p">)</span>
+        <span class="c1"># shape = (batch size, max length of sentence, max length of word)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_ids</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;char_ids&quot;</span><span class="p">)</span>
+        <span class="c1"># shape = (batch_size, max_length of sentence)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_lengths</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;word_lengths&quot;</span><span class="p">)</span>
+        <span class="c1"># shape = (batch size, max length of sentence in batch)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+        <span class="c1"># hyper parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dropout&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;lr&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.get_feed_dict"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.get_feed_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_feed_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given some data, pad it and build a feed dictionary</span>
+<span class="sd">        Args:</span>
+<span class="sd">            words: list of sentences. A sentence is a list of ids of a list of words.</span>
+<span class="sd">                A word is a list of ids</span>
+<span class="sd">            labels: list of ids</span>
+<span class="sd">            lr: (float) learning rate</span>
+<span class="sd">            dropout: (float) keep prob</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict {placeholder: value}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># perform padding of the given data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chars</span><span class="p">:</span>
+            <span class="n">char_ids</span><span class="p">,</span> <span class="n">word_ids</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">words</span><span class="p">)</span>
+            <span class="n">word_ids</span><span class="p">,</span> <span class="n">sequence_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">(</span><span class="n">word_ids</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">char_ids</span><span class="p">,</span> <span class="n">word_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">(</span><span class="n">char_ids</span><span class="p">,</span> <span class="n">pad_tok</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nlevels</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">word_ids</span><span class="p">,</span> <span class="n">sequence_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># build feed dictionary</span>
+        <span class="n">feed</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">word_ids</span><span class="p">:</span> <span class="n">word_ids</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence_lengths</span><span class="p">:</span> <span class="n">sequence_lengths</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chars</span><span class="p">:</span>
+            <span class="n">feed</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">char_ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">char_ids</span>
+            <span class="n">feed</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">word_lengths</span><span class="p">]</span> <span class="o">=</span> <span class="n">word_lengths</span>
+
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">labels</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">feed</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
+
+        <span class="k">if</span> <span class="n">lr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">feed</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">]</span> <span class="o">=</span> <span class="n">lr</span>
+
+        <span class="k">if</span> <span class="n">dropout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">feed</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">]</span> <span class="o">=</span> <span class="n">dropout</span>
+
+        <span class="k">return</span> <span class="n">feed</span><span class="p">,</span> <span class="n">sequence_lengths</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_word_embeddings_op"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_word_embeddings_op">[docs]</a>    <span class="k">def</span> <span class="nf">add_word_embeddings_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds word embeddings to self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s2">&quot;words&quot;</span><span class="p">):</span>
+            <span class="n">_word_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;_word_embeddings&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                                <span class="n">trainable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_embeddings</span><span class="p">)</span>
+            <span class="n">word_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="n">_word_embeddings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">word_ids</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;word_embeddings&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s2">&quot;chars&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chars</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                    <span class="n">_char_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;_char_embeddings&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                                                   <span class="n">trainable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_embeddings</span><span class="p">)</span>
+                    <span class="n">char_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="n">_char_embeddings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_ids</span><span class="p">,</span>
+                                                             <span class="n">name</span><span class="o">=</span><span class="s2">&quot;char_embeddings&quot;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="c1"># get embeddings matrix</span>
+                    <span class="n">_char_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;_char_embeddings&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nchars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_char</span><span class="p">])</span>
+                    <span class="n">char_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="n">_char_embeddings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_ids</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;char_embeddings&quot;</span><span class="p">)</span>
+                <span class="c1"># put the time dimension on axis=1</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">char_embeddings</span><span class="p">)</span>
+                <span class="n">char_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">char_embeddings</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_char</span><span class="p">])</span>
+                <span class="n">word_lengths</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_lengths</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="c1"># bi lstm on chars</span>
+                <span class="n">lstm_frod_cell</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">LSTMCell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_hidden_size</span><span class="p">,</span>
+                                                    <span class="n">state_is_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">lstm_back_cell</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">LSTMCell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_hidden_size</span><span class="p">,</span>
+                                                    <span class="n">state_is_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">_</span><span class="p">,</span> <span class="p">((</span><span class="n">_</span><span class="p">,</span> <span class="n">output_fw</span><span class="p">),</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">output_bw</span><span class="p">))</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">bidirectional_dynamic_rnn</span><span class="p">(</span><span class="n">lstm_frod_cell</span><span class="p">,</span>
+                                                                                      <span class="n">lstm_back_cell</span><span class="p">,</span>
+                                                                                      <span class="n">char_embeddings</span><span class="p">,</span>
+                                                                                      <span class="n">sequence_length</span><span class="o">=</span><span class="n">word_lengths</span><span class="p">,</span>
+                                                                                      <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">output_fw</span><span class="p">,</span> <span class="n">output_bw</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># shape = (batch size, max sentence length, char hidden size)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">char_hidden_size</span><span class="p">])</span>
+
+                <span class="n">word_embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">word_embeddings</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_embeddings</span> <span class="o">=</span>  <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">word_embeddings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_logits_op"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_logits_op">[docs]</a>    <span class="k">def</span> <span class="nf">add_logits_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds logits to self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s2">&quot;bi-lstm&quot;</span><span class="p">):</span>
+            <span class="n">lstm_fwrd_cell</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">LSTMCell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+            <span class="n">lstm_back_cell</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">LSTMCell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">output_fw</span><span class="p">,</span> <span class="n">output_bw</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">bidirectional_dynamic_rnn</span><span class="p">(</span><span class="n">lstm_fwrd_cell</span><span class="p">,</span>
+                                                                        <span class="n">lstm_back_cell</span><span class="p">,</span>
+                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">word_embeddings</span><span class="p">,</span>
+                                                                        <span class="n">sequence_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_lengths</span><span class="p">,</span>
+                                                                        <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">output_fw</span><span class="p">,</span> <span class="n">output_bw</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s2">&quot;proj&quot;</span><span class="p">):</span>
+            <span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ntags</span><span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+            <span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ntags</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros_initializer</span><span class="p">())</span>
+
+            <span class="n">ntime_steps</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">output</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">])</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ntime_steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ntags</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_pred_op"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_pred_op">[docs]</a>    <span class="k">def</span> <span class="nf">add_pred_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds labels_pred to self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">crf</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">labels_pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_loss_op"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_loss_op">[docs]</a>    <span class="k">def</span> <span class="nf">add_loss_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds loss to self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">crf</span><span class="p">:</span>
+            <span class="n">log_likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_params</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">crf</span><span class="o">.</span><span class="n">crf_log_likelihood</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence_lengths</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="o">-</span><span class="n">log_likelihood</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">losses</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sparse_softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">logits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sequence_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence_lengths</span><span class="p">)</span>
+            <span class="n">losses</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">boolean_mask</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+
+        <span class="c1"># for tensorboard</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_train_op"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_train_op">[docs]</a>    <span class="k">def</span> <span class="nf">add_train_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add train_op to self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s2">&quot;train_step&quot;</span><span class="p">):</span>
+            <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_init_op"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_init_op">[docs]</a>    <span class="k">def</span> <span class="nf">add_init_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">all_variables</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.add_summary"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_summary">[docs]</a>    <span class="k">def</span> <span class="nf">add_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sess</span><span class="p">):</span>
+        <span class="c1"># tensorboard stuff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merged</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">merge_all</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_writer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">FileWriter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="n">sess</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.build_graph"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.build_graph">[docs]</a>    <span class="k">def</span> <span class="nf">build_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_placeholders</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_word_embeddings_op</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_logits_op</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_pred_op</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_loss_op</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_train_op</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_init_op</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.predict_batch"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.predict_batch">[docs]</a>    <span class="k">def</span> <span class="nf">predict_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">words</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sess: a tensorflow session</span>
+<span class="sd">            words: list of sentences</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            labels_pred: list of labels for each sentence</span>
+<span class="sd">            sequence_length</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fd</span><span class="p">,</span> <span class="n">sequence_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_feed_dict</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">crf</span><span class="p">:</span>
+            <span class="n">viterbi_sequences</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">logits</span><span class="p">,</span> <span class="n">transition_params</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_params</span><span class="p">],</span>
+                                                 <span class="n">feed_dict</span><span class="o">=</span><span class="n">fd</span><span class="p">)</span>
+            <span class="c1"># iterate over the sentences</span>
+            <span class="k">for</span> <span class="n">logit</span><span class="p">,</span> <span class="n">sequence_length</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">sequence_lengths</span><span class="p">):</span>
+                <span class="c1"># keep only the valid time steps</span>
+                <span class="n">logit</span> <span class="o">=</span> <span class="n">logit</span><span class="p">[:</span><span class="n">sequence_length</span><span class="p">]</span>
+                <span class="n">viterbi_sequence</span><span class="p">,</span> <span class="n">viterbi_score</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">crf</span><span class="o">.</span><span class="n">viterbi_decode</span><span class="p">(</span>
+                    <span class="n">logit</span><span class="p">,</span> <span class="n">transition_params</span><span class="p">)</span>
+                <span class="n">viterbi_sequences</span> <span class="o">+=</span> <span class="p">[</span><span class="n">viterbi_sequence</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">viterbi_sequences</span><span class="p">,</span> <span class="n">sequence_lengths</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">labels_pred</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels_pred</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">fd</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">labels_pred</span><span class="p">,</span> <span class="n">sequence_lengths</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.run_epoch"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">run_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs one complete pass over the train set and evaluate on dev</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sess: tensorflow session</span>
+<span class="sd">            train: dataset that yields tuple of sentences, tags</span>
+<span class="sd">            dev: dataset</span>
+<span class="sd">            tags: {tag: index} dictionary</span>
+<span class="sd">            epoch: (int) number of the epoch</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">nbatches</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minibatches</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)):</span>
+                <span class="n">fd</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_feed_dict</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_lr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_dropout</span><span class="p">)</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">fd</span><span class="p">)</span>
+
+                <span class="c1"># tensorboard</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">file_writer</span><span class="o">.</span><span class="n">add_summary</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">epoch</span> <span class="o">*</span> <span class="n">nbatches</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+
+            <span class="n">acc</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_evaluate</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;- dev acc </span><span class="si">{:04.2f}</span><span class="s2"> - f1 </span><span class="si">{:04.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">acc</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">f1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">acc</span><span class="p">,</span> <span class="n">f1</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Exception on run_epoch </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.run_evaluate"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run_evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">run_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates performance on test set</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sess: tensorflow session</span>
+<span class="sd">            test: dataset that yields tuple of sentences, tags</span>
+<span class="sd">            tags: {tag: index} dictionary</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            accuracy</span>
+<span class="sd">            f1 score</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">accs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">correct_preds</span><span class="p">,</span> <span class="n">total_correct</span><span class="p">,</span> <span class="n">total_preds</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">words</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">minibatches</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">):</span>
+                <span class="n">labels_pred</span><span class="p">,</span> <span class="n">sequence_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_batch</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">lab</span><span class="p">,</span> <span class="n">lab_pred</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">labels_pred</span><span class="p">,</span> <span class="n">sequence_lengths</span><span class="p">):</span>
+                    <span class="n">lab</span> <span class="o">=</span> <span class="n">lab</span><span class="p">[:</span><span class="n">length</span><span class="p">]</span>
+                    <span class="n">lab_pred</span> <span class="o">=</span> <span class="n">lab_pred</span><span class="p">[:</span><span class="n">length</span><span class="p">]</span>
+                    <span class="n">accs</span> <span class="o">+=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">lab_pred</span><span class="p">))</span>
+
+                    <span class="n">lab_chunks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_chunks</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">tags</span><span class="p">))</span>
+                    <span class="n">lab_pred_chunks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_chunks</span><span class="p">(</span><span class="n">lab_pred</span><span class="p">,</span> <span class="n">tags</span><span class="p">))</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_chunks</span><span class="p">(</span><span class="n">lab_pred</span><span class="p">,</span> <span class="n">tags</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span>
+                            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_chunks</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">tags</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">:</span>
+                            <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">pred</span> <span class="ow">in</span> <span class="nb">zip</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_chunks</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">tags</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chunks</span><span class="p">(</span><span class="n">lab_pred</span><span class="p">,</span> <span class="n">tags</span><span class="p">))</span> <span class="p">:</span>
+                                <span class="n">result</span><span class="o">.</span><span class="n">set_result_info</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">correct_preds</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lab_chunks</span> <span class="o">&amp;</span> <span class="n">lab_pred_chunks</span><span class="p">)</span>
+                    <span class="n">total_preds</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lab_pred_chunks</span><span class="p">)</span>
+                    <span class="n">total_correct</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lab_chunks</span><span class="p">)</span>
+
+            <span class="n">p</span> <span class="o">=</span> <span class="n">correct_preds</span> <span class="o">/</span> <span class="n">total_preds</span> <span class="k">if</span> <span class="n">correct_preds</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">correct_preds</span> <span class="o">/</span> <span class="n">total_correct</span> <span class="k">if</span> <span class="n">correct_preds</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="k">if</span> <span class="n">correct_preds</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">acc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">accs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">acc</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">result</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.train"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">sess</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs training with early stopping and lr exponential decay</span>
+<span class="sd">        Args:</span>
+<span class="sd">            train: dataset that yields tuple of sentences, tags</span>
+<span class="sd">            dev: dataset</span>
+<span class="sd">            tags: {tag: index} dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">best_score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+
+        <span class="c1"># for early stopping</span>
+        <span class="n">nepoch_no_imprv</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">)</span>
+
+        <span class="c1"># restore model</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_batch_exist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)):</span>
+            <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)</span>
+
+        <span class="c1"># tensorboard</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_summary</span><span class="p">(</span><span class="n">sess</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nepochs</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">{:}</span><span class="s2"> out of </span><span class="si">{:}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nepochs</span><span class="p">))</span>
+
+            <span class="n">acc</span><span class="p">,</span> <span class="n">f1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_epoch</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+
+            <span class="c1"># decay learning rate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_lr</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_decay</span>
+
+            <span class="c1"># early stopping and saving best parameters</span>
+            <span class="k">if</span> <span class="n">f1</span> <span class="o">&gt;=</span> <span class="n">best_score</span><span class="p">:</span>
+                <span class="n">nepoch_no_imprv</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">best_score</span> <span class="o">=</span> <span class="n">f1</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;- new best score!&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nepoch_no_imprv</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">nepoch_no_imprv</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nepoch_no_imprv</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;- early stopping </span><span class="si">{}</span><span class="s2"> epochs without improvement&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">nepoch_no_imprv</span><span class="p">))</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">best_score</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.eval"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stand</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        eval process check if model works well (accuracy with cross table)</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :param result:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node_name</span><span class="p">()</span>
+            <span class="n">lables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_tags</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_result_data_format</span><span class="p">({</span><span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="n">lables</span><span class="p">})</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_nn_batch_ver_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="n">node_id</span><span class="p">))</span>
+
+            <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+                <span class="c1"># load trained model</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_batch_exist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;bilstm crf error : no pretrained model exist&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">has_next</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">set_result_info</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;no test data exists&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">result</span>
+
+                <span class="k">while</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">has_next</span><span class="p">()):</span>
+                    <span class="n">test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CoNLLDataset</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get_file_name</span><span class="p">(),</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">processing_tag</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span>
+                    <span class="n">acc</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_evaluate</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_tags</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;- test acc </span><span class="si">{:04.2f}</span><span class="s2"> - f1 </span><span class="si">{:04.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">acc</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">f1</span><span class="p">))</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;error on eval wcnn : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNodeBiLstmCrf.predict"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">parm</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;input_data&quot;</span><span class="p">:</span> <span class="p">{}}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        predict logic for ner</span>
+<span class="sd">        tockenize input text and find matching tags for each value</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :param parm:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># get unique key</span>
+            <span class="n">unique_key</span> <span class="o">=</span> <span class="s1">&#39;__&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">node_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="n">node_id</span><span class="p">)])</span>
+
+            <span class="c1">## create tensorflow graph</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)):</span>
+                <span class="bp">self</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+                <span class="n">graph</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># set init params</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">idx_to_tag</span> <span class="o">=</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="n">tag</span> <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_tags</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">build_graph</span><span class="p">()</span>
+                <span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">graph</span><span class="p">)</span>
+                <span class="c1"># load trained model</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_batch_exist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">)</span>
+                    <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">set_dict</span><span class="p">(</span><span class="n">unique_key</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                    <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">set_graph</span><span class="p">(</span><span class="n">unique_key</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+                    <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">set_sess</span><span class="p">(</span><span class="n">unique_key</span><span class="p">,</span> <span class="n">sess</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;bilstm crf error : no pretrained model exist&quot;</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">sess</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+
+            <span class="n">input_arr</span> <span class="o">=</span> <span class="n">parm</span><span class="p">[</span><span class="s2">&quot;input_data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">words</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">input_arr</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
+                <span class="n">words</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">words</span><span class="p">)</span>
+            <span class="n">pred_ids</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_batch</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="p">[</span><span class="n">words</span><span class="p">])</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">idx</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_to_tag</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">pred_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+
+            <span class="k">return</span> <span class="n">preds</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

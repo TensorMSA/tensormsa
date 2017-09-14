@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>common.utils package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="common-utils-package">
+<h1>common.utils package<a class="headerlink" href="#common-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-common.utils.common_util">
+<span id="common-utils-common-util-module"></span><h2>common.utils.common_util module<a class="headerlink" href="#module-common.utils.common_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="common.utils.common_util.copy_all">
+<code class="descclassname">common.utils.common_util.</code><code class="descname">copy_all</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/common_util.html#copy_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.common_util.copy_all" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>디렉토리 안에 파일을 전부 복사 하는 유틸</dt>
+<dd>The util that anything(file, directories...) in directory to destination dirctory</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>src : source directory</li>
+<li>dst: distination directory</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+<p>Raises:</p>
+<dl class="docutils">
+<dt>Example</dt>
+<dd>src = /hoya_model_root/nn00001/1/netconf_node/nn00001_1_19
+dst =/hoya_model_root/nn00001/1/netconf_node/nn00001_1_20</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.common_util.get_combine_label_list">
+<code class="descclassname">common.utils.common_util.</code><code class="descname">get_combine_label_list</code><span class="sig-paren">(</span><em>origin_list</em>, <em>compare_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/common_util.html#get_combine_label_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.common_util.get_combine_label_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>리스트 두개를 비교하여 차이나는 값만 마지막에 순서대로 넣는 함수</dt>
+<dd>The function that compare two list and insert distingush values</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>origin_list : A original list</li>
+<li>compare_list: An compare lists</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>list
+두 리스트를 비교하여 구별된 값을 새 원래 리스트에 추가하여 반환</dd>
+</dl>
+<p>Raises:
+Example</p>
+<blockquote>
+<div>origin_list = [&#8216;A&#8217;,&#8217;B&#8217;,&#8217;C&#8217;,&#8217;D&#8217;]
+compare_list = [&#8216;50&gt;=&#8217;, &#8216;50=&#8217;,&#8217;C&#8217;,&#8217;D&#8217;,&#8217;E&#8217;]
+result =&gt; [&#8216;A&#8217;, &#8216;B&#8217;, &#8216;C&#8217;, &#8216;D&#8217;, &#8216;50=&#8217;, &#8216;50&gt;=&#8217;, &#8216;E&#8217;]</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.common_util.isnan">
+<code class="descclassname">common.utils.common_util.</code><code class="descname">isnan</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/common_util.html#isnan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.common_util.isnan" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Pandas에서 Nan 검사하는 유틸</dt>
+<dd>The function is Nan Check in pandas</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>value : anything</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>True / False</dd>
+</dl>
+<p>Raises:</p>
+<dl class="docutils">
+<dt>Example</dt>
+<dd>isnan(&#8216;hello&#8217;) == False
+isnan(&#8216;NaN&#8217;) == True
+isnan(100) == False
+isnan(float(&#8216;nan&#8217;)) = True</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.common_util.log_savefile">
+<code class="descclassname">common.utils.common_util.</code><code class="descname">log_savefile</code><span class="sig-paren">(</span><em>printStr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/common_util.html#log_savefile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.common_util.log_savefile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="common.utils.common_util.make_and_exist_directory">
+<code class="descclassname">common.utils.common_util.</code><code class="descname">make_and_exist_directory</code><span class="sig-paren">(</span><em>directory</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/common_util.html#make_and_exist_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.common_util.make_and_exist_directory" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>디렉토리 만들기(없으면 만들고 있으면 현재 디렉토리 값 반환)</dt>
+<dd>Make Directory and Exist Directory</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>directory : directory path</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>directory path</dd>
+</dl>
+<p>Raises:</p>
+<p>Example</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.common_util.println">
+<code class="descclassname">common.utils.common_util.</code><code class="descname">println</code><span class="sig-paren">(</span><em>printStr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/common_util.html#println"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.common_util.println" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-common.utils.db_util">
+<span id="common-utils-db-util-module"></span><h2>common.utils.db_util module<a class="headerlink" href="#module-common.utils.db_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="common.utils.db_util.dictfetchall">
+<code class="descclassname">common.utils.db_util.</code><code class="descname">dictfetchall</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/db_util.html#dictfetchall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.db_util.dictfetchall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all rows from a cursor as a dict</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-common.utils.file_upload_util">
+<span id="common-utils-file-upload-util-module"></span><h2>common.utils.file_upload_util module<a class="headerlink" href="#module-common.utils.file_upload_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="common.utils.file_upload_util.hdf_create">
+<code class="descclassname">common.utils.file_upload_util.</code><code class="descname">hdf_create</code><span class="sig-paren">(</span><em>self</em>, <em>output_path</em>, <em>filecnt</em>, <em>channel</em>, <em>image_arr</em>, <em>shape_arr</em>, <em>lable_arr</em>, <em>name_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/file_upload_util.html#hdf_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.file_upload_util.hdf_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="common.utils.file_upload_util.save_upload_file">
+<code class="descclassname">common.utils.file_upload_util.</code><code class="descname">save_upload_file</code><span class="sig-paren">(</span><em>request</em>, <em>nnid</em>, <em>ver</em>, <em>dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/file_upload_util.html#save_upload_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.file_upload_util.save_upload_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>save files upload via http
+:param request:
+:param nnid:
+:param ver:
+:param dir:
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-common.utils.onehot_encoder">
+<span id="common-utils-onehot-encoder-module"></span><h2>common.utils.onehot_encoder module<a class="headerlink" href="#module-common.utils.onehot_encoder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="common.utils.onehot_encoder.OneHotEncoder">
+<em class="property">class </em><code class="descclassname">common.utils.onehot_encoder.</code><code class="descname">OneHotEncoder</code><span class="sig-paren">(</span><em>bucket_size</em>, <em>data_type=&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>OneHot Encoder for batch train</p>
+<dl class="method">
+<dt id="common.utils.onehot_encoder.OneHotEncoder.dics">
+<code class="descname">dics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder.dics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder.dics" title="Permalink to this definition">¶</a></dt>
+<dd><p>get dictionary list
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="common.utils.onehot_encoder.OneHotEncoder.get_idx">
+<code class="descname">get_idx</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder.get_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder.get_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>set item on bucket
+:param item:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="common.utils.onehot_encoder.OneHotEncoder.get_vector">
+<code class="descname">get_vector</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder.get_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder.get_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>get vector matrix of item
+:param item:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="common.utils.onehot_encoder.OneHotEncoder.get_vocab">
+<code class="descname">get_vocab</code><span class="sig-paren">(</span><em>vector</em>, <em>prob_idx=0</em>, <em>min_prob=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder.get_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder.get_vocab" title="Permalink to this definition">¶</a></dt>
+<dd><p>get posb max item
+:param item: posb vector
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="common.utils.onehot_encoder.OneHotEncoder.off_edit_mode">
+<code class="descname">off_edit_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder.off_edit_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder.off_edit_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>off add dict mode
+:param dict_list:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="common.utils.onehot_encoder.OneHotEncoder.on_edit_mode">
+<code class="descname">on_edit_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder.on_edit_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder.on_edit_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>on add dict mode
+:param dict_list:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="common.utils.onehot_encoder.OneHotEncoder.restore">
+<code class="descname">restore</code><span class="sig-paren">(</span><em>dict_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/onehot_encoder.html#OneHotEncoder.restore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.onehot_encoder.OneHotEncoder.restore" title="Permalink to this definition">¶</a></dt>
+<dd><p>load dict_list from
+:param dict_list:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-common.utils.path_util">
+<span id="common-utils-path-util-module"></span><h2>common.utils.path_util module<a class="headerlink" href="#module-common.utils.path_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="common.utils.path_util.del_filepaths">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">del_filepaths</code><span class="sig-paren">(</span><em>directory</em>, <em>file_type='*'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#del_filepaths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.del_filepaths" title="Permalink to this definition">¶</a></dt>
+<dd><p>utils return file paths under directory
+Modify filtering file type
+:param directory:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.path_util.get_filepaths">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">get_filepaths</code><span class="sig-paren">(</span><em>directory</em>, <em>file_type='*'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#get_filepaths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.get_filepaths" title="Permalink to this definition">¶</a></dt>
+<dd><p>utils return file paths under directory
+Modify filtering file type
+:param directory:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.path_util.get_model_path">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">get_model_path</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#get_model_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.get_model_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>get model save path
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.path_util.get_source_path">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">get_source_path</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#get_source_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.get_source_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>conbine parms and return source path (before data transformation)
+:param nn_id:
+:param wf_ver:
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.path_util.get_source_predict_path">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">get_source_predict_path</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em>, <em>predict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#get_source_predict_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.get_source_predict_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>conbine parms and return source predict path (before data transformation)
+:param nn_id:
+:param wf_ver:
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.utils.path_util.get_store_path">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">get_store_path</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#get_store_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.get_store_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="common.utils.path_util.get_yolo_path">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">get_yolo_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#get_yolo_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.get_yolo_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="common.utils.path_util.set_filepaths">
+<code class="descclassname">common.utils.path_util.</code><code class="descname">set_filepaths</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/utils/path_util.html#set_filepaths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.utils.path_util.set_filepaths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-common.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-common.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">common.utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-common.utils.common_util">common.utils.common_util module</a></li>
+<li><a class="reference internal" href="#module-common.utils.db_util">common.utils.db_util module</a></li>
+<li><a class="reference internal" href="#module-common.utils.file_upload_util">common.utils.file_upload_util module</a></li>
+<li><a class="reference internal" href="#module-common.utils.onehot_encoder">common.utils.onehot_encoder module</a></li>
+<li><a class="reference internal" href="#module-common.utils.path_util">common.utils.path_util module</a></li>
+<li><a class="reference internal" href="#module-common.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/common.utils.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/common.utils.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

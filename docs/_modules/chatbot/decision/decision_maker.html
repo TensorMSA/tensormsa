@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot.decision.decision_maker &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for chatbot.decision.decision_maker</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">chatbot.common.chat_share_data</span> <span class="k">import</span> <span class="n">ShareData</span>
+<span class="kn">from</span> <span class="nn">chatbot.story.story_board_manager</span> <span class="k">import</span> <span class="n">StoryBoardManager</span>
+<span class="kn">from</span> <span class="nn">chatbot.services.service_provider</span> <span class="k">import</span> <span class="n">ServiceProvider</span>
+<span class="kn">from</span> <span class="nn">chatbot.common.chat_story_conf_data</span> <span class="k">import</span> <span class="n">ChatStoryConfData</span>
+
+
+<div class="viewcode-block" id="DecisionMaker"><a class="viewcode-back" href="../../../chatbot.decision.html#chatbot.decision.decision_maker.DecisionMaker">[docs]</a><span class="k">class</span> <span class="nc">DecisionMaker</span><span class="p">(</span><span class="n">ShareData</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (1) check intend is clear , if not return intend select list</span>
+<span class="sd">    (2) check intend service type (story board, ontology and etc)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_conf</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_conf</span> <span class="o">=</span> <span class="n">dict_conf</span>
+
+<div class="viewcode-block" id="DecisionMaker.run"><a class="viewcode-back" href="../../../chatbot.decision.html#chatbot.decision.decision_maker.DecisionMaker.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">share_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param share_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_intent_id</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_intent_id</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">intent_conf</span> <span class="o">=</span> <span class="n">ChatStoryConfData</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_intent_id</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_essential_entity</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_story_slot_entity</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">share_data</span><span class="p">)):</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span><span class="p">(</span><span class="n">intent_conf</span><span class="o">.</span><span class="n">get_intent_story</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="s1">&#39;story_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;response&#39;</span><span class="p">):</span>
+                    <span class="n">response_story</span> <span class="o">=</span> <span class="n">intent_conf</span><span class="o">.</span><span class="n">get_story_response</span><span class="p">(</span><span class="n">intent_conf</span><span class="o">.</span><span class="n">get_intent_story</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;pk&#39;</span><span class="p">])</span>
+                    <span class="n">share_data</span> <span class="o">=</span> <span class="n">StoryBoardManager</span><span class="p">(</span><span class="n">response_story</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">share_data</span><span class="p">)</span>
+                <span class="k">elif</span><span class="p">(</span><span class="n">intent_conf</span><span class="o">.</span><span class="n">get_intent_story</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="s1">&#39;story_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;service&#39;</span><span class="p">):</span>
+                    <span class="n">service_story</span> <span class="o">=</span> <span class="n">intent_conf</span><span class="o">.</span><span class="n">get_story_service</span><span class="p">(</span><span class="n">intent_conf</span><span class="o">.</span><span class="n">get_intent_story</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;pk&#39;</span><span class="p">])</span>
+                    <span class="n">share_data</span> <span class="o">=</span> <span class="n">ServiceProvider</span><span class="p">(</span><span class="n">service_story</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">share_data</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">share_data</span><span class="o">.</span><span class="n">set_output_data</span><span class="p">(</span><span class="s2">&quot;무슨말인지 모르겠어요&quot;</span><span class="p">)</span>
+                    <span class="n">share_data</span><span class="o">.</span><span class="n">initialize_story</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1">#intent 3개 이상</span>
+                <span class="n">share_data</span><span class="o">.</span><span class="n">set_output_data</span><span class="p">(</span><span class="s2">&quot;무슨말인지 모르겠어요&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">share_data</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_check_essential_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_list</span><span class="p">,</span> <span class="n">share_data</span><span class="p">):</span>
+        <span class="n">check_value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_conf</span><span class="o">.</span><span class="n">get_entity_key</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_intent_id</span><span class="p">()[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">entity</span> <span class="ow">in</span> <span class="n">entity_list</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">share_data</span><span class="o">.</span><span class="n">set_output_data</span><span class="p">(</span><span class="n">entity</span> <span class="o">+</span> <span class="s2">&quot; 값을 입력해 주세요&quot;</span><span class="p">)</span>
+                <span class="n">check_value</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">check_value</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

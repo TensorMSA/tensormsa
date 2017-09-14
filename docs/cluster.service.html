@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.service package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cluster-service-package">
+<h1>cluster.service package<a class="headerlink" href="#cluster-service-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cluster.service.service_predict">
+<span id="cluster-service-service-predict-module"></span><h2>cluster.service.service_predict module<a class="headerlink" href="#module-cluster.service.service_predict" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict.PredictNet">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict.</code><code class="descname">PredictNet</code><a class="reference internal" href="_modules/cluster/service/service_predict.html#PredictNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict.PredictNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cluster.common.html#cluster.common.common_node.WorkFlowCommonNode" title="cluster.common.common_node.WorkFlowCommonNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.common_node.WorkFlowCommonNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict.PredictNet.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict.html#PredictNet.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict.PredictNet.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_anomaly">
+<span id="cluster-service-service-predict-anomaly-module"></span><h2>cluster.service.service_predict_anomaly module<a class="headerlink" href="#module-cluster.service.service_predict_anomaly" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_anomaly.PredictNetAnomaly">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_anomaly.</code><code class="descname">PredictNetAnomaly</code><a class="reference internal" href="_modules/cluster/service/service_predict_anomaly.html#PredictNetAnomaly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_anomaly.PredictNetAnomaly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_anomaly.PredictNetAnomaly.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_anomaly.html#PredictNetAnomaly.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_anomaly.PredictNetAnomaly.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_autoencoder">
+<span id="cluster-service-service-predict-autoencoder-module"></span><h2>cluster.service.service_predict_autoencoder module<a class="headerlink" href="#module-cluster.service.service_predict_autoencoder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_autoencoder.PredictNetAutoEncoder">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_autoencoder.</code><code class="descname">PredictNetAutoEncoder</code><a class="reference internal" href="_modules/cluster/service/service_predict_autoencoder.html#PredictNetAutoEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_autoencoder.PredictNetAutoEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_autoencoder.PredictNetAutoEncoder.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_autoencoder.html#PredictNetAutoEncoder.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_autoencoder.PredictNetAutoEncoder.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_bilstmcrf">
+<span id="cluster-service-service-predict-bilstmcrf-module"></span><h2>cluster.service.service_predict_bilstmcrf module<a class="headerlink" href="#module-cluster.service.service_predict_bilstmcrf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_bilstmcrf.PredictNetBiLstmCrf">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_bilstmcrf.</code><code class="descname">PredictNetBiLstmCrf</code><a class="reference internal" href="_modules/cluster/service/service_predict_bilstmcrf.html#PredictNetBiLstmCrf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_bilstmcrf.PredictNetBiLstmCrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_bilstmcrf.PredictNetBiLstmCrf.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_bilstmcrf.html#PredictNetBiLstmCrf.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_bilstmcrf.PredictNetBiLstmCrf.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_cnn">
+<span id="cluster-service-service-predict-cnn-module"></span><h2>cluster.service.service_predict_cnn module<a class="headerlink" href="#module-cluster.service.service_predict_cnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_cnn.PredictNetCnn">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_cnn.</code><code class="descname">PredictNetCnn</code><a class="reference internal" href="_modules/cluster/service/service_predict_cnn.html#PredictNetCnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_cnn.PredictNetCnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_cnn.PredictNetCnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>ver</em>, <em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_cnn.html#PredictNetCnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_cnn.PredictNetCnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_d2v">
+<span id="cluster-service-service-predict-d2v-module"></span><h2>cluster.service.service_predict_d2v module<a class="headerlink" href="#module-cluster.service.service_predict_d2v" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_d2v.PredictNetD2V">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_d2v.</code><code class="descname">PredictNetD2V</code><a class="reference internal" href="_modules/cluster/service/service_predict_d2v.html#PredictNetD2V"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_d2v.PredictNetD2V" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_d2v.PredictNetD2V.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_d2v.html#PredictNetD2V.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_d2v.PredictNetD2V.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_renet">
+<span id="cluster-service-service-predict-renet-module"></span><h2>cluster.service.service_predict_renet module<a class="headerlink" href="#module-cluster.service.service_predict_renet" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_renet.PredictNetRenet">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_renet.</code><code class="descname">PredictNetRenet</code><a class="reference internal" href="_modules/cluster/service/service_predict_renet.html#PredictNetRenet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_renet.PredictNetRenet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_renet.PredictNetRenet.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>ver</em>, <em>parm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_renet.html#PredictNetRenet.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_renet.PredictNetRenet.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_seq2seq">
+<span id="cluster-service-service-predict-seq2seq-module"></span><h2>cluster.service.service_predict_seq2seq module<a class="headerlink" href="#module-cluster.service.service_predict_seq2seq" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_seq2seq.PredictNetSeq2Seq">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_seq2seq.</code><code class="descname">PredictNetSeq2Seq</code><a class="reference internal" href="_modules/cluster/service/service_predict_seq2seq.html#PredictNetSeq2Seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_seq2seq.PredictNetSeq2Seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_seq2seq.PredictNetSeq2Seq.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_seq2seq.html#PredictNetSeq2Seq.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_seq2seq.PredictNetSeq2Seq.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_w2v">
+<span id="cluster-service-service-predict-w2v-module"></span><h2>cluster.service.service_predict_w2v module<a class="headerlink" href="#module-cluster.service.service_predict_w2v" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_w2v.PredictNetW2V">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_w2v.</code><code class="descname">PredictNetW2V</code><a class="reference internal" href="_modules/cluster/service/service_predict_w2v.html#PredictNetW2V"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_w2v.PredictNetW2V" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_w2v.PredictNetW2V.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_w2v.html#PredictNetW2V.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_w2v.PredictNetW2V.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_wcnn">
+<span id="cluster-service-service-predict-wcnn-module"></span><h2>cluster.service.service_predict_wcnn module<a class="headerlink" href="#module-cluster.service.service_predict_wcnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_wcnn.PredictNetWcnn">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_wcnn.</code><code class="descname">PredictNetWcnn</code><a class="reference internal" href="_modules/cluster/service/service_predict_wcnn.html#PredictNetWcnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_wcnn.PredictNetWcnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_wcnn.PredictNetWcnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_wcnn.html#PredictNetWcnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_wcnn.PredictNetWcnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_predict_wdnn">
+<span id="cluster-service-service-predict-wdnn-module"></span><h2>cluster.service.service_predict_wdnn module<a class="headerlink" href="#module-cluster.service.service_predict_wdnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_predict_wdnn.PredictNetWdnn">
+<em class="property">class </em><code class="descclassname">cluster.service.service_predict_wdnn.</code><code class="descname">PredictNetWdnn</code><a class="reference internal" href="_modules/cluster/service/service_predict_wdnn.html#PredictNetWdnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_wdnn.PredictNetWdnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.service.service_predict.PredictNet" title="cluster.service.service_predict.PredictNet"><code class="xref py py-class docutils literal"><span class="pre">cluster.service.service_predict.PredictNet</span></code></a></p>
+<dl class="method">
+<dt id="cluster.service.service_predict_wdnn.PredictNetWdnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>nn_id</em>, <em>ver</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_predict_wdnn.html#PredictNetWdnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_predict_wdnn.PredictNetWdnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run predict service
+1. get node id
+2. check json conf format
+3. run predict &amp; return
+:param parm:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_single_task">
+<span id="cluster-service-service-single-task-module"></span><h2>cluster.service.service_single_task module<a class="headerlink" href="#module-cluster.service.service_single_task" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_single_task.WorkFlowSingleTask">
+<em class="property">class </em><code class="descclassname">cluster.service.service_single_task.</code><code class="descname">WorkFlowSingleTask</code><a class="reference internal" href="_modules/cluster/service/service_single_task.html#WorkFlowSingleTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_single_task.WorkFlowSingleTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cluster.common.html#cluster.common.common_node.WorkFlowCommonNode" title="cluster.common.common_node.WorkFlowCommonNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.common_node.WorkFlowCommonNode</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service.service_train_task">
+<span id="cluster-service-service-train-task-module"></span><h2>cluster.service.service_train_task module<a class="headerlink" href="#module-cluster.service.service_train_task" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.service.service_train_task.WorkFlowTrainTask">
+<em class="property">class </em><code class="descclassname">cluster.service.service_train_task.</code><code class="descname">WorkFlowTrainTask</code><a class="reference internal" href="_modules/cluster/service/service_train_task.html#WorkFlowTrainTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_train_task.WorkFlowTrainTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cluster.common.html#cluster.common.common_node.WorkFlowCommonNode" title="cluster.common.common_node.WorkFlowCommonNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.common_node.WorkFlowCommonNode</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cluster.service.service_train_task.make_celery_dir_by_datetime">
+<code class="descclassname">cluster.service.service_train_task.</code><code class="descname">make_celery_dir_by_datetime</code><span class="sig-paren">(</span><em>home_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/service/service_train_task.html#make_celery_dir_by_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.service.service_train_task.make_celery_dir_by_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>현재시간을 사용하여 디렉토리 이름 반환</dt>
+<dd>Make Datetime directory by datetime functions</dd>
+<dt>Args:</dt>
+<dd>params:</dd>
+<dt>Returns:</dt>
+<dd>directory name using datetime</dd>
+</dl>
+<p>Raises:</p>
+<p>Example</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.service">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cluster.service" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cluster.service package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict">cluster.service.service_predict module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_anomaly">cluster.service.service_predict_anomaly module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_autoencoder">cluster.service.service_predict_autoencoder module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_bilstmcrf">cluster.service.service_predict_bilstmcrf module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_cnn">cluster.service.service_predict_cnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_d2v">cluster.service.service_predict_d2v module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_renet">cluster.service.service_predict_renet module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_seq2seq">cluster.service.service_predict_seq2seq module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_w2v">cluster.service.service_predict_w2v module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_wcnn">cluster.service.service_predict_wcnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_predict_wdnn">cluster.service.service_predict_wdnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_single_task">cluster.service.service_single_task module</a></li>
+<li><a class="reference internal" href="#module-cluster.service.service_train_task">cluster.service.service_train_task module</a></li>
+<li><a class="reference internal" href="#module-cluster.service">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cluster.service.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cluster.service.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.services.service_manager &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for master.services.service_manager</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="ServiceManager"><a class="viewcode-back" href="../../../master.services.html#master.services.service_manager.ServiceManager">[docs]</a><span></span><span class="k">class</span> <span class="nc">ServiceManager</span><span class="p">()</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    1. definition</span>
+
+<span class="sd">    2. table</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ServiceManager.get_view_obj"><a class="viewcode-back" href="../../../master.services.html#master.services.service_manager.ServiceManager.get_view_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_view_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get view data for net config</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ServiceManager.set_view_obj"><a class="viewcode-back" href="../../../master.services.html#master.services.service_manager.ServiceManager.set_view_obj">[docs]</a>    <span class="k">def</span> <span class="nf">set_view_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set net config data edited on view</span>
+<span class="sd">        :param obj:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ServiceManager.get_batchver_list"><a class="viewcode-back" href="../../../master.services.html#master.services.service_manager.ServiceManager.get_batchver_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_batchver_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return list of batch version list</span>
+<span class="sd">        :param nn_id:</span>
+<span class="sd">        :param nn_ver:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ServiceManager.delete_batchver_info"><a class="viewcode-back" href="../../../master.services.html#master.services.service_manager.ServiceManager.delete_batchver_info">[docs]</a>    <span class="k">def</span> <span class="nf">delete_batchver_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_ver</span><span class="p">,</span> <span class="n">batch_ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param nn_id:</span>
+<span class="sd">        :param nn_ver:</span>
+<span class="sd">        :param batch_ver:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ServiceManager.set_active_batchver"><a class="viewcode-back" href="../../../master.services.html#master.services.service_manager.ServiceManager.set_active_batchver">[docs]</a>    <span class="k">def</span> <span class="nf">set_active_batchver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_ver</span><span class="p">,</span> <span class="n">batch_ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param nn_id:</span>
+<span class="sd">        :param nn_ver:</span>
+<span class="sd">        :param batch_ver:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

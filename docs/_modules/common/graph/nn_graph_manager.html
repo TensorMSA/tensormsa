@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>common.graph.nn_graph_manager &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for common.graph.nn_graph_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<div class="viewcode-block" id="NeuralNetModel"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel">[docs]</a><span class="k">class</span> <span class="nc">NeuralNetModel</span> <span class="p">:</span>
+    <span class="n">variable</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">sess</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">tf</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">init</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">saver</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="NeuralNetModel.check_duplicate"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.check_duplicate">[docs]</a>    <span class="k">def</span> <span class="nf">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check duplicate nn_id for none necessary memory use</span>
+<span class="sd">        :param key: insert key</span>
+<span class="sd">        :param data: inert data </span>
+<span class="sd">        :param target: target variable to update</span>
+<span class="sd">        :param extra: if there is extra action to do</span>
+<span class="sd">        :return boolean : always return True  </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">dicts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span><span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+            <span class="k">for</span> <span class="nb">dict</span> <span class="ow">in</span> <span class="n">dicts</span> <span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">dict</span> <span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">extra</span> <span class="o">==</span> <span class="s1">&#39;sess&#39;</span><span class="p">)</span> <span class="p">:</span>
+                        <span class="n">target</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="k">del</span> <span class="n">target</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">finally</span> <span class="p">:</span>
+            <span class="n">target</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="NeuralNetModel.set_variable"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.set_variable">[docs]</a>    <span class="k">def</span> <span class="nf">set_variable</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetModel.set_dict"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.set_dict">[docs]</a>    <span class="k">def</span> <span class="nf">set_dict</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetModel.set_graph"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.set_graph">[docs]</a>    <span class="k">def</span> <span class="nf">set_graph</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetModel.set_sess"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.set_sess">[docs]</a>    <span class="k">def</span> <span class="nf">set_sess</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">sess</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="s1">&#39;sess&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetModel.set_tf"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.set_tf">[docs]</a>    <span class="k">def</span> <span class="nf">set_tf</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetModel.set_init"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.set_init">[docs]</a>    <span class="k">def</span> <span class="nf">set_init</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">init</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetModel.set_saver"><a class="viewcode-back" href="../../../common.graph.html#common.graph.nn_graph_manager.NeuralNetModel.set_saver">[docs]</a>    <span class="k">def</span> <span class="nf">set_saver</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">check_duplicate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">saver</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot.serializers &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for chatbot.serializers</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="k">import</span> <span class="n">serializers</span>
+<span class="kn">from</span> <span class="nn">chatbot</span> <span class="k">import</span> <span class="n">models</span>
+
+
+<div class="viewcode-block" id="CB_DEF_LIST_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_DEF_LIST_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_DEF_LIST_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_DEF_LIST_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_DEF_LIST_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_DEF_LIST_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_DEF_LIST_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cb_id&#39;</span><span class="p">,</span> <span class="s1">&#39;chat_cate&#39;</span><span class="p">,</span> <span class="s1">&#39;chat_sub_cate&#39;</span><span class="p">,</span> <span class="s1">&#39;cb_title&#39;</span><span class="p">,</span> <span class="s1">&#39;cb_desc&#39;</span><span class="p">,</span> <span class="s1">&#39;creation_date&#39;</span><span class="p">,</span><span class="s1">&#39;last_update_date&#39;</span><span class="p">,</span> <span class="s1">&#39;created_by&#39;</span><span class="p">,</span> <span class="s1">&#39;last_updated_by&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CB_INTENT_LIST_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_INTENT_LIST_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_INTENT_LIST_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_INTENT_LIST_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_INTENT_LIST_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_INTENT_LIST_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_INTENT_LIST_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cb_id&#39;</span><span class="p">,</span> <span class="s1">&#39;intent_id&#39;</span><span class="p">,</span> <span class="s1">&#39;intent_type&#39;</span><span class="p">,</span> <span class="s1">&#39;rule_value&#39;</span><span class="p">,</span> <span class="s1">&#39;intent_desc&#39;</span><span class="p">,</span> <span class="s1">&#39;nn_type&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CB_STORYBOARD_LIST_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_STORYBOARD_LIST_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_STORYBOARD_LIST_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_STORYBOARD_LIST_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_STORYBOARD_LIST_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;intent_id&#39;</span><span class="p">,</span> <span class="s1">&#39;story_id&#39;</span><span class="p">,</span> <span class="s1">&#39;story_desc&#39;</span><span class="p">,</span> <span class="s1">&#39;story_type&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CB_RESPONSE_LIST_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_RESPONSE_LIST_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_RESPONSE_LIST_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_RESPONSE_LIST_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_RESPONSE_LIST_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;story_id&#39;</span><span class="p">,</span> <span class="s1">&#39;response_type&#39;</span><span class="p">,</span> <span class="s1">&#39;output_entity&#39;</span><span class="p">,</span> <span class="s1">&#39;output_data&#39;</span><span class="p">,</span> <span class="s1">&#39;nn_id&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CB_SERVICE_LIST_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_SERVICE_LIST_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_SERVICE_LIST_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_SERVICE_LIST_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_SERVICE_LIST_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;story_id&#39;</span><span class="p">,</span> <span class="s1">&#39;service_name&#39;</span><span class="p">,</span> <span class="s1">&#39;service_type&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CB_ENTITY_LIST_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_ENTITY_LIST_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_STORYBOARD_LIST_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_ENTITY_LIST_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_ENTITY_LIST_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cb_id&#39;</span><span class="p">,</span> <span class="s1">&#39;intent_id&#39;</span><span class="p">,</span> <span class="s1">&#39;entity_type&#39;</span><span class="p">,</span> <span class="s1">&#39;entity_list&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CB_TAGGING_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_TAGGING_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_TAGGING_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_TAGGING_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_TAGGING_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_TAGGING_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_TAGGING_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cb_id&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_type&#39;</span><span class="p">,</span> <span class="s1">&#39;proper_noun&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CB_MODEL_LIST_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_MODEL_LIST_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_MODEL_LIST_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_MODEL_LIST_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_MODEL_LIST_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_MODEL_LIST_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_MODEL_LIST_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cb_id&#39;</span><span class="p">,</span> <span class="s1">&#39;nn_id&#39;</span><span class="p">,</span> <span class="s1">&#39;nn_purpose&#39;</span><span class="p">,</span><span class="s1">&#39;nn_type&#39;</span><span class="p">,</span><span class="s1">&#39;nn_label_data&#39;</span><span class="p">,</span><span class="s1">&#39;nn_desc&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="CB_ENTITY_RELATION_INFO_Serializer"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer">[docs]</a><span class="k">class</span> <span class="nc">CB_ENTITY_RELATION_INFO_Serializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table : CB_ENTITY_RELATION_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CB_ENTITY_RELATION_INFO_Serializer.Meta"><a class="viewcode-back" href="../../chatbot.html#chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CB_ENTITY_RELATION_INFO</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cb_id&#39;</span><span class="p">,</span> <span class="s1">&#39;entity_id&#39;</span><span class="p">,</span> <span class="s1">&#39;entity_uuid&#39;</span><span class="p">,</span> <span class="s1">&#39;entity_desc&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

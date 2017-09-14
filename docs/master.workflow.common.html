@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.workflow.common package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="master-workflow-common-package">
+<h1>master.workflow.common package<a class="headerlink" href="#master-workflow-common-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-master.workflow.common.workflow_common">
+<span id="master-workflow-common-workflow-common-module"></span><h2>master.workflow.common.workflow_common module<a class="headerlink" href="#module-master.workflow.common.workflow_common" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.common.workflow_common.WorkFlowCommon">
+<em class="property">class </em><code class="descclassname">master.workflow.common.workflow_common.</code><code class="descname">WorkFlowCommon</code><a class="reference internal" href="_modules/master/workflow/common/workflow_common.html#WorkFlowCommon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_common.WorkFlowCommon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>parent class for all workflow classes</p>
+<dl class="method">
+<dt id="master.workflow.common.workflow_common.WorkFlowCommon.get_state_id">
+<code class="descname">get_state_id</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_common.html#WorkFlowCommon.get_state_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_common.WorkFlowCommon.get_state_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_common.WorkFlowCommon.get_view_obj">
+<code class="descname">get_view_obj</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_common.html#WorkFlowCommon.get_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_common.WorkFlowCommon.get_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get view data for net config
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_common.WorkFlowCommon.restriction_check">
+<code class="descname">restriction_check</code><span class="sig-paren">(</span><em>node_id</em>, <em>json_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_common.html#WorkFlowCommon.restriction_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_common.WorkFlowCommon.restriction_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>restirct user to modify cirical values may can occur problems on flow
+:param json_data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_common.WorkFlowCommon.set_view_obj">
+<code class="descname">set_view_obj</code><span class="sig-paren">(</span><em>node_id</em>, <em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_common.html#WorkFlowCommon.set_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_common.WorkFlowCommon.set_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set net config data edited on view
+:param obj:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_common.WorkFlowCommon.update_view_obj">
+<code class="descname">update_view_obj</code><span class="sig-paren">(</span><em>node_id</em>, <em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_common.html#WorkFlowCommon.update_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_common.WorkFlowCommon.update_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set net config data edited on view
+:param obj:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_common.WorkFlowCommon.validation_check">
+<code class="descname">validation_check</code><span class="sig-paren">(</span><em>json_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_common.html#WorkFlowCommon.validation_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_common.WorkFlowCommon.validation_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if necessray parms are all set
+:param json_data:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.common.workflow_state_manager">
+<span id="master-workflow-common-workflow-state-manager-module"></span><h2>master.workflow.common.workflow_state_manager module<a class="headerlink" href="#module-master.workflow.common.workflow_state_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager">
+<em class="property">class </em><code class="descclassname">master.workflow.common.workflow_state_manager.</code><code class="descname">WorkFlowStateManager</code><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>2. Tables
+NN_WF_STATE_INFO
+NN_WF_NODE_INFO
+NN_WF_NODE_RELATION</p>
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.delete_node">
+<code class="descname">delete_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.delete_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.delete_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.duplicate_state_info">
+<code class="descname">duplicate_state_info</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.duplicate_state_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.duplicate_state_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_node">
+<code class="descname">get_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.get_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_node_detail_info">
+<code class="descname">get_node_detail_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.get_node_detail_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_node_detail_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_node_menu_info">
+<code class="descname">get_node_menu_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.get_node_menu_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_node_menu_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_state_draw_info">
+<code class="descname">get_state_draw_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.get_state_draw_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.get_state_draw_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.update_node_status">
+<code class="descname">update_node_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.update_node_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.update_node_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_manager.WorkFlowStateManager.update_state_draw_info">
+<code class="descname">update_state_draw_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_manager.html#WorkFlowStateManager.update_state_draw_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_manager.WorkFlowStateManager.update_state_draw_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.common.workflow_state_menu">
+<span id="master-workflow-common-workflow-state-menu-module"></span><h2>master.workflow.common.workflow_state_menu module<a class="headerlink" href="#module-master.workflow.common.workflow_state_menu" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.common.workflow_state_menu.WorkFlowStateMenu">
+<em class="property">class </em><code class="descclassname">master.workflow.common.workflow_state_menu.</code><code class="descname">WorkFlowStateMenu</code><a class="reference internal" href="_modules/master/workflow/common/workflow_state_menu.html#WorkFlowStateMenu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_menu.WorkFlowStateMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>2. Table
+WF_TASK_MENU_RULE
+WF_TASK_SUBMENU_RULE</p>
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_menu_info">
+<code class="descname">get_menu_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_menu.html#WorkFlowStateMenu.get_menu_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_menu_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_serizied_menu_info">
+<code class="descname">get_serizied_menu_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_menu.html#WorkFlowStateMenu.get_serizied_menu_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_serizied_menu_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_submenu_id_with_name">
+<code class="descname">get_submenu_id_with_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_menu.html#WorkFlowStateMenu.get_submenu_id_with_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_submenu_id_with_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_submenu_info">
+<code class="descname">get_submenu_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_menu.html#WorkFlowStateMenu.get_submenu_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_menu.WorkFlowStateMenu.get_submenu_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_menu.WorkFlowStateMenu.put_menu_info">
+<code class="descname">put_menu_info</code><span class="sig-paren">(</span><em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_menu.html#WorkFlowStateMenu.put_menu_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_menu.WorkFlowStateMenu.put_menu_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input_data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.common.workflow_state_menu.WorkFlowStateMenu.put_submenu_info">
+<code class="descname">put_submenu_info</code><span class="sig-paren">(</span><em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/common/workflow_state_menu.html#WorkFlowStateMenu.put_submenu_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.common.workflow_state_menu.WorkFlowStateMenu.put_submenu_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>menu</strong> &#8211; </li>
+<li><strong>input_data</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-master.workflow.common" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">master.workflow.common package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-master.workflow.common.workflow_common">master.workflow.common.workflow_common module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.common.workflow_state_manager">master.workflow.common.workflow_state_manager module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.common.workflow_state_menu">master.workflow.common.workflow_state_menu module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.common">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/master.workflow.common.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/master.workflow.common.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

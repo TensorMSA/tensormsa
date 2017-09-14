@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>api.views.runmanager_train_request &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for api.views.runmanager_train_request</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="k">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="k">import</span> <span class="n">APIView</span>
+<span class="kn">from</span> <span class="nn">cluster.service.service_train_task</span> <span class="k">import</span> <span class="n">train</span>
+<span class="kn">from</span> <span class="nn">celery.task.control</span> <span class="k">import</span> <span class="n">inspect</span>
+<span class="kn">from</span> <span class="nn">celery.utils.log</span> <span class="k">import</span> <span class="n">get_task_logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_task_logger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">coreapi</span>
+
+<div class="viewcode-block" id="RunManagerTrainRequest"><a class="viewcode-back" href="../../../api.views.html#api.views.runmanager_train_request.RunManagerTrainRequest">[docs]</a><span class="k">class</span> <span class="nc">RunManagerTrainRequest</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RunManagerTrainRequest.post"><a class="viewcode-back" href="../../../api.views.html#api.views.runmanager_train_request.RunManagerTrainRequest.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        We can execute whole process from data extraction &gt; data preprocessing &gt; train model &gt; eval</span>
+<span class="sd">        Process of execute single graph flow is like bellow</span>
+<span class="sd">        (1) Set Network Id  \n</span>
+<span class="sd">        (2) Set Version Id  \n</span>
+<span class="sd">        (3) Set set graph flow  \n</span>
+<span class="sd">        (4) Set each nodes params on graph  \n</span>
+<span class="sd">        (5) Run graph flow of certain version defined on (2)   &lt;-- here .. this step    \n</span>
+<span class="sd">        (6) Service output model    \n</span>
+<span class="sd">        ---</span>
+<span class="sd">        # Class Name : RunManagerTrainRequest</span>
+
+<span class="sd">        # Description:</span>
+<span class="sd">            execute all process at once</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_same_request_check</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;run&#39;</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">state</span><span class="p">}))</span>
+            <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_same_request_check</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;debug&#39;</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;404&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;same ID is already on training&quot;</span><span class="p">)}</span>
+                <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;404&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RunManagerTrainRequest.get"><a class="viewcode-back" href="../../../api.views.html#api.views.runmanager_train_request.RunManagerTrainRequest.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        We can execute whole process from data extraction &gt; data preprocessing &gt; train model &gt; eval</span>
+<span class="sd">        Process of execute single graph flow is like bellow</span>
+<span class="sd">        (1) Set Network Id  \n</span>
+<span class="sd">        (2) Set Version Id  \n</span>
+<span class="sd">        (3) Set set graph flow  \n</span>
+<span class="sd">        (4) Set each nodes params on graph  \n</span>
+<span class="sd">        (5) Run graph flow of certain version defined on (2)   &lt;-- here .. this step    \n</span>
+<span class="sd">        (6) Service output model    \n</span>
+<span class="sd">        ---</span>
+<span class="sd">        # Class Name : RunManagerTrainRequest</span>
+
+<span class="sd">        # Description:</span>
+<span class="sd">            get status of process (scheduled, active, reserved, done.. )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">return_data</span><span class="p">[</span><span class="s1">&#39;scheduled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">return_data</span><span class="p">[</span><span class="s1">&#39;active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">return_data</span><span class="p">[</span><span class="s1">&#39;reserved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">i</span> <span class="o">=</span> <span class="n">inspect</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">active</span><span class="p">()[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">scheduled</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]:</span>
+                <span class="n">return_data</span><span class="p">[</span><span class="s1">&#39;scheduled&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">active</span><span class="p">()[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]:</span>
+                <span class="n">return_data</span><span class="p">[</span><span class="s1">&#39;active&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">active</span><span class="p">()[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">reserved</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]:</span>
+                <span class="n">return_data</span><span class="p">[</span><span class="s1">&#39;reserved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;404&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RunManagerTrainRequest.put"><a class="viewcode-back" href="../../../api.views.html#api.views.runmanager_train_request.RunManagerTrainRequest.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        We can execute whole process from data extraction &gt; data preprocessing &gt; train model &gt; eval</span>
+<span class="sd">        Process of execute single graph flow is like bellow</span>
+<span class="sd">        (1) Set Network Id  \n</span>
+<span class="sd">        (2) Set Version Id  \n</span>
+<span class="sd">        (3) Set set graph flow  \n</span>
+<span class="sd">        (4) Set each nodes params on graph  \n</span>
+<span class="sd">        (5) Run graph flow of certain version defined on (2)   &lt;-- here .. this step    \n</span>
+<span class="sd">        (6) Service output model    \n</span>
+<span class="sd">        ---</span>
+<span class="sd">        # Class Name : RunManagerTrainRequest</span>
+
+<span class="sd">        # Description:</span>
+<span class="sd">            Change status.. like stop processing task..</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;404&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_same_request_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check if already running job requested again</span>
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">inspect</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">active</span><span class="p">()</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;debug&#39;</span>
+        <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">active</span><span class="p">()[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;(</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">, </span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">)&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">req</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">))</span> <span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;reject&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;run&#39;</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

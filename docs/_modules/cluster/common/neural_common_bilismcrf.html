@@ -1,0 +1,467 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.common.neural_common_bilismcrf &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.common.neural_common_bilismcrf</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">h5py</span>
+<span class="kn">from</span> <span class="nn">hanja</span> <span class="k">import</span> <span class="n">hangul</span>
+
+<div class="viewcode-block" id="BiLstmCommon"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon">[docs]</a><span class="k">class</span> <span class="nc">BiLstmCommon</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    common functions for bilstm crf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">UNK</span> <span class="o">=</span> <span class="s2">&quot;$UNK$&quot;</span>
+    <span class="n">NUM</span> <span class="o">=</span> <span class="s2">&quot;$NUM$&quot;</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="s2">&quot;O&quot;</span>
+
+<div class="viewcode-block" id="BiLstmCommon.write_char_embedding"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.write_char_embedding">[docs]</a>    <span class="k">def</span> <span class="nf">write_char_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">trimmed_filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a vocab to a file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vocab: iterable that yields word</span>
+<span class="sd">            filename: path to vocab file</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            write a word per line</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing vocab...&quot;</span><span class="p">)</span>
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="mi">160</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="nb">set</span><span class="p">())):</span>
+                <span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab</span><span class="p">):</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">embeddings</span><span class="p">[</span><span class="n">vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">word</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_onehot_vector</span><span class="p">(</span><span class="n">word</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">trimmed_filename</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- done. </span><span class="si">{}</span><span class="s2"> tokens&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error on write_char_embedding : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.write_vocab"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.write_vocab">[docs]</a>    <span class="k">def</span> <span class="nf">write_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a vocab to a file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vocab: iterable that yields word</span>
+<span class="sd">            filename: path to vocab file</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            write a word per line</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing vocab...&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- done. </span><span class="si">{}</span><span class="s2"> tokens&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.get_vocabs"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_vocabs">[docs]</a>    <span class="k">def</span> <span class="nf">get_vocabs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            datasets: a list of dataset objects</span>
+<span class="sd">        Return:</span>
+<span class="sd">            a set of all the words in the dataset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Building vocab...&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">vocab</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">tags</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">vocab_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="n">vocab_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vocab_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+                <span class="n">vocab_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">words</span><span class="p">,</span> <span class="n">tags</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+                    <span class="n">vocab_words</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+                    <span class="n">vocab_tags</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- done. </span><span class="si">{}</span><span class="s2"> tokens&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab_words</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">vocab_words</span><span class="p">,</span> <span class="n">vocab_tags</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error on get_vacabs </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.load_vocab"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.load_vocab">[docs]</a>    <span class="k">def</span> <span class="nf">load_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            filename: file with a word per line</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            d: dict[word] = index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">d</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.export_trimmed_glove_vectors"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.export_trimmed_glove_vectors">[docs]</a>    <span class="k">def</span> <span class="nf">export_trimmed_glove_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">trimmed_filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves glove vectors in numpy array</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vocab: dictionary vocab[word] = index</span>
+<span class="sd">            glove_filename: a path to a glove file</span>
+<span class="sd">            trimmed_filename: a path where to store a matrix in npy</span>
+<span class="sd">            dim: (int) dimension of embeddings</span>
+<span class="sd">            UNK = &quot;$UNK$&quot;</span>
+<span class="sd">            NUM = &quot;$NUM$&quot;</span>
+<span class="sd">            NONE = &quot;O&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="n">model</span><span class="o">.</span><span class="n">vector_size</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">word</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UNK</span><span class="p">):</span>
+                    <span class="n">embeddings</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">word</span><span class="p">)]</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="n">word</span><span class="p">]</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">trimmed_filename</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error on export_trimmed_glove_vectors : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.get_trimmed_glove_vectors"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_trimmed_glove_vectors">[docs]</a>    <span class="k">def</span> <span class="nf">get_trimmed_glove_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            filename: path to the npz file</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            matrix of embeddings (np array)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.get_char_vocab"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_char_vocab">[docs]</a>    <span class="k">def</span> <span class="nf">get_char_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">chars</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            dataset: a iterator yielding tuples (sentence, tags)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            a set of all the characters in the dataset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">chars</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">vocab_char</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vocab_char</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">words</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">vocab_char</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">vocab_char</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.get_processing_word"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_processing_word">[docs]</a>    <span class="k">def</span> <span class="nf">get_processing_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_words</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vocab_chars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">lowercase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">chars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            vocab: dict[word] = idx</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            f(&quot;cat&quot;) = ([12, 4, 32], 12345)</span>
+<span class="sd">                     = (list of char ids, word id)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+            <span class="c1"># 1. preprocess word</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">lowercase</span><span class="p">):</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+            <span class="c1"># 0. get chars of words</span>
+            <span class="k">if</span> <span class="n">vocab_chars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">chars</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">char_ids</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+                    <span class="c1"># ignore chars out of vocabulary</span>
+                    <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">vocab_chars</span><span class="p">:</span>
+                        <span class="n">char_ids</span> <span class="o">+=</span> <span class="p">[</span><span class="n">vocab_chars</span><span class="p">[</span><span class="n">char</span><span class="p">]]</span>
+
+            <span class="c1"># 2. get id of word</span>
+            <span class="k">if</span> <span class="n">vocab_words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">vocab_words</span><span class="p">:</span>
+                    <span class="n">word</span> <span class="o">=</span> <span class="n">vocab_words</span><span class="p">[</span><span class="n">word</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">word</span> <span class="o">=</span> <span class="n">vocab_words</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">UNK</span><span class="p">]</span>
+
+            <span class="c1"># 3. return tuple char ids, word id</span>
+            <span class="k">if</span> <span class="n">vocab_chars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">chars</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">char_ids</span><span class="p">,</span> <span class="n">word</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">word</span>
+
+        <span class="k">return</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.minibatches"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.minibatches">[docs]</a>    <span class="k">def</span> <span class="nf">minibatches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">minibatch_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            data: generator of (sentence, tags) tuples</span>
+<span class="sd">            minibatch_size: (int)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list of tuples</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_batch</span><span class="p">)</span> <span class="o">==</span> <span class="n">minibatch_size</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span>
+                <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x_batch</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+            <span class="n">y_batch</span> <span class="o">+=</span> <span class="p">[</span><span class="n">y</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_batch</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_pad_sequences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequences</span><span class="p">,</span> <span class="n">pad_tok</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sequences: a generator of list or tuple</span>
+<span class="sd">            pad_tok: the char to pad with</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            a list of list where each sublist has same length</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sequence_padded</span><span class="p">,</span> <span class="n">sequence_length</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">:</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+            <span class="n">seq_</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[:</span><span class="n">max_length</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">pad_tok</span><span class="p">]</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">sequence_padded</span> <span class="o">+=</span> <span class="p">[</span><span class="n">seq_</span><span class="p">]</span>
+            <span class="n">sequence_length</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">),</span> <span class="n">max_length</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">sequence_padded</span><span class="p">,</span> <span class="n">sequence_length</span>
+
+
+<div class="viewcode-block" id="BiLstmCommon.get_chunks"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_chunks">[docs]</a>    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            seq: [4, 4, 0, 0, ...] sequence of labels</span>
+<span class="sd">            tags: dict[&quot;O&quot;] = 4</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list of (chunk_type, chunk_start, chunk_end)</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            seq = [4, 5, 0, 3]</span>
+<span class="sd">            tags = {&quot;B-PER&quot;: 4, &quot;I-PER&quot;: 5, &quot;B-LOC&quot;: 3}</span>
+<span class="sd">            result = [(&quot;PER&quot;, 0, 2), (&quot;LOC&quot;, 3, 4)]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="n">tags</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">NONE</span><span class="p">]</span>
+            <span class="n">idx_to_tag</span> <span class="o">=</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="n">tag</span> <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
+            <span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">chunk_type</span><span class="p">,</span> <span class="n">chunk_start</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tok</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+                <span class="c1"># End of a chunk 1</span>
+                <span class="k">if</span> <span class="n">tok</span> <span class="o">==</span> <span class="n">default</span> <span class="ow">and</span> <span class="n">chunk_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Add a chunk.</span>
+                    <span class="n">chunk</span> <span class="o">=</span> <span class="p">(</span><span class="n">chunk_type</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                    <span class="n">chunk_type</span><span class="p">,</span> <span class="n">chunk_start</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+                <span class="c1"># End of a chunk + start of a chunk!</span>
+                <span class="k">elif</span> <span class="n">tok</span> <span class="o">!=</span> <span class="n">default</span><span class="p">:</span>
+                    <span class="n">tok_chunk_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chunk_type</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="n">idx_to_tag</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">chunk_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">chunk_type</span><span class="p">,</span> <span class="n">chunk_start</span> <span class="o">=</span> <span class="n">tok_chunk_type</span><span class="p">,</span> <span class="n">i</span>
+                    <span class="c1"># elif tok_chunk_type != chunk_type or tok[0] == &quot;B&quot;:</span>
+                    <span class="k">elif</span> <span class="n">tok_chunk_type</span> <span class="o">!=</span> <span class="n">chunk_type</span><span class="p">:</span>
+                        <span class="n">chunk</span> <span class="o">=</span> <span class="p">(</span><span class="n">chunk_type</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                        <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                        <span class="n">chunk_type</span><span class="p">,</span> <span class="n">chunk_start</span> <span class="o">=</span> <span class="n">tok_chunk_type</span><span class="p">,</span> <span class="n">i</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="c1"># end condition</span>
+            <span class="k">if</span> <span class="n">chunk_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">chunk</span> <span class="o">=</span> <span class="p">(</span><span class="n">chunk_type</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">))</span>
+                <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">chunks</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.pad_sequences"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.pad_sequences">[docs]</a>    <span class="k">def</span> <span class="nf">pad_sequences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequences</span><span class="p">,</span> <span class="n">pad_tok</span><span class="p">,</span> <span class="n">nlevels</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sequences: a generator of list or tuple</span>
+<span class="sd">            pad_tok: the char to pad with</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            a list of list where each sublist has same length</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nlevels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">max_length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">sequences</span><span class="p">))</span>
+            <span class="n">sequence_padded</span><span class="p">,</span> <span class="n">sequence_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pad_sequences</span><span class="p">(</span><span class="n">sequences</span><span class="p">,</span>
+                                                                   <span class="n">pad_tok</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">nlevels</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">max_length_word</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">seq</span><span class="p">))</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">])</span>
+            <span class="n">sequence_padded</span><span class="p">,</span> <span class="n">sequence_length</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">:</span>
+                <span class="c1"># all words are same length now</span>
+                <span class="n">sp</span><span class="p">,</span> <span class="n">sl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pad_sequences</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">pad_tok</span><span class="p">,</span> <span class="n">max_length_word</span><span class="p">)</span>
+                <span class="n">sequence_padded</span> <span class="o">+=</span> <span class="p">[</span><span class="n">sp</span><span class="p">]</span>
+                <span class="n">sequence_length</span> <span class="o">+=</span> <span class="p">[</span><span class="n">sl</span><span class="p">]</span>
+
+            <span class="n">max_length_sentence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">sequences</span><span class="p">))</span>
+            <span class="n">sequence_padded</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pad_sequences</span><span class="p">(</span><span class="n">sequence_padded</span><span class="p">,</span> <span class="p">[</span><span class="n">pad_tok</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_length_word</span><span class="p">,</span>
+                                                     <span class="n">max_length_sentence</span><span class="p">)</span>
+            <span class="n">sequence_length</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pad_sequences</span><span class="p">(</span><span class="n">sequence_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_length_sentence</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sequence_padded</span><span class="p">,</span> <span class="n">sequence_length</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.get_chunk_type"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_chunk_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_chunk_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">idx_to_tag</span><span class="p">):</span>
+        <span class="n">tag_name</span> <span class="o">=</span> <span class="n">idx_to_tag</span><span class="p">[</span><span class="n">tok</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">tag_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="BiLstmCommon.CoNLLDataset"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon.CoNLLDataset">[docs]</a>    <span class="k">class</span> <span class="nc">CoNLLDataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class that iterates over CoNLL Dataset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">processing_word</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">processing_tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">max_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_line</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Args:</span>
+<span class="sd">                filename: path to the file</span>
+<span class="sd">                processing_words: (optional) function thsat takes a word as input</span>
+<span class="sd">                processing_tags: (optional) function that takes a tag as input</span>
+<span class="sd">                max_iter: (optional) max number of sentences to yield</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span> <span class="o">=</span> <span class="n">processing_word</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_tag</span> <span class="o">=</span> <span class="n">processing_tag</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">all_line</span> <span class="o">=</span> <span class="n">all_line</span>
+
+        <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">niter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">words</span><span class="p">,</span> <span class="n">tags</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-DOCSTART-&quot;</span><span class="p">)):</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">niter</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">niter</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                                <span class="k">yield</span> <span class="n">words</span><span class="p">,</span> <span class="n">tags</span>
+                                <span class="n">words</span><span class="p">,</span> <span class="n">tags</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">2</span> <span class="p">:</span>
+                                <span class="k">continue</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="p">:</span>
+                                <span class="n">temp</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                                <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">temp</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">temp</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+                            <span class="n">word</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+                            <span class="n">words</span> <span class="o">+=</span> <span class="p">[</span><span class="n">word</span><span class="p">]</span>
+                            <span class="n">tags</span> <span class="o">+=</span> <span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Iterates once over the corpus to set and store length</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

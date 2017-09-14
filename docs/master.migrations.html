@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.migrations package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="master-migrations-package">
+<h1>master.migrations package<a class="headerlink" href="#master-migrations-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-master.migrations.0001_initial">
+<span id="master-migrations-0001-initial-module"></span><h2>master.migrations.0001_initial module<a class="headerlink" href="#module-master.migrations.0001_initial" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.migrations.0001_initial.Migration">
+<em class="property">class </em><code class="descclassname">master.migrations.0001_initial.</code><code class="descname">Migration</code><span class="sig-paren">(</span><em>name</em>, <em>app_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/migrations/0001_initial.html#Migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.migrations.0001_initial.Migration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.migrations.migration.Migration</span></code></p>
+<dl class="attribute">
+<dt id="master.migrations.0001_initial.Migration.dependencies">
+<code class="descname">dependencies</code><em class="property"> = []</em><a class="headerlink" href="#master.migrations.0001_initial.Migration.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="master.migrations.0001_initial.Migration.initial">
+<code class="descname">initial</code><em class="property"> = True</em><a class="headerlink" href="#master.migrations.0001_initial.Migration.initial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="master.migrations.0001_initial.Migration.operations">
+<code class="descname">operations</code><em class="property"> = [&lt;CreateModel  fields=[('graph_flow_id', &lt;django.db.models.fields.CharField&gt;), ('graph_flow_data', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('graph_flow_desc', &lt;django.db.models.fields.CharField&gt;), ('graph_flow_group_id', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='AUTO_ML_RULE'&gt;, &lt;CreateModel  fields=[('nn_id', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_ver_id', &lt;django.db.models.fields.CharField&gt;), ('start_time', &lt;django.db.models.fields.DateTimeField&gt;), ('end_time', &lt;django.db.models.fields.DateTimeField&gt;), ('period', &lt;django.db.models.fields.IntegerField&gt;), ('type', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='BATCH_INFO_JOBCONFIG'&gt;, &lt;CreateModel  fields=[('id', &lt;django.db.models.fields.AutoField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='NN_DEF_LIST_ID_INFO'&gt;, &lt;CreateModel  fields=[('nn_id', &lt;django.db.models.fields.CharField&gt;), ('biz_cate', &lt;django.db.models.fields.CharField&gt;), ('biz_sub_cate', &lt;django.db.models.fields.CharField&gt;), ('nn_title', &lt;django.db.models.fields.CharField&gt;), ('nn_desc', &lt;django.db.models.fields.CharField&gt;), ('use_flag', &lt;django.db.models.fields.CharField&gt;), ('dir', &lt;django.db.models.fields.CharField&gt;), ('config', &lt;django.db.models.fields.CharField&gt;), ('automl_parms', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('automl_runtime', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('automl_stat', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='NN_DEF_LIST_INFO'&gt;, &lt;CreateModel  fields=[('nn_batch_ver_id', &lt;django.db.models.fields.CharField&gt;), ('nn_ver_wflist_info_nn_ver', &lt;django.db.models.fields.CharField&gt;), ('nn_batch_ver_info', &lt;django.db.models.fields.CharField&gt;), ('active_flag', &lt;django.db.models.fields.CharField&gt;), ('train_flag', &lt;django.db.models.fields.CharField&gt;), ('eval_flag', &lt;django.db.models.fields.CharField&gt;), ('job_end_time', &lt;django.db.models.fields.DateTimeField&gt;), ('model_acc', &lt;django.db.models.fields.IntegerField&gt;), ('train_progress', &lt;django.db.models.fields.IntegerField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='NN_VER_BATCHLIST_INFO'&gt;, &lt;CreateModel  fields=[('id', &lt;django.db.models.fields.AutoField&gt;), ('nn_wf_ver_id', &lt;django.db.models.fields.IntegerField&gt;), ('nn_def_list_info_nn_id', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_ver_info', &lt;django.db.models.fields.CharField&gt;), ('condition', &lt;django.db.models.fields.CharField&gt;), ('active_flag', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_ver_desc', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;), ('nn_id', &lt;django.db.models.fields.related.ForeignKey&gt;)], name='NN_VER_WFLIST_INFO'&gt;, &lt;CreateModel  fields=[('key', &lt;django.db.models.fields.IntegerField&gt;), ('easy_mode_purp', &lt;django.db.models.fields.CharField&gt;), ('easy_mode_data_type', &lt;django.db.models.fields.CharField&gt;), ('easy_mode_store_type', &lt;django.db.models.fields.CharField&gt;), ('easy_mode_data_size', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='NN_WF_EASY_MODE_RULE'&gt;, &lt;CreateModel  fields=[('nn_wf_node_id', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_node_name', &lt;django.db.models.fields.CharField&gt;), ('wf_node_status', &lt;django.db.models.fields.IntegerField&gt;), ('node_config_data', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('node_draw_x', &lt;django.db.models.fields.IntegerField&gt;), ('node_draw_y', &lt;django.db.models.fields.IntegerField&gt;), ('nn_wf_node_desc', &lt;django.db.models.fields.CharField&gt;), ('task_fin_flag', &lt;django.db.models.fields.BooleanField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='NN_WF_NODE_INFO'&gt;, &lt;CreateModel  fields=[('nn_wf_node_id_1', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_node_id_2', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_relation_id', &lt;django.db.models.fields.AutoField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='NN_WF_NODE_RELATION'&gt;, &lt;CreateModel  fields=[('wf_state_id', &lt;django.db.models.fields.CharField&gt;), ('nn_id', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;), ('nn_wf_ver_id', &lt;django.db.models.fields.related.ForeignKey&gt;)], name='NN_WF_STATE_INFO'&gt;, &lt;CreateModel  fields=[('id', &lt;django.db.models.fields.AutoField&gt;), ('nn_id', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_ver_id', &lt;django.db.models.fields.CharField&gt;), ('acc_info', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('loss_info', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;), ('nn_batch_ver_id', &lt;django.db.models.fields.related.ForeignKey&gt;)], name='TRAIN_SUMMARY_ACCLOSS_INFO'&gt;, &lt;CreateModel  fields=[('id', &lt;django.db.models.fields.AutoField&gt;), ('nn_id', &lt;django.db.models.fields.CharField&gt;), ('nn_wf_ver_id', &lt;django.db.models.fields.CharField&gt;), ('result_info', &lt;django.contrib.postgres.fields.jsonb.JSONField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;), ('nn_batch_ver_id', &lt;django.db.models.fields.related.ForeignKey&gt;)], name='TRAIN_SUMMARY_RESULT_INFO'&gt;, &lt;CreateModel  fields=[('wf_task_menu_id', &lt;django.db.models.fields.CharField&gt;), ('wf_task_menu_name', &lt;django.db.models.fields.CharField&gt;), ('wf_task_menu_desc', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='WF_TASK_MENU_RULE'&gt;, &lt;CreateModel  fields=[('key', &lt;django.db.models.fields.IntegerField&gt;), ('wf_task_submenu_id_1', &lt;django.db.models.fields.CharField&gt;), ('wf_task_submenu_id_2', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;)], name='WF_TASK_REALATION_RULE'&gt;, &lt;CreateModel  fields=[('wf_task_submenu_id', &lt;django.db.models.fields.CharField&gt;), ('wf_task_submenu_name', &lt;django.db.models.fields.CharField&gt;), ('wf_task_submenu_desc', &lt;django.db.models.fields.CharField&gt;), ('wf_node_class_path', &lt;django.db.models.fields.CharField&gt;), ('wf_node_class_name', &lt;django.db.models.fields.CharField&gt;), ('creation_date', &lt;django.db.models.fields.DateTimeField&gt;), ('last_update_date', &lt;django.db.models.fields.DateTimeField&gt;), ('created_by', &lt;django.db.models.fields.IntegerField&gt;), ('last_updated_by', &lt;django.db.models.fields.IntegerField&gt;), ('wf_task_menu_id', &lt;django.db.models.fields.related.ForeignKey&gt;)], name='WF_TASK_SUBMENU_RULE'&gt;, &lt;AddField  field=&lt;django.db.models.fields.related.ForeignKey&gt;, model_name='nn_wf_node_relation', name='wf_state_id'&gt;, &lt;AddField  field=&lt;django.db.models.fields.related.ForeignKey&gt;, model_name='nn_wf_node_info', name='wf_state_id'&gt;, &lt;AddField  field=&lt;django.db.models.fields.related.ForeignKey&gt;, model_name='nn_wf_node_info', name='wf_task_submenu_id'&gt;, &lt;AddField  field=&lt;django.db.models.fields.related.ForeignKey&gt;, model_name='nn_wf_easy_mode_rule', name='wf_state_id'&gt;, &lt;AddField  field=&lt;django.db.models.fields.related.ForeignKey&gt;, model_name='nn_ver_batchlist_info', name='nn_wf_ver_id'&gt;, &lt;AddField  field=&lt;django.db.models.fields.related.ForeignKey&gt;, model_name='nn_def_list_id_info', name='nn_id'&gt;, &lt;AddField  field=&lt;django.db.models.fields.related.ForeignKey&gt;, model_name='batch_info_jobconfig', name='nn_batch_ver_id'&gt;, &lt;AlterUniqueTogether  unique_together={('nn_wf_node_id_1', 'nn_wf_node_id_2')}, name='nn_wf_node_relation'&gt;, &lt;AlterUniqueTogether  unique_together={('nn_id', 'nn_wf_ver_id')}, name='nn_ver_wflist_info'&gt;]</em><a class="headerlink" href="#master.migrations.0001_initial.Migration.operations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.migrations.0002_auto_20170913_1424">
+<span id="master-migrations-0002-auto-20170913-1424-module"></span><h2>master.migrations.0002_auto_20170913_1424 module<a class="headerlink" href="#module-master.migrations.0002_auto_20170913_1424" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.migrations.0002_auto_20170913_1424.Migration">
+<em class="property">class </em><code class="descclassname">master.migrations.0002_auto_20170913_1424.</code><code class="descname">Migration</code><span class="sig-paren">(</span><em>name</em>, <em>app_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/migrations/0002_auto_20170913_1424.html#Migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.migrations.0002_auto_20170913_1424.Migration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.migrations.migration.Migration</span></code></p>
+<dl class="attribute">
+<dt id="master.migrations.0002_auto_20170913_1424.Migration.dependencies">
+<code class="descname">dependencies</code><em class="property"> = [('master', '0001_initial')]</em><a class="headerlink" href="#master.migrations.0002_auto_20170913_1424.Migration.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="master.migrations.0002_auto_20170913_1424.Migration.operations">
+<code class="descname">operations</code><em class="property"> = [&lt;AddField  field=&lt;django.db.models.fields.CharField&gt;, model_name='auto_ml_rule', name='eval_file_path'&gt;, &lt;AddField  field=&lt;django.db.models.fields.CharField&gt;, model_name='auto_ml_rule', name='train_file_path'&gt;]</em><a class="headerlink" href="#master.migrations.0002_auto_20170913_1424.Migration.operations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.migrations.0003_nn_ver_wflist_info_automl_gen">
+<span id="master-migrations-0003-nn-ver-wflist-info-automl-gen-module"></span><h2>master.migrations.0003_nn_ver_wflist_info_automl_gen module<a class="headerlink" href="#module-master.migrations.0003_nn_ver_wflist_info_automl_gen" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.migrations.0003_nn_ver_wflist_info_automl_gen.Migration">
+<em class="property">class </em><code class="descclassname">master.migrations.0003_nn_ver_wflist_info_automl_gen.</code><code class="descname">Migration</code><span class="sig-paren">(</span><em>name</em>, <em>app_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/migrations/0003_nn_ver_wflist_info_automl_gen.html#Migration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.migrations.0003_nn_ver_wflist_info_automl_gen.Migration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.migrations.migration.Migration</span></code></p>
+<dl class="attribute">
+<dt id="master.migrations.0003_nn_ver_wflist_info_automl_gen.Migration.dependencies">
+<code class="descname">dependencies</code><em class="property"> = [('master', '0002_auto_20170913_1424')]</em><a class="headerlink" href="#master.migrations.0003_nn_ver_wflist_info_automl_gen.Migration.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="master.migrations.0003_nn_ver_wflist_info_automl_gen.Migration.operations">
+<code class="descname">operations</code><em class="property"> = [&lt;AddField  field=&lt;django.db.models.fields.CharField&gt;, model_name='nn_ver_wflist_info', name='automl_gen'&gt;]</em><a class="headerlink" href="#master.migrations.0003_nn_ver_wflist_info_automl_gen.Migration.operations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.migrations">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-master.migrations" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">master.migrations package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-master.migrations.0001_initial">master.migrations.0001_initial module</a></li>
+<li><a class="reference internal" href="#module-master.migrations.0002_auto_20170913_1424">master.migrations.0002_auto_20170913_1424 module</a></li>
+<li><a class="reference internal" href="#module-master.migrations.0003_nn_ver_wflist_info_automl_gen">master.migrations.0003_nn_ver_wflist_info_automl_gen module</a></li>
+<li><a class="reference internal" href="#module-master.migrations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/master.migrations.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/master.migrations.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

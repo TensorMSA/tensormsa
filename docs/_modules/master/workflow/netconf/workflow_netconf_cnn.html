@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.workflow.netconf.workflow_netconf_cnn &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for master.workflow.netconf.workflow_netconf_cnn</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">master.workflow.netconf.workflow_netconf</span> <span class="k">import</span> <span class="n">WorkFlowNetConf</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">master</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.core</span> <span class="k">import</span> <span class="n">serializers</span> <span class="k">as</span> <span class="n">serial</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="WorkFlowNetConfCNN"><a class="viewcode-back" href="../../../../master.workflow.netconf.html#master.workflow.netconf.workflow_netconf_cnn.WorkFlowNetConfCNN">[docs]</a><span class="k">class</span> <span class="nc">WorkFlowNetConfCNN</span><span class="p">(</span><span class="n">WorkFlowNetConf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        init key variable</span>
+<span class="sd">        :param key:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_key_parms</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_prhb_parms</span><span class="p">([])</span>
+
+<div class="viewcode-block" id="WorkFlowNetConfCNN.set_num_classes_predcnt"><a class="viewcode-back" href="../../../../master.workflow.netconf.html#master.workflow.netconf.workflow_netconf_cnn.WorkFlowNetConfCNN.set_num_classes_predcnt">[docs]</a>    <span class="k">def</span> <span class="nf">set_num_classes_predcnt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">wfver</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">netconf</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
+            <span class="n">num_classes</span> <span class="o">=</span> <span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;num_classes&quot;</span><span class="p">]</span>
+            <span class="n">pred_cnt</span> <span class="o">=</span> <span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;predictcnt&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">num_classes</span><span class="p">:</span>
+                <span class="n">num_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pred_cnt</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+                <span class="n">pred_cnt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+            <span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;num_classes&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">num_classes</span>
+            <span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;predictcnt&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">pred_cnt</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="kc">None</span>
+
+        <span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;modelpath&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_model_path</span><span class="p">(</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">wfver</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+        <span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;modelname&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn_id</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">wfver</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;node_config_data&quot;</span><span class="p">,</span> <span class="n">netconf</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">netconf</span></div>
+
+<div class="viewcode-block" id="WorkFlowNetConfCNN.set_view_obj_path"><a class="viewcode-back" href="../../../../master.workflow.netconf.html#master.workflow.netconf.workflow_netconf_cnn.WorkFlowNetConfCNN.set_view_obj_path">[docs]</a>    <span class="k">def</span> <span class="nf">set_view_obj_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">wfver</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set net config data edited on view</span>
+<span class="sd">        :param obj:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_check</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">old_config_data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;node_config_data&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_config_data</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="kc">None</span>
+
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;node_config_data&quot;</span><span class="p">,</span> <span class="n">input_data</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">input_data</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

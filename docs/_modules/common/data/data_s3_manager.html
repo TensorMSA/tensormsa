@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>common.data.data_s3_manager &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for common.data.data_s3_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">common.data.data_master</span> <span class="k">import</span> <span class="n">DataMaster</span>
+
+<div class="viewcode-block" id="DataS3Manager"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager">[docs]</a><span class="k">class</span> <span class="nc">DataS3Manager</span><span class="p">(</span><span class="n">DataMaster</span><span class="p">)</span> <span class="p">:</span>
+
+<div class="viewcode-block" id="DataS3Manager.get_schema_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.get_schema_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_schema_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.post_schema_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.post_schema_list">[docs]</a>    <span class="k">def</span> <span class="nf">post_schema_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.update_schema_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.update_schema_list">[docs]</a>    <span class="k">def</span> <span class="nf">update_schema_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_name</span><span class="p">,</span> <span class="n">u_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.delete_schema_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.delete_schema_list">[docs]</a>    <span class="k">def</span> <span class="nf">delete_schema_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.get_table_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.get_table_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_table_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.post_table_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.post_table_list">[docs]</a>    <span class="k">def</span> <span class="nf">post_table_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.update_table_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.update_table_list">[docs]</a>    <span class="k">def</span> <span class="nf">update_table_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">,</span> <span class="n">x_name</span><span class="p">,</span> <span class="n">u_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.delete_table_list"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.delete_table_list">[docs]</a>    <span class="k">def</span> <span class="nf">delete_table_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.get_contents"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.get_contents">[docs]</a>    <span class="k">def</span> <span class="nf">get_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.post_contents"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.post_contents">[docs]</a>    <span class="k">def</span> <span class="nf">post_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.update_contents"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.update_contents">[docs]</a>    <span class="k">def</span> <span class="nf">update_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataS3Manager.delete_contents"><a class="viewcode-back" href="../../../common.data.html#common.data.data_s3_manager.DataS3Manager.delete_contents">[docs]</a>    <span class="k">def</span> <span class="nf">delete_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

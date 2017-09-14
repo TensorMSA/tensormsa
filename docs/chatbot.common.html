@@ -1,0 +1,910 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot.common package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="chatbot-common-package">
+<h1>chatbot.common package<a class="headerlink" href="#chatbot-common-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-chatbot.common.chat_conf_manager">
+<span id="chatbot-common-chat-conf-manager-module"></span><h2>chatbot.common.chat_conf_manager module<a class="headerlink" href="#module-chatbot.common.chat_conf_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager">
+<em class="property">class </em><code class="descclassname">chatbot.common.chat_conf_manager.</code><code class="descname">ChatBotConfManager</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>class which handle chabot conf include nlp, stroyboard, entity and service
+(1) on prepare time : set confs for chat bot
+(2) on run time : get confs from db and provide getter for essential values</p>
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_entity_list">
+<code class="descname">get_entity_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_entity_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_entity_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>get entity list to use
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_intent_model">
+<code class="descname">get_intent_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_intent_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_intent_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>tag type mecab, twitter, etc
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_model_conf">
+<code class="descname">get_model_conf</code><span class="sig-paren">(</span><em>cb_id</em>, <em>purpose</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_model_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_model_conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_ner_model">
+<code class="descname">get_ner_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_ner_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_ner_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_pattern_intent_model">
+<code class="descname">get_pattern_intent_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_pattern_intent_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_pattern_intent_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>tag type mecab, twitter, etc
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_pos_type">
+<code class="descname">get_pos_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_pos_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_pos_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>tag type mecab, twitter, etc
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_resp_model">
+<code class="descname">get_resp_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_resp_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_resp_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_story_board">
+<code class="descname">get_story_board</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_story_board"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_story_board" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_ton_model">
+<code class="descname">get_ton_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_ton_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_ton_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.get_word_embed_model">
+<code class="descname">get_word_embed_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.get_word_embed_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.get_word_embed_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>get word embed model (w2v.. )
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.set_entity_list">
+<code class="descname">set_entity_list</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.set_entity_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.set_entity_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>set entity list to use
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.set_ner_model">
+<code class="descname">set_ner_model</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.set_ner_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.set_ner_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.set_pos_type">
+<code class="descname">set_pos_type</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.set_pos_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.set_pos_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>tag type mecab, twitter, etc
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.set_resp_model">
+<code class="descname">set_resp_model</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.set_resp_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.set_resp_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.set_story_board">
+<code class="descname">set_story_board</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.set_story_board"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.set_story_board" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.set_ton_model">
+<code class="descname">set_ton_model</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.set_ton_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.set_ton_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>net id pretrained on hoyai
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_conf_manager.ChatBotConfManager.set_word_embed_model">
+<code class="descname">set_word_embed_model</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_conf_manager.html#ChatBotConfManager.set_word_embed_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_conf_manager.ChatBotConfManager.set_word_embed_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>set word embed model (w2v.. )
+:param data:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.common.chat_knowledge_data_dict">
+<span id="chatbot-common-chat-knowledge-data-dict-module"></span><h2>chatbot.common.chat_knowledge_data_dict module<a class="headerlink" href="#module-chatbot.common.chat_knowledge_data_dict" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict">
+<em class="property">class </em><code class="descclassname">chatbot.common.chat_knowledge_data_dict.</code><code class="descname">ChatKnowledgeDataDict</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_conf">
+<code class="descname">check_conf</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.check_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_conf" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if data is already loaded 
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_dict">
+<code class="descname">check_dict</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.check_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if data is already loaded 
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_ngram">
+<code class="descname">check_ngram</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.check_ngram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_ngram" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if data is already loaded 
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_synonym">
+<code class="descname">check_synonym</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.check_synonym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.check_synonym" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if data is already loaded 
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_entity">
+<code class="descname">get_entity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.get_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_entity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_entity_extra">
+<code class="descname">get_entity_extra</code><span class="sig-paren">(</span><em>intent_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.get_entity_extra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_entity_extra" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_entity_key">
+<code class="descname">get_entity_key</code><span class="sig-paren">(</span><em>intent_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.get_entity_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_entity_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_intent_conf">
+<code class="descname">get_intent_conf</code><span class="sig-paren">(</span><em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.get_intent_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.get_intent_conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.initialize">
+<code class="descname">initialize</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_data_dict.html#ChatKnowledgeDataDict.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_data_dict.ChatKnowledgeDataDict.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialize ChatKnowlodgeMemdict Class 
+:return: none</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.common.chat_knowledge_mem_dict">
+<span id="chatbot-common-chat-knowledge-mem-dict-module"></span><h2>chatbot.common.chat_knowledge_mem_dict module<a class="headerlink" href="#module-chatbot.common.chat_knowledge_mem_dict" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict">
+<em class="property">class </em><code class="descclassname">chatbot.common.chat_knowledge_mem_dict.</code><code class="descname">ChatKnowledgeMemDict</code><a class="reference internal" href="_modules/chatbot/common/chat_knowledge_mem_dict.html#ChatKnowledgeMemDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>class for storing dict data on the django memory 
+for speed up dict search action</p>
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.conf">
+<code class="descname">conf</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.data">
+<code class="descname">data</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.data_conf">
+<code class="descname">data_conf</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.data_conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.data_order">
+<code class="descname">data_order</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.data_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.ngram">
+<code class="descname">ngram</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.ngram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.ngram_conf">
+<code class="descname">ngram_conf</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.ngram_conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.ngram_order">
+<code class="descname">ngram_order</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.ngram_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.synonym">
+<code class="descname">synonym</code><em class="property"> = {}</em><a class="headerlink" href="#chatbot.common.chat_knowledge_mem_dict.ChatKnowledgeMemDict.synonym" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.common.chat_share_data">
+<span id="chatbot-common-chat-share-data-module"></span><h2>chatbot.common.chat_share_data module<a class="headerlink" href="#module-chatbot.common.chat_share_data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.common.chat_share_data.ShareData">
+<em class="property">class </em><code class="descclassname">chatbot.common.chat_share_data.</code><code class="descname">ShareData</code><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#chatbot.common.chat_conf_manager.ChatBotConfManager" title="chatbot.common.chat_conf_manager.ChatBotConfManager"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_conf_manager.ChatBotConfManager</span></code></a></p>
+<p>share data class is data component which includes json2object and object2json maethod
+the purpose of this class is mainly on keep conversation data on thread
+beacuse this api works on rest api we need some info like cookie that where we were on
+the last convrsation</p>
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.add_extra_client_data">
+<code class="descname">add_extra_client_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.add_extra_client_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.add_extra_client_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>add extra data for client 
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.add_test_client_data">
+<code class="descname">add_test_client_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.add_test_client_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.add_test_client_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>add unchanged info for client test
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.convert_to_list_shape">
+<code class="descname">convert_to_list_shape</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.convert_to_list_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.convert_to_list_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert dict to list-dict (client developer request) 
+:param input: 
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_chatbot_id">
+<code class="descname">get_chatbot_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_chatbot_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_chatbot_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_convert_data">
+<code class="descname">get_convert_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_convert_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_convert_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_convert_dict_data">
+<code class="descname">get_convert_dict_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_convert_dict_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_convert_dict_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_edit_history">
+<code class="descname">get_edit_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_edit_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_edit_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_input_data">
+<code class="descname">get_input_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_input_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_intent_history">
+<code class="descname">get_intent_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_intent_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_intent_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_intent_id">
+<code class="descname">get_intent_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_intent_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_intent_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_morphed_data">
+<code class="descname">get_morphed_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_morphed_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_morphed_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_output_data">
+<code class="descname">get_output_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_output_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_output_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_pattern_intent_id">
+<code class="descname">get_pattern_intent_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_pattern_intent_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_pattern_intent_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_request_data">
+<code class="descname">get_request_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_request_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_request_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_request_type">
+<code class="descname">get_request_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_request_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_request_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>manage request type
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_service_type">
+<code class="descname">get_service_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_service_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_service_type" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_story_id">
+<code class="descname">get_story_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_story_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_story_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_story_key_entity">
+<code class="descname">get_story_key_entity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_story_key_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_story_key_entity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_story_ner_entity">
+<code class="descname">get_story_ner_entity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_story_ner_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_story_ner_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>manage result of ner(bilstmcrf algoritm) result 
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.get_story_slot_entity">
+<code class="descname">get_story_slot_entity</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.get_story_slot_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.get_story_slot_entity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.initialize_story">
+<code class="descname">initialize_story</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.initialize_story"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.initialize_story" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.initialize_story_entity">
+<code class="descname">initialize_story_entity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.initialize_story_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.initialize_story_entity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.load_json">
+<code class="descname">load_json</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.load_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.load_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>load josn object to data object
+:param object:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.merge_share_data">
+<code class="descname">merge_share_data</code><span class="sig-paren">(</span><em>output_share_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.merge_share_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.merge_share_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>simply update all info on this class to output_share_data
+:param input_share_data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.replace_story_ner_entity">
+<code class="descname">replace_story_ner_entity</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.replace_story_ner_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.replace_story_ner_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>manage result of ner(bilstmcrf algoritm) result 
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.replace_story_slot_entity">
+<code class="descname">replace_story_slot_entity</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.replace_story_slot_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.replace_story_slot_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>manage result of ner(bilstmcrf algoritm) result 
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_chatbot_id">
+<code class="descname">set_chatbot_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_chatbot_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_chatbot_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_convert_data">
+<code class="descname">set_convert_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_convert_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_convert_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_convert_dict_data">
+<code class="descname">set_convert_dict_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_convert_dict_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_convert_dict_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_edit_history">
+<code class="descname">set_edit_history</code><span class="sig-paren">(</span><em>edit_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_edit_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_edit_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_input_data">
+<code class="descname">set_input_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_input_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_intent_history">
+<code class="descname">set_intent_history</code><span class="sig-paren">(</span><em>intent_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_intent_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_intent_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_intent_id">
+<code class="descname">set_intent_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_intent_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_intent_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_morphed_data">
+<code class="descname">set_morphed_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_morphed_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_morphed_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_output_data">
+<code class="descname">set_output_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_output_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_output_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_pattern_intent_id">
+<code class="descname">set_pattern_intent_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_pattern_intent_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_pattern_intent_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_request_data">
+<code class="descname">set_request_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_request_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_request_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>intent id
+:param intent_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_request_type">
+<code class="descname">set_request_type</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_request_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_request_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>manage request type
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_service_type">
+<code class="descname">set_service_type</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_service_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_service_type" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_story_id">
+<code class="descname">set_story_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_story_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_story_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_story_key_entity">
+<code class="descname">set_story_key_entity</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_story_key_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_story_key_entity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_story_ner_entity">
+<code class="descname">set_story_ner_entity</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_story_ner_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_story_ner_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>manage result of ner(bilstmcrf algoritm) result 
+:param data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.set_story_slot_entity">
+<code class="descname">set_story_slot_entity</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.set_story_slot_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.set_story_slot_entity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert data object to json
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_share_data.ShareData.update_story_slot_entity">
+<code class="descname">update_story_slot_entity</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_share_data.html#ShareData.update_story_slot_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_share_data.ShareData.update_story_slot_entity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.common.chat_story_conf_data">
+<span id="chatbot-common-chat-story-conf-data-module"></span><h2>chatbot.common.chat_story_conf_data module<a class="headerlink" href="#module-chatbot.common.chat_story_conf_data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.common.chat_story_conf_data.ChatStoryConfData">
+<em class="property">class </em><code class="descclassname">chatbot.common.chat_story_conf_data.</code><code class="descname">ChatStoryConfData</code><span class="sig-paren">(</span><em>intent_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_story_conf_data.html#ChatStoryConfData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_story_conf_data.ChatStoryConfData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.common.chat_story_conf_data.ChatStoryConfData.get_intent_story">
+<code class="descname">get_intent_story</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_story_conf_data.html#ChatStoryConfData.get_intent_story"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_story_conf_data.ChatStoryConfData.get_intent_story" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_story_conf_data.ChatStoryConfData.get_story_response">
+<code class="descname">get_story_response</code><span class="sig-paren">(</span><em>story_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_story_conf_data.html#ChatStoryConfData.get_story_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_story_conf_data.ChatStoryConfData.get_story_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.common.chat_story_conf_data.ChatStoryConfData.get_story_service">
+<code class="descname">get_story_service</code><span class="sig-paren">(</span><em>story_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/common/chat_story_conf_data.html#ChatStoryConfData.get_story_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.common.chat_story_conf_data.ChatStoryConfData.get_story_service" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-chatbot.common" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">chatbot.common package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-chatbot.common.chat_conf_manager">chatbot.common.chat_conf_manager module</a></li>
+<li><a class="reference internal" href="#module-chatbot.common.chat_knowledge_data_dict">chatbot.common.chat_knowledge_data_dict module</a></li>
+<li><a class="reference internal" href="#module-chatbot.common.chat_knowledge_mem_dict">chatbot.common.chat_knowledge_mem_dict module</a></li>
+<li><a class="reference internal" href="#module-chatbot.common.chat_share_data">chatbot.common.chat_share_data module</a></li>
+<li><a class="reference internal" href="#module-chatbot.common.chat_story_conf_data">chatbot.common.chat_story_conf_data module</a></li>
+<li><a class="reference internal" href="#module-chatbot.common">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chatbot.common.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/chatbot.common.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

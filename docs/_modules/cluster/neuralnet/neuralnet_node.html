@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.neuralnet.neuralnet_node &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.neuralnet.neuralnet_node</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cluster.common.common_node</span> <span class="k">import</span> <span class="n">WorkFlowCommonNode</span>
+<span class="kn">from</span> <span class="nn">master.workflow.common.workflow_common</span> <span class="k">import</span> <span class="n">WorkFlowCommon</span>
+<span class="kn">from</span> <span class="nn">master</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">master</span> <span class="k">import</span> <span class="n">serializers</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<div class="viewcode-block" id="NeuralNetNode"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode">[docs]</a><span class="k">class</span> <span class="nc">NeuralNetNode</span><span class="p">(</span><span class="n">WorkFlowCommonNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NeuralNetNode.run"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call on train</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call on init parms from db</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_set_progress_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set node progress info and etc</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="NeuralNetNode.predict"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">parm</span> <span class="o">=</span> <span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :param parm:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.eval"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">parm</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :param parm:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.make_batch"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.make_batch">[docs]</a>    <span class="k">def</span> <span class="nf">make_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        call this function for next version</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">netnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="n">nn_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_id</span>
+        <span class="n">nn_wf_ver_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span>
+        <span class="n">ver_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_WFLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_id</span><span class="o">=</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">nn_wf_ver_id</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">train_batch_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">train_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">train_batch_count</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="n">train_batch</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">train_batch_count</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">:</span>
+            <span class="n">train_batch</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">train_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nn_batch_ver_id</span>
+        <span class="n">eval_batch_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">eval_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">eval_batch_count</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="n">eval_batch</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">eval_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">eval_batch</span><span class="p">,</span> <span class="s1">&#39;eval_flag&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+            <span class="n">eval_batch</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;nn_wf_ver_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ver_id</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">))</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;nn_batch_ver_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn_id</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;active_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;active_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;N&#39;</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO_Serializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">train_batch</span><span class="p">,</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;nn_batch_ver_id&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.get_active_batch"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_active_batch">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        find batch version for predict</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">netnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="n">nn_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_id</span>
+        <span class="n">nn_wf_ver_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span>
+        <span class="n">ver_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_WFLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_id</span><span class="o">=</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">nn_wf_ver_id</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">active_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn_id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;_1&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">active_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nn_batch_ver_id</span>
+        <span class="k">return</span> <span class="n">batch</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.get_eval_batch"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_eval_batch">[docs]</a>    <span class="k">def</span> <span class="nf">get_eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        find a batch version for eval, train</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">netnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="n">nn_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_id</span>
+        <span class="n">nn_wf_ver_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span>
+        <span class="n">ver_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_WFLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_id</span><span class="o">=</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">nn_wf_ver_id</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">eval_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn_id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;_1&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">,</span> <span class="n">eval_flag</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nn_batch_ver_id</span>
+        <span class="k">return</span> <span class="n">batch</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.check_batch_exist"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.check_batch_exist">[docs]</a>    <span class="k">def</span> <span class="nf">check_batch_exist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        use if you want to check batch data exists or not</span>
+<span class="sd">        check if batch version data exists</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">netnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="n">nn_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_id</span>
+        <span class="n">nn_wf_ver_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span>
+        <span class="n">ver_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_WFLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_id</span><span class="o">=</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">nn_wf_ver_id</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">ver_id</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.save_accloss_info"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.save_accloss_info">[docs]</a>    <span class="k">def</span> <span class="nf">save_accloss_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;nn_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_nn_id</span><span class="p">()</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;nn_wf_ver_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_nn_wf_ver_id</span><span class="p">()</span>
+        <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;nn_batch_ver_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_nn_batch_ver_id</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;acc_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_acc_info</span><span class="p">()</span>
+            <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;loss_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_loss_info</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TRAIN_SUMMARY_ACCLOSS_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_batch_ver_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;nn_batch_ver_id&#39;</span><span class="p">]))</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;acc_info&#39;</span><span class="p">,</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;acc_info&#39;</span><span class="p">])</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;loss_info&#39;</span><span class="p">,</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">&#39;loss_info&#39;</span><span class="p">])</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">serializer</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">TRAIN_SUMMARY_ACCLOSS_INFO_Serializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                    <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">input_data</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.get_before_make_batch"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_before_make_batch">[docs]</a>    <span class="k">def</span> <span class="nf">get_before_make_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">nn_batch_ver_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        find a batch version for eval, train</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">netnode</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="n">nn_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_id</span>
+        <span class="n">nn_wf_ver_id</span> <span class="o">=</span> <span class="n">netnode</span><span class="o">.</span><span class="n">wf_state_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span><span class="o">.</span><span class="n">nn_wf_ver_id</span>
+        <span class="n">ver_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_WFLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_id</span><span class="o">=</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">nn_wf_ver_id</span><span class="o">=</span><span class="n">nn_wf_ver_id</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">_before_batch_ver_id</span> <span class="o">=</span> <span class="n">nn_batch_ver_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">_before_batch_ver_id</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span> <span class="c1">#find maximun version before current batch version</span>
+            <span class="n">before_batch_ver_id</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">nn_id</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">nn_wf_ver_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">_i</span><span class="p">)])</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_batch_ver_id</span><span class="o">=</span><span class="n">before_batch_ver_id</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()):</span>
+                <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_VER_BATCHLIST_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nn_batch_ver_id</span><span class="o">=</span><span class="n">before_batch_ver_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.get_input_data"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_input_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feed_node</span><span class="p">,</span> <span class="n">cls_pool</span><span class="p">,</span> <span class="n">input_feed_name</span><span class="p">):</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dataconf</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">feed</span> <span class="ow">in</span> <span class="n">feed_node</span><span class="p">:</span>
+            <span class="n">feed_name</span> <span class="o">=</span> <span class="n">feed</span><span class="o">.</span><span class="n">get_node_name</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">feed_name</span> <span class="o">==</span> <span class="n">input_feed_name</span><span class="p">:</span>
+                <span class="n">data_node</span> <span class="o">=</span> <span class="n">feed</span><span class="o">.</span><span class="n">get_prev_node</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_node</span><span class="p">:</span>
+                    <span class="n">data_name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_node_name</span><span class="p">()</span>
+                    <span class="n">dataconf</span> <span class="o">=</span> <span class="n">WorkFlowCommon</span><span class="p">()</span><span class="o">.</span><span class="n">get_view_obj</span><span class="p">(</span><span class="n">data_name</span><span class="p">)</span>
+                    <span class="n">input_data</span> <span class="o">=</span> <span class="n">cls_pool</span><span class="p">[</span><span class="n">feed_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">dataconf</span></div>
+
+
+<div class="viewcode-block" id="NeuralNetNode.change_predict_fileList"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.change_predict_fileList">[docs]</a>    <span class="k">def</span> <span class="nf">change_predict_fileList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filelist</span><span class="p">,</span> <span class="n">dataconf</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">cluster.data.data_node_image</span> <span class="k">import</span> <span class="n">DataNodeImage</span>
+        <span class="n">x_size</span> <span class="o">=</span> <span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;x_size&quot;</span><span class="p">]</span>
+        <span class="n">y_size</span> <span class="o">=</span> <span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;y_size&quot;</span><span class="p">]</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span>
+
+        <span class="n">filelist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filelist</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">file_name_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">file_data_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+                <span class="k">for</span> <span class="n">img_val</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">chunks</span><span class="p">():</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">img_val</span><span class="p">))</span>
+
+                    <span class="n">sess</span><span class="p">,</span> <span class="n">img</span> <span class="o">=</span> <span class="n">DataNodeImage</span><span class="p">()</span><span class="o">.</span><span class="n">image_convert</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataconf</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">,</span> <span class="n">channel</span><span class="p">])</span>
+                    <span class="c1"># img = img.flatten()</span>
+
+                    <span class="n">file_name_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                    <span class="n">file_data_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;file chagne error.&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">file_name_arr</span><span class="p">,</span> <span class="n">file_data_arr</span></div>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param</span>
+<span class="sd">    :labels : [&#39;cat&#39;, &#39;dog&#39;]</span>
+<span class="sd">    :logits : [[ 0.  1.  0.  0.  0.  0.  0.  0.  0.  0.]]</span>
+<span class="sd">    :pred_cnt : return category count</span>
+<span class="sd">    :return category, predict result:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NeuralNetNode.set_predict_return_cnn_img"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.set_predict_return_cnn_img">[docs]</a>    <span class="k">def</span> <span class="nf">set_predict_return_cnn_img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">logits</span><span class="p">,</span> <span class="n">pred_cnt</span><span class="p">):</span>
+        <span class="n">one</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+            <span class="n">one</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">one</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">onesort</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># logging.info(&quot;############################################&quot;)</span>
+        <span class="c1"># logging.info(onesort)</span>
+        <span class="c1"># print(&quot;filename=&quot; + file_name + &quot; predict=&quot; + labels[int(onesort[0][0])])</span>
+        <span class="c1"># logging.info(onesort)</span>
+        <span class="n">data_sub</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">data_sub_key</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data_sub_val</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pred_cnt</span><span class="p">):</span>
+            <span class="n">data_sub_key</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">onesort</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])])</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">onesort</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">data_sub_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">data_sub</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sub_key</span>
+        <span class="n">data_sub</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sub_val</span>
+        <span class="k">return</span> <span class="n">data_sub</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.spaceprint"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.spaceprint">[docs]</a>    <span class="k">def</span> <span class="nf">spaceprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">cnt</span><span class="p">):</span>
+        <span class="n">leng</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnt</span> <span class="o">-</span> <span class="n">leng</span>
+        <span class="n">restr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cnt</span><span class="p">):</span>
+            <span class="n">restr</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">restr</span> <span class="o">=</span> <span class="n">restr</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">restr</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.model_file_delete"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.model_file_delete">[docs]</a>    <span class="k">def</span> <span class="nf">model_file_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">modelname</span><span class="p">):</span>
+        <span class="n">existcnt</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">filelist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+
+        <span class="n">flist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+            <span class="n">filetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getctime</span><span class="p">(</span><span class="n">model_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+                <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">filename</span><span class="p">,</span> <span class="n">filetime</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">modelname</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">flist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">flistsort</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">flist</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flistsort</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">existcnt</span> <span class="o">*</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">model_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">flistsort</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="NeuralNetNode.get_batch_img_data"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_batch_img_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_batch_img_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_set</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="n">num_classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;num_classes&quot;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
+        <span class="n">x_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;x_size&quot;</span><span class="p">]</span>
+        <span class="n">y_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;y_size&quot;</span><span class="p">]</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span>
+
+        <span class="n">labelsHot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_classes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_classes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="n">labelsHot</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">name_data_batch</span> <span class="o">=</span> <span class="n">data_set</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">label_data_batch</span> <span class="o">=</span> <span class="n">data_set</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">img_data_batch</span> <span class="o">=</span> <span class="n">data_set</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">y_batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">label_data_batch</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">label_data_batch</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                <span class="n">y_batch</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">labelsHot</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y_batch</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">label_data_batch</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+                <span class="n">y_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+        <span class="n">n_batch</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">name_data_batch</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+            <span class="n">n_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x_batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">img_data_batch</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">img_data_batch</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">img_data_batch</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">x_batch</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+            <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">x_batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_batch</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">,</span> <span class="n">channel</span><span class="p">))</span>
+
+        <span class="c1"># logging.info(&quot;Image Label ////////////////////////////////////////////////&quot;)</span>
+        <span class="c1"># logging.info(label_data_batch)</span>
+        <span class="c1"># logging.info(y_batch)</span>
+        <span class="c1"># logging.info(&quot;Image /////////////////////////////////////////////////&quot;)</span>
+        <span class="c1"># logging.info(x_batch)</span>
+
+        <span class="k">return</span> <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span><span class="p">,</span> <span class="n">n_batch</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.automl package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cluster-automl-package">
+<h1>cluster.automl package<a class="headerlink" href="#cluster-automl-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cluster.automl.automl_runmanager">
+<span id="cluster-automl-automl-runmanager-module"></span><h2>cluster.automl.automl_runmanager module<a class="headerlink" href="#module-cluster.automl.automl_runmanager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager">
+<em class="property">class </em><code class="descclassname">cluster.automl.automl_runmanager.</code><code class="descname">AutoMlRunManager</code><span class="sig-paren">(</span><em>nn_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>automl runmanager with handles
+from create net ver, batch ver</p>
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.create_networks">
+<code class="descname">create_networks</code><span class="sig-paren">(</span><em>generation</em>, <em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.create_networks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.create_networks" title="Permalink to this definition">¶</a></dt>
+<dd><p>We need to create new network for evluate our hyperparameter
+:param generation:number of generation
+:param population:number of population for each generation
+:return:return list of network (nn_id and version)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.create_version">
+<code class="descname">create_version</code><span class="sig-paren">(</span><em>generation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.create_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.create_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>create version on database
+:param generation:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.discard_inferior">
+<code class="descname">discard_inferior</code><span class="sig-paren">(</span><em>networks</em>, <em>survive</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.discard_inferior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.discard_inferior" title="Permalink to this definition">¶</a></dt>
+<dd><p>discard inferior genes combinations
+:param networks: network lists
+:return: networks</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.get_all_nodes_list">
+<code class="descname">get_all_nodes_list</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.get_all_nodes_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.get_all_nodes_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>get execute class path
+:param node_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.mutation">
+<code class="descname">mutation</code><span class="sig-paren">(</span><em>networks</em>, <em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.mutation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.mutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>mutate gene with survived ones
+:param networks: networks info
+:param number: number of genes to generate
+:return: networks</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run automl
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.save_summary">
+<code class="descname">save_summary</code><span class="sig-paren">(</span><em>info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.save_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.save_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>save best survived results
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.set_train_finish">
+<code class="descname">set_train_finish</code><span class="sig-paren">(</span><em>ver_data_sets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.set_train_finish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.set_train_finish" title="Permalink to this definition">¶</a></dt>
+<dd><p>update state flag for version level info on database
+:param input_data : raw info we had on database 
+:return:version info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.set_value">
+<code class="descname">set_value</code><span class="sig-paren">(</span><em>data_set</em>, <em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.set_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.train_networks">
+<code class="descname">train_networks</code><span class="sig-paren">(</span><em>networks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.train_networks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.train_networks" title="Permalink to this definition">¶</a></dt>
+<dd><p>train each networks on cluster server
+:param networks: network lists
+:return: networks</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.automl.automl_runmanager.AutoMlRunManager.update_summary">
+<code class="descname">update_summary</code><span class="sig-paren">(</span><em>networks</em>, <em>survive</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#AutoMlRunManager.update_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.AutoMlRunManager.update_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>update summary info of processing genetic algorithm
+arranged by generation (sequece of list means number of generation
+each node contains extra info like survive or not 
+:param networks: networks for one generations
+:param survive: number of gene to survive 
+:return: dict type result info with extra flag</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="cluster.automl.automl_runmanager.automl_run">
+<code class="descclassname">cluster.automl.automl_runmanager.</code><code class="descname">automl_run</code><span class="sig-paren">(</span><em>nnid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/automl/automl_runmanager.html#automl_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.automl.automl_runmanager.automl_run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-cluster.automl">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cluster.automl" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cluster.automl package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cluster.automl.automl_runmanager">cluster.automl.automl_runmanager module</a></li>
+<li><a class="reference internal" href="#module-cluster.automl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cluster.automl.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cluster.automl.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

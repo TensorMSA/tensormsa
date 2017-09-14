@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.dataconfig package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cluster-dataconfig-package">
+<h1>cluster.dataconfig package<a class="headerlink" href="#cluster-dataconfig-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cluster.dataconfig.dataconf_node">
+<span id="cluster-dataconfig-dataconf-node-module"></span><h2>cluster.dataconfig.dataconf_node module<a class="headerlink" href="#module-cluster.dataconfig.dataconf_node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.dataconfig.dataconf_node.DataConfNode">
+<em class="property">class </em><code class="descclassname">cluster.dataconfig.dataconf_node.</code><code class="descname">DataConfNode</code><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node.html#DataConfNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node.DataConfNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cluster.common.html#cluster.common.common_node.WorkFlowCommonNode" title="cluster.common.common_node.WorkFlowCommonNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.common_node.WorkFlowCommonNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.dataconfig.dataconf_node.DataConfNode.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node.html#DataConfNode.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node.DataConfNode.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.dataconfig.dataconf_node_frame">
+<span id="cluster-dataconfig-dataconf-node-frame-module"></span><h2>cluster.dataconfig.dataconf_node_frame module<a class="headerlink" href="#module-cluster.dataconfig.dataconf_node_frame" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame">
+<em class="property">class </em><code class="descclassname">cluster.dataconfig.dataconf_node_frame.</code><code class="descname">DataConfNodeFrame</code><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_frame.html#DataConfNodeFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.dataconfig.dataconf_node.DataConfNode" title="cluster.dataconfig.dataconf_node.DataConfNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.dataconfig.dataconf_node.DataConfNode</span></code></a></p>
+<p>Data Columns을 설정 하고 Validation Check가 필요함
+그러나 매번 Training을 할때는 필요 없음</p>
+<dl class="docutils">
+<dt>Validation check</dt>
+<dd>Category는 몇개냐
+Continuous에 문자값이 있으면 안됨</dd>
+</dl>
+<dl class="method">
+<dt id="cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.load_csv_by_pandas">
+<code class="descname">load_csv_by_pandas</code><span class="sig-paren">(</span><em>data_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_frame.html#DataConfNodeFrame.load_csv_by_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.load_csv_by_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>read csv
+:param data_path:
+:return:data_path</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_frame.html#DataConfNodeFrame.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>load train data
+Multi Locad를 위한 메소드 변경 피더 로 인한 변경포함
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_frame.html#DataConfNodeFrame.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.validate_data">
+<code class="descname">validate_data</code><span class="sig-paren">(</span><em>path</em>, <em>configuration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_frame.html#DataConfNodeFrame.validate_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_frame.DataConfNodeFrame.validate_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.dataconfig.dataconf_node_image">
+<span id="cluster-dataconfig-dataconf-node-image-module"></span><h2>cluster.dataconfig.dataconf_node_image module<a class="headerlink" href="#module-cluster.dataconfig.dataconf_node_image" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.dataconfig.dataconf_node_image.DataConfNodeImage">
+<em class="property">class </em><code class="descclassname">cluster.dataconfig.dataconf_node_image.</code><code class="descname">DataConfNodeImage</code><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_image.html#DataConfNodeImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_image.DataConfNodeImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.dataconfig.dataconf_node.DataConfNode" title="cluster.dataconfig.dataconf_node.DataConfNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.dataconfig.dataconf_node.DataConfNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.dataconfig.dataconf_node_image.DataConfNodeImage.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_image.html#DataConfNodeImage.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_image.DataConfNodeImage.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.dataconfig.dataconf_node_text">
+<span id="cluster-dataconfig-dataconf-node-text-module"></span><h2>cluster.dataconfig.dataconf_node_text module<a class="headerlink" href="#module-cluster.dataconfig.dataconf_node_text" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.dataconfig.dataconf_node_text.DataConfNodeText">
+<em class="property">class </em><code class="descclassname">cluster.dataconfig.dataconf_node_text.</code><code class="descname">DataConfNodeText</code><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_text.html#DataConfNodeText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_text.DataConfNodeText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.dataconfig.dataconf_node.DataConfNode" title="cluster.dataconfig.dataconf_node.DataConfNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.dataconfig.dataconf_node.DataConfNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.dataconfig.dataconf_node_text.DataConfNodeText.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/dataconfig/dataconf_node_text.html#DataConfNodeText.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.dataconfig.dataconf_node_text.DataConfNodeText.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.dataconfig">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cluster.dataconfig" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cluster.dataconfig package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cluster.dataconfig.dataconf_node">cluster.dataconfig.dataconf_node module</a></li>
+<li><a class="reference internal" href="#module-cluster.dataconfig.dataconf_node_frame">cluster.dataconfig.dataconf_node_frame module</a></li>
+<li><a class="reference internal" href="#module-cluster.dataconfig.dataconf_node_image">cluster.dataconfig.dataconf_node_image module</a></li>
+<li><a class="reference internal" href="#module-cluster.dataconfig.dataconf_node_text">cluster.dataconfig.dataconf_node_text module</a></li>
+<li><a class="reference internal" href="#module-cluster.dataconfig">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cluster.dataconfig.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cluster.dataconfig.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

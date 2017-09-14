@@ -1,0 +1,657 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.data.data_node_frame &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.data.data_node_frame</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">blaze.interactive</span> <span class="k">import</span> <span class="n">data</span>
+
+<span class="kn">from</span> <span class="nn">cluster.data.data_node</span> <span class="k">import</span> <span class="n">DataNode</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">master.workflow.data.workflow_data_frame</span> <span class="k">import</span> <span class="n">WorkFlowDataFrame</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">gmtime</span><span class="p">,</span> <span class="n">strftime</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">master.workflow.dataconf.workflow_dataconf_frame</span> <span class="k">import</span> <span class="n">WorkflowDataConfFrame</span> <span class="k">as</span> <span class="n">wf_data_conf</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">master.workflow.data.workflow_data_frame</span> <span class="k">import</span> <span class="n">WorkFlowDataFrame</span> <span class="k">as</span> <span class="n">wf_data_frame</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">preprocessing</span>
+
+<div class="viewcode-block" id="DataNodeFrame"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame">[docs]</a><span class="k">class</span> <span class="nc">DataNodeFrame</span><span class="p">(</span><span class="n">DataNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        DataNode Configuration</span>
+<span class="sd">        NULL처리가 중요한데 Category &quot;&quot; Continuous 0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DataNodeFrame.run"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run Data Node</span>
+<span class="sd">        한번에 HDF5랑  TFRECORD를 만든다.</span>
+<span class="sd">        :param data_path:</span>
+<span class="sd">        :return:dataframe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cls_list</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;cls_pool&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_type</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">)</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">src_local_handler</span><span class="p">(</span><span class="n">conf_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_type</span> <span class="o">==</span> <span class="s1">&#39;rdb&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;on development now&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_type</span> <span class="o">==</span> <span class="s1">&#39;s3&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;on development now&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_type</span> <span class="o">==</span> <span class="s1">&#39;hbase&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;on development now&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.get_eval_node_file_list"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.get_eval_node_file_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_eval_node_file_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Eval Data Node 찾고, 경로를 찾아서 CSV를 읽음</span>
+<span class="sd">            self.data_conf에 cell_feature에 넣음 </span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * _conf_data : nnid의 wf정보 </span>
+<span class="sd">        Returns:</span>
+<span class="sd">          None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eval_data_node</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span>  <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">conf_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cls_pool&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;evaldata&#39;</span> <span class="ow">in</span> <span class="n">_i</span><span class="p">]</span>
+        <span class="n">data_conf_node_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span> <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">conf_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cls_pool&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;dataconf&#39;</span> <span class="ow">in</span> <span class="n">_i</span><span class="p">]</span>
+        <span class="n">eval_data_cls</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="p">(</span><span class="n">eval_data_node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">eval_source_path</span> <span class="o">=</span> <span class="n">eval_data_cls</span><span class="o">.</span><span class="n">source_path</span>
+        <span class="n">fp_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_filepaths</span><span class="p">(</span><span class="n">eval_source_path</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">fp_list</span><span class="p">:</span>
+            <span class="n">df_csv_read</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_csv_by_pandas</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_column_types</span><span class="p">(</span><span class="n">df_csv_read</span><span class="p">,</span> <span class="n">eval_data_node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                    <span class="n">data_conf_node_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>   <span class="c1"># make columns type of csv</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.check_eval_node_for_wdnn"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.check_eval_node_for_wdnn">[docs]</a>    <span class="k">def</span> <span class="nf">check_eval_node_for_wdnn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Eval Data의 Category 데이터를 가져오기 위해서 필요</span>
+<span class="sd">            WDNN이면 data_conf_node_id를 반환 </span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * _conf_data : nnid의 wf정보 </span>
+<span class="sd">        Returns:</span>
+<span class="sd">          data_conf_node_id</span>
+<span class="sd">          DataConf의 ID반환</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_conf_node_id</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">_k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s1">&#39;dataconf&#39;</span> <span class="ow">in</span> <span class="n">_i</span><span class="p">:</span>    <span class="c1">#wdnn만 Dataconf를 가</span>
+                <span class="n">data_conf_node_id</span> <span class="o">=</span> <span class="n">_i</span>
+                <span class="k">if</span> <span class="s1">&#39;data_node&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">]:</span>    <span class="c1"># eval 카테고리 데이터를 가져 오기 위해서 필요 Evalnode가 실행할때는 필요 없음</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_node_file_list</span><span class="p">(</span><span class="n">_conf_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data_conf_node_id</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.make_label_values"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.make_label_values">[docs]</a>    <span class="k">def</span> <span class="nf">make_label_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_data_dfconf_list</span><span class="p">,</span> <span class="n">_df_csv_read</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; label의 Unique Value를 DataConf에 넣어줌</span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * _data_dfconf_list : nnid의 wf정보 </span>
+<span class="sd">            * _df_csv_read : Dataframe(train, eval)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">          _label : label 항목 값</span>
+<span class="sd">          _labe_type : label type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_key</span> <span class="o">=</span> <span class="n">_data_dfconf_list</span>
+        <span class="n">_nnid</span> <span class="o">=</span> <span class="n">_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_ver</span> <span class="o">=</span> <span class="n">_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">_node</span> <span class="o">=</span> <span class="s1">&#39;dataconf_node&#39;</span>
+        <span class="n">_wf_data_conf</span> <span class="o">=</span> <span class="n">wf_data_conf</span><span class="p">(</span><span class="n">_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">_wf_data_conf</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">_label</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">label</span>
+            <span class="n">_labe_type</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">label_type</span>
+            <span class="n">origin_labels_list</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">label_values</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">_wf_data_conf</span><span class="p">,</span>
+                                                                       <span class="s1">&#39;label_values&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">list</span><span class="p">()</span>  <span class="c1"># 처음 입려할때 라벨벨류가 없으면 빈 리스트 넘김</span>
+            <span class="n">compare_labels_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_dataconf_for_labels</span><span class="p">(</span><span class="n">_df_csv_read</span><span class="p">,</span> <span class="n">_label</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">combined_label_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_combine_label_list</span><span class="p">(</span><span class="n">origin_labels_list</span><span class="p">,</span> <span class="n">compare_labels_list</span><span class="p">)</span>    <span class="c1"># 리스트를 합친다음 DB에 업데이트 한다.</span>
+            <span class="n">_data_conf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">_data_conf</span><span class="p">[</span><span class="s1">&#39;label_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">combined_label_list</span>
+            <span class="k">if</span> <span class="n">_labe_type</span> <span class="o">==</span> <span class="s1">&#39;CONTINUOUS&#39;</span><span class="p">:</span>
+                <span class="n">_data_conf</span><span class="p">[</span><span class="s1">&#39;label_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">put_step_source</span><span class="p">(</span><span class="n">_nnid</span><span class="p">,</span> <span class="n">_ver</span><span class="p">,</span> <span class="n">_node</span><span class="p">,</span> <span class="n">_data_conf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_label</span><span class="p">,</span> <span class="n">_labe_type</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.make_preprocessing_pandas"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.make_preprocessing_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">make_preprocessing_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_df_csv_read_ori</span><span class="p">,</span> <span class="n">_preprocessing_type</span> <span class="p">,</span> <span class="n">_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; SKLearn을 사용해서 Pandas를 Proprocessing</span>
+<span class="sd">            label은 Preprocessing 하면 안됨</span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * _preprocessing_type: [&#39;scale&#39;, &#39;minmax_scale&#39;, &#39;robust_scale&#39;, &#39;normalize&#39;, &#39;maxabs_scale&#39;]</span>
+<span class="sd">            * _df_csv_read_ori : pandas dataframe</span>
+<span class="sd">            * _label</span>
+<span class="sd">        Returns:</span>
+<span class="sd">          Preprocessing DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_preprocessing_type</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">_preprocessing_type</span> <span class="o">==</span> <span class="s1">&#39;null&#39;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No Preprocessing&quot;</span><span class="p">)</span>
+            <span class="n">result_df</span> <span class="o">=</span>  <span class="n">_df_csv_read_ori</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preprocessing type : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_preprocessing_type</span><span class="p">))</span>
+            <span class="n">numerics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int16&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_df_csv_read_ori</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">numerics</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_label</span><span class="p">:</span>
+                        <span class="c1">#preprocessing_types = [&#39;scale&#39;, &#39;minmax_scale&#39;, &#39;robust_scale&#39;, &#39;normalize&#39;, &#39;maxabs_scale&#39;]</span>
+                        <span class="c1">#_preprocessing_type = [&#39;maxabs_scale&#39;]</span>
+                        <span class="k">if</span> <span class="s1">&#39;scale&#39;</span> <span class="ow">in</span> <span class="n">_preprocessing_type</span><span class="p">:</span>
+                            <span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="s1">&#39;minmax_scale&#39;</span> <span class="ow">in</span> <span class="n">_preprocessing_type</span><span class="p">:</span>
+                            <span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">minmax_scale</span><span class="p">(</span><span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="s1">&#39;robust_scale&#39;</span> <span class="ow">in</span> <span class="n">_preprocessing_type</span><span class="p">:</span>
+                            <span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">robust_scale</span><span class="p">(</span><span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="s1">&#39;normalize&#39;</span> <span class="ow">in</span> <span class="n">_preprocessing_type</span><span class="p">:</span>
+                            <span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="s1">&#39;maxabs_scale&#39;</span> <span class="ow">in</span> <span class="n">_preprocessing_type</span><span class="p">:</span>
+                            <span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">maxabs_scale</span><span class="p">(</span><span class="n">_df_csv_read_ori</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
+            <span class="n">result_df</span> <span class="o">=</span> <span class="n">_df_csv_read_ori</span>
+        <span class="k">return</span> <span class="n">result_df</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.make_drop_duplicate"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.make_drop_duplicate">[docs]</a>    <span class="k">def</span> <span class="nf">make_drop_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_df_csv_read_ori</span><span class="p">,</span> <span class="n">_drop_duplicate</span> <span class="p">,</span> <span class="n">_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Label을 제외한 나머지 값중에 중복이 있으면 Row 전체를 제거한다.</span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * _preprocessing_type: [&#39;scale&#39;, &#39;minmax_scale&#39;, &#39;robust_scale&#39;, &#39;normalize&#39;, &#39;maxabs_scale&#39;]</span>
+<span class="sd">            * _df_csv_read_ori : pandas dataframe</span>
+<span class="sd">            * _label</span>
+<span class="sd">        Returns:</span>
+<span class="sd">          Preprocessing Dataframe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_drop_duplicate</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">_drop_duplicate</span> <span class="o">==</span> <span class="s1">&#39;null&#39;</span> <span class="ow">or</span> <span class="n">_drop_duplicate</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No Duplicate&quot;</span><span class="p">)</span>
+            <span class="n">result_df</span> <span class="o">=</span>  <span class="n">_df_csv_read_ori</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="n">cell_features</span> <span class="o">=</span> <span class="n">_df_csv_read_ori</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">cell_features</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">_label</span><span class="p">)</span>
+            <span class="n">result_df</span> <span class="o">=</span> <span class="n">_df_csv_read_ori</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">cell_features</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;duplicated row delete </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_df_csv_read_ori</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">result_df</span><span class="o">.</span><span class="n">index</span><span class="p">)))</span>
+            <span class="n">temp_duplicate_filename</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H:%M:%S&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;_dup.csvbk&quot;</span>
+            <span class="n">result_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_path</span> <span class="o">+</span> <span class="s2">&quot;/backup/&quot;</span> <span class="o">+</span> <span class="n">temp_duplicate_filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result_df</span></div>
+
+<div class="viewcode-block" id="DataNodeFrame.src_local_handler"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.src_local_handler">[docs]</a>    <span class="k">def</span> <span class="nf">src_local_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Converting csv to  h5 and Tf Record</span>
+<span class="sd">            Data Node for Data_frame</span>
+<span class="sd">            1) Wdnn인 경우 </span>
+<span class="sd">              Pandas를 파싱하면서 Categorical 인지 Continuous인지 구별하여 DataConf에 입력(eval data할때는 안함. DataNode 기준 )</span>
+<span class="sd">              Category일경우 Unique값을 Dataconf에 입력</span>
+<span class="sd">              Label type이 Categorical이면 Label의 Unique값을 DataConf입력 </span>
+<span class="sd">              _preprocess_type에 따라 Pandas 전처리 </span>
+<span class="sd">            2) _multi_node_flag 가 True일 경우 TfRecord까지 생성</span>
+<span class="sd">            3) Wdnn이 아닌경우 H5만 생성</span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * conf_data : nn_info</span>
+<span class="sd">        Returns:</span>
+<span class="sd">          None</span>
+<span class="sd">        Raises:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Data node starting : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">]))</span>
+            <span class="n">fp_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_filepaths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_path</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span>
+            <span class="n">_multi_node_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_node_flag</span>
+            <span class="n">_preprocess_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_preprocess_type</span>
+            <span class="c1">#_preprocess_type = &quot;maxabs_scale&quot;</span>
+            <span class="n">_drop_duplicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_duplicate</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_src_path</span> <span class="o">+</span> <span class="s2">&quot;/backup&quot;</span>  <span class="c1"># backup 디렉토리 만들고</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data_conf_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_eval_node_for_wdnn</span><span class="p">(</span><span class="n">conf_data</span><span class="p">)</span>
+                <span class="n">data_dfconf_list</span> <span class="o">=</span> <span class="n">data_conf_node_id</span>
+                <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">fp_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_dfconf_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1">#WDNN이 아닌것</span>
+                        <span class="n">df_csv_read</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_csv_by_pandas</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">create_hdf5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_store_path</span><span class="p">,</span> <span class="n">df_csv_read</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_dfconf_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>   <span class="c1">#WDNN인것</span>
+                        <span class="n">df_csv_read</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_csv_by_pandas</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="s1">&#39;dataconf&#39;</span> <span class="ow">in</span> <span class="n">data_dfconf_list</span><span class="p">:</span> <span class="c1">#이미 여기서 Dataconf인지 판단</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">data_conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_column_types</span><span class="p">(</span><span class="n">df_csv_read</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">],</span>
+                                                                    <span class="n">data_conf_node_id</span><span class="p">)</span>  <span class="c1"># make columns type of csv</span>
+                            <span class="c1"># eval 것도 같이 가져와서 unique value를 구해야함</span>
+                            <span class="c1"># Todo 만약 eval과 train의 데이터 타입이 틀리면 Category로 해야하는 로직이 필요함</span>
+                        <span class="n">_label</span><span class="p">,</span><span class="n">_labe_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_label_values</span><span class="p">(</span><span class="n">data_dfconf_list</span><span class="p">,</span> <span class="n">df_csv_read</span><span class="p">)</span>   <span class="c1"># WDNN인 경우 Label Values를 Dataconf에 넣음</span>
+
+                        <span class="n">drop_dup_df_csv_read</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_drop_duplicate</span><span class="p">(</span><span class="n">df_csv_read</span><span class="p">,</span> <span class="n">_drop_duplicate</span><span class="p">,</span><span class="n">_label</span><span class="p">)</span>
+                        <span class="n">_pre_df_csv_read</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_preprocessing_pandas</span><span class="p">(</span><span class="n">drop_dup_df_csv_read</span><span class="p">,</span> <span class="n">_preprocess_type</span><span class="p">,</span><span class="n">_label</span> <span class="p">)</span>
+                        <span class="n">temp_preprocess_filename</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H:%M:%S&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;_pre.csvbk&quot;</span>
+                        <span class="n">_pre_df_csv_read</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_path</span> <span class="o">+</span> <span class="s2">&quot;/backup/&quot;</span> <span class="o">+</span> <span class="n">temp_preprocess_filename</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">create_hdf5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_store_path</span><span class="p">,</span> <span class="n">_pre_df_csv_read</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">_multi_node_flag</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="n">skip_header</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="c1"># Todo Have to remove if production</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">save_tfrecord</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store_path</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">,</span> <span class="n">_pre_df_csv_read</span><span class="p">,</span><span class="n">_label</span><span class="p">,</span> <span class="n">_labe_type</span><span class="p">)</span>
+
+                    <span class="n">file_name_bk</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H:%M:%S&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;.csvbk&quot;</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data_src_path</span><span class="o">+</span><span class="s2">&quot;/backup/&quot;</span><span class="o">+</span><span class="n">file_name_bk</span> <span class="p">)</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="c1">#승우씨것</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Datanode making h5 or tfrecord error&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Data node end : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.multi_load_data"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.multi_load_data">[docs]</a>    <span class="k">def</span> <span class="nf">multi_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">parm</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.preprocess_data"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.preprocess_data">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param input_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_preprocess_type</span> <span class="o">==</span> <span class="s1">&#39;mecab&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">input_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+                <span class="n">input_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mecab_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">input_data</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.save_tfrecord"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.save_tfrecord">[docs]</a>    <span class="k">def</span> <span class="nf">save_tfrecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csv_data_file</span><span class="p">,</span> <span class="n">store_path</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">,</span> <span class="n">df_csv_read</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">label_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a TFRecords file for the given input data and</span>
+<span class="sd">        example transofmration function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H:%M:%S&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">store_path</span> <span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.tfrecords&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_tfrecords_file</span><span class="p">(</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">,</span> <span class="n">df_csv_read</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span><span class="n">label_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.create_tfrecords_file"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.create_tfrecords_file">[docs]</a>    <span class="k">def</span> <span class="nf">create_tfrecords_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">skip_header</span><span class="p">,</span> <span class="n">df_csv_read</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span><span class="n">label_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a TFRecords file for the given input data and</span>
+<span class="sd">        example transofmration function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">python_io</span><span class="o">.</span><span class="n">TFRecordWriter</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating TFRecords file at&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;...&quot;</span><span class="p">)</span>
+
+            <span class="n">CONTINUOUS_COLUMNS</span><span class="p">,</span> <span class="n">CATEGORICAL_COLUMNS</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_continuous_category_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_conf</span><span class="p">[</span><span class="s2">&quot;cell_feature&quot;</span><span class="p">])</span>
+            <span class="n">print_row_count</span> <span class="o">=</span> <span class="mi">10000</span>
+            <span class="n">csv_dataframe</span> <span class="o">=</span> <span class="n">df_csv_read</span>
+            <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv_dataframe</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_example_pandas</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">CONTINUOUS_COLUMNS</span><span class="p">,</span> <span class="n">CATEGORICAL_COLUMNS</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span><span class="n">label_type</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">%</span> <span class="n">print_row_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;###### TFRecording row count : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">())</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wrote to&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.make_continuous_category_list"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.make_continuous_category_list">[docs]</a>    <span class="k">def</span> <span class="nf">make_continuous_category_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cell_feature</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CONTINUOUS_COLUMNS</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">CATEGORICAL_COLUMNS</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">type_columne</span><span class="p">,</span> <span class="n">type_value</span> <span class="ow">in</span> <span class="n">cell_feature</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">type_value</span><span class="p">[</span><span class="s2">&quot;column_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CONTINUOUS&#39;</span><span class="p">:</span>
+                <span class="n">CONTINUOUS_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_columne</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">CATEGORICAL_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_columne</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CONTINUOUS_COLUMNS</span><span class="p">,</span> <span class="n">CATEGORICAL_COLUMNS</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.create_example_pandas"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.create_example_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">create_example_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">CONTINUOUS_COLUMNS</span><span class="p">,</span> <span class="n">CATEGORICAL_COLUMNS</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">label_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Converting tfrecord example from pandas</span>
+<span class="sd">            Pandas Dataframe을 tfrecord로 변경하는 함수(WDNN용)</span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * row : Dataframe row</span>
+<span class="sd">            * CONTINUOUS_COLUMNS </span>
+<span class="sd">            * CATEGORICAL_COLUMNS</span>
+<span class="sd">            * label</span>
+<span class="sd">            * label_type </span>
+<span class="sd">        Returns:</span>
+<span class="sd">          tfrecord example</span>
+<span class="sd">        Raises:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">example</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Example</span><span class="p">()</span>
+            <span class="n">_CONTINUOUS_COLUMNS</span> <span class="o">=</span> <span class="n">CONTINUOUS_COLUMNS</span><span class="p">[:]</span>
+            <span class="n">_CATEGORICAL_COLUMNS</span> <span class="o">=</span> <span class="n">CATEGORICAL_COLUMNS</span><span class="p">[:]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">_CATEGORICAL_COLUMNS</span><span class="p">:</span>
+                    <span class="n">_CATEGORICAL_COLUMNS</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">_CONTINUOUS_COLUMNS</span><span class="p">:</span>
+                    <span class="n">_CONTINUOUS_COLUMNS</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="c1">#TODO: extende cell feature를 여기서 체크할 필요가 있을듯 함</span>
+            <span class="c1"># tfrecord는 여기서 Label을 변경한다. 나중에 꺼낼때 답이 없음 Tensor 객체로 추출되기 때문에 그러나 H5는 feeder에서 변환해주자</span>
+            <span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+            <span class="n">le</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">combined_label_list</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_CATEGORICAL_COLUMNS</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">example</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">feature</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">bytes_list</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">value</span><span class="p">)])</span>
+                <span class="k">elif</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">_CONTINUOUS_COLUMNS</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">example</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">feature</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">float_list</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="n">col</span> <span class="o">==</span> <span class="n">label</span><span class="p">:</span>
+                    <span class="c1">#Todo Category? Continuous?</span>
+                    <span class="k">if</span> <span class="n">label_type</span> <span class="o">==</span> <span class="s2">&quot;CONTINUOUS&quot;</span><span class="p">:</span>
+                        <span class="n">example</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">feature</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">int64_list</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">trans</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">value</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 무조껀 0번째임</span>
+                        <span class="n">example</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">feature</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">int64_list</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">trans</span><span class="p">)])</span>
+            <span class="k">return</span> <span class="n">example</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;make tfrecord column </span><span class="si">{0}</span><span class="s2"> value </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">,</span><span class="n">value</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;make tfrecord rows </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.create_hdf5"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.create_hdf5">[docs]</a>    <span class="k">def</span> <span class="nf">create_hdf5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create hdf5</span>
+<span class="sd">        :param data_path:</span>
+<span class="sd">        :return:dataframe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H:%M:%S&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;.h5&quot;</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="n">hdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+        <span class="n">hdf</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">data_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+        <span class="n">hdf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.load_data"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">parm</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        load train data</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :param parm:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_multi_node_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_node_flag</span>
+            <span class="k">if</span> <span class="n">_multi_node_flag</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_filepaths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_store_path</span><span class="p">,</span> <span class="s1">&#39;tfrecords&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_filepaths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_store_path</span><span class="p">,</span> <span class="s1">&#39;h5&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">file_path</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.load_csv_by_pandas"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.load_csv_by_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">load_csv_by_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        read csv</span>
+<span class="sd">        :param data_path:</span>
+<span class="sd">        :return:data_path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">df_csv_read</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">gfile</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">data_path</span><span class="p">),</span>
+                                      <span class="n">skipinitialspace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                      <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+                                      <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8-sig&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">df_csv_read</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.make_column_types"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.make_column_types">[docs]</a>    <span class="k">def</span> <span class="nf">make_column_types</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_dfconf_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )</span>
+<span class="sd">        :param df:</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data_conf</span><span class="p">,</span> <span class="n">data_conf_unique_json</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_dataconf_for_checktype</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_dfconf_list</span> <span class="p">)</span>
+            <span class="n">data_conf_unique_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_unique_value_each_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">node_id</span><span class="p">)</span>
+            <span class="n">data_conf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data_conf_unique_cnt</span><span class="p">)</span>
+            <span class="n">dataconf_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_forward_node_with_type</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="s1">&#39;dataconf&#39;</span><span class="p">)</span>
+            <span class="n">wf_data_conf_node</span> <span class="o">=</span> <span class="n">wf_data_conf</span><span class="p">(</span><span class="n">data_dfconf_list</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf_first_time_check</span><span class="p">(</span><span class="n">wf_data_conf_node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_default_dataconf_from_csv</span><span class="p">(</span><span class="n">wf_data_conf_node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_conf</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_default_dataconf_from_csv</span><span class="p">(</span><span class="n">wf_data_conf_node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_conf_unique_cnt</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_default_dataconf_from_csv</span><span class="p">(</span><span class="n">wf_data_conf_node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_conf_unique_json</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf_eval_time_check</span><span class="p">(</span><span class="n">wf_data_conf_node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_default_dataconf_from_csv</span><span class="p">(</span><span class="n">wf_data_conf_node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_conf_unique_json</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data_conf</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;make column type Error </span><span class="si">{0}</span><span class="s2">  line no(</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">__traceback__</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.dataconf_first_time_check"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.dataconf_first_time_check">[docs]</a>    <span class="k">def</span> <span class="nf">dataconf_first_time_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_wf_data_conf_node</span><span class="p">,</span> <span class="n">_node_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        data_conf가 비어있거나, DataNode일때만 업데이트 하도록 한다.</span>
+<span class="sd">        :param data_dfconf_list (nn00001_1_dataconf_node)</span>
+<span class="sd">        :return True:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_wf_data_conf_node</span><span class="o">.</span><span class="n">cell_feature</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="s1">&#39;conf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_wf_data_conf_node</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;data_node&#39;</span> <span class="ow">in</span> <span class="n">_node_name</span><span class="p">):</span>
+            <span class="n">_value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">_value</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.dataconf_eval_time_check"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.dataconf_eval_time_check">[docs]</a>    <span class="k">def</span> <span class="nf">dataconf_eval_time_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_wf_data_conf_node</span><span class="p">,</span> <span class="n">_node_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        data conf가 있어도, eval이면 unique값만 추가한다.</span>
+<span class="sd">        :param data_dfconf_list (nn00001_1_dataconf_node)</span>
+<span class="sd">        :return True:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;evaldata&#39;</span> <span class="ow">in</span> <span class="n">_node_name</span><span class="p">):</span>
+             <span class="n">_value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">_value</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.make_unique_value_each_column"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.make_unique_value_each_column">[docs]</a>    <span class="k">def</span> <span class="nf">make_unique_value_each_column</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Dataframe중 범주형 데이터를 찾아서 유일한 값의 갯수를 반환한다 </span>
+<span class="sd">            Unique Value return in Dataframe</span>
+<span class="sd">        Args:</span>
+<span class="sd">          params:</span>
+<span class="sd">            * df : dataframe</span>
+<span class="sd">            * node_id: nnid</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            json</span>
+<span class="sd">        Raises:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data_conf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">column_cate_unique</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">numerics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int16&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">numerics</span><span class="p">):</span>  <span class="c1"># maybe need float</span>
+                    <span class="n">column_cate_unique</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">data_conf</span><span class="p">[</span><span class="s1">&#39;unique_cell_feature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">column_cate_unique</span>
+            <span class="n">data_conf_json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data_conf</span><span class="p">)</span>
+            <span class="n">data_conf_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data_conf_json_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data_conf_json</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;make_unique_value_each_column error : </span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">v</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.set_default_dataconf_from_csv"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.set_default_dataconf_from_csv">[docs]</a>    <span class="k">def</span> <span class="nf">set_default_dataconf_from_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wf_data_config</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_conf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param wf_data_config, df, nnid, ver, node:</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        tfrecord 때문에 항상 타입을 체크하고 필요할때만 저장</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># #TODO : set_default_dataconf_from_csv 파라미터 정리 필요</span>
+        <span class="n">nnid</span> <span class="o">=</span> <span class="n">node_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ver</span> <span class="o">=</span> <span class="n">node_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data_node</span> <span class="o">=</span> <span class="s2">&quot;dataconf_node&quot;</span>
+        <span class="n">wf_data_config</span><span class="o">.</span><span class="n">put_step_source</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">data_node</span><span class="p">,</span> <span class="n">data_conf</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataNodeFrame.set_dataconf_for_checktype"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.set_dataconf_for_checktype">[docs]</a>    <span class="k">def</span> <span class="nf">set_dataconf_for_checktype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">data_dfconf_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )</span>
+<span class="sd">        카테고리 컬럼은 Unique 한 값을 구해서 cell_feature_unique에 넣어줌(Keras용)</span>
+<span class="sd">        </span>
+<span class="sd">        :param wf_data_config, df, nnid, ver, node:</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#TODO : set_default_dataconf_from_csv 파라미터 정리 필요</span>
+            <span class="n">data_conf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">data_conf_unique_v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">data_conf_col_unique_v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">data_conf_col_type</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">numerics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;int16&#39;</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">]</span>
+            <span class="c1"># Wdnn인경우 data_dfconf가 무조껀 한개만 존재 하므로 아래와 같은 로직이 가능</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_dfconf_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_wf_data_conf</span> <span class="o">=</span> <span class="n">wf_data_conf</span><span class="p">(</span><span class="n">data_dfconf_list</span><span class="p">)</span>
+                <span class="n">_cell_feature_unique</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">cell_feature_unique</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">_wf_data_conf</span><span class="p">,</span>
+                                                                      <span class="s1">&#39;cell_feature_unique&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">list</span><span class="p">()</span>  <span class="c1"># 처음 입려할때 라벨벨류가 없으면 빈 리스트 넘김</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="c1"># label</span>
+                <span class="n">column_dtypes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">column_unique_value</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">numerics</span><span class="p">):</span>  <span class="c1"># maybe need float</span>
+                    <span class="n">col_type</span> <span class="o">=</span> <span class="s1">&#39;CONTINUOUS&#39;</span>
+                    <span class="n">columns_unique_value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">col_type</span> <span class="o">=</span> <span class="s1">&#39;CATEGORICAL&#39;</span>
+                    <span class="n">columns_unique_value</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>  <span class="c1"># null처리 해야함</span>
+                <span class="n">column_dtypes</span><span class="p">[</span><span class="s1">&#39;column_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_type</span>
+                <span class="n">origin_feature_unique</span> <span class="o">=</span> <span class="n">_cell_feature_unique</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column_u_values&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="ow">in</span> <span class="n">_cell_feature_unique</span><span class="p">)</span> <span class="k">else</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="n">combined_col_u_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_combine_label_list</span><span class="p">(</span><span class="n">origin_feature_unique</span><span class="p">,</span> <span class="n">columns_unique_value</span><span class="p">)</span>
+                <span class="n">column_unique_value</span><span class="p">[</span><span class="s1">&#39;column_u_values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_col_u_list</span>    <span class="c1">#읽어와서 추가되면 뒤에 붙여준다.</span>
+                <span class="n">data_conf_col_type</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">column_dtypes</span>
+                <span class="n">data_conf_col_unique_v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">column_unique_value</span>
+            <span class="n">data_conf</span><span class="p">[</span><span class="s1">&#39;cell_feature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_conf_col_type</span>
+            <span class="n">data_conf_unique_v</span><span class="p">[</span><span class="s1">&#39;cell_feature_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_conf_col_unique_v</span>
+            <span class="n">data_conf_json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data_conf</span><span class="p">)</span>  <span class="c1">#Json으로 바꿔줌</span>
+            <span class="n">data_conf_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data_conf_json_str</span><span class="p">)</span>
+            <span class="n">data_conf_unique_json_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data_conf_unique_v</span><span class="p">)</span>
+            <span class="n">data_conf_unique_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data_conf_unique_json_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data_conf_json</span><span class="p">,</span> <span class="n">data_conf_unique_json</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;set_dataconf_for_checktype </span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">__traceback__</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DataNodeFrame.set_dataconf_for_labels"><a class="viewcode-back" href="../../../cluster.data.html#cluster.data.data_node_frame.DataNodeFrame.set_dataconf_for_labels">[docs]</a>    <span class="k">def</span> <span class="nf">set_dataconf_for_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        csv를 읽고 label의 distict 값을 가져옴</span>
+<span class="sd">        Extract distinct label values</span>
+<span class="sd">        :param wf_data_config, df, nnid, ver, node:</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#TODO : set_default_dataconf_from_csv 파라미터 정리 필요</span>
+        <span class="n">label_values</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">label_values</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_set_progress_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+    <span class="k">def</span> <span class="nf">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init parameter from workflow_data_frame</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">wf_data_frame</span> <span class="o">=</span> <span class="n">WorkFlowDataFrame</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">object_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_sql_stmt</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">sql_stmt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_src_path</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">source_path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_src_type</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">src_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_server_type</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">src_server</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_preprocess_type</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">step_preprocess</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_store_path</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">step_store</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sent_max_len</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">max_sentence_len</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">multi_node_flag</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">multi_node_flag</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drop_duplicate</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="o">.</span><span class="n">drop_duplicate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">combine_label_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;WorkFlowDataFrame parms are not set &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

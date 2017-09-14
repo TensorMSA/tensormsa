@@ -1,0 +1,1468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="chatbot-package">
+<h1>chatbot package<a class="headerlink" href="#chatbot-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chatbot.common.html">chatbot.common package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.common.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.common.html#module-chatbot.common.chat_conf_manager">chatbot.common.chat_conf_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.common.html#module-chatbot.common.chat_knowledge_data_dict">chatbot.common.chat_knowledge_data_dict module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.common.html#module-chatbot.common.chat_knowledge_mem_dict">chatbot.common.chat_knowledge_mem_dict module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.common.html#module-chatbot.common.chat_share_data">chatbot.common.chat_share_data module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.common.html#module-chatbot.common.chat_story_conf_data">chatbot.common.chat_story_conf_data module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.common.html#module-chatbot.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chatbot.decision.html">chatbot.decision package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.decision.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.decision.html#module-chatbot.decision.decision_maker">chatbot.decision.decision_maker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.decision.html#module-chatbot.decision.summrize_result">chatbot.decision.summrize_result module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.decision.html#module-chatbot.decision">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chatbot.manager.html">chatbot.manager package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.manager.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.manager.html#module-chatbot.manager.bot_builder">chatbot.manager.bot_builder module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.manager.html#module-chatbot.manager.service_manager">chatbot.manager.service_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.manager.html#module-chatbot.manager.service_mapper">chatbot.manager.service_mapper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.manager.html#module-chatbot.manager">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chatbot.nlp.html">chatbot.nlp package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.entity_analyzer">chatbot.nlp.entity_analyzer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.entity_recognizer">chatbot.nlp.entity_recognizer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.entity_regexp">chatbot.nlp.entity_regexp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.entity_synonym">chatbot.nlp.entity_synonym module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.intend_analyzer">chatbot.nlp.intend_analyzer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.response_generator">chatbot.nlp.response_generator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.rule_intent_analyzer">chatbot.nlp.rule_intent_analyzer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp.syntax_analyzer">chatbot.nlp.syntax_analyzer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.nlp.html#module-chatbot.nlp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chatbot.ontology.html">chatbot.ontology package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.ontology.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.ontology.html#module-chatbot.ontology.ontology_manager">chatbot.ontology.ontology_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.ontology.html#module-chatbot.ontology">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chatbot.services.html">chatbot.services package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.services.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.services.html#module-chatbot.services.service_provider">chatbot.services.service_provider module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.services.html#module-chatbot.services">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chatbot.story.html">chatbot.story package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.story.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.story.html#module-chatbot.story.story_board_manager">chatbot.story.story_board_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chatbot.story.html#module-chatbot.story">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-chatbot.admin">
+<span id="chatbot-admin-module"></span><h2>chatbot.admin module<a class="headerlink" href="#module-chatbot.admin" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-chatbot.apps">
+<span id="chatbot-apps-module"></span><h2>chatbot.apps module<a class="headerlink" href="#module-chatbot.apps" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.apps.ChatbotConfig">
+<em class="property">class </em><code class="descclassname">chatbot.apps.</code><code class="descname">ChatbotConfig</code><span class="sig-paren">(</span><em>app_name</em>, <em>app_module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/apps.html#ChatbotConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.apps.ChatbotConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.apps.config.AppConfig</span></code></p>
+<dl class="attribute">
+<dt id="chatbot.apps.ChatbotConfig.name">
+<code class="descname">name</code><em class="property"> = 'chatbot'</em><a class="headerlink" href="#chatbot.apps.ChatbotConfig.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.models">
+<span id="chatbot-models-module"></span><h2>chatbot.models module<a class="headerlink" href="#module-chatbot.models" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.models.CB_DEF_LIST_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_DEF_LIST_INFO</code><span class="sig-paren">(</span><em>cb_id</em>, <em>chat_cate</em>, <em>chat_sub_cate</em>, <em>cb_title</em>, <em>cb_desc</em>, <em>creation_date</em>, <em>last_update_date</em>, <em>created_by</em>, <em>last_updated_by</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_DEF_LIST_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_desc">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_desc</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_entity_list_info_set">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_entity_list_info_set</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_entity_list_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_entity_relation_info_set">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_entity_relation_info_set</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_entity_relation_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_entity_synonym_list_set">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_entity_synonym_list_set</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_entity_synonym_list_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_id">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_intent_list_info_set">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_intent_list_info_set</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_intent_list_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_model_list_info_set">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_model_list_info_set</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_model_list_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_ontology_info_set">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_ontology_info_set</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_ontology_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_tagging_info_set">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_tagging_info_set</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_tagging_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.cb_title">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">cb_title</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.cb_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.chat_cate">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">chat_cate</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.chat_cate" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.chat_sub_cate">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">chat_sub_cate</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.chat_sub_cate" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.created_by">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">created_by</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.created_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.creation_date">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">creation_date</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.creation_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.get_next_by_creation_date">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">get_next_by_creation_date</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.get_next_by_creation_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.get_next_by_last_update_date">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">get_next_by_last_update_date</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.get_next_by_last_update_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.get_previous_by_creation_date">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">get_previous_by_creation_date</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.get_previous_by_creation_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.get_previous_by_last_update_date">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">get_previous_by_last_update_date</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.get_previous_by_last_update_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.last_update_date">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">last_update_date</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.last_update_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.last_updated_by">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">last_updated_by</code><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.last_updated_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_DEF_LIST_INFO.objects">
+<code class="descclassname">CB_DEF_LIST_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_DEF_LIST_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_ENTITY_LIST_INFO</code><span class="sig-paren">(</span><em>id</em>, <em>cb_id</em>, <em>intent_id</em>, <em>entity_type</em>, <em>entity_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_ENTITY_LIST_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.cb_id">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.cb_id_id">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">cb_id_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.cb_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.entity_list">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">entity_list</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.entity_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.entity_type">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">entity_type</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.entity_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.id">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.intent_id">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">intent_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.intent_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.intent_id_id">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">intent_id_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.intent_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_LIST_INFO.objects">
+<code class="descclassname">CB_ENTITY_LIST_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_ENTITY_LIST_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_ENTITY_RELATION_INFO</code><span class="sig-paren">(</span><em>id</em>, <em>cb_id</em>, <em>entity_id</em>, <em>entity_uuid</em>, <em>entity_desc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_ENTITY_RELATION_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.cb_id">
+<code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.cb_id_id">
+<code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">cb_id_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.cb_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.entity_desc">
+<code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">entity_desc</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.entity_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.entity_id">
+<code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">entity_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.entity_uuid">
+<code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">entity_uuid</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.entity_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.id">
+<code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_RELATION_INFO.objects">
+<code class="descclassname">CB_ENTITY_RELATION_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_ENTITY_RELATION_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_ENTITY_SYNONYM_LIST</code><span class="sig-paren">(</span><em>id</em>, <em>cb_id</em>, <em>entity_id</em>, <em>slot_type</em>, <em>represent_value</em>, <em>synonym_value</em>, <em>synonym_desc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_ENTITY_SYNONYM_LIST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.cb_id">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.cb_id_id">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">cb_id_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.cb_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.entity_id">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">entity_id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.id">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.objects">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.represent_value">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">represent_value</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.represent_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.slot_type">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">slot_type</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.slot_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.synonym_desc">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">synonym_desc</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.synonym_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ENTITY_SYNONYM_LIST.synonym_value">
+<code class="descclassname">CB_ENTITY_SYNONYM_LIST.</code><code class="descname">synonym_value</code><a class="headerlink" href="#chatbot.models.CB_ENTITY_SYNONYM_LIST.synonym_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_INTENT_LIST_INFO</code><span class="sig-paren">(</span><em>cb_id</em>, <em>intent_id</em>, <em>intent_uuid</em>, <em>intent_type</em>, <em>intent_desc</em>, <em>rule_value</em>, <em>nn_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_INTENT_LIST_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.cb_entity_list_info_set">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">cb_entity_list_info_set</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.cb_entity_list_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.cb_id">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.cb_id_id">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">cb_id_id</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.cb_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.cb_storyboard_list_info_set">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">cb_storyboard_list_info_set</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.cb_storyboard_list_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.intent_desc">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">intent_desc</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.intent_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.intent_id">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">intent_id</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.intent_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.intent_type">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">intent_type</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.intent_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.intent_uuid">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">intent_uuid</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.intent_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.nn_type">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">nn_type</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.nn_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.objects">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_INTENT_LIST_INFO.rule_value">
+<code class="descclassname">CB_INTENT_LIST_INFO.</code><code class="descname">rule_value</code><a class="headerlink" href="#chatbot.models.CB_INTENT_LIST_INFO.rule_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_MODEL_LIST_INFO</code><span class="sig-paren">(</span><em>id</em>, <em>cb_id</em>, <em>nn_id</em>, <em>nn_purpose</em>, <em>nn_type</em>, <em>nn_label_data</em>, <em>nn_desc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_MODEL_LIST_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.cb_id">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.cb_id_id">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">cb_id_id</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.cb_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.id">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.nn_desc">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">nn_desc</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.nn_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.nn_id">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">nn_id</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.nn_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.nn_label_data">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">nn_label_data</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.nn_label_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.nn_purpose">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">nn_purpose</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.nn_purpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.nn_type">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">nn_type</code><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.nn_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_MODEL_LIST_INFO.objects">
+<code class="descclassname">CB_MODEL_LIST_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_MODEL_LIST_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_ONTOLOGY_INFO</code><span class="sig-paren">(</span><em>id</em>, <em>cb_id</em>, <em>ontology_id</em>, <em>ontology_desc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_ONTOLOGY_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_ONTOLOGY_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.cb_id">
+<code class="descclassname">CB_ONTOLOGY_INFO.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.cb_id_id">
+<code class="descclassname">CB_ONTOLOGY_INFO.</code><code class="descname">cb_id_id</code><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.cb_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.id">
+<code class="descclassname">CB_ONTOLOGY_INFO.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.objects">
+<code class="descclassname">CB_ONTOLOGY_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.ontology_desc">
+<code class="descclassname">CB_ONTOLOGY_INFO.</code><code class="descname">ontology_desc</code><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.ontology_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_ONTOLOGY_INFO.ontology_id">
+<code class="descclassname">CB_ONTOLOGY_INFO.</code><code class="descname">ontology_id</code><a class="headerlink" href="#chatbot.models.CB_ONTOLOGY_INFO.ontology_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_RESPONSE_LIST_INFO</code><span class="sig-paren">(</span><em>id</em>, <em>story_id</em>, <em>response_type</em>, <em>output_entity</em>, <em>output_data</em>, <em>nn_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_RESPONSE_LIST_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.id">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.nn_id">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">nn_id</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.nn_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.objects">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.output_data">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">output_data</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.output_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.output_entity">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">output_entity</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.output_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.response_type">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">response_type</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.response_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.story_id">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">story_id</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.story_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_RESPONSE_LIST_INFO.story_id_id">
+<code class="descclassname">CB_RESPONSE_LIST_INFO.</code><code class="descname">story_id_id</code><a class="headerlink" href="#chatbot.models.CB_RESPONSE_LIST_INFO.story_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_SERVICE_LIST_INFO</code><span class="sig-paren">(</span><em>id</em>, <em>story_id</em>, <em>service_type</em>, <em>service_name</em>, <em>service_model</em>, <em>service_url</em>, <em>nn_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_SERVICE_LIST_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.id">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.nn_id">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">nn_id</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.nn_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.objects">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.service_model">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">service_model</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.service_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.service_name">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">service_name</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.service_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.service_type">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">service_type</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.service_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.service_url">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">service_url</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.service_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.story_id">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">story_id</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.story_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_SERVICE_LIST_INFO.story_id_id">
+<code class="descclassname">CB_SERVICE_LIST_INFO.</code><code class="descname">story_id_id</code><a class="headerlink" href="#chatbot.models.CB_SERVICE_LIST_INFO.story_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_STORYBOARD_LIST_INFO</code><span class="sig-paren">(</span><em>intent_id</em>, <em>story_id</em>, <em>story_type</em>, <em>story_desc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_STORYBOARD_LIST_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.cb_response_list_info_set">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">cb_response_list_info_set</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.cb_response_list_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.cb_service_list_info_set">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">cb_service_list_info_set</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.cb_service_list_info_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.intent_id">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">intent_id</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.intent_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.intent_id_id">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">intent_id_id</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.intent_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.objects">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.story_desc">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">story_desc</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.story_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.story_id">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">story_id</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.story_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_STORYBOARD_LIST_INFO.story_type">
+<code class="descclassname">CB_STORYBOARD_LIST_INFO.</code><code class="descname">story_type</code><a class="headerlink" href="#chatbot.models.CB_STORYBOARD_LIST_INFO.story_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.models.CB_TAGGING_INFO">
+<em class="property">class </em><code class="descclassname">chatbot.models.</code><code class="descname">CB_TAGGING_INFO</code><span class="sig-paren">(</span><em>id</em>, <em>cb_id</em>, <em>pos_type</em>, <em>proper_noun</em>, <em>parsed_length</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/models.html#CB_TAGGING_INFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="chatbot.models.CB_TAGGING_INFO.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="chatbot.models.CB_TAGGING_INFO.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_TAGGING_INFO.cb_id">
+<code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">cb_id</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.cb_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_TAGGING_INFO.cb_id_id">
+<code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">cb_id_id</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.cb_id_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_TAGGING_INFO.id">
+<code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">id</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_TAGGING_INFO.objects">
+<code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_TAGGING_INFO.parsed_length">
+<code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">parsed_length</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.parsed_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_TAGGING_INFO.pos_type">
+<code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">pos_type</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.pos_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.models.CB_TAGGING_INFO.proper_noun">
+<code class="descclassname">CB_TAGGING_INFO.</code><code class="descname">proper_noun</code><a class="headerlink" href="#chatbot.models.CB_TAGGING_INFO.proper_noun" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.serializers">
+<span id="chatbot-serializers-module"></span><h2>chatbot.serializers module<a class="headerlink" href="#module-chatbot.serializers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.serializers.CB_DEF_LIST_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_DEF_LIST_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_DEF_LIST_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_DEF_LIST_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_DEF_LIST_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_DEF_LIST_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_DEF_LIST_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_DEF_LIST_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_DEF_LIST_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('cb_id', 'chat_cate', 'chat_sub_cate', 'cb_title', 'cb_desc', 'creation_date', 'last_update_date', 'created_by', 'last_updated_by')</em><a class="headerlink" href="#chatbot.serializers.CB_DEF_LIST_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_DEF_LIST_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_DEF_LIST_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_DEF_LIST_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_ENTITY_LIST_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_ENTITY_LIST_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_STORYBOARD_LIST_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_ENTITY_LIST_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('cb_id', 'intent_id', 'entity_type', 'entity_list')</em><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_LIST_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_ENTITY_LIST_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_ENTITY_RELATION_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_ENTITY_RELATION_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_ENTITY_RELATION_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_ENTITY_RELATION_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('cb_id', 'entity_id', 'entity_uuid', 'entity_desc')</em><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_ENTITY_RELATION_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_ENTITY_RELATION_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_INTENT_LIST_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_INTENT_LIST_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_INTENT_LIST_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_INTENT_LIST_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_INTENT_LIST_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_INTENT_LIST_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_INTENT_LIST_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_INTENT_LIST_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_INTENT_LIST_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('cb_id', 'intent_id', 'intent_type', 'rule_value', 'intent_desc', 'nn_type')</em><a class="headerlink" href="#chatbot.serializers.CB_INTENT_LIST_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_INTENT_LIST_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_INTENT_LIST_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_INTENT_LIST_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_MODEL_LIST_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_MODEL_LIST_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_MODEL_LIST_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_MODEL_LIST_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_MODEL_LIST_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_MODEL_LIST_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_MODEL_LIST_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_MODEL_LIST_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_MODEL_LIST_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('cb_id', 'nn_id', 'nn_purpose', 'nn_type', 'nn_label_data', 'nn_desc')</em><a class="headerlink" href="#chatbot.serializers.CB_MODEL_LIST_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_MODEL_LIST_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_MODEL_LIST_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_MODEL_LIST_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_RESPONSE_LIST_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_RESPONSE_LIST_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_RESPONSE_LIST_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_RESPONSE_LIST_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('story_id', 'response_type', 'output_entity', 'output_data', 'nn_id')</em><a class="headerlink" href="#chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_RESPONSE_LIST_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_RESPONSE_LIST_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_SERVICE_LIST_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_SERVICE_LIST_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_SERVICE_LIST_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_SERVICE_LIST_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('story_id', 'service_name', 'service_type', 'url')</em><a class="headerlink" href="#chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_SERVICE_LIST_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_SERVICE_LIST_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_STORYBOARD_LIST_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_STORYBOARD_LIST_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_STORYBOARD_LIST_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_STORYBOARD_LIST_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('intent_id', 'story_id', 'story_desc', 'story_type')</em><a class="headerlink" href="#chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_STORYBOARD_LIST_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_STORYBOARD_LIST_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="chatbot.serializers.CB_TAGGING_INFO_Serializer">
+<em class="property">class </em><code class="descclassname">chatbot.serializers.</code><code class="descname">CB_TAGGING_INFO_Serializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/serializers.html#CB_TAGGING_INFO_Serializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_TAGGING_INFO_Serializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Table : CB_TAGGING_INFO</p>
+<dl class="class">
+<dt id="chatbot.serializers.CB_TAGGING_INFO_Serializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/chatbot/serializers.html#CB_TAGGING_INFO_Serializer.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.serializers.CB_TAGGING_INFO_Serializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_TAGGING_INFO_Serializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('cb_id', 'pos_type', 'proper_noun')</em><a class="headerlink" href="#chatbot.serializers.CB_TAGGING_INFO_Serializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="chatbot.serializers.CB_TAGGING_INFO_Serializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#chatbot.serializers.CB_TAGGING_INFO_Serializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CB_TAGGING_INFO</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.tests">
+<span id="chatbot-tests-module"></span><h2>chatbot.tests module<a class="headerlink" href="#module-chatbot.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-chatbot.views">
+<span id="chatbot-views-module"></span><h2>chatbot.views module<a class="headerlink" href="#module-chatbot.views" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-chatbot">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-chatbot" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">chatbot package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-chatbot.admin">chatbot.admin module</a></li>
+<li><a class="reference internal" href="#module-chatbot.apps">chatbot.apps module</a></li>
+<li><a class="reference internal" href="#module-chatbot.models">chatbot.models module</a></li>
+<li><a class="reference internal" href="#module-chatbot.serializers">chatbot.serializers module</a></li>
+<li><a class="reference internal" href="#module-chatbot.tests">chatbot.tests module</a></li>
+<li><a class="reference internal" href="#module-chatbot.views">chatbot.views module</a></li>
+<li><a class="reference internal" href="#module-chatbot">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chatbot.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/chatbot.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

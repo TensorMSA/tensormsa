@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>api.views.file_upload_view &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for api.views.file_upload_view</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span><span class="o">,</span><span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="k">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="k">import</span> <span class="n">APIView</span>
+<span class="kn">from</span> <span class="nn">django.core.files.storage</span> <span class="k">import</span> <span class="n">FileSystemStorage</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">coreapi</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">rest_framework.parsers</span> <span class="k">import</span> <span class="n">FileUploadParser</span><span class="p">,</span><span class="n">MultiPartParser</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="c1"># from rest_framework import status</span>
+<span class="kn">from</span> <span class="nn">master.workflow.data.workflow_data_image</span> <span class="k">import</span> <span class="n">WorkFlowDataImage</span>
+
+<div class="viewcode-block" id="FileUploadView"><a class="viewcode-back" href="../../../api.views.html#api.views.file_upload_view.FileUploadView">[docs]</a><span class="k">class</span> <span class="nc">FileUploadView</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+
+    <span class="n">coreapi_fields</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">coreapi</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="FileUploadView.post"><a class="viewcode-back" href="../../../api.views.html#api.views.file_upload_view.FileUploadView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        File Management Rest Service</span>
+<span class="sd">        ---</span>
+<span class="sd">        # Class Name : FileUploadView</span>
+
+<span class="sd">        # Description:</span>
+<span class="sd">            upload actual file via rest api</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">return_data_sub</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">requestSingleFile</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">file</span> <span class="o">=</span> <span class="n">requestSingleFile</span>
+                    <span class="n">filepath</span> <span class="o">=</span> <span class="n">get_source_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;store&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">filepath</span> <span class="o">=</span> <span class="n">get_store_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span>
+                    <span class="c1"># payload = MultipartEncoder({})</span>
+                    <span class="c1"># save file on file system</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+                    <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                        <span class="n">filename</span> <span class="o">=</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">chunks</span><span class="p">():</span>
+                        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                    <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="n">return_data_sub</span><span class="p">[</span><span class="s2">&quot;File&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;File Create.(&quot;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+                    <span class="n">return_data</span><span class="p">[</span><span class="s2">&quot;File&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">return_data_sub</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;not supported type&quot;</span><span class="p">)</span>
+                <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FileUploadView.get"><a class="viewcode-back" href="../../../api.views.html#api.views.file_upload_view.FileUploadView.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        File Management Rest Service</span>
+<span class="sd">        ---</span>
+<span class="sd">        # Class Name : FileUploadView</span>
+
+<span class="sd">        # Description:</span>
+<span class="sd">            Get file counts or file name of given network id and version</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">type</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="c1"># tmp 임시 저장소의 값을 만들어서 전달해줌.</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmpfilepath</span> <span class="o">=</span> <span class="n">get_source_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;store&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">tmpfilepath</span> <span class="o">=</span> <span class="n">get_store_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+                <span class="n">fileName</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">stand</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                <span class="n">stcnt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fileName</span> <span class="o">+</span> <span class="n">stand</span><span class="p">)</span>
+                <span class="n">mxcnt</span> <span class="o">=</span> <span class="n">stcnt</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">tmpfilepath</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">mxcnt</span><span class="p">:</span>
+                            <span class="n">mxcnt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">stcnt</span><span class="p">:</span>
+                            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmpfilepath</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="kc">None</span>
+
+                <span class="n">mxcnt</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mxcnt</span><span class="p">)</span>
+                <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span><span class="n">mxcnt</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_data</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">tmpfilepath</span> <span class="o">=</span> <span class="n">get_source_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">type</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;store&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">tmpfilepath</span> <span class="o">=</span> <span class="n">get_store_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">tmpfilepath</span><span class="p">):</span>
+                    <span class="n">resub</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filename&quot;</span><span class="p">:</span><span class="n">i</span><span class="p">}</span>
+                    <span class="n">return_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resub</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="n">WorkFlowDataImage</span><span class="p">()</span><span class="o">.</span><span class="n">get_data_node_info</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FileUploadView.put"><a class="viewcode-back" href="../../../api.views.html#api.views.file_upload_view.FileUploadView.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        File Management Rest Service</span>
+<span class="sd">        ---</span>
+<span class="sd">        # Class Name : FileUploadView</span>
+
+<span class="sd">        # Description:</span>
+<span class="sd">            Get file counts or file name of given network id and version</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">firsttmpfolder</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;first_tmp_folder&quot;</span><span class="p">]</span>
+        <span class="n">lasttmpfolder</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;last_tmp_folder&quot;</span><span class="p">]</span>
+        <span class="n">tmpfilepath</span> <span class="o">=</span> <span class="n">get_source_path</span><span class="p">(</span><span class="n">firsttmpfolder</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">lasttmpfolder</span><span class="p">)</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">get_source_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">tmpfilepath</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">tmpfilepath</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">filepath</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FileUploadView.delete"><a class="viewcode-back" href="../../../api.views.html#api.views.file_upload_view.FileUploadView.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        File Management Rest Service</span>
+<span class="sd">        ---</span>
+<span class="sd">        # Class Name : FileUploadView</span>
+
+<span class="sd">        # Description:</span>
+<span class="sd">            delete selected upload file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">]</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">get_source_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;store&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">filepath</span> <span class="o">=</span> <span class="n">get_store_path</span><span class="p">(</span><span class="n">nnid</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">)):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">)):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+
+            <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">return_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;404&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">return_data</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,661 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.data package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cluster-data-package">
+<h1>cluster.data package<a class="headerlink" href="#cluster-data-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cluster.data.data_node">
+<span id="cluster-data-data-node-module"></span><h2>cluster.data.data_node module<a class="headerlink" href="#module-cluster.data.data_node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.data.data_node.DataNode">
+<em class="property">class </em><code class="descclassname">cluster.data.data_node.</code><code class="descname">DataNode</code><a class="reference internal" href="_modules/cluster/data/data_node.html#DataNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node.DataNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cluster.common.html#cluster.common.common_node.WorkFlowCommonNode" title="cluster.common.common_node.WorkFlowCommonNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.common_node.WorkFlowCommonNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.data.data_node.DataNode.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node.html#DataNode.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node.DataNode.load_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node.DataNode.multi_load_data">
+<code class="descname">multi_load_data</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node.html#DataNode.multi_load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node.DataNode.multi_load_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node.DataNode.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node.html#DataNode.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node.DataNode.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.data.data_node_frame">
+<span id="cluster-data-data-node-frame-module"></span><h2>cluster.data.data_node_frame module<a class="headerlink" href="#module-cluster.data.data_node_frame" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.data.data_node_frame.DataNodeFrame">
+<em class="property">class </em><code class="descclassname">cluster.data.data_node_frame.</code><code class="descname">DataNodeFrame</code><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.data.data_node.DataNode" title="cluster.data.data_node.DataNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.data.data_node.DataNode</span></code></a></p>
+<p>DataNode Configuration
+NULL처리가 중요한데 Category &#8220;&#8221; Continuous 0.0</p>
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.check_eval_node_for_wdnn">
+<code class="descname">check_eval_node_for_wdnn</code><span class="sig-paren">(</span><em>_conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.check_eval_node_for_wdnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.check_eval_node_for_wdnn" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Eval Data의 Category 데이터를 가져오기 위해서 필요</dt>
+<dd>WDNN이면 data_conf_node_id를 반환</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>_conf_data : nnid의 wf정보</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>data_conf_node_id
+DataConf의 ID반환</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.create_example_pandas">
+<code class="descname">create_example_pandas</code><span class="sig-paren">(</span><em>row</em>, <em>CONTINUOUS_COLUMNS</em>, <em>CATEGORICAL_COLUMNS</em>, <em>label</em>, <em>label_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.create_example_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.create_example_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Converting tfrecord example from pandas</dt>
+<dd>Pandas Dataframe을 tfrecord로 변경하는 함수(WDNN용)</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>row : Dataframe row</li>
+<li>CONTINUOUS_COLUMNS</li>
+<li>CATEGORICAL_COLUMNS</li>
+<li>label</li>
+<li>label_type</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>tfrecord example</dd>
+</dl>
+<p>Raises:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.create_hdf5">
+<code class="descname">create_hdf5</code><span class="sig-paren">(</span><em>data_path</em>, <em>dataframe</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.create_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.create_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create hdf5
+:param data_path:
+:return:dataframe</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.create_tfrecords_file">
+<code class="descname">create_tfrecords_file</code><span class="sig-paren">(</span><em>output_file</em>, <em>skip_header</em>, <em>df_csv_read</em>, <em>label</em>, <em>label_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.create_tfrecords_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.create_tfrecords_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a TFRecords file for the given input data and
+example transofmration function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.dataconf_eval_time_check">
+<code class="descname">dataconf_eval_time_check</code><span class="sig-paren">(</span><em>_wf_data_conf_node</em>, <em>_node_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.dataconf_eval_time_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.dataconf_eval_time_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>data conf가 있어도, eval이면 unique값만 추가한다.
+:param data_dfconf_list (nn00001_1_dataconf_node)
+:return True:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.dataconf_first_time_check">
+<code class="descname">dataconf_first_time_check</code><span class="sig-paren">(</span><em>_wf_data_conf_node</em>, <em>_node_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.dataconf_first_time_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.dataconf_first_time_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>data_conf가 비어있거나, DataNode일때만 업데이트 하도록 한다.
+:param data_dfconf_list (nn00001_1_dataconf_node)
+:return True:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.get_eval_node_file_list">
+<code class="descname">get_eval_node_file_list</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.get_eval_node_file_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.get_eval_node_file_list" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Eval Data Node 찾고, 경로를 찾아서 CSV를 읽음</dt>
+<dd>self.data_conf에 cell_feature에 넣음</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>_conf_data : nnid의 wf정보</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.load_csv_by_pandas">
+<code class="descname">load_csv_by_pandas</code><span class="sig-paren">(</span><em>data_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.load_csv_by_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.load_csv_by_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>read csv
+:param data_path:
+:return:data_path</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id=''</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>load train data
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.make_column_types">
+<code class="descname">make_column_types</code><span class="sig-paren">(</span><em>df</em>, <em>node_id</em>, <em>data_dfconf_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.make_column_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.make_column_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
+:param df:
+:param conf_data:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.make_continuous_category_list">
+<code class="descname">make_continuous_category_list</code><span class="sig-paren">(</span><em>cell_feature</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.make_continuous_category_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.make_continuous_category_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.make_drop_duplicate">
+<code class="descname">make_drop_duplicate</code><span class="sig-paren">(</span><em>_df_csv_read_ori</em>, <em>_drop_duplicate</em>, <em>_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.make_drop_duplicate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.make_drop_duplicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label을 제외한 나머지 값중에 중복이 있으면 Row 전체를 제거한다.
+Args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>_preprocessing_type: [&#8216;scale&#8217;, &#8216;minmax_scale&#8217;, &#8216;robust_scale&#8217;, &#8216;normalize&#8217;, &#8216;maxabs_scale&#8217;]</li>
+<li>_df_csv_read_ori : pandas dataframe</li>
+<li>_label</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>Preprocessing Dataframe</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.make_label_values">
+<code class="descname">make_label_values</code><span class="sig-paren">(</span><em>_data_dfconf_list</em>, <em>_df_csv_read</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.make_label_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.make_label_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>label의 Unique Value를 DataConf에 넣어줌
+Args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>_data_dfconf_list : nnid의 wf정보</li>
+<li>_df_csv_read : Dataframe(train, eval)</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>_label : label 항목 값
+_labe_type : label type</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.make_preprocessing_pandas">
+<code class="descname">make_preprocessing_pandas</code><span class="sig-paren">(</span><em>_df_csv_read_ori</em>, <em>_preprocessing_type</em>, <em>_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.make_preprocessing_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.make_preprocessing_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>SKLearn을 사용해서 Pandas를 Proprocessing</dt>
+<dd>label은 Preprocessing 하면 안됨</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>_preprocessing_type: [&#8216;scale&#8217;, &#8216;minmax_scale&#8217;, &#8216;robust_scale&#8217;, &#8216;normalize&#8217;, &#8216;maxabs_scale&#8217;]</li>
+<li>_df_csv_read_ori : pandas dataframe</li>
+<li>_label</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>Preprocessing DataFrame</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.make_unique_value_each_column">
+<code class="descname">make_unique_value_each_column</code><span class="sig-paren">(</span><em>df</em>, <em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.make_unique_value_each_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.make_unique_value_each_column" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Dataframe중 범주형 데이터를 찾아서 유일한 값의 갯수를 반환한다 </dt>
+<dd>Unique Value return in Dataframe</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>df : dataframe</li>
+<li>node_id: nnid</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>json</dd>
+</dl>
+<p>Raises:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.multi_load_data">
+<code class="descname">multi_load_data</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.multi_load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.multi_load_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.preprocess_data">
+<code class="descname">preprocess_data</code><span class="sig-paren">(</span><em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.preprocess_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.preprocess_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input_data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run Data Node
+한번에 HDF5랑  TFRECORD를 만든다.
+:param data_path:
+:return:dataframe</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.save_tfrecord">
+<code class="descname">save_tfrecord</code><span class="sig-paren">(</span><em>csv_data_file</em>, <em>store_path</em>, <em>skip_header</em>, <em>df_csv_read</em>, <em>label</em>, <em>label_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.save_tfrecord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.save_tfrecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a TFRecords file for the given input data and
+example transofmration function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.set_dataconf_for_checktype">
+<code class="descname">set_dataconf_for_checktype</code><span class="sig-paren">(</span><em>df</em>, <em>node_id</em>, <em>data_dfconf_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.set_dataconf_for_checktype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.set_dataconf_for_checktype" title="Permalink to this definition">¶</a></dt>
+<dd><p>csv를 읽고 column type을 계산하여 data_conf에 저장(data_conf가 비어있을때 )
+카테고리 컬럼은 Unique 한 값을 구해서 cell_feature_unique에 넣어줌(Keras용)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df, nnid, ver, node</strong> (<em>wf_data_config,</em>) &#8211; </li>
+<li><strong>conf_data</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.set_dataconf_for_labels">
+<code class="descname">set_dataconf_for_labels</code><span class="sig-paren">(</span><em>df</em>, <em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.set_dataconf_for_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.set_dataconf_for_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>csv를 읽고 label의 distict 값을 가져옴
+Extract distinct label values
+:param wf_data_config, df, nnid, ver, node:
+:param conf_data:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.set_default_dataconf_from_csv">
+<code class="descname">set_default_dataconf_from_csv</code><span class="sig-paren">(</span><em>wf_data_config</em>, <em>node_id</em>, <em>data_conf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.set_default_dataconf_from_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.set_default_dataconf_from_csv" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df, nnid, ver, node</strong> (<em>wf_data_config,</em>) &#8211; </li>
+<li><strong>conf_data</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>tfrecord 때문에 항상 타입을 체크하고 필요할때만 저장</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_frame.DataNodeFrame.src_local_handler">
+<code class="descname">src_local_handler</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_frame.html#DataNodeFrame.src_local_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_frame.DataNodeFrame.src_local_handler" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Converting csv to  h5 and Tf Record</dt>
+<dd><p class="first">Data Node for Data_frame
+1) Wdnn인 경우</p>
+<blockquote>
+<div>Pandas를 파싱하면서 Categorical 인지 Continuous인지 구별하여 DataConf에 입력(eval data할때는 안함. DataNode 기준 )
+Category일경우 Unique값을 Dataconf에 입력
+Label type이 Categorical이면 Label의 Unique값을 DataConf입력 
+_preprocess_type에 따라 Pandas 전처리</div></blockquote>
+<ol class="last arabic simple" start="2">
+<li>_multi_node_flag 가 True일 경우 TfRecord까지 생성</li>
+<li>Wdnn이 아닌경우 H5만 생성</li>
+</ol>
+</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params:</dt>
+<dd><ul class="first last simple">
+<li>conf_data : nn_info</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+<p>Raises:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.data.data_node_image">
+<span id="cluster-data-data-node-image-module"></span><h2>cluster.data.data_node_image module<a class="headerlink" href="#module-cluster.data.data_node_image" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.data.data_node_image.DataNodeImage">
+<em class="property">class </em><code class="descclassname">cluster.data.data_node_image.</code><code class="descname">DataNodeImage</code><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.data.data_node.DataNode" title="cluster.data.data_node.DataNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.data.data_node.DataNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.download_file_from_google_drive">
+<code class="descname">download_file_from_google_drive</code><span class="sig-paren">(</span><em>URL</em>, <em>destination</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.download_file_from_google_drive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.download_file_from_google_drive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.get_confirm_token">
+<code class="descname">get_confirm_token</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.get_confirm_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.get_confirm_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.image_convert">
+<code class="descname">image_convert</code><span class="sig-paren">(</span><em>sess</em>, <em>dataconf</em>, <em>img</em>, <em>filename</em>, <em>forder=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.image_convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.image_convert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id=''</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.load_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.process_predicts">
+<code class="descname">process_predicts</code><span class="sig-paren">(</span><em>predicts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.process_predicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.process_predicts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.save_response_content">
+<code class="descname">save_response_content</code><span class="sig-paren">(</span><em>response</em>, <em>destination</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.save_response_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.save_response_content" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_image.DataNodeImage.yolo_detection">
+<code class="descname">yolo_detection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_image.html#DataNodeImage.yolo_detection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_image.DataNodeImage.yolo_detection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.data.data_node_iob">
+<span id="cluster-data-data-node-iob-module"></span><h2>cluster.data.data_node_iob module<a class="headerlink" href="#module-cluster.data.data_node_iob" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.data.data_node_iob.DataNodeIob">
+<em class="property">class </em><code class="descclassname">cluster.data.data_node_iob.</code><code class="descname">DataNodeIob</code><a class="reference internal" href="_modules/cluster/data/data_node_iob.html#DataNodeIob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_iob.DataNodeIob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.data.data_node.DataNode" title="cluster.data.data_node.DataNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.data.data_node.DataNode</span></code></a>, <a class="reference internal" href="cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon" title="cluster.common.neural_common_bilismcrf.BiLstmCommon"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.neural_common_bilismcrf.BiLstmCommon</span></code></a></p>
+<dl class="method">
+<dt id="cluster.data.data_node_iob.DataNodeIob.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id=''</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_iob.html#DataNodeIob.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_iob.DataNodeIob.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>load train data
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_iob.DataNodeIob.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_iob.html#DataNodeIob.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_iob.DataNodeIob.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run on train time
+data node collect data from source, preprocess data and sotre it on NAS
+:param conf_data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_iob.DataNodeIob.src_local_handler">
+<code class="descname">src_local_handler</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_iob.html#DataNodeIob.src_local_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_iob.DataNodeIob.src_local_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>read data from local file system
+:param conf_data:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.data.data_node_raw">
+<span id="cluster-data-data-node-raw-module"></span><h2>cluster.data.data_node_raw module<a class="headerlink" href="#module-cluster.data.data_node_raw" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.data.data_node_raw.DataNodeRaw">
+<em class="property">class </em><code class="descclassname">cluster.data.data_node_raw.</code><code class="descname">DataNodeRaw</code><a class="reference internal" href="_modules/cluster/data/data_node_raw.html#DataNodeRaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_raw.DataNodeRaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.data.data_node.DataNode" title="cluster.data.data_node.DataNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.data.data_node.DataNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.data.data_node_raw.DataNodeRaw.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id=''</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_raw.html#DataNodeRaw.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_raw.DataNodeRaw.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>load train data
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_raw.DataNodeRaw.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_raw.html#DataNodeRaw.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_raw.DataNodeRaw.run" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conf_data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_raw.DataNodeRaw.src_local_handler">
+<code class="descname">src_local_handler</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_raw.html#DataNodeRaw.src_local_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_raw.DataNodeRaw.src_local_handler" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conf_data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.data.data_node_text">
+<span id="cluster-data-data-node-text-module"></span><h2>cluster.data.data_node_text module<a class="headerlink" href="#module-cluster.data.data_node_text" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.data.data_node_text.DataNodeText">
+<em class="property">class </em><code class="descclassname">cluster.data.data_node_text.</code><code class="descname">DataNodeText</code><a class="reference internal" href="_modules/cluster/data/data_node_text.html#DataNodeText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_text.DataNodeText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.data.data_node.DataNode" title="cluster.data.data_node.DataNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.data.data_node.DataNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.data.data_node_text.DataNodeText.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id=''</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_text.html#DataNodeText.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_text.DataNodeText.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>load train data
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_text.DataNodeText.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_text.html#DataNodeText.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_text.DataNodeText.run" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conf_data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.data.data_node_text.DataNodeText.src_local_handler">
+<code class="descname">src_local_handler</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/data/data_node_text.html#DataNodeText.src_local_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.data.data_node_text.DataNodeText.src_local_handler" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conf_data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.data">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cluster.data" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cluster.data package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cluster.data.data_node">cluster.data.data_node module</a></li>
+<li><a class="reference internal" href="#module-cluster.data.data_node_frame">cluster.data.data_node_frame module</a></li>
+<li><a class="reference internal" href="#module-cluster.data.data_node_image">cluster.data.data_node_image module</a></li>
+<li><a class="reference internal" href="#module-cluster.data.data_node_iob">cluster.data.data_node_iob module</a></li>
+<li><a class="reference internal" href="#module-cluster.data.data_node_raw">cluster.data.data_node_raw module</a></li>
+<li><a class="reference internal" href="#module-cluster.data.data_node_text">cluster.data.data_node_text module</a></li>
+<li><a class="reference internal" href="#module-cluster.data">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cluster.data.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cluster.data.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

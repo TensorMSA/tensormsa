@@ -1,0 +1,572 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot.common.chat_share_data &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for chatbot.common.chat_share_data</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">chatbot.common.chat_conf_manager</span> <span class="k">import</span> <span class="n">ChatBotConfManager</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="ShareData"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData">[docs]</a><span class="k">class</span> <span class="nc">ShareData</span><span class="p">(</span><span class="n">ChatBotConfManager</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    share data class is data component which includes json2object and object2json maethod</span>
+<span class="sd">    the purpose of this class is mainly on keep conversation data on thread</span>
+<span class="sd">    beacuse this api works on rest api we need some info like cookie that where we were on</span>
+<span class="sd">    the last convrsation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.unique_id = &quot;&quot;             # mobile device unique id</span>
+        <span class="c1"># self.package_id = &quot;&quot;            # mobile app package id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># prediction requested data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_data</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># convert data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="kc">None</span>           <span class="c1"># output data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edit_history</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># data change history (preprocess -&gt; tag -&gt; NER)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent_history</span> <span class="o">=</span> <span class="p">[]</span>          <span class="c1"># intent change history (changes on intent model)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>            <span class="c1"># text, image, voice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>               <span class="c1"># current intent id</span>
+        <span class="c1"># self.intent_name = &quot;&quot;           # current intent name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>            <span class="c1"># I:Intent, N:NER</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_board_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>          <span class="c1"># current working story board</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_key_entity</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c1"># required key list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span> <span class="o">=</span> <span class="p">{}</span>       <span class="c1"># key : val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_ner_entity</span> <span class="o">=</span> <span class="p">{}</span>        <span class="c1"># key : val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">morphed_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_dict_data</span> <span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern_intent_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_intent_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_slot_entity</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># self.opt_sel_list = {}          # intent option list when intent anl result is not clear</span>
+        <span class="c1"># self.ontology_id = &quot;&quot;           # current working ontology id</span>
+        <span class="c1"># self.ontology_req_parms = {}    # key : val</span>
+        <span class="c1"># self.ontology_set_parms = {}    # key : val</span>
+
+<div class="viewcode-block" id="ShareData.to_json"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert data object to json</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ShareData.load_json"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.load_json">[docs]</a>    <span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        load josn object to data object</span>
+<span class="sd">        :param object:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_json_validation</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">_check_json_validation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check json format is right</span>
+<span class="sd">        :param object:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check Essential Input</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;input_data&#39;</span><span class="p">,</span> <span class="s1">&#39;intent_id&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">object</span> <span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39; not exist!&#39;</span><span class="p">]))</span>
+
+        <span class="c1">#Check Length of String</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_string_length</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;input_data&quot;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;story_slot_entity&#39;</span><span class="p">,</span> <span class="s1">&#39;story_ner_entity&#39;</span><span class="p">,</span> <span class="s1">&#39;test_slot_entity&#39;</span><span class="p">]</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="p">:</span>
+                <span class="nb">object</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="nb">object</span>
+
+    <span class="k">def</span> <span class="nf">_check_string_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Input Data is too long&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ShareData.merge_share_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.merge_share_data">[docs]</a>    <span class="k">def</span> <span class="nf">merge_share_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_share_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        simply update all info on this class to output_share_data</span>
+<span class="sd">        :param input_share_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_clear_conv_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        clear story board, clear ontology data</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># def set_device_id(self, data):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param data:</span>
+    <span class="c1">#     :return:</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     self.unique_id = data</span>
+    <span class="c1">#</span>
+    <span class="c1"># def get_device_id(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param data:</span>
+    <span class="c1">#     :return:</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     return self.unique_id</span>
+
+    <span class="c1"># def set_package_id(self, data):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param data:</span>
+    <span class="c1">#     :return:</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     self.package_id = data</span>
+    <span class="c1">#</span>
+    <span class="c1"># def get_package_id(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param data:</span>
+    <span class="c1">#     :return:</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     return self.package_id</span>
+
+<div class="viewcode-block" id="ShareData.set_chatbot_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_chatbot_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_chatbot_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chatbot_id</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_chatbot_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_chatbot_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_chatbot_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">chatbot_id</span></div>
+
+<div class="viewcode-block" id="ShareData.set_intent_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_intent_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_intent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent_id</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_intent_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_intent_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_intent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent_id</span></div>
+
+<div class="viewcode-block" id="ShareData.set_pattern_intent_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_pattern_intent_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_pattern_intent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern_intent_id</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_pattern_intent_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_pattern_intent_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_pattern_intent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_intent_id</span></div>
+
+    <span class="c1"># def set_intent_name(self, data):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param data:</span>
+    <span class="c1">#     :return:</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     self.intent_name = data</span>
+    <span class="c1">#</span>
+    <span class="c1"># def get_intent_name(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param data:</span>
+    <span class="c1">#     :return:</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     return self.intent_name</span>
+
+<div class="viewcode-block" id="ShareData.set_input_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_input_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_input_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_input_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_input_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span></div>
+
+<div class="viewcode-block" id="ShareData.set_request_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_request_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_request_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_request_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_request_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_request_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span></div>
+
+<div class="viewcode-block" id="ShareData.set_convert_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_convert_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_convert_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_convert_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_convert_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_convert_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_data</span></div>
+
+<div class="viewcode-block" id="ShareData.set_output_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_output_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_output_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_output_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_output_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span></div>
+
+<div class="viewcode-block" id="ShareData.set_edit_history"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_edit_history">[docs]</a>    <span class="k">def</span> <span class="nf">set_edit_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edit_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edit_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edit_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ShareData.get_edit_history"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_edit_history">[docs]</a>    <span class="k">def</span> <span class="nf">get_edit_history</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit_history</span></div>
+
+<div class="viewcode-block" id="ShareData.set_intent_history"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_intent_history">[docs]</a>    <span class="k">def</span> <span class="nf">set_intent_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intent_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ShareData.get_intent_history"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_intent_history">[docs]</a>    <span class="k">def</span> <span class="nf">get_intent_history</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intent id</span>
+<span class="sd">        :param intent_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent_history</span></div>
+
+<div class="viewcode-block" id="ShareData.set_request_type"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_request_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_request_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        manage request type</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_type</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_request_type"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_request_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_request_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        manage request type</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_type</span></div>
+
+<div class="viewcode-block" id="ShareData.set_service_type"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_service_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_service_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_service_type"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_service_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_service_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span></div>
+
+<div class="viewcode-block" id="ShareData.set_story_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_story_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_story_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_board_id</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_story_id"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_story_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_story_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_board_id</span></div>
+
+<div class="viewcode-block" id="ShareData.set_story_key_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_story_key_entity">[docs]</a>    <span class="k">def</span> <span class="nf">set_story_key_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_key_entity</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_story_key_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_story_key_entity">[docs]</a>    <span class="k">def</span> <span class="nf">get_story_key_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_key_entity</span></div>
+
+<div class="viewcode-block" id="ShareData.set_morphed_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_morphed_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_morphed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">morphed_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_morphed_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_morphed_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_morphed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">morphed_data</span></div>
+
+<div class="viewcode-block" id="ShareData.set_convert_dict_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_convert_dict_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_convert_dict_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_dict_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ShareData.get_convert_dict_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_convert_dict_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_convert_dict_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_dict_data</span></div>
+
+<div class="viewcode-block" id="ShareData.set_story_slot_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_story_slot_entity">[docs]</a>    <span class="k">def</span> <span class="nf">set_story_slot_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="ShareData.replace_story_slot_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.replace_story_slot_entity">[docs]</a>    <span class="k">def</span> <span class="nf">replace_story_slot_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        manage result of ner(bilstmcrf algoritm) result </span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span> <span class="o">=</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="ShareData.update_story_slot_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.update_story_slot_entity">[docs]</a>    <span class="k">def</span> <span class="nf">update_story_slot_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="ShareData.get_story_slot_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_story_slot_entity">[docs]</a>    <span class="k">def</span> <span class="nf">get_story_slot_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span></div>
+
+<div class="viewcode-block" id="ShareData.initialize_story_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.initialize_story_entity">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_story_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="ShareData.initialize_story"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.initialize_story">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_story</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_story_id</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_intent_id</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_request_data</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_story_entity</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_request_type</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ShareData.get_story_ner_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.get_story_ner_entity">[docs]</a>    <span class="k">def</span> <span class="nf">get_story_ner_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        manage result of ner(bilstmcrf algoritm) result </span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_ner_entity</span></div>
+
+<div class="viewcode-block" id="ShareData.set_story_ner_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.set_story_ner_entity">[docs]</a>    <span class="k">def</span> <span class="nf">set_story_ner_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        manage result of ner(bilstmcrf algoritm) result </span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_ner_entity</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="ShareData.replace_story_ner_entity"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.replace_story_ner_entity">[docs]</a>    <span class="k">def</span> <span class="nf">replace_story_ner_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        manage result of ner(bilstmcrf algoritm) result </span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_ner_entity</span> <span class="o">=</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="ShareData.add_extra_client_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.add_extra_client_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_extra_client_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add extra data for client </span>
+<span class="sd">        :return: </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_to_list_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story_ner_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_to_list_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story_ner_entity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_slot_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_to_list_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_slot_entity</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ShareData.add_test_client_data"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.add_test_client_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_test_client_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add unchanged info for client test</span>
+<span class="sd">        :return: </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intent_id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intent_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_intent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent_id</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_slot_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">story_slot_entity</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ShareData.convert_to_list_shape"><a class="viewcode-back" href="../../../chatbot.common.html#chatbot.common.chat_share_data.ShareData.convert_to_list_shape">[docs]</a>    <span class="k">def</span> <span class="nf">convert_to_list_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert dict to list-dict (client developer request) </span>
+<span class="sd">        :param input: </span>
+<span class="sd">        :return: </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;key&quot;</span> <span class="p">:</span> <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;val&quot;</span> <span class="p">:</span><span class="nb">input</span><span class="p">[</span><span class="n">key</span><span class="p">]})</span>
+        <span class="k">return</span> <span class="n">buffer</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

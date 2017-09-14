@@ -1,0 +1,783 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.common package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cluster-common-package">
+<h1>cluster.common package<a class="headerlink" href="#cluster-common-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cluster.common.common_node">
+<span id="cluster-common-common-node-module"></span><h2>cluster.common.common_node module<a class="headerlink" href="#module-cluster.common.common_node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.common.common_node.WorkFlowCommonNode">
+<em class="property">class </em><code class="descclassname">cluster.common.common_node.</code><code class="descname">WorkFlowCommonNode</code><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>wdnn을 위한 load data를 위한 빈 메소드 생성</p>
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.check_next">
+<code class="descname">check_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.check_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.check_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if next nodes are all searched
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.check_prev">
+<code class="descname">check_prev</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.check_prev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.check_prev" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if prev nodes are all searched
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.decode_pad">
+<code class="descname">decode_pad</code><span class="sig-paren">(</span><em>input_list</em>, <em>max_len=0</em>, <em>pad_char='#'</em>, <em>start_char='&#64;'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.decode_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.decode_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>[pad_char] * pad_len + input
+:param pos:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.encode_pad">
+<code class="descname">encode_pad</code><span class="sig-paren">(</span><em>input_list</em>, <em>max_len=0</em>, <em>pad_char='#'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.encode_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.encode_pad" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pos</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.find_next_node">
+<code class="descname">find_next_node</code><span class="sig-paren">(</span><em>node_name</em>, <em>node_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.find_next_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.find_next_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>find next node and return name
+:param node_name:
+:param node_list:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.find_prev_node">
+<code class="descname">find_prev_node</code><span class="sig-paren">(</span><em>node_name</em>, <em>node_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.find_prev_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.find_prev_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>find prev node and return name
+:param node_name:
+:param node_list:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_cluster_exec_class">
+<code class="descname">get_cluster_exec_class</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_cluster_exec_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_cluster_exec_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>get execute class path
+:param node_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_linked_next_node_with_grp">
+<code class="descname">get_linked_next_node_with_grp</code><span class="sig-paren">(</span><em>grp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_linked_next_node_with_grp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_linked_next_node_with_grp" title="Permalink to this definition">¶</a></dt>
+<dd><p>get linked node forward with type
+:param type:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_linked_next_node_with_type">
+<code class="descname">get_linked_next_node_with_type</code><span class="sig-paren">(</span><em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_linked_next_node_with_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_linked_next_node_with_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>get linked node forward with type
+bug fix prev node to next node
+:param type:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_cond">
+<code class="descname">get_linked_prev_node_with_cond</code><span class="sig-paren">(</span><em>val</em>, <em>cond='has_value'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_linked_prev_node_with_cond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_cond" title="Permalink to this definition">¶</a></dt>
+<dd><p>get linked node prev until find node which have specific parm
+:param type:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_grp">
+<code class="descname">get_linked_prev_node_with_grp</code><span class="sig-paren">(</span><em>grp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_linked_prev_node_with_grp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_grp" title="Permalink to this definition">¶</a></dt>
+<dd><p>get linked node prev with type
+:param type:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_type">
+<code class="descname">get_linked_prev_node_with_type</code><span class="sig-paren">(</span><em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_linked_prev_node_with_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>get linked node forward with type
+:param type:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_net_id">
+<code class="descname">get_net_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_net_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_net_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_net_node_id">
+<code class="descname">get_net_node_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_net_node_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_net_node_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_net_ver">
+<code class="descname">get_net_ver</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_net_ver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_net_ver" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_next_node">
+<code class="descname">get_next_node</code><span class="sig-paren">(</span><em>grp=None</em>, <em>type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_next_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_next_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>next node class
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_next_node_as_dict">
+<code class="descname">get_next_node_as_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_next_node_as_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_next_node_as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>next node class
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_node_def">
+<code class="descname">get_node_def</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_node_def"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_node_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_node_grp">
+<code class="descname">get_node_grp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_node_grp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_node_grp" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_node_name">
+<code class="descname">get_node_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_node_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_node_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_node_type">
+<code class="descname">get_node_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_node_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_node_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_onehot_vector">
+<code class="descname">get_onehot_vector</code><span class="sig-paren">(</span><em>sent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_onehot_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_onehot_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert sentecne to vector
+:return: list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_onehot_word">
+<code class="descname">get_onehot_word</code><span class="sig-paren">(</span><em>vec_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_onehot_word"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_onehot_word" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert sentecne to vector
+:return: list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_prev_node">
+<code class="descname">get_prev_node</code><span class="sig-paren">(</span><em>grp=None</em>, <em>type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_prev_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_prev_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>prev_node class
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_prev_node_as_dict">
+<code class="descname">get_prev_node_as_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_prev_node_as_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_prev_node_as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>prev_node class
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.get_search_flag">
+<code class="descname">get_search_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.get_search_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.get_search_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.load_class">
+<code class="descname">load_class</code><span class="sig-paren">(</span><em>class_path</em>, <em>class_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.load_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.load_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>return class with name
+:param module_name:
+:param class_name:
+:return: Class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.load_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_net_id">
+<code class="descname">set_net_id</code><span class="sig-paren">(</span><em>net_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_net_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_net_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_net_node_id">
+<code class="descname">set_net_node_id</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_net_node_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_net_node_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_net_ver">
+<code class="descname">set_net_ver</code><span class="sig-paren">(</span><em>net_ver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_net_ver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_net_ver" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_next_node">
+<code class="descname">set_next_node</code><span class="sig-paren">(</span><em>key</em>, <em>node_cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_next_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_next_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>next node class
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_node_def">
+<code class="descname">set_node_def</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_node_def"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_node_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_node_grp">
+<code class="descname">set_node_grp</code><span class="sig-paren">(</span><em>node_grp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_node_grp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_node_grp" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_node_name">
+<code class="descname">set_node_name</code><span class="sig-paren">(</span><em>node_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_node_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_node_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_node_type">
+<code class="descname">set_node_type</code><span class="sig-paren">(</span><em>node_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_node_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_node_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>node name string
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_prev_node">
+<code class="descname">set_prev_node</code><span class="sig-paren">(</span><em>key</em>, <em>node_cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_prev_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_prev_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>prev_node class
+:param name:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.common_node.WorkFlowCommonNode.set_search_flag">
+<code class="descname">set_search_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/common_node.html#WorkFlowCommonNode.set_search_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.common_node.WorkFlowCommonNode.set_search_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for tree search
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.common.neural_common_bilismcrf">
+<span id="cluster-common-neural-common-bilismcrf-module"></span><h2>cluster.common.neural_common_bilismcrf module<a class="headerlink" href="#module-cluster.common.neural_common_bilismcrf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon">
+<em class="property">class </em><code class="descclassname">cluster.common.neural_common_bilismcrf.</code><code class="descname">BiLstmCommon</code><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>common functions for bilstm crf</p>
+<dl class="class">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.CoNLLDataset">
+<em class="property">class </em><code class="descname">CoNLLDataset</code><span class="sig-paren">(</span><em>filename</em>, <em>processing_word=None</em>, <em>processing_tag=None</em>, <em>max_iter=None</em>, <em>all_line=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.CoNLLDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.CoNLLDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Class that iterates over CoNLL Dataset</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.NONE">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">NONE</code><em class="property"> = 'O'</em><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.NONE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.NUM">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">NUM</code><em class="property"> = '$NUM$'</em><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.NUM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.UNK">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">UNK</code><em class="property"> = '$UNK$'</em><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.UNK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.export_trimmed_glove_vectors">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">export_trimmed_glove_vectors</code><span class="sig-paren">(</span><em>vocab</em>, <em>model</em>, <em>trimmed_filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.export_trimmed_glove_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.export_trimmed_glove_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves glove vectors in numpy array</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>vocab: dictionary vocab[word] = index
+glove_filename: a path to a glove file
+trimmed_filename: a path where to store a matrix in npy
+dim: (int) dimension of embeddings
+UNK = &#8220;$UNK$&#8221;
+NUM = &#8220;$NUM$&#8221;
+NONE = &#8220;O&#8221;</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.get_char_vocab">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">get_char_vocab</code><span class="sig-paren">(</span><em>dataset</em>, <em>chars=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.get_char_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_char_vocab" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>dataset: a iterator yielding tuples (sentence, tags)</dd>
+<dt>Returns:</dt>
+<dd>a set of all the characters in the dataset</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.get_chunk_type">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">get_chunk_type</code><span class="sig-paren">(</span><em>tok</em>, <em>idx_to_tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.get_chunk_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_chunk_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.get_chunks">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">get_chunks</code><span class="sig-paren">(</span><em>seq</em>, <em>tags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.get_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>seq: [4, 4, 0, 0, ...] sequence of labels
+tags: dict[&#8220;O&#8221;] = 4</dd>
+<dt>Returns:</dt>
+<dd>list of (chunk_type, chunk_start, chunk_end)</dd>
+<dt>Example:</dt>
+<dd>seq = [4, 5, 0, 3]
+tags = {&#8220;B-PER&#8221;: 4, &#8220;I-PER&#8221;: 5, &#8220;B-LOC&#8221;: 3}
+result = [(&#8220;PER&#8221;, 0, 2), (&#8220;LOC&#8221;, 3, 4)]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.get_processing_word">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">get_processing_word</code><span class="sig-paren">(</span><em>vocab_words=None</em>, <em>vocab_chars=None</em>, <em>lowercase=False</em>, <em>chars=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.get_processing_word"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_processing_word" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>vocab: dict[word] = idx</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>f(&#8220;cat&#8221;) = ([12, 4, 32], 12345)</dt>
+<dd>= (list of char ids, word id)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.get_trimmed_glove_vectors">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">get_trimmed_glove_vectors</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.get_trimmed_glove_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_trimmed_glove_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>filename: path to the npz file</dd>
+<dt>Returns:</dt>
+<dd>matrix of embeddings (np array)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.get_vocabs">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">get_vocabs</code><span class="sig-paren">(</span><em>datasets</em>, <em>vocab=None</em>, <em>tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.get_vocabs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.get_vocabs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>datasets: a list of dataset objects</dd>
+<dt>Return:</dt>
+<dd>a set of all the words in the dataset</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.load_vocab">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">load_vocab</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.load_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.load_vocab" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>filename: file with a word per line</dd>
+<dt>Returns:</dt>
+<dd>d: dict[word] = index</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.minibatches">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">minibatches</code><span class="sig-paren">(</span><em>data</em>, <em>minibatch_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.minibatches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.minibatches" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>data: generator of (sentence, tags) tuples
+minibatch_size: (int)</dd>
+<dt>Returns:</dt>
+<dd>list of tuples</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.pad_sequences">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">pad_sequences</code><span class="sig-paren">(</span><em>sequences</em>, <em>pad_tok</em>, <em>nlevels=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.pad_sequences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.pad_sequences" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>sequences: a generator of list or tuple
+pad_tok: the char to pad with</dd>
+<dt>Returns:</dt>
+<dd>a list of list where each sublist has same length</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.write_char_embedding">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">write_char_embedding</code><span class="sig-paren">(</span><em>vocab</em>, <em>trimmed_filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.write_char_embedding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.write_char_embedding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a vocab to a file</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>vocab: iterable that yields word
+filename: path to vocab file</dd>
+<dt>Returns:</dt>
+<dd>write a word per line</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_bilismcrf.BiLstmCommon.write_vocab">
+<code class="descclassname">BiLstmCommon.</code><code class="descname">write_vocab</code><span class="sig-paren">(</span><em>vocab</em>, <em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_bilismcrf.html#BiLstmCommon.write_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_bilismcrf.BiLstmCommon.write_vocab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a vocab to a file</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>vocab: iterable that yields word
+filename: path to vocab file</dd>
+<dt>Returns:</dt>
+<dd>write a word per line</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.common.neural_common_monitor">
+<span id="cluster-common-neural-common-monitor-module"></span><h2>cluster.common.neural_common_monitor module<a class="headerlink" href="#module-cluster.common.neural_common_monitor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.common.neural_common_monitor.NeuralCommonMonitor">
+<em class="property">class </em><code class="descclassname">cluster.common.neural_common_monitor.</code><code class="descname">NeuralCommonMonitor</code><a class="reference internal" href="_modules/cluster/common/neural_common_monitor.html#NeuralCommonMonitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_monitor.NeuralCommonMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.common.neural_common_wdnn">
+<span id="cluster-common-neural-common-wdnn-module"></span><h2>cluster.common.neural_common_wdnn module<a class="headerlink" href="#module-cluster.common.neural_common_wdnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.common.neural_common_wdnn.NeuralCommonWdnn">
+<em class="property">class </em><code class="descclassname">cluster.common.neural_common_wdnn.</code><code class="descname">NeuralCommonWdnn</code><a class="reference internal" href="_modules/cluster/common/neural_common_wdnn.html#NeuralCommonWdnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_wdnn.NeuralCommonWdnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cluster.common.neural_common_wdnn.NeuralCommonWdnn.df_validation">
+<code class="descname">df_validation</code><span class="sig-paren">(</span><em>df</em>, <em>dataconf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_wdnn.html#NeuralCommonWdnn.df_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_wdnn.NeuralCommonWdnn.df_validation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_wdnn.NeuralCommonWdnn.input_fn">
+<code class="descname">input_fn</code><span class="sig-paren">(</span><em>df</em>, <em>nnid</em>, <em>dataconf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_wdnn.html#NeuralCommonWdnn.input_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_wdnn.NeuralCommonWdnn.input_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wide &amp; Deep Network input tensor maker
+V1.0    16.11.04    Initial</p>
+<blockquote>
+<div>:param df : dataframe from hbase
+:param df, nnid
+:return: tensor sparse, constraint</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.neural_common_wdnn.NeuralCommonWdnn.wdnn_build">
+<code class="descname">wdnn_build</code><span class="sig-paren">(</span><em>model_type</em>, <em>nodeid</em>, <em>hidden_layers</em>, <em>activation_fn</em>, <em>dataconf</em>, <em>model_dir</em>, <em>train=True</em>, <em>dememsion_auto_flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/neural_common_wdnn.html#NeuralCommonWdnn.wdnn_build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.neural_common_wdnn.NeuralCommonWdnn.wdnn_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>wide &amp; deep netowork builder
+:param nnid
+:param model_dir : directory of chkpoint of wdnn model
+:param train : train or predict
+:return: tensorflow network model</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.common.train_summary_accloss_info">
+<span id="cluster-common-train-summary-accloss-info-module"></span><h2>cluster.common.train_summary_accloss_info module<a class="headerlink" href="#module-cluster.common.train_summary_accloss_info" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo">
+<em class="property">class </em><code class="descclassname">cluster.common.train_summary_accloss_info.</code><code class="descname">TrainSummaryAccLossInfo</code><span class="sig-paren">(</span><em>conf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_acc_info">
+<code class="descname">get_acc_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.get_acc_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_acc_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_loss_info">
+<code class="descname">get_loss_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.get_loss_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_loss_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_nn_batch_ver_id">
+<code class="descname">get_nn_batch_ver_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.get_nn_batch_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_nn_batch_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_nn_id">
+<code class="descname">get_nn_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.get_nn_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_nn_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_nn_wf_ver_id">
+<code class="descname">get_nn_wf_ver_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.get_nn_wf_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.get_nn_wf_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_acc_info">
+<code class="descname">set_acc_info</code><span class="sig-paren">(</span><em>acc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.set_acc_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_acc_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_loss_info">
+<code class="descname">set_loss_info</code><span class="sig-paren">(</span><em>loss</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.set_loss_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_loss_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_nn_batch_ver_id">
+<code class="descname">set_nn_batch_ver_id</code><span class="sig-paren">(</span><em>nn_batch_ver_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.set_nn_batch_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_nn_batch_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_nn_id">
+<code class="descname">set_nn_id</code><span class="sig-paren">(</span><em>nn_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.set_nn_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_nn_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_nn_wf_ver_id">
+<code class="descname">set_nn_wf_ver_id</code><span class="sig-paren">(</span><em>nn_wf_ver_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_accloss_info.html#TrainSummaryAccLossInfo.set_nn_wf_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_accloss_info.TrainSummaryAccLossInfo.set_nn_wf_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.common.train_summary_info">
+<span id="cluster-common-train-summary-info-module"></span><h2>cluster.common.train_summary_info module<a class="headerlink" href="#module-cluster.common.train_summary_info" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo">
+<em class="property">class </em><code class="descclassname">cluster.common.train_summary_info.</code><code class="descname">TrainSummaryInfo</code><span class="sig-paren">(</span><em>conf=None</em>, <em>type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.get_accuracy">
+<code class="descname">get_accuracy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.get_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.get_accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>return test accuracy
+:return: float</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.get_nn_batch_ver_id">
+<code class="descname">get_nn_batch_ver_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.get_nn_batch_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.get_nn_batch_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.get_nn_id">
+<code class="descname">get_nn_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.get_nn_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.get_nn_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.get_nn_wf_ver_id">
+<code class="descname">get_nn_wf_ver_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.get_nn_wf_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.get_nn_wf_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.get_result_info">
+<code class="descname">get_result_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.get_result_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.get_result_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.save_result_info">
+<code class="descname">save_result_info</code><span class="sig-paren">(</span><em>result</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.save_result_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.save_result_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.set_nn_batch_ver_id">
+<code class="descname">set_nn_batch_ver_id</code><span class="sig-paren">(</span><em>nn_batch_ver_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.set_nn_batch_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.set_nn_batch_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.set_nn_id">
+<code class="descname">set_nn_id</code><span class="sig-paren">(</span><em>nn_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.set_nn_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.set_nn_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.set_nn_wf_ver_id">
+<code class="descname">set_nn_wf_ver_id</code><span class="sig-paren">(</span><em>nn_wf_ver_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.set_nn_wf_ver_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.set_nn_wf_ver_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.set_result_data_format">
+<code class="descname">set_result_data_format</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.set_result_data_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.set_result_data_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>set config parms and result form is necessary before use
+:param config:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.common.train_summary_info.TrainSummaryInfo.set_result_info">
+<code class="descname">set_result_info</code><span class="sig-paren">(</span><em>label</em>, <em>predict</em>, <em>input=None</em>, <em>acc=None</em>, <em>coord_x=None</em>, <em>coord_y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/common/train_summary_info.html#TrainSummaryInfo.set_result_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.common.train_summary_info.TrainSummaryInfo.set_result_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cluster.common" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cluster.common package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cluster.common.common_node">cluster.common.common_node module</a></li>
+<li><a class="reference internal" href="#module-cluster.common.neural_common_bilismcrf">cluster.common.neural_common_bilismcrf module</a></li>
+<li><a class="reference internal" href="#module-cluster.common.neural_common_monitor">cluster.common.neural_common_monitor module</a></li>
+<li><a class="reference internal" href="#module-cluster.common.neural_common_wdnn">cluster.common.neural_common_wdnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.common.train_summary_accloss_info">cluster.common.train_summary_accloss_info module</a></li>
+<li><a class="reference internal" href="#module-cluster.common.train_summary_info">cluster.common.train_summary_info module</a></li>
+<li><a class="reference internal" href="#module-cluster.common">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cluster.common.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cluster.common.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

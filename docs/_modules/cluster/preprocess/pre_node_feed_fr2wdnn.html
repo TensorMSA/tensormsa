@@ -1,0 +1,524 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.preprocess.pre_node_feed_fr2wdnn &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.preprocess.pre_node_feed_fr2wdnn</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cluster.preprocess.pre_node_feed</span> <span class="k">import</span> <span class="n">PreNodeFeed</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">master.workflow.dataconf.workflow_dataconf_frame</span> <span class="k">import</span> <span class="n">WorkflowDataConfFrame</span> <span class="k">as</span> <span class="n">wf_data_conf</span>
+<span class="kn">from</span> <span class="nn">master.workflow.data.workflow_data_frame</span> <span class="k">import</span> <span class="n">WorkFlowDataFrame</span> <span class="k">as</span> <span class="n">wf_data_frame</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn">[docs]</a><span class="k">class</span> <span class="nc">PreNodeFeedFr2Wdnn</span><span class="p">(</span><span class="n">PreNodeFeed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># @property</span>
+    <span class="c1"># def input_paths(self):</span>
+    <span class="c1">#     return self.input_paths</span>
+
+    <span class="c1"># @input_paths.setter</span>
+    <span class="c1"># def input_paths(self, value):</span>
+    <span class="c1">#     self.input_paths = value</span>
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.set_for_predict"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.set_for_predict">[docs]</a>    <span class="k">def</span> <span class="nf">set_for_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nnid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">nnid</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="n">nnid</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.run"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        override init class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#전 노드중 dataconf를 찾아 온다 wdnn만 가능</span>
+        <span class="c1">#전체 노드중 data_conf를 넣어서 만든다. 1개 밖에 없음</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data_conf_node_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span><span class="s2">&quot;_dataconf_node&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="n">data_conf_node_name</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">PreNodeFeedFr2Wdnn</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conf_data</span><span class="p">)</span>
+            <span class="c1">#input_features = self.create_feature_columns()</span>
+
+            <span class="c1">#testself.node_name.split(&#39;_&#39;)[1]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">multi_queue_and_h5_print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;fidder error </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+    <span class="k">def</span> <span class="nf">_convert_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.create_feature_columns"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.create_feature_columns">[docs]</a>    <span class="k">def</span> <span class="nf">create_feature_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataconf</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get feature columns for tfrecord reader</span>
+<span class="sd">        TFRecord에서 feature를 추출</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        <span class="n">_cell_feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_feature</span>
+        <span class="n">_extend_cell_feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extend_cell_feature</span>
+        <span class="n">_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
+        <span class="n">_label_calues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_values</span>
+
+        <span class="n">CONTINUOUS_COLUMNS</span><span class="p">,</span> <span class="n">CATEGORICAL_COLUMNS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_continuous_category_list</span><span class="p">(</span><span class="n">_cell_feature</span><span class="p">)</span>
+        <span class="n">CALCULATED_CONTINUOUS_COLUMNS</span><span class="p">,</span> <span class="n">CALCULATED_CATEGORICAL_COLUMNS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_none_keys_cate_conti_list</span><span class="p">(</span><span class="n">CONTINUOUS_COLUMNS</span><span class="p">,</span><span class="n">CATEGORICAL_COLUMNS</span> <span class="p">)</span>
+
+        <span class="c1"># cate를 가지고 formon을 돌리는데 카테로 만들고 extend에 key 있으면 key도 추가 하고</span>
+        <span class="c1">#conti도 for문 돌리고</span>
+        <span class="c1">#마지막에 set을 어떻게 할지도 중요하고</span>
+
+        <span class="n">category_tensor</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">continuous_tensor</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">cate_item</span> <span class="ow">in</span> <span class="n">CALCULATED_CATEGORICAL_COLUMNS</span><span class="p">:</span>
+            <span class="n">category_tensor</span><span class="p">[</span><span class="n">cate_item</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">sparse_column_with_hash_bucket</span><span class="p">(</span><span class="n">cate_item</span><span class="p">,</span> <span class="n">hash_bucket_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">conti_item</span> <span class="ow">in</span> <span class="n">CALCULATED_CONTINUOUS_COLUMNS</span><span class="p">:</span>
+            <span class="n">continuous_tensor</span><span class="p">[</span><span class="n">conti_item</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">real_valued_column</span><span class="p">(</span><span class="n">conti_item</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="c1">#NONE은 다 처리 되었고</span>
+        <span class="c1">#KEY를 처리 할려면</span>
+        <span class="k">for</span> <span class="n">key_item</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_extend_cell_feature</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;column_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;CATEGORICAL_KEY&quot;</span><span class="p">:</span>
+                <span class="n">category_tensor</span><span class="p">[</span><span class="n">key_item</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">sparse_column_with_keys</span><span class="p">(</span><span class="n">column_name</span><span class="o">=</span><span class="n">key_item</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;keys&quot;</span><span class="p">))</span>
+
+        <span class="n">category_tensor</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">continuous_tensor</span><span class="p">)</span>
+        <span class="n">modi_set</span> <span class="o">=</span> <span class="p">{</span><span class="n">_v</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">category_tensor</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
+        <span class="n">label_modi</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">real_valued_column</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">modi_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">label_modi</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># gender = tf.contrib.layers.sparse_column_with_keys(</span>
+        <span class="c1">#     column_name=&quot;sex&quot;, keys=[&quot;female&quot;, &quot;male&quot;])</span>
+        <span class="c1"># race = tf.contrib.layers.sparse_column_with_keys(</span>
+        <span class="c1">#     column_name=&quot;race&quot;, keys=[</span>
+        <span class="c1">#         &quot;Amer-Indian-Eskimo&quot;,</span>
+        <span class="c1">#         &quot;Asian-Pac-Islander&quot;,</span>
+        <span class="c1">#         &quot;Black&quot;,</span>
+        <span class="c1">#         &quot;Other&quot;,</span>
+        <span class="c1">#         &quot;White&quot;</span>
+        <span class="c1">#     ])</span>
+        <span class="c1">#</span>
+        <span class="c1">#</span>
+        <span class="c1">#</span>
+        <span class="c1"># education = tf.contrib.layers.sparse_column_with_hash_bucket(</span>
+        <span class="c1">#     &quot;education&quot;, hash_bucket_size=1000)</span>
+        <span class="c1"># marital_status = tf.contrib.layers.sparse_column_with_hash_bucket(</span>
+        <span class="c1">#     &quot;marital_status&quot;, hash_bucket_size=100)</span>
+        <span class="c1"># relationship = tf.contrib.layers.sparse_column_with_hash_bucket(</span>
+        <span class="c1">#     &quot;relationship&quot;, hash_bucket_size=100)</span>
+        <span class="c1"># workclass = tf.contrib.layers.sparse_column_with_hash_bucket(</span>
+        <span class="c1">#     &quot;workclass&quot;, hash_bucket_size=100)</span>
+        <span class="c1"># occupation = tf.contrib.layers.sparse_column_with_hash_bucket(</span>
+        <span class="c1">#     &quot;occupation&quot;, hash_bucket_size=1000)</span>
+        <span class="c1"># native_country = tf.contrib.layers.sparse_column_with_hash_bucket(</span>
+        <span class="c1">#     &quot;native_country&quot;, hash_bucket_size=1000)</span>
+        <span class="c1">#</span>
+        <span class="c1"># # Continuous base columns.</span>
+        <span class="c1"># age = tf.contrib.layers.real_valued_column(&quot;age&quot;, dtype=tf.int64)</span>
+        <span class="c1"># education_num = tf.contrib.layers.real_valued_column(&quot;education_num&quot;, dtype=tf.int64)</span>
+        <span class="c1"># capital_gain = tf.contrib.layers.real_valued_column(&quot;capital_gain&quot;, dtype=tf.int64)</span>
+        <span class="c1"># capital_loss = tf.contrib.layers.real_valued_column(&quot;capital_loss&quot;, dtype=tf.int64)</span>
+        <span class="c1"># hours_per_week = tf.contrib.layers.real_valued_column(&quot;hours_per_week&quot;, dtype=tf.int64)</span>
+        <span class="c1">#</span>
+        <span class="c1"># label = tf.contrib.layers.real_valued_column(&quot;label&quot;, dtype=tf.int64)</span>
+        <span class="c1">#</span>
+        <span class="c1"># ori_set =  set([</span>
+        <span class="c1">#     workclass,</span>
+        <span class="c1">#     education,</span>
+        <span class="c1">#     marital_status,</span>
+        <span class="c1">#     occupation,</span>
+        <span class="c1">#     relationship,</span>
+        <span class="c1">#     race,</span>
+        <span class="c1">#     gender,</span>
+        <span class="c1">#     native_country,</span>
+        <span class="c1">#     age,</span>
+        <span class="c1">#     education_num,</span>
+        <span class="c1">#     capital_gain,</span>
+        <span class="c1">#     capital_loss,</span>
+        <span class="c1">#     hours_per_week,</span>
+        <span class="c1">#     label,</span>
+        <span class="c1"># ])</span>
+
+        <span class="k">return</span> <span class="n">modi_set</span> <span class="c1">#ori_set</span></div>
+
+
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.input_fn"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.input_fn">[docs]</a>    <span class="k">def</span> <span class="nf">input_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">data_file</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">dataconf</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+
+
+            <span class="n">input_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_feature_columns</span><span class="p">()</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">create_feature_spec_for_parsing</span><span class="p">(</span><span class="n">input_features</span><span class="p">)</span>
+
+            <span class="n">feature_map</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">learn</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_batch_record_features</span><span class="p">(</span>
+                <span class="n">file_pattern</span><span class="o">=</span><span class="p">[</span><span class="n">data_file</span><span class="p">],</span>
+                <span class="c1">#file_pattern=data_file,</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span>
+                <span class="n">queue_capacity</span> <span class="o">=</span> <span class="mi">20000</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;read_batch_features_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">))</span>
+
+            <span class="n">target</span> <span class="o">=</span> <span class="n">feature_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+
+            <span class="c1">#num_epoch =</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">batch_size</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="k">return</span> <span class="n">feature_map</span><span class="p">,</span> <span class="n">target</span></div>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.input_fn2"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.input_fn2">[docs]</a>    <span class="k">def</span> <span class="nf">input_fn2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">data_file</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">dataconf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wide &amp; Deep Network input tensor maker</span>
+<span class="sd">            V1.0    16.11.04    Initial</span>
+<span class="sd">                :param df : dataframe from hbase</span>
+<span class="sd">                :param df, nnid</span>
+<span class="sd">                :return: tensor sparse, constraint &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#self.df_validation(df, dataconf)</span>
+
+            <span class="c1"># remove NaN elements</span>
+            <span class="n">_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
+            <span class="n">_label_calues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_values</span>
+
+            <span class="c1">#df = df.dropna(how=&#39;any&#39;, axis=0)</span>
+            <span class="n">df_test</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1">##Make List for Continuous, Categorical Columns</span>
+            <span class="n">CONTINUOUS_COLUMNS</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">CATEGORICAL_COLUMNS</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1">##Get datadesc Continuous and Categorical infomation from Postgres nninfo</span>
+            <span class="c1"># json_string = self.get_json_by_nnid(nnid) # DATACONF</span>
+            <span class="c1"># json_object = json_string</span>
+
+            <span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+            <span class="n">le</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">_label_calues</span><span class="p">)</span>
+
+            <span class="c1">#Todo 트레이닝 하기 위해서 바꿔야함</span>
+
+            <span class="n">j_feature</span> <span class="o">=</span> <span class="n">dataconf</span><span class="p">[</span><span class="s1">&#39;cell_feature&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">c_value</span> <span class="ow">in</span> <span class="n">j_feature</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">c_value</span><span class="p">[</span><span class="s2">&quot;column_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CATEGORICAL&quot;</span><span class="p">:</span>
+                    <span class="n">CATEGORICAL_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">c_value</span><span class="p">[</span><span class="s2">&quot;column_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CONTINUOUS&quot;</span><span class="p">:</span>
+                    <span class="n">CONTINUOUS_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">c_value</span><span class="p">[</span><span class="s2">&quot;column_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CATEGORICAL_KEY&quot;</span><span class="p">:</span>
+                    <span class="n">CATEGORICAL_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+
+                    <span class="c1"># {&quot;data_conf&quot;: {&quot;label&quot;: {&quot;income_bracket&quot;: &quot;LABEL&quot;}, &quot;cross_cell&quot;: {&quot;col1&quot;: [&quot;occupation&quot;, &quot;education&quot;], &quot;col2&quot;: [&quot;native_country&quot;, &quot;occupation&quot;]}, &quot;cell_feature&quot;: {&quot;age&quot;: {&quot;column_type&quot;: &quot;CONTINUOUS&quot;}, &quot;race&quot;: {&quot;column_type&quot;: &quot;CATEGORICAL&quot;}, &quot;gender&quot;: {&quot;keys&quot;: [&quot;female&quot;, &quot;male&quot;], &quot;column_type&quot;: &quot;CATEGORICAL_KEY&quot;}, &quot;education&quot;: {&quot;column_type&quot;: &quot;CATEGORICAL&quot;}, &quot;workclass&quot;: {&quot;column_type&quot;: &quot;CATEGORICAL&quot;}, &quot;occupation&quot;: {&quot;column_type&quot;: &quot;CATEGORICAL&quot;}, &quot;capital_gain&quot;: {&quot;column_type&quot;: &quot;CONTINUOUS&quot;}, &quot;capital_loss&quot;: {&quot;column_type&quot;: &quot;CONTINUOUS&quot;}, &quot;relationship&quot;: {&quot;column_type&quot;: &quot;CATEGORICAL&quot;}, &quot;education_num&quot;: {&quot;column_type&quot;: &quot;CONTINUOUS&quot;}, &quot;hours_per_week&quot;: {&quot;column_type&quot;: &quot;CONTINUOUS&quot;}, &quot;marital_status&quot;: {&quot;column_type&quot;: &quot;CATEGORICAL&quot;}, &quot;native_country&quot;: {&quot;column_type&quot;: &quot;CATEGORICAL&quot;}}, &quot;Transformations&quot;: {&quot;col1&quot;: {&quot;boundaries&quot;: [18, 25, 30, 35, 40, 45, 50, 55, 60, 65], &quot;column_name&quot;: &quot;age&quot;}}}}</span>
+            <span class="c1"># Check Continuous Column is exsist?</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">CONTINUOUS_COLUMNS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># print(CONTINUOUS_COLUMNS)</span>
+                <span class="c1">#null 값 처리를 위해서 fillna사용</span>
+                <span class="n">continuous_cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">CONTINUOUS_COLUMNS</span><span class="p">}</span>
+                <span class="c1">#continuous_cols = {k: tf.float32(df[k].fillna(0.).values) for k in CONTINUOUS_COLUMNS}</span>
+            <span class="c1"># Check Categorical Column is exsist?</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">CATEGORICAL_COLUMNS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">CATEGORICAL_COLUMNS</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span>
+
+                <span class="n">categorical_cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">SparseTensor</span><span class="p">(</span>
+                    <span class="n">indices</span><span class="o">=</span><span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)],</span>
+                    <span class="n">values</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="s1">&#39;nan&#39;</span><span class="p">,</span><span class="s1">&#39;Nan&#39;</span><span class="p">],</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                    <span class="n">dense_shape</span><span class="o">=</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+                                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">CATEGORICAL_COLUMNS</span><span class="p">}</span>
+
+            <span class="c1"># Merges the two dictionaries into one.</span>
+            <span class="n">feature_cols</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">CONTINUOUS_COLUMNS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">feature_cols</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">continuous_cols</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">CATEGORICAL_COLUMNS</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">feature_cols</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">categorical_cols</span><span class="p">)</span>
+
+            <span class="n">feature_cols</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">_label</span><span class="p">)</span>
+            <span class="c1"># dataconf</span>
+            <span class="c1">#LABEL_COLUMN = &#39;label&#39;</span>
+            <span class="c1">#df[LABEL_COLUMN] = (df[&#39;income_bracket&#39;].apply(lambda x: &#39;&gt;50K&#39; in x)).astype(int)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_type</span> <span class="o">==</span> <span class="s2">&quot;CONTINUOUS&quot;</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">_label</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#trans = le.transform([value])[0]  # 무조껀 0번째임</span>
+                <span class="c1">#example.features.feature[&#39;label&#39;].int64_list.value.extend([int(trans)])</span>
+                <span class="n">lable_encoder_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">x</span><span class="p">])</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">_label</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">lable_encoder_func</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                <span class="c1">#label_encode = le.transform(label_list)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">feature_cols</span><span class="p">,</span> <span class="n">label</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error Message : </span><span class="si">{0}</span><span class="s2"> cause by </span><span class="si">{1}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">e</span><span class="o">.</span><span class="n">__traceback__</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_convert_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        just pass hdf5 file chunk</span>
+<span class="sd">        :param file_path:</span>
+<span class="sd">        :param index:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># try:</span>
+        <span class="c1">#     h5file = h5py.File(file_path, mode=&#39;r&#39;)</span>
+        <span class="c1">#     raw_data = h5file[&#39;rawdata&#39;]</span>
+        <span class="c1">#     return raw_data[index.start : index.stop]</span>
+        <span class="c1"># except Exception as e:</span>
+        <span class="c1">#     raise Exception(e)</span>
+        <span class="c1"># finally:</span>
+        <span class="c1">#     h5file.close()</span>
+        <span class="c1"># type4 partial read</span>
+        <span class="c1">#Todo 할때마다 계속 파일을 읽는게 올바른 것인가?</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">store</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">nrows</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_storer</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nrows</span>
+            <span class="n">chunksize</span> <span class="o">=</span> <span class="mi">100</span>
+
+            <span class="c1">#for i in range(nrows // chunksize + 1):</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">,</span>
+                                 <span class="n">start</span><span class="o">=</span><span class="n">index</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+                                 <span class="n">stop</span><span class="o">=</span><span class="n">index</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">chunk</span>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.data_size"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.data_size">[docs]</a>    <span class="k">def</span> <span class="nf">data_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">store</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pointer</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">get_storer</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nrows</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.make_continuous_category_list"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.make_continuous_category_list">[docs]</a>    <span class="k">def</span> <span class="nf">make_continuous_category_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cell_feature</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CONTINUOUS_COLUMNS</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">CATEGORICAL_COLUMNS</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">type_columne</span><span class="p">,</span> <span class="n">type_value</span> <span class="ow">in</span> <span class="n">cell_feature</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">type_value</span><span class="p">[</span><span class="s2">&quot;column_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CONTINUOUS&#39;</span><span class="p">:</span>
+                <span class="n">CONTINUOUS_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_columne</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">CATEGORICAL_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_columne</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CONTINUOUS_COLUMNS</span><span class="p">,</span> <span class="n">CATEGORICAL_COLUMNS</span></div>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.add_none_keys_cate_conti_list"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.add_none_keys_cate_conti_list">[docs]</a>    <span class="k">def</span> <span class="nf">add_none_keys_cate_conti_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conti_list</span><span class="p">,</span> <span class="n">cate_list</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CALCULATED_CONTINUOUS_COLUMNS</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">CALCULATED_CATEGORICAL_COLUMNS</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="c1"># , &quot;extend_cell_feature&quot;:</span>
+        <span class="c1"># {</span>
+        <span class="c1">#     &quot;sex&quot;: {&quot;keys&quot;: [&quot;female&quot;, &quot;male&quot;], &quot;column_type&quot;: &quot;CATEGORICAL_KEY&quot;}</span>
+        <span class="c1">#     , &quot;race&quot;: {&quot;column_type&quot;: &quot;NONE&quot;}</span>
+        <span class="c1">#     , &quot;marital_status&quot;: {&quot;column_type&quot;: &quot;NONE&quot;}</span>
+        <span class="c1"># }</span>
+
+        <span class="n">_extend_cell_feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extend_cell_feature</span>
+        <span class="n">_extend_cell_feature_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
+        <span class="k">for</span> <span class="n">_k</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">_extend_cell_feature</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">_v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;column_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;CATEGORICAL_KEY&quot;</span><span class="p">:</span>
+                <span class="n">_extend_cell_feature_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_k</span><span class="p">)</span>
+
+        <span class="c1">#_extend_cell_feature_list = list(_extend_cell_feature.keys())</span>
+        <span class="n">_extend_cell_feature_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_label</span><span class="p">)</span>
+        <span class="n">label_extend_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_extend_cell_feature_list</span><span class="p">)</span>
+
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">label_extend_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">conti_list</span><span class="p">:</span>
+                <span class="n">conti_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">_key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">cate_list</span><span class="p">:</span>
+                <span class="n">cate_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">_key</span><span class="p">)</span>
+
+        <span class="c1"># for type_columne, type_value in cell_feature.items():</span>
+        <span class="c1">#     if type_value[&quot;column_type&quot;] == &#39;CONTINUOUS&#39;:</span>
+        <span class="c1">#         CONTINUOUS_COLUMNS.append(type_columne)</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         CATEGORICAL_COLUMNS.append(type_columne)</span>
+        <span class="k">return</span> <span class="n">conti_list</span><span class="p">,</span> <span class="n">cate_list</span></div>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wdnn.multi_queue_and_h5_print"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.multi_queue_and_h5_print">[docs]</a>    <span class="k">def</span> <span class="nf">multi_queue_and_h5_print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="c1">#filename = &#39;adult_data.tfrecords&#39;</span>
+
+        <span class="c1"># Queue 는 이런식으로 설정 여기서는 쓰지 않음</span>
+        <span class="c1">#filename_queue = tf.train.string_input_producer(</span>
+        <span class="c1">#    [filename], num_epochs=1)</span>
+
+        <span class="c1"># 꼭 local variable initial  해야함</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_node_flag</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">local_variables_initializer</span><span class="p">()</span>
+
+                <span class="c1"># Multi Thread로 들고옴</span>
+                <span class="n">feature_map</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_fn</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">learn</span><span class="o">.</span><span class="n">ModeKeys</span><span class="o">.</span><span class="n">EVAL</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+
+                <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+                    <span class="c1"># Start populating the filename queue.</span>
+                    <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init_op</span><span class="p">)</span>
+                    <span class="n">coord</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Coordinator</span><span class="p">()</span>
+                    <span class="n">threads</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">start_queue_runners</span><span class="p">(</span><span class="n">coord</span><span class="o">=</span><span class="n">coord</span><span class="p">)</span>
+
+                    <span class="n">tfrecord_list_row</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>  <span class="c1"># 출력을 위한 List</span>
+                    <span class="n">print_column</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                        <span class="c1"># Multi Thread에서 넣을것을 Session으로 실행</span>
+                        <span class="n">example</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">feature_map</span><span class="p">,</span> <span class="n">target</span><span class="p">])</span>
+
+                        <span class="n">_row</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="k">if</span> <span class="n">print_column</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># Header를 위한 Column Key 설정 첫줄만</span>
+                            <span class="n">tfrecord_list_key</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">example</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+                            <span class="n">tfrecord_list_key</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
+                            <span class="n">print_column</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="n">tfrecord_list_row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tfrecord_list_key</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">example</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])):</span>  <span class="c1"># Row를 들고 오기 뭔가 지저분함</span>
+
+                            <span class="n">tfrecord_list_col</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                            <span class="k">for</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">example</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="n">_k</span><span class="p">]))</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Sparse&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>  <span class="c1"># Sparse는 Bytes로 나와서 Bytes를 String 으로 처리</span>
+                                    <span class="n">tfrecord_list_col</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="n">_k</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()))</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="c1"># numpy도 ndarray로 나와서 [0]을 붙여 정리함</span>
+                                    <span class="n">tfrecord_list_col</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="n">_k</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+                            <span class="n">tfrecord_list_col</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+                            <span class="n">columns_value</span> <span class="o">=</span> <span class="n">tfrecord_list_col</span>
+                            <span class="n">tfrecord_list_row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">columns_value</span><span class="p">)</span>
+
+                        <span class="c1"># 이쁘게 출력하기 위해 Print 함수 설정</span>
+                        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tfrecord_list_row</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">:])[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+                    <span class="n">coord</span><span class="o">.</span><span class="n">request_stop</span><span class="p">()</span>
+                    <span class="n">coord</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Todo 할때마다 계속 파일을 읽는게 올바른 것인가?</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">store</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+                    <span class="n">nrows</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_storer</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nrows</span>
+                    <span class="n">chunksize</span> <span class="o">=</span> <span class="mi">100</span>
+
+                    <span class="c1"># for i in range(nrows // chunksize + 1):</span>
+                    <span class="n">chunk</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;feed just show data </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init parameter from workflow_data_frame</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">_wf_data_conf</span> <span class="o">=</span> <span class="n">wf_data_conf</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">label</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell_feature</span><span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">cell_feature</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cross_cell</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">cross_cell</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extend_cell_feature</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">extend_cell_feature</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_values</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">label_values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_type</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">label_type</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;node_name&quot;</span><span class="p">):</span> <span class="c1">#bugfix node_name이 없는 경우 에러 안나게 처리</span>
+                <span class="k">if</span> <span class="s1">&#39;test&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;node_name&quot;</span><span class="p">):</span>
+                    <span class="n">_wf_data_conf</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;evaldata&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">multi_node_flag</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">multi_node_flag</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="n">_wf_data_conf</span> <span class="o">=</span> <span class="n">wf_data_frame</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;data_node&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">multi_node_flag</span> <span class="o">=</span> <span class="n">_wf_data_conf</span><span class="o">.</span><span class="n">multi_node_flag</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;WorkFlowDataFrame parms are not set &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

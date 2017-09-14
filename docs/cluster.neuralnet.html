@@ -1,0 +1,1122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.neuralnet package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cluster-neuralnet-package">
+<h1>cluster.neuralnet package<a class="headerlink" href="#cluster-neuralnet-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node">
+<span id="cluster-neuralnet-neuralnet-node-module"></span><h2>cluster.neuralnet.neuralnet_node module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node.</code><code class="descname">NeuralNetNode</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cluster.common.html#cluster.common.common_node.WorkFlowCommonNode" title="cluster.common.common_node.WorkFlowCommonNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.common_node.WorkFlowCommonNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.change_predict_fileList">
+<code class="descname">change_predict_fileList</code><span class="sig-paren">(</span><em>filelist</em>, <em>dataconf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.change_predict_fileList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.change_predict_fileList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.check_batch_exist">
+<code class="descname">check_batch_exist</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.check_batch_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.check_batch_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>use if you want to check batch data exists or not
+check if batch version data exists
+:param node_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.eval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.get_active_batch">
+<code class="descname">get_active_batch</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.get_active_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_active_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>find batch version for predict
+:param node_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.get_batch_img_data">
+<code class="descname">get_batch_img_data</code><span class="sig-paren">(</span><em>data_set</em>, <em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.get_batch_img_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_batch_img_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.get_before_make_batch">
+<code class="descname">get_before_make_batch</code><span class="sig-paren">(</span><em>node_id</em>, <em>nn_batch_ver_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.get_before_make_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_before_make_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>find a batch version for eval, train
+:param node_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.get_eval_batch">
+<code class="descname">get_eval_batch</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.get_eval_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_eval_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>find a batch version for eval, train
+:param node_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.get_input_data">
+<code class="descname">get_input_data</code><span class="sig-paren">(</span><em>feed_node</em>, <em>cls_pool</em>, <em>input_feed_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.get_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.get_input_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.make_batch">
+<code class="descname">make_batch</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.make_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.make_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>call this function for next version
+:param node_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.model_file_delete">
+<code class="descname">model_file_delete</code><span class="sig-paren">(</span><em>model_path</em>, <em>modelname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.model_file_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.model_file_delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.predict" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>call on train
+:param conf_data:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.save_accloss_info">
+<code class="descname">save_accloss_info</code><span class="sig-paren">(</span><em>result</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.save_accloss_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.save_accloss_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.set_predict_return_cnn_img">
+<code class="descname">set_predict_return_cnn_img</code><span class="sig-paren">(</span><em>labels</em>, <em>logits</em>, <em>pred_cnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.set_predict_return_cnn_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.set_predict_return_cnn_img" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node.NeuralNetNode.spaceprint">
+<code class="descname">spaceprint</code><span class="sig-paren">(</span><em>val</em>, <em>cnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node.html#NeuralNetNode.spaceprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode.spaceprint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_attnseq2seq">
+<span id="cluster-neuralnet-neuralnet-node-attnseq2seq-module"></span><h2>cluster.neuralnet.neuralnet_node_attnseq2seq module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_attnseq2seq" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_attnseq2seq.</code><code class="descname">NeuralNetNodeAttnSeq2Seq</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_attnseq2seq.html#NeuralNetNodeAttnSeq2Seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_attnseq2seq.html#NeuralNetNodeAttnSeq2Seq.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>eval result wit test data
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'num': 0</em>, <em>'input_data': {}</em>, <em>'clean_ans': True}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_attnseq2seq.html#NeuralNetNodeAttnSeq2Seq.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq.predict" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_attnseq2seq.html#NeuralNetNodeAttnSeq2Seq.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_attnseq2seq.NeuralNetNodeAttnSeq2Seq.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_autoencoder">
+<span id="cluster-neuralnet-neuralnet-node-autoencoder-module"></span><h2>cluster.neuralnet.neuralnet_node_autoencoder module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_autoencoder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_autoencoder.</code><code class="descname">NeuralNetNodeAutoEncoder</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_autoencoder.html#NeuralNetNodeAutoEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<p>this is a network class for Autoencoder
+Autoencoder provide two types of service
+1. provide matrix size of input matrix
+2. provide compressed matrix</p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.anomaly_detection">
+<code class="descname">anomaly_detection</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'input_data': {}</em>, <em>'type': 'encoder'}</em>, <em>raw_flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_autoencoder.html#NeuralNetNodeAutoEncoder.anomaly_detection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.anomaly_detection" title="Permalink to this definition">¶</a></dt>
+<dd><p>this is a function that judge requested data is out lier of not
+:param node_id: string
+:param parm: dict (include input data)
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf_data</em>, <em>data=None</em>, <em>result=None</em>, <em>stand=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_autoencoder.html#NeuralNetNodeAutoEncoder.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>eval process check if model works well (accuracy with cross table)
+:param node_id:
+:param conf_data:
+:param data:
+:param result:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'input_data': {}</em>, <em>'type': 'encoder'}</em>, <em>internal=False</em>, <em>raw_flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_autoencoder.html#NeuralNetNodeAutoEncoder.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.predict" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_autoencoder.html#NeuralNetNodeAutoEncoder.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_autoencoder.NeuralNetNodeAutoEncoder.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_bilstmcrf">
+<span id="cluster-neuralnet-neuralnet-node-bilstmcrf-module"></span><h2>cluster.neuralnet.neuralnet_node_bilstmcrf module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_bilstmcrf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_bilstmcrf.</code><code class="descname">NeuralNetNodeBiLstmCrf</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a>, <a class="reference internal" href="cluster.common.html#cluster.common.neural_common_bilismcrf.BiLstmCommon" title="cluster.common.neural_common_bilismcrf.BiLstmCommon"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.neural_common_bilismcrf.BiLstmCommon</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_init_op">
+<code class="descname">add_init_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_init_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_init_op" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_logits_op">
+<code class="descname">add_logits_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_logits_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_logits_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds logits to self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_loss_op">
+<code class="descname">add_loss_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_loss_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_loss_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds loss to self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_placeholders">
+<code class="descname">add_placeholders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_placeholders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_placeholders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds placeholders to self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_pred_op">
+<code class="descname">add_pred_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_pred_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_pred_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds labels_pred to self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_summary">
+<code class="descname">add_summary</code><span class="sig-paren">(</span><em>sess</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_train_op">
+<code class="descname">add_train_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_train_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_train_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add train_op to self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_word_embeddings_op">
+<code class="descname">add_word_embeddings_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.add_word_embeddings_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.add_word_embeddings_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds word embeddings to self</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.build_graph">
+<code class="descname">build_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.build_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.build_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf_data</em>, <em>data=None</em>, <em>result=None</em>, <em>stand=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>eval process check if model works well (accuracy with cross table)
+:param node_id:
+:param conf_data:
+:param data:
+:param result:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.get_feed_dict">
+<code class="descname">get_feed_dict</code><span class="sig-paren">(</span><em>words</em>, <em>labels=None</em>, <em>lr=None</em>, <em>dropout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.get_feed_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.get_feed_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given some data, pad it and build a feed dictionary
+Args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>words: list of sentences. A sentence is a list of ids of a list of words.</dt>
+<dd>A word is a list of ids</dd>
+</dl>
+<p>labels: list of ids
+lr: (float) learning rate
+dropout: (float) keep prob</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>dict {placeholder: value}</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'input_data': {}}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>predict logic for ner
+tockenize input text and find matching tags for each value
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.predict_batch">
+<code class="descname">predict_batch</code><span class="sig-paren">(</span><em>sess</em>, <em>words</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.predict_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.predict_batch" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>sess: a tensorflow session
+words: list of sentences</dd>
+<dt>Returns:</dt>
+<dd>labels_pred: list of labels for each sentence
+sequence_length</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run_epoch">
+<code class="descname">run_epoch</code><span class="sig-paren">(</span><em>sess</em>, <em>train</em>, <em>dev</em>, <em>tags</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.run_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run_epoch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs one complete pass over the train set and evaluate on dev
+Args:</p>
+<blockquote>
+<div>sess: tensorflow session
+train: dataset that yields tuple of sentences, tags
+dev: dataset
+tags: {tag: index} dictionary
+epoch: (int) number of the epoch</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run_evaluate">
+<code class="descname">run_evaluate</code><span class="sig-paren">(</span><em>sess</em>, <em>test</em>, <em>tags</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.run_evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.run_evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates performance on test set
+Args:</p>
+<blockquote>
+<div>sess: tensorflow session
+test: dataset that yields tuple of sentences, tags
+tags: {tag: index} dictionary</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>accuracy
+f1 score</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>train</em>, <em>dev</em>, <em>tags</em>, <em>sess</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_bilstmcrf.html#NeuralNetNodeBiLstmCrf.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_bilstmcrf.NeuralNetNodeBiLstmCrf.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs training with early stopping and lr exponential decay
+Args:</p>
+<blockquote>
+<div>train: dataset that yields tuple of sentences, tags
+dev: dataset
+tags: {tag: index} dictionary</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_cnn">
+<span id="cluster-neuralnet-neuralnet-node-cnn-module"></span><h2>cluster.neuralnet.neuralnet_node_cnn module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_cnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_cnn.</code><code class="descname">NeuralNetNodeCnn</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf_data</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.eval_print">
+<code class="descname">eval_print</code><span class="sig-paren">(</span><em>labels</em>, <em>t_cnt_arr</em>, <em>f_cnt_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.eval_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.eval_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.eval_run">
+<code class="descname">eval_run</code><span class="sig-paren">(</span><em>sess</em>, <em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.eval_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.eval_run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.get_model_cnn">
+<code class="descname">get_model_cnn</code><span class="sig-paren">(</span><em>type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.get_model_cnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.get_model_cnn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.get_saver_model">
+<code class="descname">get_saver_model</code><span class="sig-paren">(</span><em>sess</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.get_saver_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.get_saver_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>filelist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.set_saver_model">
+<code class="descname">set_saver_model</code><span class="sig-paren">(</span><em>sess</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.set_saver_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.set_saver_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.train_run_cnn">
+<code class="descname">train_run_cnn</code><span class="sig-paren">(</span><em>sess</em>, <em>input_data</em>, <em>test_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_cnn.html#NeuralNetNodeCnn.train_run_cnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_cnn.NeuralNetNodeCnn.train_run_cnn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_d2v">
+<span id="cluster-neuralnet-neuralnet-node-d2v-module"></span><h2>cluster.neuralnet.neuralnet_node_d2v module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_d2v" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_d2v.</code><code class="descname">NeuralNetNodeDoc2Vec</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_d2v.html#NeuralNetNodeDoc2Vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_d2v.html#NeuralNetNodeDoc2Vec.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec.eval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'type': 'vector'</em>, <em>'val_2': []</em>, <em>'val_1': []}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_d2v.html#NeuralNetNodeDoc2Vec.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>predict service _get_model_path
+1. type (vector) : return vector
+2. type (sim) : positive list &amp; negative list
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_d2v.html#NeuralNetNodeDoc2Vec.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_d2v.NeuralNetNodeDoc2Vec.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_fasttext">
+<span id="cluster-neuralnet-neuralnet-node-fasttext-module"></span><h2>cluster.neuralnet.neuralnet_node_fasttext module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_fasttext" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_fasttext.NeuralNetNodeFastText">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_fasttext.</code><code class="descname">NeuralNetNodeFastText</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_fasttext.html#NeuralNetNodeFastText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_fasttext.NeuralNetNodeFastText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_fasttext.NeuralNetNodeFastText.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_fasttext.html#NeuralNetNodeFastText.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_fasttext.NeuralNetNodeFastText.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_kerasdnn">
+<span id="cluster-neuralnet-neuralnet-node-kerasdnn-module"></span><h2>cluster.neuralnet.neuralnet_node_kerasdnn module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_kerasdnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.History">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_kerasdnn.</code><code class="descname">History</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#History"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.History" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">keras.callbacks.Callback</span></code></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.History.on_batch_end">
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>batch</em>, <em>logs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#History.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.History.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.History.on_train_begin">
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><em>logs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#History.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.History.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_kerasdnn.</code><code class="descname">NeuralNetNodeKerasdnn</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf_data</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.eval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.generator_len">
+<code class="descname">generator_len</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn.generator_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.generator_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help for Generator length promote util class(?)
+:param it : python generator
+:return: length of generator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.load_hdf5">
+<code class="descname">load_hdf5</code><span class="sig-paren">(</span><em>data_path</em>, <em>dataframe</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn.load_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.load_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load_hdf5
+:param data_path:
+:return:data_path</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>nn_id</em>, <em>conf_data</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.read_hdf5">
+<code class="descname">read_hdf5</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn.read_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.read_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.read_hdf5_chunk">
+<code class="descname">read_hdf5_chunk</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn.read_hdf5_chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.read_hdf5_chunk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_kerasdnn.html#NeuralNetNodeKerasdnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_kerasdnn.NeuralNetNodeKerasdnn.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_residual">
+<span id="cluster-neuralnet-neuralnet-node-residual-module"></span><h2>cluster.neuralnet.neuralnet_node_residual module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_residual" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_residual.History">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_residual.</code><code class="descname">History</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#History"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.History" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">keras.callbacks.Callback</span></code></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.History.on_batch_end">
+<code class="descname">on_batch_end</code><span class="sig-paren">(</span><em>batch</em>, <em>logs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#History.on_batch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.History.on_batch_end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.History.on_train_begin">
+<code class="descname">on_train_begin</code><span class="sig-paren">(</span><em>logs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#History.on_train_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.History.on_train_begin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_residual.</code><code class="descname">NeuralNetNodeReNet</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf_data</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval_print">
+<code class="descname">eval_print</code><span class="sig-paren">(</span><em>labels</em>, <em>t_cnt_arr</em>, <em>f_cnt_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.eval_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval_run">
+<code class="descname">eval_run</code><span class="sig-paren">(</span><em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.eval_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval_run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.get_model_resnet">
+<code class="descname">get_model_resnet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.get_model_resnet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.get_model_resnet" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>filelist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.set_saver_model">
+<code class="descname">set_saver_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.set_saver_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.set_saver_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.train_run_resnet">
+<code class="descname">train_run_resnet</code><span class="sig-paren">(</span><em>input_data</em>, <em>test_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_residual.html#NeuralNetNodeReNet.train_run_resnet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.train_run_resnet" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_rnn">
+<span id="cluster-neuralnet-neuralnet-node-rnn-module"></span><h2>cluster.neuralnet.neuralnet_node_rnn module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_rnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_rnn.</code><code class="descname">NeuralNetNodeRnn</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_rnn.html#NeuralNetNodeRnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_rnn.html#NeuralNetNodeRnn.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn.eval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_rnn.html#NeuralNetNodeRnn.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_rnn.html#NeuralNetNodeRnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_rnn.NeuralNetNodeRnn.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_seq2seq">
+<span id="cluster-neuralnet-neuralnet-node-seq2seq-module"></span><h2>cluster.neuralnet.neuralnet_node_seq2seq module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_seq2seq" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_seq2seq.</code><code class="descname">NeuralNetNodeSeq2Seq</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_seq2seq.html#NeuralNetNodeSeq2Seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_seq2seq.html#NeuralNetNodeSeq2Seq.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq.eval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'num': 0</em>, <em>'input_data': {}</em>, <em>'clean_ans': True}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_seq2seq.html#NeuralNetNodeSeq2Seq.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq.predict" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_seq2seq.html#NeuralNetNodeSeq2Seq.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_seq2seq.NeuralNetNodeSeq2Seq.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_w2v">
+<span id="cluster-neuralnet-neuralnet-node-w2v-module"></span><h2>cluster.neuralnet.neuralnet_node_w2v module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_w2v" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_w2v.</code><code class="descname">NeuralNetNodeWord2Vec</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_w2v.html#NeuralNetNodeWord2Vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_w2v.html#NeuralNetNodeWord2Vec.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec.eval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'type': 'vector'</em>, <em>'val_2': []</em>, <em>'val_1': []}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_w2v.html#NeuralNetNodeWord2Vec.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>predict service _get_model_path
+1. type (vector) : return vector
+2. type (sim) : positive list &amp; negative list
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_w2v.html#NeuralNetNodeWord2Vec.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_w2v.NeuralNetNodeWord2Vec.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_wcnn">
+<span id="cluster-neuralnet-neuralnet-node-wcnn-module"></span><h2>cluster.neuralnet.neuralnet_node_wcnn module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_wcnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_wcnn.</code><code class="descname">NeuralNetNodeWideCnn</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wcnn.html#NeuralNetNodeWideCnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf_data</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wcnn.html#NeuralNetNodeWideCnn.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>eval process check if model works well (accuracy with cross table)
+:param node_id:
+:param conf_data:
+:param data:
+:param result:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.get_model">
+<code class="descname">get_model</code><span class="sig-paren">(</span><em>netconf</em>, <em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wcnn.html#NeuralNetNodeWideCnn.get_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.get_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>create graph
+:param netconf:
+:param type:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm={'num': 0</em>, <em>'input_data': {}}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wcnn.html#NeuralNetNodeWideCnn.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>predict result with pretrained model
+:param node_id:
+:param filelist:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wcnn.html#NeuralNetNodeWideCnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run network train task
+:param conf_data:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.neuralnet_node_wdnn">
+<span id="cluster-neuralnet-neuralnet-node-wdnn-module"></span><h2>cluster.neuralnet.neuralnet_node_wdnn module<a class="headerlink" href="#module-cluster.neuralnet.neuralnet_node_wdnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.neuralnet_node_wdnn.</code><code class="descname">NeuralNetNodeWdnn</code><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.neuralnet.neuralnet_node.NeuralNetNode" title="cluster.neuralnet.neuralnet_node.NeuralNetNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.neuralnet.neuralnet_node.NeuralNetNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>node_id</em>, <em>conf_data</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.eval" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; </li>
+<li><strong>parm</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.generator_len">
+<code class="descname">generator_len</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.generator_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.generator_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help for Generator length promote util class(?)
+:param it : python generator
+:return: length of generatorDataNodeFrame</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.load_hdf5">
+<code class="descname">load_hdf5</code><span class="sig-paren">(</span><em>data_path</em>, <em>dataframe</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.load_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.load_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load_hdf5
+:param data_path:
+:return:data_path</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>node_id</em>, <em>ver</em>, <em>parm</em>, <em>data=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.predict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Wdnn predict </dt>
+<dd>batchlist info에서 active flag가 Y인 Model을 가져와서 예측을 함</dd>
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>params: </dt>
+<dd><ul class="first last simple">
+<li>node_id</li>
+<li>conf_data</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>none</dd>
+</dl>
+<p>Raises:</p>
+<p>Example</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.predict2">
+<code class="descname">predict2</code><span class="sig-paren">(</span><em>nn_id</em>, <em>conf_data</em>, <em>parm={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.predict2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.predict2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.read_hdf5">
+<code class="descname">read_hdf5</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.read_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.read_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.read_hdf5_chunk">
+<code class="descname">read_hdf5_chunk</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.read_hdf5_chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.read_hdf5_chunk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/neuralnet_node_wdnn.html#NeuralNetNodeWdnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.neuralnet_node_wdnn.NeuralNetNodeWdnn.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet.resnet">
+<span id="cluster-neuralnet-resnet-module"></span><h2>cluster.neuralnet.resnet module<a class="headerlink" href="#module-cluster.neuralnet.resnet" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.neuralnet.resnet.ResnetBuilder">
+<em class="property">class </em><code class="descclassname">cluster.neuralnet.resnet.</code><code class="descname">ResnetBuilder</code><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#ResnetBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.ResnetBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="staticmethod">
+<dt id="cluster.neuralnet.resnet.ResnetBuilder.build">
+<em class="property">static </em><code class="descname">build</code><span class="sig-paren">(</span><em>input_shape</em>, <em>num_outputs</em>, <em>block_fn</em>, <em>repetitions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#ResnetBuilder.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.ResnetBuilder.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a custom ResNet like architecture.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">input_shape: The input shape in the form (nb_channels, nb_rows, nb_cols)
+num_outputs: The number of outputs at final softmax layer
+block_fn: The block function to use. This is either <cite>basic_block</cite> or <cite>bottleneck</cite>.</p>
+<blockquote>
+<div>The original paper used basic_block for layers &lt; 50</div></blockquote>
+<dl class="last docutils">
+<dt>repetitions: Number of repetitions of various block units.</dt>
+<dd>At each block unit, the number of filters are doubled and the input size is halved</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>The keras <cite>Model</cite>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="cluster.neuralnet.resnet.ResnetBuilder.build_resnet_101">
+<em class="property">static </em><code class="descname">build_resnet_101</code><span class="sig-paren">(</span><em>input_shape</em>, <em>num_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#ResnetBuilder.build_resnet_101"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_101" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="cluster.neuralnet.resnet.ResnetBuilder.build_resnet_152">
+<em class="property">static </em><code class="descname">build_resnet_152</code><span class="sig-paren">(</span><em>input_shape</em>, <em>num_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#ResnetBuilder.build_resnet_152"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_152" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="cluster.neuralnet.resnet.ResnetBuilder.build_resnet_18">
+<em class="property">static </em><code class="descname">build_resnet_18</code><span class="sig-paren">(</span><em>input_shape</em>, <em>num_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#ResnetBuilder.build_resnet_18"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_18" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="cluster.neuralnet.resnet.ResnetBuilder.build_resnet_34">
+<em class="property">static </em><code class="descname">build_resnet_34</code><span class="sig-paren">(</span><em>input_shape</em>, <em>num_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#ResnetBuilder.build_resnet_34"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_34" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="cluster.neuralnet.resnet.ResnetBuilder.build_resnet_50">
+<em class="property">static </em><code class="descname">build_resnet_50</code><span class="sig-paren">(</span><em>input_shape</em>, <em>num_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#ResnetBuilder.build_resnet_50"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_50" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="cluster.neuralnet.resnet.basic_block">
+<code class="descclassname">cluster.neuralnet.resnet.</code><code class="descname">basic_block</code><span class="sig-paren">(</span><em>filters</em>, <em>init_strides=(1</em>, <em>1)</em>, <em>is_first_block_of_first_layer=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#basic_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.basic_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic 3 X 3 convolution blocks for use on resnets with layers &lt;= 34.
+Follows improved proposed scheme in <a class="reference external" href="http://arxiv.org/pdf/1603.05027v2.pdf">http://arxiv.org/pdf/1603.05027v2.pdf</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cluster.neuralnet.resnet.bottleneck">
+<code class="descclassname">cluster.neuralnet.resnet.</code><code class="descname">bottleneck</code><span class="sig-paren">(</span><em>filters</em>, <em>init_strides=(1</em>, <em>1)</em>, <em>is_first_block_of_first_layer=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/neuralnet/resnet.html#bottleneck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.neuralnet.resnet.bottleneck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bottleneck architecture for &gt; 34 layer resnet.
+Follows improved proposed scheme in <a class="reference external" href="http://arxiv.org/pdf/1603.05027v2.pdf">http://arxiv.org/pdf/1603.05027v2.pdf</a></p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A final conv layer of filters * 4</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.neuralnet">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cluster.neuralnet" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cluster.neuralnet package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node">cluster.neuralnet.neuralnet_node module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_attnseq2seq">cluster.neuralnet.neuralnet_node_attnseq2seq module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_autoencoder">cluster.neuralnet.neuralnet_node_autoencoder module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_bilstmcrf">cluster.neuralnet.neuralnet_node_bilstmcrf module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_cnn">cluster.neuralnet.neuralnet_node_cnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_d2v">cluster.neuralnet.neuralnet_node_d2v module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_fasttext">cluster.neuralnet.neuralnet_node_fasttext module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_kerasdnn">cluster.neuralnet.neuralnet_node_kerasdnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_residual">cluster.neuralnet.neuralnet_node_residual module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_rnn">cluster.neuralnet.neuralnet_node_rnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_seq2seq">cluster.neuralnet.neuralnet_node_seq2seq module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_w2v">cluster.neuralnet.neuralnet_node_w2v module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_wcnn">cluster.neuralnet.neuralnet_node_wcnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.neuralnet_node_wdnn">cluster.neuralnet.neuralnet_node_wdnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet.resnet">cluster.neuralnet.resnet module</a></li>
+<li><a class="reference internal" href="#module-cluster.neuralnet">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cluster.neuralnet.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cluster.neuralnet.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

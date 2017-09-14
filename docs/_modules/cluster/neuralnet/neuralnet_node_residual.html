@@ -1,0 +1,517 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.neuralnet.neuralnet_node_residual &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.neuralnet.neuralnet_node_residual</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cluster.neuralnet.neuralnet_node</span> <span class="k">import</span> <span class="n">NeuralNetNode</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">master.workflow.netconf.workflow_netconf_cnn</span> <span class="k">import</span> <span class="n">WorkFlowNetConfCNN</span>
+<span class="kn">from</span> <span class="nn">master.workflow.init.workflow_init_simple</span> <span class="k">import</span> <span class="n">WorkFlowSimpleManager</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">cluster.common.train_summary_info</span> <span class="k">import</span> <span class="n">TrainSummaryInfo</span>
+<span class="kn">import</span> <span class="nn">keras</span>
+<span class="kn">from</span> <span class="nn">keras.preprocessing.image</span> <span class="k">import</span> <span class="n">ImageDataGenerator</span>
+<span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="k">import</span> <span class="n">ReduceLROnPlateau</span><span class="p">,</span> <span class="n">CSVLogger</span><span class="p">,</span> <span class="n">EarlyStopping</span>
+<span class="kn">from</span> <span class="nn">cluster.neuralnet</span> <span class="k">import</span> <span class="n">resnet</span>
+<span class="kn">from</span> <span class="nn">common.graph.nn_graph_manager</span> <span class="k">import</span> <span class="n">NeuralNetModel</span>
+<span class="kn">from</span> <span class="nn">cluster.common.train_summary_accloss_info</span> <span class="k">import</span> <span class="n">TrainSummaryAccLossInfo</span>
+
+<div class="viewcode-block" id="History"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.History">[docs]</a><span class="k">class</span> <span class="nc">History</span><span class="p">(</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">Callback</span><span class="p">):</span>
+<div class="viewcode-block" id="History.on_train_begin"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.History.on_train_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logs</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="History.on_batch_end"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.History.on_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">logs</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">logs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">logs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acc&#39;</span><span class="p">)))</span></div></div>
+
+<div class="viewcode-block" id="NeuralNetNodeReNet"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet">[docs]</a><span class="k">class</span> <span class="nc">NeuralNetNodeReNet</span><span class="p">(</span><span class="n">NeuralNetNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_init_train_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="c1"># get initial value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conf_data</span> <span class="o">=</span> <span class="n">conf_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cls_pool</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s2">&quot;cls_pool&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nn_id</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s2">&quot;nn_id&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wf_ver</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s2">&quot;wf_ver&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s2">&quot;node_id&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">WorkFlowSimpleManager</span><span class="p">()</span><span class="o">.</span><span class="n">get_train_node</span><span class="p">()</span>
+
+        <span class="c1"># get feed name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_feed_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nn_id</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf_ver</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">WorkFlowSimpleManager</span><span class="p">()</span><span class="o">.</span><span class="n">get_train_feed_node</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval_feed_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nn_id</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf_ver</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">WorkFlowSimpleManager</span><span class="p">()</span><span class="o">.</span><span class="n">get_eval_feed_node</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_prev_node</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_init_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g_train_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_end</span> <span class="o">=</span> <span class="s1">&#39;.bin&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_return_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_return_arr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Trainning ..................................................&quot;</span><span class="p">]</span>
+
+    <span class="c1">####################################################################################################################</span>
+    <span class="k">def</span> <span class="nf">_set_netconf_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">netconf</span> <span class="o">=</span> <span class="n">WorkFlowNetConfCNN</span><span class="p">()</span><span class="o">.</span><span class="n">get_view_obj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">netconf</span> <span class="o">=</span> <span class="n">WorkFlowNetConfCNN</span><span class="p">()</span><span class="o">.</span><span class="n">set_num_classes_predcnt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nn_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf_ver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span> <span class="n">netconf</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span> <span class="o">=</span> <span class="n">netconf</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;traincnt&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;batch_size&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;modelpath&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modelname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;modelname&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;NetConf is not exist.&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_dataconf_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataconf</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span> <span class="o">=</span> <span class="n">dataconf</span>
+
+    <span class="c1">####################################################################################################################</span>
+<div class="viewcode-block" id="NeuralNetNodeReNet.set_saver_model"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.set_saver_model">[docs]</a>    <span class="k">def</span> <span class="nf">set_saver_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_end</span><span class="p">)</span>
+        <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">accR</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">val_loss</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_loss</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">val_acc</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_acc</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Global Step: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g_train_cnt</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;, Training Loss: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span> <span class="o">+</span> <span class="s2">&quot;, Training Accuracy: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">accR</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;, Test Loss: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span> <span class="o">+</span> <span class="s2">&quot;, Test Accuracy: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val_acc</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nn_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nn_id</span><span class="p">,</span> <span class="s2">&quot;nn_wf_ver_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf_ver</span><span class="p">,</span> <span class="s2">&quot;nn_batch_ver_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">TrainSummaryAccLossInfo</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">loss_info</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">acc_info</span><span class="p">[</span><span class="s2">&quot;acc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val_acc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_accloss_info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">msg</span><span class="p">]</span>
+
+        <span class="c1"># self.model_file_delete(self.model_path, self.modelname)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_return_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf_data</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeReNet.get_model_resnet"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.get_model_resnet">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_resnet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">keras</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">tensorflow_backend</span><span class="o">.</span><span class="n">clear_session</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lr_reducer</span> <span class="o">=</span> <span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_loss&#39;</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">cooldown</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mf">0.5e-6</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">early_stopper</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_acc&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">csv_logger</span> <span class="o">=</span> <span class="n">CSVLogger</span><span class="p">(</span><span class="s1">&#39;resnet.csv&#39;</span><span class="p">)</span>
+            <span class="n">num_classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;num_classes&quot;</span><span class="p">]</span>
+            <span class="n">numoutputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;layeroutputs&quot;</span><span class="p">]</span>
+            <span class="n">x_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;x_size&quot;</span><span class="p">]</span>
+            <span class="n">y_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;y_size&quot;</span><span class="p">]</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">][</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span>
+            <span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span>
+
+            <span class="n">filelist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">)</span>
+            <span class="n">filelist</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">last_chk_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_batch</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">file_end</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">last_chk_path</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Train Restored checkpoint from:&quot;</span> <span class="o">+</span> <span class="n">last_chk_path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">numoutputs</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">resnet</span><span class="o">.</span><span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build_resnet_18</span><span class="p">((</span><span class="n">channel</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">numoutputs</span> <span class="o">==</span> <span class="mi">34</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">resnet</span><span class="o">.</span><span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build_resnet_34</span><span class="p">((</span><span class="n">channel</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">numoutputs</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">resnet</span><span class="o">.</span><span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build_resnet_50</span><span class="p">((</span><span class="n">channel</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">numoutputs</span> <span class="o">==</span> <span class="mi">101</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">resnet</span><span class="o">.</span><span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build_resnet_101</span><span class="p">((</span><span class="n">channel</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">numoutputs</span> <span class="o">==</span> <span class="mi">152</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">resnet</span><span class="o">.</span><span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build_resnet_152</span><span class="p">((</span><span class="n">channel</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">numoutputs</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">resnet</span><span class="o">.</span><span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build_resnet_200</span><span class="p">((</span><span class="n">channel</span><span class="p">,</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;None to restore checkpoint. Initializing variables instead.&quot;</span> <span class="o">+</span> <span class="n">last_chk_path</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;===Error on Residualnet build model : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+    <span class="c1">####################################################################################################################</span>
+<div class="viewcode-block" id="NeuralNetNodeReNet.train_run_resnet"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.train_run_resnet">[docs]</a>    <span class="k">def</span> <span class="nf">train_run_resnet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">):</span>
+        <span class="n">data_augmentation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;augmentation&quot;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data_augmentation</span> <span class="o">==</span> <span class="s2">&quot;N&quot;</span> <span class="ow">or</span> <span class="n">data_augmentation</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Not using data augmentation.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using real-time data augmentation.&#39;</span><span class="p">)</span>
+
+            <span class="k">while</span> <span class="p">(</span><span class="n">input_data</span><span class="o">.</span><span class="n">has_next</span><span class="p">()):</span>
+                <span class="n">data_set</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">input_data</span><span class="o">.</span><span class="n">data_size</span><span class="p">()]</span>
+                <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span><span class="p">,</span> <span class="n">n_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch_img_data</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+                <span class="n">test_set</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">test_data</span><span class="o">.</span><span class="n">data_size</span><span class="p">()]</span>
+                <span class="n">x_tbatch</span><span class="p">,</span> <span class="n">y_tbatch</span><span class="p">,</span> <span class="n">n_tbatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch_img_data</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_cnt</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">data_augmentation</span> <span class="o">==</span> <span class="s2">&quot;N&quot;</span> <span class="ow">or</span> <span class="n">data_augmentation</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+                        <span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span><span class="p">,</span>
+                                       <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                                       <span class="n">epochs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span>
+                                       <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">x_tbatch</span><span class="p">,</span> <span class="n">y_tbatch</span><span class="p">),</span>
+                                       <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_reducer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stopper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv_logger</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># This will do preprocessing and realtime data augmentation:</span>
+                        <span class="n">datagen</span> <span class="o">=</span> <span class="n">ImageDataGenerator</span><span class="p">(</span>
+                            <span class="n">featurewise_center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># set input mean to 0 over the dataset</span>
+                            <span class="n">samplewise_center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># set each sample mean to 0</span>
+                            <span class="n">featurewise_std_normalization</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># divide inputs by std of the dataset</span>
+                            <span class="n">samplewise_std_normalization</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># divide each input by its std</span>
+                            <span class="n">zca_whitening</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># apply ZCA whitening</span>
+                            <span class="n">rotation_range</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># randomly rotate images in the range (degrees, 0 to 180)</span>
+                            <span class="n">width_shift_range</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                            <span class="c1"># randomly shift images horizontally (fraction of total width)</span>
+                            <span class="n">height_shift_range</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                            <span class="c1"># randomly shift images vertically (fraction of total height)</span>
+                            <span class="n">horizontal_flip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># randomly flip images</span>
+                            <span class="n">vertical_flip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># randomly flip images</span>
+
+                        <span class="c1"># Compute quantities required for featurewise normalization</span>
+                        <span class="c1"># (std, mean, and principal components if ZCA whitening is applied).</span>
+                        <span class="n">datagen</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_batch</span><span class="p">)</span>
+
+                        <span class="c1"># Fit the model on the batches generated by datagen.flow().</span>
+                        <span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit_generator</span><span class="p">(</span><span class="n">datagen</span><span class="o">.</span><span class="n">flow</span><span class="p">(</span><span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">),</span>
+                                            <span class="n">steps_per_epoch</span><span class="o">=</span><span class="n">x_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                                            <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">x_tbatch</span><span class="p">,</span> <span class="n">y_tbatch</span><span class="p">),</span>
+                                            <span class="n">epochs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_q_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                                            <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_reducer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stopper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">csv_logger</span><span class="p">])</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;acc&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">val_acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val_acc&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">g_train_cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Save Train Count=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g_train_cnt</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_saver_model</span><span class="p">()</span>
+
+                <span class="n">input_data</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Error[400] ..............................................&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeReNet.run"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;run NeuralNetNodeResnet Train&quot;</span><span class="p">)</span>
+            <span class="c1"># init data setup</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_train_parm</span><span class="p">(</span><span class="n">conf_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_value</span><span class="p">()</span>
+
+            <span class="c1"># get data &amp; dataconf</span>
+            <span class="n">test_data</span><span class="p">,</span> <span class="n">dataconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls_pool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_feed_name</span><span class="p">)</span>
+            <span class="n">input_data</span><span class="p">,</span> <span class="n">dataconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls_pool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_feed_name</span><span class="p">)</span>
+
+            <span class="c1"># set netconf, dataconf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_netconf_parm</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_dataconf_parm</span><span class="p">(</span><span class="n">dataconf</span><span class="p">)</span>
+
+            <span class="c1"># set batch</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_cnt</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">train_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_batch</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_model_resnet</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_run_resnet</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_return_data</span><span class="p">[</span><span class="s2">&quot;TrainResult&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_return_arr</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_cnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf_data</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_return_data</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;===Error on running residualnet : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+    <span class="c1">####################################################################################################################</span>
+<div class="viewcode-block" id="NeuralNetNodeReNet.eval_run"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval_run">[docs]</a>    <span class="k">def</span> <span class="nf">eval_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;batch_size&quot;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
+        <span class="n">pred_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;predictcnt&quot;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">predlog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;predictlog&quot;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">predlog</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span>
+        <span class="c1"># logging.info(labels)</span>
+        <span class="n">t_cnt_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">f_cnt_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+            <span class="n">t_cnt_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">f_cnt_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">input_data</span><span class="o">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># eval</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;eval_type&quot;</span><span class="p">],</span> <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">],</span>
+                  <span class="s2">&quot;nn_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nn_id</span><span class="p">,</span>
+                  <span class="s2">&quot;nn_wf_ver_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf_ver</span><span class="p">,</span> <span class="s2">&quot;nn_batch_ver_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval_data</span> <span class="o">=</span> <span class="n">TrainSummaryInfo</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="p">(</span><span class="n">input_data</span><span class="o">.</span><span class="n">has_next</span><span class="p">()):</span>
+            <span class="n">data_set</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">input_data</span><span class="o">.</span><span class="n">data_size</span><span class="p">()]</span>
+            <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span><span class="p">,</span> <span class="n">n_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch_img_data</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_batch</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">logits</span><span class="p">)):</span>
+                    <span class="n">true_name</span> <span class="o">=</span> <span class="n">y_batch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">file_name</span> <span class="o">=</span> <span class="n">n_batch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                    <span class="n">logit</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">logit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logits</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="c1">#</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">true_name</span><span class="p">)</span>
+                    <span class="n">retrun_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_predict_return_cnn_img</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">logit</span><span class="p">,</span> <span class="n">pred_cnt</span><span class="p">)</span>
+                    <span class="n">pred_name</span> <span class="o">=</span> <span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_flag</span> <span class="o">==</span> <span class="s2">&quot;E&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">true_name</span> <span class="o">==</span> <span class="n">pred_name</span><span class="p">:</span>
+                            <span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                            <span class="n">strLog</span> <span class="o">=</span> <span class="s2">&quot;[True] : &quot;</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">predlog</span> <span class="o">==</span> <span class="s2">&quot;TT&quot;</span><span class="p">):</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strLog</span> <span class="o">+</span> <span class="n">true_name</span> <span class="o">+</span> <span class="s2">&quot; FileName=&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                            <span class="n">strLog</span> <span class="o">=</span> <span class="s2">&quot;[False] : &quot;</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">predlog</span> <span class="o">==</span> <span class="s2">&quot;FF&quot;</span><span class="p">):</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strLog</span> <span class="o">+</span> <span class="n">true_name</span> <span class="o">+</span> <span class="s2">&quot; FileName=&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">predlog</span> <span class="o">==</span> <span class="s2">&quot;AA&quot;</span><span class="p">):</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strLog</span> <span class="o">+</span> <span class="n">true_name</span> <span class="o">+</span> <span class="s2">&quot; FileName=&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">listTF</span> <span class="o">=</span> <span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">true_name</span><span class="p">)</span>
+                            <span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                            <span class="n">strLog</span> <span class="o">=</span> <span class="s2">&quot;[True] : &quot;</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">predlog</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">):</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strLog</span> <span class="o">+</span> <span class="n">true_name</span> <span class="o">+</span> <span class="s2">&quot; FileName=&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">])</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                            <span class="n">strLog</span> <span class="o">=</span> <span class="s2">&quot;[False] : &quot;</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">predlog</span> <span class="o">==</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strLog</span> <span class="o">+</span> <span class="n">true_name</span> <span class="o">+</span> <span class="s2">&quot; FileName=&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
+                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">predlog</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strLog</span> <span class="o">+</span> <span class="n">true_name</span> <span class="o">+</span> <span class="s2">&quot; FileName=&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">retrun_data</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">])</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">eval_data</span><span class="o">.</span><span class="n">set_result_info</span><span class="p">(</span><span class="n">true_name</span><span class="p">,</span> <span class="n">pred_name</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;None to restore checkpoint. Initializing variables instead.&quot;</span><span class="p">)</span>
+
+            <span class="n">input_data</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+        <span class="c1"># set parms for db store</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="n">TrainSummaryInfo</span><span class="o">.</span><span class="n">save_result_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval_print</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">t_cnt_arr</span><span class="p">,</span> <span class="n">f_cnt_arr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeReNet.eval_print"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval_print">[docs]</a>    <span class="k">def</span> <span class="nf">eval_print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">t_cnt_arr</span><span class="p">,</span> <span class="n">f_cnt_arr</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;####################################################################################################&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">strResult</span> <span class="o">=</span> <span class="s2">&quot;[&#39;Eval ......................................................&#39;]&quot;</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strResult</span><span class="p">)</span>
+        <span class="n">totCnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">tCnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">fCnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+            <span class="n">strResult</span> <span class="o">=</span> <span class="s2">&quot;Category : &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">15</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;TotalCnt=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;TrueCnt=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;FalseCnt=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="k">if</span> <span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;True Percent(TrueCnt/TotalCnt*100)=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                    <span class="nb">round</span><span class="p">(</span><span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span>
+            <span class="n">totCnt</span> <span class="o">+=</span> <span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">tCnt</span> <span class="o">+=</span> <span class="n">t_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">fCnt</span> <span class="o">+=</span> <span class="n">f_cnt_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strResult</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strResult</span><span class="p">)</span>
+        <span class="n">strResult</span> <span class="o">=</span> <span class="s2">&quot;---------------------------------------------------------------------------------------------------&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strResult</span><span class="p">)</span>
+        <span class="n">strResult</span> <span class="o">=</span> <span class="s2">&quot;Total Category=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)),</span> <span class="mi">11</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;TotalCnt=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">totCnt</span><span class="p">),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;TrueCnt=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tCnt</span><span class="p">),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;FalseCnt=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spaceprint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fCnt</span><span class="p">),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">if</span> <span class="n">totCnt</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">strResult</span> <span class="o">+=</span> <span class="s2">&quot;True Percent(TrueCnt/TotalCnt*100)=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">tCnt</span> <span class="o">/</span> <span class="n">totCnt</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strResult</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strResult</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;###################################################################################################&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeReNet.eval"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;run NeuralNetNodeCnn eval&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eval_flag</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eval_flag</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span>
+
+        <span class="c1"># get data &amp; dataconf</span>
+        <span class="n">test_data</span><span class="p">,</span> <span class="n">dataconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls_pool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_feed_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval_run</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_data</span></div>
+
+    <span class="c1">####################################################################################################################</span>
+<div class="viewcode-block" id="NeuralNetNodeReNet.predict"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_residual.NeuralNetNodeReNet.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">filelist</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;run NeuralNetNodeCnn Predict&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">node_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_value</span><span class="p">()</span>
+        <span class="c1"># net, data config setup</span>
+        <span class="n">data_node_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_backward_node_with_type</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">dataconf</span> <span class="o">=</span> <span class="n">WorkFlowNetConfCNN</span><span class="p">()</span><span class="o">.</span><span class="n">get_view_obj</span><span class="p">(</span><span class="n">data_node_name</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_netconf_parm</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_dataconf_parm</span><span class="p">(</span><span class="n">dataconf</span><span class="p">)</span>
+
+        <span class="c1"># data shape change MultiValuDict -&gt; nd array</span>
+        <span class="n">filename_arr</span><span class="p">,</span> <span class="n">filedata_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_predict_fileList</span><span class="p">(</span><span class="n">filelist</span><span class="p">,</span> <span class="n">dataconf</span><span class="p">)</span>
+
+        <span class="c1"># get unique key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="n">unique_key</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">node_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_batch</span><span class="p">])</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;getModelPath:&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_batch</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">file_end</span><span class="p">)</span>
+
+        <span class="c1">## create tensorflow graph</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)):</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+            <span class="n">graph</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_model_resnet</span><span class="p">()</span>
+
+            <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="n">unique_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="n">unique_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">()</span>
+            <span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">()</span>
+        <span class="n">pred_return_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filename_arr</span><span class="p">)):</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">filename_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">file_data</span> <span class="o">=</span> <span class="n">filedata_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>
+
+            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
+            <span class="n">pred_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">[</span><span class="s2">&quot;param&quot;</span><span class="p">][</span><span class="s2">&quot;predictcnt&quot;</span><span class="p">]</span>
+            <span class="n">retrun_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_predict_return_cnn_img</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">logits</span><span class="p">,</span> <span class="n">pred_cnt</span><span class="p">)</span>
+            <span class="n">pred_return_data</span><span class="p">[</span><span class="n">file_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">retrun_data</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Return Data.......................................&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">pred_return_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pred_return_data</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

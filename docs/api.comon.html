@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>api.comon package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-comon-package">
+<h1>api.comon package<a class="headerlink" href="#api-comon-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-api.comon.swagger_schema_generator">
+<span id="api-comon-swagger-schema-generator-module"></span><h2>api.comon.swagger_schema_generator module<a class="headerlink" href="#module-api.comon.swagger_schema_generator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="api.comon.swagger_schema_generator.CustomSchemaGenerator">
+<em class="property">class </em><code class="descclassname">api.comon.swagger_schema_generator.</code><code class="descname">CustomSchemaGenerator</code><span class="sig-paren">(</span><em>title=None</em>, <em>url=None</em>, <em>patterns=None</em>, <em>urlconf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/comon/swagger_schema_generator.html#CustomSchemaGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.comon.swagger_schema_generator.CustomSchemaGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.schemas.SchemaGenerator</span></code></p>
+<dl class="method">
+<dt id="api.comon.swagger_schema_generator.CustomSchemaGenerator.get_core_fields">
+<code class="descname">get_core_fields</code><span class="sig-paren">(</span><em>view</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/comon/swagger_schema_generator.html#CustomSchemaGenerator.get_core_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.comon.swagger_schema_generator.CustomSchemaGenerator.get_core_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.comon.swagger_schema_generator.CustomSchemaGenerator.get_link">
+<code class="descname">get_link</code><span class="sig-paren">(</span><em>path</em>, <em>method</em>, <em>view</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/comon/swagger_schema_generator.html#CustomSchemaGenerator.get_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.comon.swagger_schema_generator.CustomSchemaGenerator.get_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.comon.swagger_schema_generator.CustomSchemaGenerator.title">
+<code class="descname">title</code><em class="property"> = 'REST API Index'</em><a class="headerlink" href="#api.comon.swagger_schema_generator.CustomSchemaGenerator.title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.comon.swagger_schema_view">
+<span id="api-comon-swagger-schema-view-module"></span><h2>api.comon.swagger_schema_view module<a class="headerlink" href="#module-api.comon.swagger_schema_view" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="api.comon.swagger_schema_view.SwaggerSchemaView">
+<em class="property">class </em><code class="descclassname">api.comon.swagger_schema_view.</code><code class="descname">SwaggerSchemaView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/comon/swagger_schema_view.html#SwaggerSchemaView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.comon.swagger_schema_view.SwaggerSchemaView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.views.APIView</span></code></p>
+<dl class="attribute">
+<dt id="api.comon.swagger_schema_view.SwaggerSchemaView.exclude_from_schema">
+<code class="descname">exclude_from_schema</code><em class="property"> = True</em><a class="headerlink" href="#api.comon.swagger_schema_view.SwaggerSchemaView.exclude_from_schema" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.comon.swagger_schema_view.SwaggerSchemaView.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/api/comon/swagger_schema_view.html#SwaggerSchemaView.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#api.comon.swagger_schema_view.SwaggerSchemaView.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.comon.swagger_schema_view.SwaggerSchemaView.permission_classes">
+<code class="descname">permission_classes</code><em class="property"> = [&lt;class 'rest_framework.permissions.AllowAny'&gt;]</em><a class="headerlink" href="#api.comon.swagger_schema_view.SwaggerSchemaView.permission_classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.comon.swagger_schema_view.SwaggerSchemaView.renderer_classes">
+<code class="descname">renderer_classes</code><em class="property"> = [&lt;class 'rest_framework.renderers.CoreJSONRenderer'&gt;, &lt;class 'rest_framework_swagger.renderers.OpenAPIRenderer'&gt;, &lt;class 'rest_framework_swagger.renderers.SwaggerUIRenderer'&gt;]</em><a class="headerlink" href="#api.comon.swagger_schema_view.SwaggerSchemaView.renderer_classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.comon">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-api.comon" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">api.comon package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-api.comon.swagger_schema_generator">api.comon.swagger_schema_generator module</a></li>
+<li><a class="reference internal" href="#module-api.comon.swagger_schema_view">api.comon.swagger_schema_view module</a></li>
+<li><a class="reference internal" href="#module-api.comon">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.comon.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/api.comon.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

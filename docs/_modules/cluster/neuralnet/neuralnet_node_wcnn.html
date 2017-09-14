@@ -1,0 +1,477 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.neuralnet.neuralnet_node_wcnn &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.neuralnet.neuralnet_node_wcnn</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cluster.neuralnet.neuralnet_node</span> <span class="k">import</span> <span class="n">NeuralNetNode</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">master.workflow.netconf.workflow_netconf_wcnn</span> <span class="k">import</span> <span class="n">WorkFlowNetConfWideCnn</span> <span class="k">as</span> <span class="n">WFConf</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">cluster.common.train_summary_info</span> <span class="k">import</span> <span class="n">TrainSummaryInfo</span>
+<span class="kn">from</span> <span class="nn">common.graph.nn_graph_manager</span> <span class="k">import</span> <span class="n">NeuralNetModel</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="NeuralNetNodeWideCnn"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn">[docs]</a><span class="k">class</span> <span class="nc">NeuralNetNodeWideCnn</span><span class="p">(</span><span class="n">NeuralNetNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        init necessary net conf</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="c1"># set global parms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conf_data</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_feed_name</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eval_feed_name</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">node_id</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node_name</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node_def</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_pred_cls</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_step</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predict_batch</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="c1">#set_netconf_parm</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span> <span class="o">=</span> <span class="n">WFConf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">learnrate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">learnrate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numoutputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">layeroutputs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fclayer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">out</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">epoch</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batchsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">batch_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modelname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">modelname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">traincnt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">model_path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eval_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pred_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">predictcnt</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;error on setting parms for wcnn : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_set_dataconf_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataconf</span><span class="p">)</span> <span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set parms from data conf</span>
+<span class="sd">        :param self:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="c1"># set data parm</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span> <span class="o">=</span> <span class="n">dataconf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">word_vector_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">encode_len</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">word_vector_size</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">word_vector_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encode_len</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">encode_len</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encode_channel</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">encode_channel</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">lable_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embed_type</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">embed_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lable_onehot</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">lable_onehot</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_onehot</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">input_onehot</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_embed_flag</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">char_embed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">+</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_max_len</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">char_max_len</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_embed_size</span> <span class="o">=</span> <span class="n">dataconf</span><span class="o">.</span><span class="n">char_embed_size</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;error on set up data conf : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return conf master class</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">WFConf</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NeuralNetNodeWideCnn.run"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        run network train task</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;run WCNN Train&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">()</span>
+
+            <span class="c1"># set global</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conf_data</span> <span class="o">=</span> <span class="n">conf_data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nn_id</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;nn_id&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wfver</span> <span class="o">=</span> <span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;wf_ver&#39;</span><span class="p">]</span>
+
+            <span class="c1"># get prev node for load data</span>
+            <span class="n">train_data_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_linked_prev_node_with_grp</span><span class="p">(</span><span class="s1">&#39;preprocess&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># get data size from preprocess node</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_dataconf_parm</span><span class="p">(</span><span class="n">train_data_set</span><span class="p">)</span>
+
+            <span class="c1"># prepare net conf</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">reset_default_graph</span><span class="p">()</span>
+            <span class="c1"># get model andn train</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+            <span class="c1"># create session and run train</span>
+            <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+                <span class="c1"># initialize session</span>
+                <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_val</span><span class="p">)</span>
+
+                <span class="c1"># restore saved model</span>
+                <span class="n">saver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saver</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_batch_exist</span><span class="p">(</span><span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">])):</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">),</span> <span class="s1">&#39;/&#39;</span><span class="p">])</span>
+                    <span class="n">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+                <span class="c1"># train model feed data</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_train_run</span><span class="p">(</span><span class="n">train_data_set</span><span class="p">,</span> <span class="n">sess</span><span class="p">)</span>
+
+                <span class="c1"># save model and close session</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;/&#39;</span><span class="p">])</span>
+                <span class="n">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[WCNN Train Process] : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;error on train : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># copy data feeder&#39;s parm to netconf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_dataconf_parm</span><span class="p">(</span><span class="n">train_data_set</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_copy_node_parms</span><span class="p">(</span><span class="n">train_data_set</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_progress_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="NeuralNetNodeWideCnn.get_model"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">netconf</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create graph</span>
+<span class="sd">        :param netconf:</span>
+<span class="sd">        :param type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">global_step</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">initial_value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;global_step&#39;</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># placeholder is used for feeding data.</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+            <span class="n">y_target</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;y_target&#39;</span><span class="p">)</span>
+            <span class="n">x_image</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;x_image&quot;</span><span class="p">)</span>
+            <span class="c1"># Keeping track of l2 regularization loss (optional)</span>
+            <span class="n">l2_loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+            <span class="n">layer</span> <span class="o">=</span> <span class="n">netconf</span><span class="o">.</span><span class="n">get_layer_info</span>
+            <span class="n">filter_sizes</span> <span class="o">=</span> <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;cnnfilter&quot;</span><span class="p">]</span>
+            <span class="n">num_filters</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filter_sizes</span><span class="p">)</span>
+
+            <span class="n">pooled_outputs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">filter_size</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">filter_sizes</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s2">&quot;conv-maxpool-</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">filter_size</span><span class="p">):</span>
+                    <span class="c1"># Convolution Layer</span>
+                    <span class="n">filter_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">filter_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_filters</span><span class="p">]</span>
+                    <span class="n">W_conv1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">filter_shape</span><span class="p">,</span> <span class="n">stddev</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;W&quot;</span><span class="p">)</span>
+                    <span class="n">b_conv1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">num_filters</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+
+                    <span class="n">conv</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span>
+                        <span class="n">x_image</span><span class="p">,</span>
+                        <span class="n">W_conv1</span><span class="p">,</span>
+                        <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                        <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;VALID&quot;</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;conv&quot;</span><span class="p">)</span>
+
+                    <span class="c1"># Apply nonlinearity</span>
+                    <span class="n">h</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">bias_add</span><span class="p">(</span><span class="n">conv</span><span class="p">,</span> <span class="n">b_conv1</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)</span>
+                    <span class="c1"># Maxpooling over the outputs</span>
+                    <span class="n">pooled</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">max_pool</span><span class="p">(</span>
+                        <span class="n">h</span><span class="p">,</span>
+                        <span class="n">ksize</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span> <span class="o">-</span> <span class="n">filter_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                        <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                        <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;VALID&#39;</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pool&quot;</span><span class="p">)</span>
+                    <span class="n">pooled_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pooled</span><span class="p">)</span>
+
+            <span class="c1"># Combine all the pooled features</span>
+            <span class="n">num_filters_total</span> <span class="o">=</span> <span class="n">num_filters</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">filter_sizes</span><span class="p">)</span>
+            <span class="n">h_pool</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">pooled_outputs</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">h_pool_flat</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">h_pool</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_filters_total</span><span class="p">])</span>
+
+            <span class="c1"># Add dropout</span>
+            <span class="n">keep_prob</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">layer</span><span class="p">[</span><span class="s2">&quot;droprate&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">keep_prob</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">layer</span><span class="p">[</span><span class="s2">&quot;droprate&quot;</span><span class="p">])</span>
+                <span class="n">h_pool_flat</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h_pool_flat</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">)</span>
+
+            <span class="c1"># Final (unnormalized) scores and predictions</span>
+            <span class="n">W_fc1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span>
+                <span class="s2">&quot;W_fc1&quot;</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">num_filters_total</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">],</span>
+                <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">xavier_initializer</span><span class="p">())</span>
+            <span class="n">b_fc1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+            <span class="n">l2_loss</span> <span class="o">+=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_loss</span><span class="p">(</span><span class="n">W_fc1</span><span class="p">)</span>
+            <span class="n">l2_loss</span> <span class="o">+=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_loss</span><span class="p">(</span><span class="n">b_fc1</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">xw_plus_b</span><span class="p">(</span><span class="n">h_pool_flat</span><span class="p">,</span> <span class="n">W_fc1</span><span class="p">,</span> <span class="n">b_fc1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;scores&quot;</span><span class="p">)</span>
+            <span class="n">predictions</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;predictions&quot;</span><span class="p">)</span>
+
+            <span class="c1"># CalculateMean cross-entropy loss</span>
+            <span class="n">losses</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">logits</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">y_target</span><span class="p">)</span>
+            <span class="n">cross_entropy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+
+            <span class="n">train_step</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">,</span> <span class="n">global_step</span> <span class="o">=</span> <span class="n">global_step</span><span class="p">)</span>
+
+            <span class="c1"># Accuracy</span>
+            <span class="n">correct_predictions</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_target</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">accuracy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">correct_predictions</span><span class="p">,</span> <span class="s2">&quot;float&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">y_target</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">train_step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_pred_cls</span> <span class="o">=</span> <span class="n">predictions</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_step</span> <span class="o">=</span> <span class="n">global_step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">cross_entropy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_val</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">all_variables</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;WCNN graph prepare error : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_train_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">sess</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        feed data for net</span>
+<span class="sd">        :param input_data:</span>
+<span class="sd">        :param out_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">return_arr</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">g_total_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">input_data</span><span class="o">.</span><span class="n">has_next</span><span class="p">()):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">input_data</span><span class="o">.</span><span class="n">data_size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">batchsize</span><span class="p">):</span>
+                    <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span>  <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">batchsize</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_cnt</span><span class="p">):</span>
+                        <span class="n">i_global</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">i_cost</span><span class="p">,</span> <span class="n">batch_acc</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">global_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">],</span>
+                                                                  <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="n">x_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">:</span> <span class="n">y_batch</span><span class="p">})</span>
+                        <span class="n">g_total_cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">g_total_cnt</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;count : </span><span class="si">{0}</span><span class="s2"> , Cost : </span><span class="si">{1}</span><span class="s2">, Acc : </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_global</span><span class="p">,</span> <span class="n">i_cost</span><span class="p">,</span> <span class="n">batch_acc</span><span class="p">))</span>
+                <span class="n">input_data</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="n">input_data</span><span class="o">.</span><span class="n">reset_pointer</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;WCNN on data feed error : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">return_arr</span>
+
+<div class="viewcode-block" id="NeuralNetNodeWideCnn.eval"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        eval process check if model works well (accuracy with cross table)</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :param conf_data:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :param result:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node_name</span><span class="p">()</span>
+            <span class="n">lables</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">dataconf</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s1">&#39;lable_onehot&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dict_list</span>
+            <span class="n">lables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_result_data_format</span><span class="p">({</span><span class="s2">&quot;labels&quot;</span><span class="p">:</span><span class="n">lables</span><span class="p">})</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_nn_batch_ver_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="n">node_id</span><span class="p">))</span>
+
+            <span class="n">tf</span><span class="o">.</span><span class="n">reset_default_graph</span><span class="p">()</span>
+            <span class="c1"># prepare net conf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span> <span class="p">:</span>
+                <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_val</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">node_id</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_batch_exist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">),</span> <span class="s1">&#39;/&#39;</span><span class="p">]))</span>
+
+                <span class="k">while</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">has_next</span><span class="p">()):</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">data_size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_batch</span><span class="p">):</span>
+                        <span class="n">data_set</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_batch</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_set</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_batch</span><span class="p">):</span> <span class="k">break</span>
+                        <span class="n">predict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_predict</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span>
+                                                    <span class="n">data_set</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                                                    <span class="n">saver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saver</span><span class="p">)</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">set_result_info</span><span class="p">(</span><span class="n">lables</span><span class="p">[</span><span class="n">data_set</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)],</span>
+                                               <span class="n">predict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">predict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">lables</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;error on eval wcnn : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NeuralNetNodeWideCnn.predict"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.neuralnet_node_wcnn.NeuralNetNodeWideCnn.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">parm</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;input_data&quot;</span> <span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;num&quot;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        predict result with pretrained model</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :param filelist:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="c1"># init params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">node_id</span><span class="p">)</span>
+
+            <span class="c1"># get prev node for load data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_dataconf_parm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">)</span>
+
+            <span class="c1"># get unique key</span>
+            <span class="n">unique_key</span> <span class="o">=</span> <span class="s1">&#39;__&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">node_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="n">node_id</span><span class="p">)])</span>
+
+            <span class="c1"># set init params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">node_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>
+
+            <span class="c1"># prepare net conf</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">reset_default_graph</span><span class="p">()</span>
+
+            <span class="c1">## create tensorflow graph</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)):</span>
+                <span class="bp">self</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+                <span class="n">graph</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">)</span>
+                <span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">graph</span><span class="p">)</span>
+                <span class="n">batch_ver_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_batch_exist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_id</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">batch_ver_name</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">]))</span>
+                    <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">set_dict</span><span class="p">(</span><span class="n">unique_key</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                    <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">set_graph</span><span class="p">(</span><span class="n">unique_key</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+                    <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">set_sess</span><span class="p">(</span><span class="n">unique_key</span><span class="p">,</span><span class="n">sess</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;error : no pretrained model exist&quot;</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">sess</span> <span class="o">=</span> <span class="n">NeuralNetModel</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unique_key</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_predict</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span>
+                                     <span class="n">parm</span><span class="p">[</span><span class="s1">&#39;input_data&#39;</span><span class="p">],</span>
+                                     <span class="n">batch_ver</span><span class="o">=</span><span class="s1">&#39;eval&#39;</span><span class="p">,</span>  <span class="c1"># TODO : need to manage predict version too</span>
+                                     <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;raw&#39;</span><span class="p">,</span>
+                                     <span class="n">saver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">saver</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;wcnn predict prepare process error : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_run_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">x_input</span><span class="p">,</span> <span class="n">batch_ver</span><span class="o">=</span><span class="s1">&#39;eval&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;pre&#39;</span><span class="p">,</span> <span class="n">saver</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param filelist:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="c1">#preprocess input data if necessary</span>
+            <span class="n">word_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span><span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;raw&#39;</span><span class="p">):</span>
+                <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">netconf</span><span class="o">.</span><span class="n">get_preprocess_type</span> <span class="o">==</span> <span class="s1">&#39;mecab&#39;</span><span class="p">):</span>
+                    <span class="n">word_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos_tag_predict_data</span><span class="p">(</span><span class="n">x_input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">pad_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span> <span class="o">-</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_input</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)))</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">pad_size</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+                        <span class="n">word_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">pad_size</span> <span class="o">*</span> <span class="p">[(</span><span class="s1">&#39;#&#39;</span><span class="p">)]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_input</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)))]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">word_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_input</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]</span>
+
+                <span class="n">word_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_word_embed_data</span><span class="p">(</span><span class="s1">&#39;onehot&#39;</span><span class="p">,</span>
+                                                  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">word_list</span><span class="p">),</span>
+                                                  <span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_onehot</span><span class="p">,</span>
+                                                  <span class="n">char_embed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed_flag</span><span class="p">)</span>
+                <span class="n">word_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">word_list</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_channel</span><span class="p">])</span>
+            <span class="k">elif</span><span class="p">(</span><span class="nb">type</span><span class="o">==</span><span class="s1">&#39;pre&#39;</span><span class="p">):</span>
+                <span class="n">word_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_input</span><span class="p">]</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;Wrong predict data type error!&quot;</span><span class="p">)</span>
+
+            <span class="c1"># run predict</span>
+            <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">logits</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pred_cls</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">:</span> <span class="n">word_list</span><span class="p">})</span>
+            <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lable_onehot</span><span class="o">.</span><span class="n">get_vocab</span><span class="p">(</span><span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">responses</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

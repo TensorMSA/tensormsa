@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.workflow.dataconf package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="master-workflow-dataconf-package">
+<h1>master.workflow.dataconf package<a class="headerlink" href="#master-workflow-dataconf-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-master.workflow.dataconf.workflow_dataconf">
+<span id="master-workflow-dataconf-workflow-dataconf-module"></span><h2>master.workflow.dataconf.workflow_dataconf module<a class="headerlink" href="#module-master.workflow.dataconf.workflow_dataconf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf">
+<em class="property">class </em><code class="descclassname">master.workflow.dataconf.workflow_dataconf.</code><code class="descname">WorkFlowDataConf</code><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf.html#WorkFlowDataConf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="master.workflow.common.html#master.workflow.common.workflow_common.WorkFlowCommon" title="master.workflow.common.workflow_common.WorkFlowCommon"><code class="xref py py-class docutils literal"><span class="pre">master.workflow.common.workflow_common.WorkFlowCommon</span></code></a></p>
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf.get_step_source">
+<code class="descname">get_step_source</code><span class="sig-paren">(</span><em>nnid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf.html#WorkFlowDataConf.get_step_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf.get_step_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for source step
+:return:obj(json) to make view</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.dataconf.workflow_dataconf_frame">
+<span id="master-workflow-dataconf-workflow-dataconf-frame-module"></span><h2>master.workflow.dataconf.workflow_dataconf_frame module<a class="headerlink" href="#module-master.workflow.dataconf.workflow_dataconf_frame" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame">
+<em class="property">class </em><code class="descclassname">master.workflow.dataconf.workflow_dataconf_frame.</code><code class="descname">WorkflowDataConfFrame</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_frame.html#WorkflowDataConfFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf" title="master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf"><code class="xref py py-class docutils literal"><span class="pre">master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf</span></code></a></p>
+<p>Data Columns의 속성을 정의 해주는 Class
+# properties</p>
+<blockquote>
+<div>data_conf</div></blockquote>
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.Transformations">
+<code class="descname">Transformations</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.Transformations" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.cell_feature">
+<code class="descname">cell_feature</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.cell_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.cell_feature_unique">
+<code class="descname">cell_feature_unique</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.cell_feature_unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.config_data_nvl">
+<code class="descname">config_data_nvl</code><span class="sig-paren">(</span><em>config_data</em>, <em>attribute_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_frame.html#WorkflowDataConfFrame.config_data_nvl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.config_data_nvl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.cross_cell">
+<code class="descname">cross_cell</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.cross_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.extend_cell_feature">
+<code class="descname">extend_cell_feature</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.extend_cell_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.get_data_conf">
+<code class="descname">get_data_conf</code><span class="sig-paren">(</span><em>nnid</em>, <em>ver</em>, <em>node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_frame.html#WorkflowDataConfFrame.get_data_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.get_data_conf" title="Permalink to this definition">¶</a></dt>
+<dd><p>putter for source step
+:param obj: config data from view
+:return:boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.get_view_obj">
+<code class="descname">get_view_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_frame.html#WorkflowDataConfFrame.get_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.get_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get column type info for view
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.label">
+<code class="descname">label</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.label_type">
+<code class="descname">label_type</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.label_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.label_values">
+<code class="descname">label_values</code><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.label_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>getter for object type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.put_step_source">
+<code class="descname">put_step_source</code><span class="sig-paren">(</span><em>nnid</em>, <em>ver</em>, <em>node</em>, <em>input_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_frame.html#WorkflowDataConfFrame.put_step_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.put_step_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>putter for source step
+:param obj: config data from view
+:return:boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.set_view_obj">
+<code class="descname">set_view_obj</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_frame.html#WorkflowDataConfFrame.set_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_frame.WorkflowDataConfFrame.set_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set column type info on db json filed
+:param obj:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.dataconf.workflow_dataconf_image">
+<span id="master-workflow-dataconf-workflow-dataconf-image-module"></span><h2>master.workflow.dataconf.workflow_dataconf_image module<a class="headerlink" href="#module-master.workflow.dataconf.workflow_dataconf_image" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.dataconf.workflow_dataconf_image.WorkflowDataConfFrame">
+<em class="property">class </em><code class="descclassname">master.workflow.dataconf.workflow_dataconf_image.</code><code class="descname">WorkflowDataConfFrame</code><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_image.html#WorkflowDataConfFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_image.WorkflowDataConfFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf" title="master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf"><code class="xref py py-class docutils literal"><span class="pre">master.workflow.dataconf.workflow_dataconf.WorkFlowDataConf</span></code></a></p>
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf_image.WorkflowDataConfFrame.get_view_obj">
+<code class="descname">get_view_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_image.html#WorkflowDataConfFrame.get_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_image.WorkflowDataConfFrame.get_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get column type info for view
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.dataconf.workflow_dataconf_image.WorkflowDataConfFrame.set_view_obj">
+<code class="descname">set_view_obj</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/dataconf/workflow_dataconf_image.html#WorkflowDataConfFrame.set_view_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.dataconf.workflow_dataconf_image.WorkflowDataConfFrame.set_view_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set column type info on db json filed
+:param obj:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.dataconf">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-master.workflow.dataconf" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">master.workflow.dataconf package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-master.workflow.dataconf.workflow_dataconf">master.workflow.dataconf.workflow_dataconf module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.dataconf.workflow_dataconf_frame">master.workflow.dataconf.workflow_dataconf_frame module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.dataconf.workflow_dataconf_image">master.workflow.dataconf.workflow_dataconf_image module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.dataconf">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/master.workflow.dataconf.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/master.workflow.dataconf.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

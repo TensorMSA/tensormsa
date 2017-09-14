@@ -1,0 +1,277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot.nlp package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="chatbot-nlp-package">
+<h1>chatbot.nlp package<a class="headerlink" href="#chatbot-nlp-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-chatbot.nlp.entity_analyzer">
+<span id="chatbot-nlp-entity-analyzer-module"></span><h2>chatbot.nlp.entity_analyzer module<a class="headerlink" href="#module-chatbot.nlp.entity_analyzer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.entity_analyzer.EntityAnalyzer">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.entity_analyzer.</code><code class="descname">EntityAnalyzer</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_analyzer.html#EntityAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_analyzer.EntityAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<p>parse raw text to tageed, entity filterd sentence
+※ Example
+input : I bought a car yesterday
+output : I bought a car [time]</p>
+<dl class="method">
+<dt id="chatbot.nlp.entity_analyzer.EntityAnalyzer.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>share_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_analyzer.html#EntityAnalyzer.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_analyzer.EntityAnalyzer.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>parse input with entity list
+:param share_data:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp.entity_recognizer">
+<span id="chatbot-nlp-entity-recognizer-module"></span><h2>chatbot.nlp.entity_recognizer module<a class="headerlink" href="#module-chatbot.nlp.entity_recognizer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.entity_recognizer.EntityRecognizer">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.entity_recognizer.</code><code class="descname">EntityRecognizer</code><span class="sig-paren">(</span><em>cb_id</em>, <em>ner_model_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_recognizer.html#EntityRecognizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_recognizer.EntityRecognizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.nlp.entity_recognizer.EntityRecognizer.check_all_dict">
+<code class="descname">check_all_dict</code><span class="sig-paren">(</span><em>ner_conv</em>, <em>cb_data</em>, <em>cb_data_order</em>, <em>cb_data_th</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_recognizer.html#EntityRecognizer.check_all_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_recognizer.EntityRecognizer.check_all_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>check other dict when failed to find matching value
+:param ner_conv: 
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.nlp.entity_recognizer.EntityRecognizer.lower">
+<code class="descname">lower</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_recognizer.html#EntityRecognizer.lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_recognizer.EntityRecognizer.lower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.nlp.entity_recognizer.EntityRecognizer.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>share_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_recognizer.html#EntityRecognizer.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_recognizer.EntityRecognizer.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp.entity_regexp">
+<span id="chatbot-nlp-entity-regexp-module"></span><h2>chatbot.nlp.entity_regexp module<a class="headerlink" href="#module-chatbot.nlp.entity_regexp" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.entity_regexp.EntityRegex">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.entity_regexp.</code><code class="descname">EntityRegex</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_regexp.html#EntityRegex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_regexp.EntityRegex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.nlp.entity_regexp.EntityRegex.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_regexp.html#EntityRegex.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_regexp.EntityRegex.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp.entity_synonym">
+<span id="chatbot-nlp-entity-synonym-module"></span><h2>chatbot.nlp.entity_synonym module<a class="headerlink" href="#module-chatbot.nlp.entity_synonym" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.entity_synonym.EntitySynonym">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.entity_synonym.</code><code class="descname">EntitySynonym</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_synonym.html#EntitySynonym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_synonym.EntitySynonym" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.nlp.entity_synonym.EntitySynonym.convert_synonym_value">
+<code class="descname">convert_synonym_value</code><span class="sig-paren">(</span><em>share_data</em>, <em>key</em>, <em>synonym</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_synonym.html#EntitySynonym.convert_synonym_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_synonym.EntitySynonym.convert_synonym_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.nlp.entity_synonym.EntitySynonym.make_represent">
+<code class="descname">make_represent</code><span class="sig-paren">(</span><em>share_data</em>, <em>synonym</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/entity_synonym.html#EntitySynonym.make_represent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.entity_synonym.EntitySynonym.make_represent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp.intend_analyzer">
+<span id="chatbot-nlp-intend-analyzer-module"></span><h2>chatbot.nlp.intend_analyzer module<a class="headerlink" href="#module-chatbot.nlp.intend_analyzer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.intend_analyzer.IntendAnalyzer">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.intend_analyzer.</code><code class="descname">IntendAnalyzer</code><span class="sig-paren">(</span><em>cb_id</em>, <em>nn_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/intend_analyzer.html#IntendAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.intend_analyzer.IntendAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<p>parse raw text to tageed, entity filterd sentence
+※ Example
+input : I bought a car yesterday
+output : I bought a car [time]</p>
+<dl class="method">
+<dt id="chatbot.nlp.intend_analyzer.IntendAnalyzer.get_intent_model">
+<code class="descname">get_intent_model</code><span class="sig-paren">(</span><em>convert_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/intend_analyzer.html#IntendAnalyzer.get_intent_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.intend_analyzer.IntendAnalyzer.get_intent_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.nlp.intend_analyzer.IntendAnalyzer.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>share_data</em>, <em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/intend_analyzer.html#IntendAnalyzer.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.intend_analyzer.IntendAnalyzer.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>run intent analyzer
+:param context:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp.response_generator">
+<span id="chatbot-nlp-response-generator-module"></span><h2>chatbot.nlp.response_generator module<a class="headerlink" href="#module-chatbot.nlp.response_generator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.response_generator.ResponseGenerator">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.response_generator.</code><code class="descname">ResponseGenerator</code><span class="sig-paren">(</span><em>response_story</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/response_generator.html#ResponseGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.response_generator.ResponseGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.nlp.response_generator.ResponseGenerator.get_unknown_response">
+<code class="descname">get_unknown_response</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/response_generator.html#ResponseGenerator.get_unknown_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.response_generator.ResponseGenerator.get_unknown_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.nlp.response_generator.ResponseGenerator.select_response">
+<code class="descname">select_response</code><span class="sig-paren">(</span><em>share_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/response_generator.html#ResponseGenerator.select_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.response_generator.ResponseGenerator.select_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.nlp.response_generator.ResponseGenerator.tone_generator">
+<code class="descname">tone_generator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/response_generator.html#ResponseGenerator.tone_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.response_generator.ResponseGenerator.tone_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp.rule_intent_analyzer">
+<span id="chatbot-nlp-rule-intent-analyzer-module"></span><h2>chatbot.nlp.rule_intent_analyzer module<a class="headerlink" href="#module-chatbot.nlp.rule_intent_analyzer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.rule_intent_analyzer.RuleIntentAnalyzer">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.rule_intent_analyzer.</code><code class="descname">RuleIntentAnalyzer</code><span class="sig-paren">(</span><em>intent_conf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/rule_intent_analyzer.html#RuleIntentAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.rule_intent_analyzer.RuleIntentAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.nlp.rule_intent_analyzer.RuleIntentAnalyzer.get_rule_intent">
+<code class="descname">get_rule_intent</code><span class="sig-paren">(</span><em>input_data</em>, <em>share_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/rule_intent_analyzer.html#RuleIntentAnalyzer.get_rule_intent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.rule_intent_analyzer.RuleIntentAnalyzer.get_rule_intent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.nlp.rule_intent_analyzer.RuleIntentAnalyzer.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>share_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/nlp/rule_intent_analyzer.html#RuleIntentAnalyzer.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.rule_intent_analyzer.RuleIntentAnalyzer.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp.syntax_analyzer">
+<span id="chatbot-nlp-syntax-analyzer-module"></span><h2>chatbot.nlp.syntax_analyzer module<a class="headerlink" href="#module-chatbot.nlp.syntax_analyzer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.nlp.syntax_analyzer.Syntaxanalyzer">
+<em class="property">class </em><code class="descclassname">chatbot.nlp.syntax_analyzer.</code><code class="descname">Syntaxanalyzer</code><a class="reference internal" href="_modules/chatbot/nlp/syntax_analyzer.html#Syntaxanalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.nlp.syntax_analyzer.Syntaxanalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.nlp">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-chatbot.nlp" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">chatbot.nlp package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.entity_analyzer">chatbot.nlp.entity_analyzer module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.entity_recognizer">chatbot.nlp.entity_recognizer module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.entity_regexp">chatbot.nlp.entity_regexp module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.entity_synonym">chatbot.nlp.entity_synonym module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.intend_analyzer">chatbot.nlp.intend_analyzer module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.response_generator">chatbot.nlp.response_generator module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.rule_intent_analyzer">chatbot.nlp.rule_intent_analyzer module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp.syntax_analyzer">chatbot.nlp.syntax_analyzer module</a></li>
+<li><a class="reference internal" href="#module-chatbot.nlp">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chatbot.nlp.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/chatbot.nlp.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

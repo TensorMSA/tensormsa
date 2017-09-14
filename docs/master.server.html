@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.server package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="master-server-package">
+<h1>master.server package<a class="headerlink" href="#master-server-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-master.server.cluster_server_conf">
+<span id="master-server-cluster-server-conf-module"></span><h2>master.server.cluster_server_conf module<a class="headerlink" href="#module-master.server.cluster_server_conf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.server.cluster_server_conf.ClusterServerConf">
+<em class="property">class </em><code class="descclassname">master.server.cluster_server_conf.</code><code class="descname">ClusterServerConf</code><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<ol class="arabic simple">
+<li>desc : CRUD function for server table</li>
+<li>table : CONF_SERV_CLUSTER_INFO</li>
+</ol>
+<dl class="method">
+<dt id="master.server.cluster_server_conf.ClusterServerConf.delete_server_info">
+<code class="descname">delete_server_info</code><span class="sig-paren">(</span><em>server_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf.delete_server_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf.delete_server_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete serer info
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.cluster_server_conf.ClusterServerConf.get_all_list">
+<code class="descname">get_all_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf.get_all_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf.get_all_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>retun all data as model object form
+:return:model objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.cluster_server_conf.ClusterServerConf.insert_server_info">
+<code class="descname">insert_server_info</code><span class="sig-paren">(</span><em>server_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf.insert_server_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf.insert_server_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert server info
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.cluster_server_conf.ClusterServerConf.mount_cache">
+<code class="descname">mount_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf.mount_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf.mount_cache" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.cluster_server_conf.ClusterServerConf.server_start_up">
+<code class="descname">server_start_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf.server_start_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf.server_start_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.server.cluster_server_conf.ClusterServerConf.update_server_info">
+<code class="descname">update_server_info</code><span class="sig-paren">(</span><em>server_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf.update_server_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf.update_server_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>update server info
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.cluster_server_conf.ClusterServerConf.update_server_status">
+<code class="descname">update_server_status</code><span class="sig-paren">(</span><em>server_name</em>, <em>status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/cluster_server_conf.html#ClusterServerConf.update_server_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.cluster_server_conf.ClusterServerConf.update_server_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>excepted to called from data connection manger, if connection works set true, else set false
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.server.data_server_conf">
+<span id="master-server-data-server-conf-module"></span><h2>master.server.data_server_conf module<a class="headerlink" href="#module-master.server.data_server_conf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.server.data_server_conf.DataServerConf">
+<em class="property">class </em><code class="descclassname">master.server.data_server_conf.</code><code class="descname">DataServerConf</code><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<ol class="arabic simple">
+<li>desc : CRUD function for server table</li>
+<li>table : CONF_SERV_DATA_INFO</li>
+</ol>
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.delete_server_info">
+<code class="descname">delete_server_info</code><span class="sig-paren">(</span><em>server_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.delete_server_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.delete_server_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete serer info
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.get_all_list">
+<code class="descname">get_all_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.get_all_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.get_all_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>retun all data as model object form
+:return:model objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.get_hbase_server_list">
+<code class="descname">get_hbase_server_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.get_hbase_server_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.get_hbase_server_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return objects filterd with type (use master.util.CodeRuleManager to get code id of &#8216;hbase&#8217;)
+:return: objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.get_oracle_rdb_list">
+<code class="descname">get_oracle_rdb_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.get_oracle_rdb_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.get_oracle_rdb_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return objects filterd with type (use master.util.CodeRuleManager to get code id of &#8216;rdb&#8217;)
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.get_redis_server_list">
+<code class="descname">get_redis_server_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.get_redis_server_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.get_redis_server_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return objects filterd with type (use master.util.CodeRuleManager to get code id of &#8216;redis&#8217;)
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.get_s3_server_list">
+<code class="descname">get_s3_server_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.get_s3_server_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.get_s3_server_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return objects filterd with type (use master.util.CodeRuleManager to get code id of &#8216;S3&#8217;)
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.get_selected_list">
+<code class="descname">get_selected_list</code><span class="sig-paren">(</span><em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.get_selected_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.get_selected_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return selected type of server info
+:return:model objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.get_selected_object">
+<code class="descname">get_selected_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.get_selected_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.get_selected_object" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.insert_server_info">
+<code class="descname">insert_server_info</code><span class="sig-paren">(</span><em>server_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.insert_server_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.insert_server_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert server info
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.mount_cache">
+<code class="descname">mount_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.mount_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.mount_cache" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.server_start_up">
+<code class="descname">server_start_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.server_start_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.server_start_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.update_server_info">
+<code class="descname">update_server_info</code><span class="sig-paren">(</span><em>server_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.update_server_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.update_server_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>update server info
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.data_server_conf.DataServerConf.update_server_status">
+<code class="descname">update_server_status</code><span class="sig-paren">(</span><em>server_name</em>, <em>status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/data_server_conf.html#DataServerConf.update_server_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.data_server_conf.DataServerConf.update_server_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>excepted to called from data connection manger, if connection works set true, else set false
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.server.master_server_conf">
+<span id="master-server-master-server-conf-module"></span><h2>master.server.master_server_conf module<a class="headerlink" href="#module-master.server.master_server_conf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.server.master_server_conf.MasterServerConf">
+<em class="property">class </em><code class="descclassname">master.server.master_server_conf.</code><code class="descname">MasterServerConf</code><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<ol class="arabic simple">
+<li>desc : CRUD function for server table</li>
+<li>table : CONF_SERV_DATA_INFO</li>
+</ol>
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.delete_data_mart_conf">
+<code class="descname">delete_data_mart_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.delete_data_mart_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.delete_data_mart_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.delete_nas_conf">
+<code class="descname">delete_nas_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.delete_nas_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.delete_nas_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.delete_rdb_conf">
+<code class="descname">delete_rdb_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.delete_rdb_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.delete_rdb_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.get_data_mart_conf">
+<code class="descname">get_data_mart_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.get_data_mart_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.get_data_mart_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.get_nas_conf">
+<code class="descname">get_nas_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.get_nas_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.get_nas_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.get_rdb_conf">
+<code class="descname">get_rdb_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.get_rdb_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.get_rdb_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.insert_data_mart_conf">
+<code class="descname">insert_data_mart_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.insert_data_mart_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.insert_data_mart_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.insert_nas_conf">
+<code class="descname">insert_nas_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.insert_nas_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.insert_nas_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.insert_rdb_conf">
+<code class="descname">insert_rdb_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.insert_rdb_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.insert_rdb_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.mount_cache">
+<code class="descname">mount_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.mount_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.mount_cache" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.server_start_up">
+<code class="descname">server_start_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.server_start_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.server_start_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.update_data_mart_conf">
+<code class="descname">update_data_mart_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.update_data_mart_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.update_data_mart_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.update_nas_conf">
+<code class="descname">update_nas_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.update_nas_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.update_nas_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.server.master_server_conf.MasterServerConf.update_rdb_conf">
+<code class="descname">update_rdb_conf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/server/master_server_conf.html#MasterServerConf.update_rdb_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.server.master_server_conf.MasterServerConf.update_rdb_conf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.server">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-master.server" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">master.server package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-master.server.cluster_server_conf">master.server.cluster_server_conf module</a></li>
+<li><a class="reference internal" href="#module-master.server.data_server_conf">master.server.data_server_conf module</a></li>
+<li><a class="reference internal" href="#module-master.server.master_server_conf">master.server.master_server_conf module</a></li>
+<li><a class="reference internal" href="#module-master.server">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/master.server.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/master.server.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

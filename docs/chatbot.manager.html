@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot.manager package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="chatbot-manager-package">
+<h1>chatbot.manager package<a class="headerlink" href="#chatbot-manager-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-chatbot.manager.bot_builder">
+<span id="chatbot-manager-bot-builder-module"></span><h2>chatbot.manager.bot_builder module<a class="headerlink" href="#module-chatbot.manager.bot_builder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.manager.bot_builder.BotBuilder">
+<em class="property">class </em><code class="descclassname">chatbot.manager.bot_builder.</code><code class="descname">BotBuilder</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/bot_builder.html#BotBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.bot_builder.BotBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.views.APIView</span></code></p>
+<dl class="method">
+<dt id="chatbot.manager.bot_builder.BotBuilder.run_builder">
+<code class="descname">run_builder</code><span class="sig-paren">(</span><em>data</em>, <em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/bot_builder.html#BotBuilder.run_builder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.bot_builder.BotBuilder.run_builder" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert nn_info version data
+:param req:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.manager.service_manager">
+<span id="chatbot-manager-service-manager-module"></span><h2>chatbot.manager.service_manager module<a class="headerlink" href="#module-chatbot.manager.service_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.manager.service_manager.ServiceManager">
+<em class="property">class </em><code class="descclassname">chatbot.manager.service_manager.</code><code class="descname">ServiceManager</code><span class="sig-paren">(</span><em>cb_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_manager.html#ServiceManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_manager.ServiceManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>This is the class where all the chatbot service start</p>
+<dl class="class">
+<dt id="chatbot.manager.service_manager.ServiceManager.ThreadCls">
+<em class="property">class </em><code class="descname">ThreadCls</code><span class="sig-paren">(</span><em>input</em>, <em>func</em>, <em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_manager.html#ServiceManager.ThreadCls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_manager.ServiceManager.ThreadCls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/threading.html#threading.Thread" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.manager.service_manager.ServiceManager.ThreadCls.join">
+<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_manager.html#ServiceManager.ThreadCls.join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_manager.ServiceManager.ThreadCls.join" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="chatbot.manager.service_manager.ServiceManager.ThreadCls.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_manager.html#ServiceManager.ThreadCls.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_manager.ServiceManager.ThreadCls.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.manager.service_manager.ServiceManager.run_chatbot">
+<code class="descclassname">ServiceManager.</code><code class="descname">run_chatbot</code><span class="sig-paren">(</span><em>req_ctx</em>, <em>mode='none'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_manager.html#ServiceManager.run_chatbot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_manager.ServiceManager.run_chatbot" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute chatbot as api mode
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="chatbot.manager.service_manager.ServiceManager.run_chatbot_with_file">
+<code class="descclassname">ServiceManager.</code><code class="descname">run_chatbot_with_file</code><span class="sig-paren">(</span><em>req_ctx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_manager.html#ServiceManager.run_chatbot_with_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_manager.ServiceManager.run_chatbot_with_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>uplaod files
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.manager.service_mapper">
+<span id="chatbot-manager-service-mapper-module"></span><h2>chatbot.manager.service_mapper module<a class="headerlink" href="#module-chatbot.manager.service_mapper" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="chatbot.manager.service_mapper.ServiceMapper">
+<em class="property">class </em><code class="descclassname">chatbot.manager.service_mapper.</code><code class="descname">ServiceMapper</code><span class="sig-paren">(</span><em>cb_id</em>, <em>entity_synonym</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_mapper.html#ServiceMapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_mapper.ServiceMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="chatbot.common.html#chatbot.common.chat_share_data.ShareData" title="chatbot.common.chat_share_data.ShareData"><code class="xref py py-class docutils literal"><span class="pre">chatbot.common.chat_share_data.ShareData</span></code></a></p>
+<dl class="method">
+<dt id="chatbot.manager.service_mapper.ServiceMapper.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>share_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/chatbot/manager/service_mapper.html#ServiceMapper.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#chatbot.manager.service_mapper.ServiceMapper.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-chatbot.manager">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-chatbot.manager" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">chatbot.manager package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-chatbot.manager.bot_builder">chatbot.manager.bot_builder module</a></li>
+<li><a class="reference internal" href="#module-chatbot.manager.service_manager">chatbot.manager.service_manager module</a></li>
+<li><a class="reference internal" href="#module-chatbot.manager.service_mapper">chatbot.manager.service_mapper module</a></li>
+<li><a class="reference internal" href="#module-chatbot.manager">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chatbot.manager.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/chatbot.manager.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

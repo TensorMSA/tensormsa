@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>chatbot.services.service_provider &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for chatbot.services.service_provider</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">chatbot.common.chat_share_data</span> <span class="k">import</span> <span class="n">ShareData</span>
+<span class="kn">from</span> <span class="nn">chatbot.nlp.response_generator</span> <span class="k">import</span> <span class="n">ResponseGenerator</span>
+<span class="kn">from</span> <span class="nn">cluster.service.service_predict_cnn</span> <span class="k">import</span> <span class="n">PredictNetCnn</span>
+<span class="kn">from</span> <span class="nn">django.http.request</span> <span class="k">import</span> <span class="n">MultiValueDict</span>
+<span class="kn">from</span> <span class="nn">django.core.files.uploadedfile</span> <span class="k">import</span> <span class="n">InMemoryUploadedFile</span>
+<span class="kn">import</span> <span class="nn">base64</span><span class="o">,</span> <span class="nn">io</span>
+
+<div class="viewcode-block" id="ServiceProvider"><a class="viewcode-back" href="../../../chatbot.services.html#chatbot.services.service_provider.ServiceProvider">[docs]</a><span class="k">class</span> <span class="nc">ServiceProvider</span><span class="p">(</span><span class="n">ShareData</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_story</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_story</span> <span class="o">=</span> <span class="n">service_story</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class handle service models</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ServiceProvider.run"><a class="viewcode-back" href="../../../chatbot.services.html#chatbot.services.service_provider.ServiceProvider.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">share_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        run service based on decision</span>
+<span class="sd">        :param share_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;■■■■■■■■■■ 서비스 호출 대상 판단 : &quot;</span> <span class="o">+</span> <span class="n">share_data</span><span class="o">.</span><span class="n">get_story_id</span><span class="p">()</span> <span class="p">)</span>
+        <span class="c1">#Call Image Reconize</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_service_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;find_image&quot;</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">share_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_service_call</span><span class="p">(</span><span class="n">share_data</span><span class="p">)</span>
+        <span class="c1">#Exist Story Response</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_story_id</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;99&#39;</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">share_data</span> <span class="o">=</span> <span class="n">ResponseGenerator</span><span class="p">()</span><span class="o">.</span><span class="n">select_response</span><span class="p">(</span><span class="n">share_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">share_data</span></div>
+
+    <span class="k">def</span> <span class="nf">_external_service_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">share_data</span><span class="p">)</span> <span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">service_type</span> <span class="o">=</span> <span class="n">ShareData</span><span class="o">.</span><span class="n">get_service_type</span><span class="p">()</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">service_type</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">share_data</span>
+            <span class="k">elif</span><span class="p">(</span><span class="n">service_type</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">share_data</span>
+            <span class="c1">#TODO : api call to external rest service and return</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_internal_service_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">share_data</span><span class="p">)</span> <span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># internal : IMAGE</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;■■■■■■■■■■ 이미지 분석 결과 분석 시작 ■■■■■■■■■■ &quot;</span><span class="p">)</span>
+
+            <span class="n">temp</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">request_type</span> <span class="o">=</span> <span class="n">share_data</span><span class="o">.</span><span class="n">get_request_type</span><span class="p">()</span>
+            <span class="n">decode_text</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">decodebytes</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">share_data</span><span class="o">.</span><span class="n">get_request_data</span><span class="p">()))</span>
+            <span class="n">temp</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">InMemoryUploadedFile</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">decode_text</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;test.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">decode_text</span><span class="p">),</span> <span class="kc">None</span><span class="p">)]</span>
+            <span class="n">ml</span> <span class="o">=</span> <span class="n">MultiValueDict</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+            <span class="c1"># fp = open(&quot;/hoya_src_root/nn00004/1/test1.jpg&quot;, &#39;wb&#39;)</span>
+            <span class="c1"># fp.write(decode_text)</span>
+            <span class="c1"># fp.close()</span>
+            <span class="c1"># CNN Prediction</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">request_type</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span class="p">):</span>
+                <span class="n">return_val</span> <span class="o">=</span> <span class="n">PredictNetCnn</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;nn00004&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ml</span> <span class="p">)</span>
+                <span class="n">name_tag</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;KYJ&quot;</span> <span class="p">:</span> <span class="s2">&quot;김영재&quot;</span><span class="p">,</span> <span class="s2">&quot;KSW&quot;</span> <span class="p">:</span> <span class="s2">&quot;김승우&quot;</span><span class="p">,</span> <span class="s2">&quot;LTY&quot;</span> <span class="p">:</span> <span class="s2">&quot;이태영&quot;</span><span class="p">,</span> <span class="s2">&quot;LSH&quot;</span> <span class="p">:</span> <span class="s2">&quot;이상현&quot;</span><span class="p">,</span> <span class="s2">&quot;PJH&quot;</span> <span class="p">:</span> <span class="s2">&quot;백지현&quot;</span><span class="p">,</span> <span class="s2">&quot;KSS&quot;</span> <span class="p">:</span> <span class="s2">&quot;김수상&quot;</span><span class="p">,</span> <span class="s2">&quot;PSC&quot;</span> <span class="p">:</span> <span class="s2">&quot;박성찬&quot;</span><span class="p">}</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;■■■■■■■■■■ 이미지 분석 결과 분석 결과 : &quot;</span> <span class="o">+</span> <span class="n">return_val</span><span class="p">[</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">share_data</span><span class="o">.</span><span class="n">set_output_data</span><span class="p">(</span><span class="n">name_tag</span><span class="p">[</span><span class="n">return_val</span><span class="p">[</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="s2">&quot;인거 같은데 맞나요?&quot;</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">share_data</span><span class="o">.</span><span class="n">set_output_data</span><span class="p">(</span><span class="s2">&quot;이미지 분석 결과가 없습니다&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">share_data</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

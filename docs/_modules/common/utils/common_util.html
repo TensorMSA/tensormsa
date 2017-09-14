@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>common.utils.common_util &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for common.utils.common_util</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span><span class="o">,</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">gLogFloag</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
+<span class="n">gUserId</span> <span class="o">=</span> <span class="s2">&quot;-1&quot;</span>
+<span class="c1"># gUrl = &quot;{0}:{1}&quot;.format(os.environ[&#39;HOSTNAME&#39;], &quot;8000&quot;)</span>
+<span class="n">gConpg</span> <span class="o">=</span> <span class="s2">&quot;dbname=&#39;tensormsa&#39; user=&#39;tfmsauser&#39; host=&#39;localhost&#39; password=&#39;1234&#39;&quot;</span>
+
+
+<div class="viewcode-block" id="println"><a class="viewcode-back" href="../../../common.utils.html#common.utils.common_util.println">[docs]</a><span class="k">def</span> <span class="nf">println</span><span class="p">(</span><span class="n">printStr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">gLogFloag</span> <span class="o">==</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">gConpg</span><span class="p">)</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">printStr</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span> <span class="ow">or</span> <span class="n">printStr</span> <span class="o">==</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;delete from common_log_info where created_by = &#39;&quot;</span> <span class="o">+</span> <span class="n">gUserId</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">printStr</span> <span class="o">==</span> <span class="s2">&quot;E&quot;</span> <span class="ow">or</span> <span class="n">printStr</span> <span class="o">==</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;select * from common_log_info where created_by = &#39;&quot;</span> <span class="o">+</span> <span class="n">gUserId</span> <span class="o">+</span> <span class="s2">&quot;&#39; order by log_id&quot;</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Trace.............................................................................&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                    <span class="k">if</span> <span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+                            <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;log_id&quot;</span><span class="p">,</span> <span class="s2">&quot;creation_date&quot;</span><span class="p">,</span> <span class="s2">&quot;last_update_date&quot;</span><span class="p">,</span> <span class="s2">&quot;created_by&quot;</span><span class="p">,</span> <span class="s2">&quot;last_updated_by&quot;</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;..................................................................................&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">printStr</span><span class="p">)</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">&quot;select COALESCE(max(log_id)::int,0)+10 seq from common_log_info where created_by = &#39;&quot;</span> <span class="o">+</span> <span class="n">gUserId</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO common_log_info( &quot;</span>
+            <span class="n">valueStr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="c1"># 일반적인 String 형태일 경우 출력을 해준다.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">valS</span> <span class="o">=</span> <span class="n">printStr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
+
+                <span class="n">cnt</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">valS</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">cnt</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">31</span><span class="p">:</span>
+                        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;,&quot;</span>
+                        <span class="n">valueStr</span> <span class="o">+=</span> <span class="s2">&quot;,&quot;</span>
+                    <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">31</span><span class="p">:</span>
+                        <span class="n">sql</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;attr&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+                        <span class="n">valueStr</span> <span class="o">+=</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+                    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;,creation_date,last_update_date, created_by, last_updated_by,log_id) &quot;</span>
+                <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;VALUES (&quot;</span> <span class="o">+</span> <span class="n">valueStr</span> <span class="o">+</span> <span class="s2">&quot;,now(),now(),&#39;&quot;</span> <span class="o">+</span> <span class="n">gUserId</span> <span class="o">+</span> <span class="s2">&quot;&#39;,&#39;&quot;</span> <span class="o">+</span> <span class="n">gUserId</span> <span class="o">+</span> <span class="s2">&quot;&#39;,&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                    <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;)&quot;</span>
+
+                <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+                <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># 객체 형태일 경우 출력을 해준다.</span>
+                <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;attr1,creation_date,last_update_date, created_by, last_updated_by,log_id) &quot;</span>
+                <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;VALUES (&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">printStr</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span>
+                                                           <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;,now(),now(),&#39;&quot;</span> <span class="o">+</span> <span class="n">gUserId</span> <span class="o">+</span> <span class="s2">&quot;&#39;,&#39;&quot;</span> <span class="o">+</span> <span class="n">gUserId</span> <span class="o">+</span> <span class="s2">&quot;&#39;,&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                    <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;)&quot;</span>
+                <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+                <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="c1"># 연결을 종료한다</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">log_savefile</span><span class="p">(</span><span class="n">printStr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="log_savefile"><a class="viewcode-back" href="../../../common.utils.html#common.utils.common_util.log_savefile">[docs]</a><span class="k">def</span> <span class="nf">log_savefile</span><span class="p">(</span><span class="n">printStr</span><span class="p">):</span>
+    <span class="c1"># file Save</span>
+    <span class="n">logame</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span>
+    <span class="n">log_path</span> <span class="o">=</span> <span class="s1">&#39;/hoya_log&#39;</span>
+
+    <span class="n">filesavecnt</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">filesizeMax</span> <span class="o">=</span> <span class="mi">100000</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">log_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log_path</span><span class="p">)</span>
+
+        <span class="n">filelist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">log_path</span><span class="p">)</span>
+
+        <span class="n">now_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="n">fullname</span> <span class="o">=</span> <span class="n">log_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">logame</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">now_time</span>
+        <span class="n">fullname</span> <span class="o">=</span> <span class="n">fullname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+        <span class="n">filelist</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+            <span class="n">step1</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+
+            <span class="c1"># file create</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">fullname</span> <span class="o">=</span> <span class="n">log_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span>
+                <span class="n">fullname</span> <span class="o">=</span> <span class="n">fullname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                <span class="n">filesize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">filesize</span> <span class="o">&gt;</span> <span class="n">filesizeMax</span><span class="p">:</span>
+                    <span class="n">fullname</span> <span class="o">=</span> <span class="n">log_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">step1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">now_time</span>
+                    <span class="n">fullname</span> <span class="o">=</span> <span class="n">fullname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">filesavecnt</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">log_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fullname</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">myfile</span><span class="p">:</span>
+            <span class="n">myfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">printStr</span><span class="p">)</span><span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="get_combine_label_list"><a class="viewcode-back" href="../../../common.utils.html#common.utils.common_util.get_combine_label_list">[docs]</a><span class="k">def</span> <span class="nf">get_combine_label_list</span><span class="p">(</span><span class="n">origin_list</span><span class="p">,</span> <span class="n">compare_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 리스트 두개를 비교하여 차이나는 값만 마지막에 순서대로 넣는 함수</span>
+<span class="sd">        The function that compare two list and insert distingush values</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      params:</span>
+<span class="sd">        * origin_list : A original list</span>
+<span class="sd">        * compare_list: An compare lists</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      list</span>
+<span class="sd">      두 리스트를 비교하여 구별된 값을 새 원래 리스트에 추가하여 반환</span>
+<span class="sd">    Raises:</span>
+<span class="sd">    Example</span>
+<span class="sd">        origin_list = [&#39;A&#39;,&#39;B&#39;,&#39;C&#39;,&#39;D&#39;]</span>
+<span class="sd">        compare_list = [&#39;50&gt;=&#39;, &#39;50=&#39;,&#39;C&#39;,&#39;D&#39;,&#39;E&#39;]</span>
+<span class="sd">        result =&gt; [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;50=&#39;, &#39;50&gt;=&#39;, &#39;E&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_origin_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">origin_list</span><span class="p">)</span>
+        <span class="n">_compare_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">compare_list</span><span class="p">)</span>
+
+        <span class="n">_union_values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_origin_list</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">_compare_list</span><span class="p">))</span>
+        <span class="n">_diff_values</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_union_values</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">_origin_list</span><span class="p">)))</span>
+        <span class="n">_origin_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_diff_values</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;get_combine_label_list </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">_origin_list</span></div>
+
+
+<div class="viewcode-block" id="copy_all"><a class="viewcode-back" href="../../../common.utils.html#common.utils.common_util.copy_all">[docs]</a><span class="k">def</span> <span class="nf">copy_all</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 디렉토리 안에 파일을 전부 복사 하는 유틸</span>
+<span class="sd">         The util that anything(file, directories...) in directory to destination dirctory</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      params:</span>
+<span class="sd">        * src : source directory</span>
+<span class="sd">        * dst: distination directory</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Raises:</span>
+
+<span class="sd">    Example</span>
+<span class="sd">        src = /hoya_model_root/nn00001/1/netconf_node/nn00001_1_19</span>
+<span class="sd">        dst =/hoya_model_root/nn00001/1/netconf_node/nn00001_1_20</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;copytree source(</span><span class="si">{0}</span><span class="s2">) to dest (</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># python &gt;2.5</span>
+        <span class="k">if</span> <span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOTDIR</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;copy source(</span><span class="si">{0}</span><span class="s2">) to dest (</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;copy error source(</span><span class="si">{0}</span><span class="s2">) to dest (</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">))</span></div>
+            <span class="c1">#raise exc</span>
+
+
+<div class="viewcode-block" id="isnan"><a class="viewcode-back" href="../../../common.utils.html#common.utils.common_util.isnan">[docs]</a><span class="k">def</span> <span class="nf">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Pandas에서 Nan 검사하는 유틸</span>
+<span class="sd">         The function is Nan Check in pandas</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      params:</span>
+<span class="sd">        * value : anything</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True / False</span>
+
+<span class="sd">    Raises:</span>
+
+<span class="sd">    Example</span>
+<span class="sd">        isnan(&#39;hello&#39;) == False</span>
+<span class="sd">        isnan(&#39;NaN&#39;) == True</span>
+<span class="sd">        isnan(100) == False</span>
+<span class="sd">        isnan(float(&#39;nan&#39;)) = True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="make_and_exist_directory"><a class="viewcode-back" href="../../../common.utils.html#common.utils.common_util.make_and_exist_directory">[docs]</a><span class="k">def</span> <span class="nf">make_and_exist_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 디렉토리 만들기(없으면 만들고 있으면 현재 디렉토리 값 반환)</span>
+<span class="sd">         Make Directory and Exist Directory</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      params:</span>
+<span class="sd">        * directory : directory path</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        directory path</span>
+
+<span class="sd">    Raises:</span>
+
+<span class="sd">    Example</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">directory</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Make Celery Logging Directory </span><span class="si">{0}</span><span class="s2"> : </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

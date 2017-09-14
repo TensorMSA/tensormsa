@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>common.graph package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="common-graph-package">
+<h1>common.graph package<a class="headerlink" href="#common-graph-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-common.graph.nn_graph_manager">
+<span id="common-graph-nn-graph-manager-module"></span><h2>common.graph.nn_graph_manager module<a class="headerlink" href="#module-common.graph.nn_graph_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel">
+<em class="property">class </em><code class="descclassname">common.graph.nn_graph_manager.</code><code class="descname">NeuralNetModel</code><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.check_duplicate">
+<code class="descname">check_duplicate</code><span class="sig-paren">(</span><em>key</em>, <em>data</em>, <em>target</em>, <em>extra=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.check_duplicate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.check_duplicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>check duplicate nn_id for none necessary memory use
+:param key: insert key
+:param data: inert data 
+:param target: target variable to update
+:param extra: if there is extra action to do
+:return boolean : always return True</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.dict">
+<code class="descname">dict</code><em class="property"> = {}</em><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.graph">
+<code class="descname">graph</code><em class="property"> = {}</em><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.init">
+<code class="descname">init</code><em class="property"> = {}</em><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.saver">
+<code class="descname">saver</code><em class="property"> = {}</em><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.saver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.sess">
+<code class="descname">sess</code><em class="property"> = {}</em><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.sess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.set_dict">
+<code class="descname">set_dict</code><span class="sig-paren">(</span><em>key</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.set_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.set_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.set_graph">
+<code class="descname">set_graph</code><span class="sig-paren">(</span><em>key</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.set_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.set_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.set_init">
+<code class="descname">set_init</code><span class="sig-paren">(</span><em>key</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.set_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.set_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.set_saver">
+<code class="descname">set_saver</code><span class="sig-paren">(</span><em>key</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.set_saver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.set_saver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.set_sess">
+<code class="descname">set_sess</code><span class="sig-paren">(</span><em>key</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.set_sess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.set_sess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.set_tf">
+<code class="descname">set_tf</code><span class="sig-paren">(</span><em>key</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.set_tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.set_tf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.set_variable">
+<code class="descname">set_variable</code><span class="sig-paren">(</span><em>key</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/graph/nn_graph_manager.html#NeuralNetModel.set_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.set_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.tf">
+<code class="descname">tf</code><em class="property"> = {}</em><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.tf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.graph.nn_graph_manager.NeuralNetModel.variable">
+<code class="descname">variable</code><em class="property"> = {}</em><a class="headerlink" href="#common.graph.nn_graph_manager.NeuralNetModel.variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-common.graph">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-common.graph" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">common.graph package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-common.graph.nn_graph_manager">common.graph.nn_graph_manager module</a></li>
+<li><a class="reference internal" href="#module-common.graph">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/common.graph.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/common.graph.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>common.utils.path_util &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for common.utils.path_util</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">django.core.cache</span> <span class="k">import</span> <span class="n">cache</span>
+
+<div class="viewcode-block" id="get_source_path"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.get_source_path">[docs]</a><span class="k">def</span> <span class="nf">get_source_path</span><span class="p">(</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    conbine parms and return source path (before data transformation)</span>
+<span class="sd">    :param nn_id:</span>
+<span class="sd">    :param wf_ver:</span>
+<span class="sd">    :param name:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#path = &#39;&#39;.join([cache.get(&quot;source_root&quot;), &quot;/&quot;, nn_id, &quot;/&quot;, wf_ver, &quot;/&quot;, name])</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;/hoya_src_root&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">])</span>
+    <span class="n">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="get_source_predict_path"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.get_source_predict_path">[docs]</a><span class="k">def</span> <span class="nf">get_source_predict_path</span><span class="p">(</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="n">predict</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    conbine parms and return source predict path (before data transformation)</span>
+<span class="sd">    :param nn_id:</span>
+<span class="sd">    :param wf_ver:</span>
+<span class="sd">    :param name:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#path = &#39;&#39;.join([cache.get(&quot;source_root&quot;), &quot;/&quot;, nn_id, &quot;/&quot;, wf_ver, &quot;/&quot;, name])</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;/hoya_src_root&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">predict</span><span class="p">])</span>
+    <span class="n">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="get_store_path"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.get_store_path">[docs]</a><span class="k">def</span> <span class="nf">get_store_path</span><span class="p">(</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="p">:</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;/hoya_str_root&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn_id</span><span class="p">),</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">wf_ver</span><span class="p">),</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)])</span>
+    <span class="n">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="get_model_path"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.get_model_path">[docs]</a><span class="k">def</span> <span class="nf">get_model_path</span><span class="p">(</span><span class="n">nn_id</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get model save path</span>
+<span class="sd">    :param name:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;/hoya_model_root&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">])</span>
+    <span class="c1">#path = &#39;&#39;.join([cache.get(&quot;model_root&quot;) , &quot;/&quot; , str(nn_id) , &quot;/&quot; , str(wf_ver) , &quot;/&quot; , str(name)])</span>
+    <span class="n">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="get_yolo_path"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.get_yolo_path">[docs]</a><span class="k">def</span> <span class="nf">get_yolo_path</span><span class="p">()</span> <span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/home/dev/hoyai/third_party/yolo/models/pretrain&quot;</span>
+    <span class="n">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="get_filepaths"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.get_filepaths">[docs]</a><span class="k">def</span> <span class="nf">get_filepaths</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_type</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    utils return file paths under directory</span>
+<span class="sd">    Modify filtering file type</span>
+<span class="sd">    :param directory:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">directories</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+                <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="n">file_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">file_type</span><span class="p">:</span>
+                    <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                    <span class="n">file_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">file_paths</span></div>
+
+<div class="viewcode-block" id="del_filepaths"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.del_filepaths">[docs]</a><span class="k">def</span> <span class="nf">del_filepaths</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_type</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    utils return file paths under directory</span>
+<span class="sd">    Modify filtering file type</span>
+<span class="sd">    :param directory:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">file_list</span> <span class="o">=</span> <span class="n">get_filepaths</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_type</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">file_list</span> <span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="set_filepaths"><a class="viewcode-back" href="../../../common.utils.html#common.utils.path_util.set_filepaths">[docs]</a><span class="k">def</span> <span class="nf">set_filepaths</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

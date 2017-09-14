@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.preprocess.pre_node_feed_fr2wcnn &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.preprocess.pre_node_feed_fr2wcnn</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cluster.preprocess.pre_node_feed</span> <span class="k">import</span> <span class="n">PreNodeFeed</span>
+<span class="kn">from</span> <span class="nn">master.workflow.preprocess.workflow_feed_fr2wcnn</span> <span class="k">import</span> <span class="n">WorkflowFeedFr2Wcnn</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">konlpy.tag</span> <span class="k">import</span> <span class="n">Mecab</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wcnn"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn">[docs]</a><span class="k">class</span> <span class="nc">PreNodeFeedFr2Wcnn</span><span class="p">(</span><span class="n">PreNodeFeed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wcnn.run"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        override init class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PreNodeFeedFr2Wcnn</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conf_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_node_parm</span><span class="p">(</span><span class="n">conf_data</span><span class="p">[</span><span class="s1">&#39;node_id&#39;</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return conf master class</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">WorkflowFeedFr2Wcnn</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">wf_conf</span> <span class="o">=</span> <span class="n">WorkflowFeedFr2Wcnn</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span> <span class="o">=</span> <span class="n">wf_conf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encode_channel</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_encode_channel</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encode_col</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_encode_column</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encode_len</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_encode_len</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decode_col</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_decode_column</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lable_size</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_lable_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_embed</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">char_encode</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_max_len</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">char_max_len</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lable_onehot</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lable_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">get_lable_list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lable_onehot</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">get_lable_list</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_type</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_preprocess_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embed_type</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_embed_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">=</span> <span class="n">wf_conf</span><span class="o">.</span><span class="n">get_vocab_size</span> <span class="o">+</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_embed_size</span> <span class="o">=</span> <span class="mi">160</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">word_vector_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_max_len</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">word_vector_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span>
+            <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_type</span> <span class="o">==</span> <span class="s1">&#39;onehot&#39;</span><span class="p">)</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">input_onehot</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">get_vocab_list</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input_onehot</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">get_vocab_list</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_convert_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param obj:</span>
+<span class="sd">        :param index:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">store</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">,</span>
+                               <span class="n">start</span><span class="o">=</span><span class="n">index</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+                               <span class="n">stop</span><span class="o">=</span><span class="n">index</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">index</span><span class="o">.</span><span class="n">start</span>
+            <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encode_col</span> <span class="ow">in</span> <span class="n">chunk</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode_col</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_pad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_preprocess</span><span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">encode_col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">count</span><span class="p">],</span> <span class="n">max_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encode_len</span><span class="p">)</span>
+                <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed</span><span class="p">)</span> <span class="p">:</span>
+                    <span class="n">encode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_word_embed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_type</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_onehot</span><span class="p">,</span> <span class="n">char_embed</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="n">encode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_word_embed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_type</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_onehot</span><span class="p">,</span> <span class="n">char_embed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">encode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">encode</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">word_vector_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_channel</span><span class="p">])</span>
+                <span class="n">decode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">decode_col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">encode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_word_embed_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_type</span><span class="p">,</span> <span class="n">decode</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lable_onehot</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;WCNN Data convert error : no column name exists&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param input_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess_type</span> <span class="o">==</span> <span class="s1">&#39;mecab&#39;</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mecab_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess_type</span> <span class="o">==</span> <span class="s1">&#39;kkma&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mecab_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess_type</span> <span class="o">==</span> <span class="s1">&#39;twitter&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mecab_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="n">input_data</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wcnn.data_size"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.data_size">[docs]</a>    <span class="k">def</span> <span class="nf">data_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get data array size of this calss</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">store</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">HDFStore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pointer</span><span class="p">])</span>
+            <span class="n">table_data</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;table1&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">table_data</span><span class="p">[</span><span class="n">table_data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PreNodeFeedFr2Wcnn.has_next"><a class="viewcode-back" href="../../../cluster.preprocess.html#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.has_next">[docs]</a>    <span class="k">def</span> <span class="nf">has_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check if hdf5 file pointer has next</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_lable_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lable_onehot</span><span class="o">.</span><span class="n">dics</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_word_vector_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_vector_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_char_embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_char_max_len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_max_len</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_encode_len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encode_len</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_encode_channel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encode_channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_char_embed_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_embed_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_type</span> <span class="o">==</span> <span class="s1">&#39;onehot&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span><span class="o">.</span><span class="n">set_vocab_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_onehot</span><span class="o">.</span><span class="n">dics</span><span class="p">())</span>
+            <span class="k">return</span> <span class="kc">False</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

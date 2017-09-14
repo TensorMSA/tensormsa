@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.server.cluster_server_conf &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for master.server.cluster_server_conf</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django.core.cache</span> <span class="k">import</span> <span class="n">cache</span>
+
+<div class="viewcode-block" id="ClusterServerConf"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf">[docs]</a><span class="k">class</span> <span class="nc">ClusterServerConf</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    1. desc : CRUD function for server table</span>
+<span class="sd">    2. table : CONF_SERV_CLUSTER_INFO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ClusterServerConf.server_start_up"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf.server_start_up">[docs]</a>    <span class="k">def</span> <span class="nf">server_start_up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mount_cache</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClusterServerConf.mount_cache"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf.mount_cache">[docs]</a>    <span class="k">def</span> <span class="nf">mount_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="c1"># cache.set(&quot;key&quot;, &quot;value&quot;, &quot;time&quot;)</span>
+
+<div class="viewcode-block" id="ClusterServerConf.get_all_list"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf.get_all_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        retun all data as model object form</span>
+<span class="sd">        :return:model objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># obj = models.JobManagement.objects</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ClusterServerConf.insert_server_info"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf.insert_server_info">[docs]</a>    <span class="k">def</span> <span class="nf">insert_server_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        insert server info</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ClusterServerConf.update_server_info"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf.update_server_info">[docs]</a>    <span class="k">def</span> <span class="nf">update_server_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        update server info</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ClusterServerConf.delete_server_info"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf.delete_server_info">[docs]</a>    <span class="k">def</span> <span class="nf">delete_server_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        delete serer info</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ClusterServerConf.update_server_status"><a class="viewcode-back" href="../../../master.server.html#master.server.cluster_server_conf.ClusterServerConf.update_server_status">[docs]</a>    <span class="k">def</span> <span class="nf">update_server_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_name</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        excepted to called from data connection manger, if connection works set true, else set false</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

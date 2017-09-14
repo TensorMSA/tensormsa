@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.neuralnet.resnet &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.neuralnet.resnet</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">keras.models</span> <span class="k">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Input</span><span class="p">,</span>
+    <span class="n">Activation</span><span class="p">,</span>
+    <span class="n">Dense</span><span class="p">,</span>
+    <span class="n">Flatten</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keras.layers.convolutional</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Conv2D</span><span class="p">,</span>
+    <span class="n">MaxPooling2D</span><span class="p">,</span>
+    <span class="n">AveragePooling2D</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keras.layers.merge</span> <span class="k">import</span> <span class="n">add</span>
+<span class="kn">from</span> <span class="nn">keras.layers.normalization</span> <span class="k">import</span> <span class="n">BatchNormalization</span>
+<span class="kn">from</span> <span class="nn">keras.regularizers</span> <span class="k">import</span> <span class="n">l2</span>
+<span class="kn">from</span> <span class="nn">keras</span> <span class="k">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">K</span>
+
+
+<span class="k">def</span> <span class="nf">_bn_relu</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper to build a BN -&gt; relu block</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">BatchNormalization</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">CHANNEL_AXIS</span><span class="p">)(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Activation</span><span class="p">(</span><span class="s2">&quot;relu&quot;</span><span class="p">)(</span><span class="n">norm</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_conv_bn_relu</span><span class="p">(</span><span class="o">**</span><span class="n">conv_params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper to build a conv -&gt; BN -&gt; relu block</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span>
+    <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;kernel_size&quot;</span><span class="p">]</span>
+    <span class="n">strides</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;strides&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">kernel_initializer</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;kernel_initializer&quot;</span><span class="p">,</span> <span class="s2">&quot;he_normal&quot;</span><span class="p">)</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;padding&quot;</span><span class="p">,</span> <span class="s2">&quot;same&quot;</span><span class="p">)</span>
+    <span class="n">kernel_regularizer</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;kernel_regularizer&quot;</span><span class="p">,</span> <span class="n">l2</span><span class="p">(</span><span class="mf">1.e-4</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="n">conv</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+                      <span class="n">strides</span><span class="o">=</span><span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">,</span>
+                      <span class="n">kernel_initializer</span><span class="o">=</span><span class="n">kernel_initializer</span><span class="p">,</span>
+                      <span class="n">kernel_regularizer</span><span class="o">=</span><span class="n">kernel_regularizer</span><span class="p">)(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_bn_relu</span><span class="p">(</span><span class="n">conv</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span>
+
+
+<span class="k">def</span> <span class="nf">_bn_relu_conv</span><span class="p">(</span><span class="o">**</span><span class="n">conv_params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper to build a BN -&gt; relu -&gt; conv block.</span>
+<span class="sd">    This is an improved scheme proposed in http://arxiv.org/pdf/1603.05027v2.pdf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span>
+    <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">conv_params</span><span class="p">[</span><span class="s2">&quot;kernel_size&quot;</span><span class="p">]</span>
+    <span class="n">strides</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;strides&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">kernel_initializer</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;kernel_initializer&quot;</span><span class="p">,</span> <span class="s2">&quot;he_normal&quot;</span><span class="p">)</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;padding&quot;</span><span class="p">,</span> <span class="s2">&quot;same&quot;</span><span class="p">)</span>
+    <span class="n">kernel_regularizer</span> <span class="o">=</span> <span class="n">conv_params</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;kernel_regularizer&quot;</span><span class="p">,</span> <span class="n">l2</span><span class="p">(</span><span class="mf">1.e-4</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="n">activation</span> <span class="o">=</span> <span class="n">_bn_relu</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+                      <span class="n">strides</span><span class="o">=</span><span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">,</span>
+                      <span class="n">kernel_initializer</span><span class="o">=</span><span class="n">kernel_initializer</span><span class="p">,</span>
+                      <span class="n">kernel_regularizer</span><span class="o">=</span><span class="n">kernel_regularizer</span><span class="p">)(</span><span class="n">activation</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span>
+
+
+<span class="k">def</span> <span class="nf">_shortcut</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">residual</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds a shortcut between input and residual block and merges them with &quot;sum&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Expand channels of shortcut to match residual.</span>
+    <span class="c1"># Stride appropriately to match residual (width, height)</span>
+    <span class="c1"># Should be int if network architecture is correctly configured.</span>
+    <span class="n">input_shape</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">int_shape</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="n">residual_shape</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">int_shape</span><span class="p">(</span><span class="n">residual</span><span class="p">)</span>
+    <span class="n">stride_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">input_shape</span><span class="p">[</span><span class="n">ROW_AXIS</span><span class="p">]</span> <span class="o">/</span> <span class="n">residual_shape</span><span class="p">[</span><span class="n">ROW_AXIS</span><span class="p">]))</span>
+    <span class="n">stride_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">input_shape</span><span class="p">[</span><span class="n">COL_AXIS</span><span class="p">]</span> <span class="o">/</span> <span class="n">residual_shape</span><span class="p">[</span><span class="n">COL_AXIS</span><span class="p">]))</span>
+    <span class="n">equal_channels</span> <span class="o">=</span> <span class="n">input_shape</span><span class="p">[</span><span class="n">CHANNEL_AXIS</span><span class="p">]</span> <span class="o">==</span> <span class="n">residual_shape</span><span class="p">[</span><span class="n">CHANNEL_AXIS</span><span class="p">]</span>
+
+    <span class="n">shortcut</span> <span class="o">=</span> <span class="nb">input</span>
+    <span class="c1"># 1 X 1 conv if shape is different. Else identity.</span>
+    <span class="k">if</span> <span class="n">stride_width</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">stride_height</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">equal_channels</span><span class="p">:</span>
+        <span class="n">shortcut</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">residual_shape</span><span class="p">[</span><span class="n">CHANNEL_AXIS</span><span class="p">],</span>
+                          <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                          <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="n">stride_width</span><span class="p">,</span> <span class="n">stride_height</span><span class="p">),</span>
+                          <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">,</span>
+                          <span class="n">kernel_initializer</span><span class="o">=</span><span class="s2">&quot;he_normal&quot;</span><span class="p">,</span>
+                          <span class="n">kernel_regularizer</span><span class="o">=</span><span class="n">l2</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">))(</span><span class="nb">input</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">add</span><span class="p">([</span><span class="n">shortcut</span><span class="p">,</span> <span class="n">residual</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">_residual_block</span><span class="p">(</span><span class="n">block_function</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">,</span> <span class="n">is_first_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builds a residual block with repeating bottleneck blocks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repetitions</span><span class="p">):</span>
+            <span class="n">init_strides</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_first_layer</span><span class="p">:</span>
+                <span class="n">init_strides</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="n">block_function</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">init_strides</span><span class="o">=</span><span class="n">init_strides</span><span class="p">,</span>
+                                   <span class="n">is_first_block_of_first_layer</span><span class="o">=</span><span class="p">(</span><span class="n">is_first_layer</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">input</span>
+
+    <span class="k">return</span> <span class="n">f</span>
+
+
+<div class="viewcode-block" id="basic_block"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.basic_block">[docs]</a><span class="k">def</span> <span class="nf">basic_block</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">init_strides</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">is_first_block_of_first_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Basic 3 X 3 convolution blocks for use on resnets with layers &lt;= 34.</span>
+<span class="sd">    Follows improved proposed scheme in http://arxiv.org/pdf/1603.05027v2.pdf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">is_first_block_of_first_layer</span><span class="p">:</span>
+            <span class="c1"># don&#39;t repeat bn-&gt;relu since we just did bn-&gt;relu-&gt;maxpool</span>
+            <span class="n">conv1</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                           <span class="n">strides</span><span class="o">=</span><span class="n">init_strides</span><span class="p">,</span>
+                           <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;same&quot;</span><span class="p">,</span>
+                           <span class="n">kernel_initializer</span><span class="o">=</span><span class="s2">&quot;he_normal&quot;</span><span class="p">,</span>
+                           <span class="n">kernel_regularizer</span><span class="o">=</span><span class="n">l2</span><span class="p">(</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">))(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">conv1</span> <span class="o">=</span> <span class="n">_bn_relu_conv</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                  <span class="n">strides</span><span class="o">=</span><span class="n">init_strides</span><span class="p">)(</span><span class="nb">input</span><span class="p">)</span>
+
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">_bn_relu_conv</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))(</span><span class="n">conv1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_shortcut</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="bottleneck"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.bottleneck">[docs]</a><span class="k">def</span> <span class="nf">bottleneck</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">init_strides</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">is_first_block_of_first_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Bottleneck architecture for &gt; 34 layer resnet.</span>
+<span class="sd">    Follows improved proposed scheme in http://arxiv.org/pdf/1603.05027v2.pdf</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A final conv layer of filters * 4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">is_first_block_of_first_layer</span><span class="p">:</span>
+            <span class="c1"># don&#39;t repeat bn-&gt;relu since we just did bn-&gt;relu-&gt;maxpool</span>
+            <span class="n">conv_1_1</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                              <span class="n">strides</span><span class="o">=</span><span class="n">init_strides</span><span class="p">,</span>
+                              <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;same&quot;</span><span class="p">,</span>
+                              <span class="n">kernel_initializer</span><span class="o">=</span><span class="s2">&quot;he_normal&quot;</span><span class="p">,</span>
+                              <span class="n">kernel_regularizer</span><span class="o">=</span><span class="n">l2</span><span class="p">(</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">))(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">conv_1_1</span> <span class="o">=</span> <span class="n">_bn_relu_conv</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                     <span class="n">strides</span><span class="o">=</span><span class="n">init_strides</span><span class="p">)(</span><span class="nb">input</span><span class="p">)</span>
+
+        <span class="n">conv_3_3</span> <span class="o">=</span> <span class="n">_bn_relu_conv</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))(</span><span class="n">conv_1_1</span><span class="p">)</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">_bn_relu_conv</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))(</span><span class="n">conv_3_3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_shortcut</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+<span class="k">def</span> <span class="nf">_handle_dim_ordering</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">ROW_AXIS</span>
+    <span class="k">global</span> <span class="n">COL_AXIS</span>
+    <span class="k">global</span> <span class="n">CHANNEL_AXIS</span>
+    <span class="k">if</span> <span class="n">K</span><span class="o">.</span><span class="n">image_dim_ordering</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tf&#39;</span><span class="p">:</span>
+        <span class="n">ROW_AXIS</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">COL_AXIS</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">CHANNEL_AXIS</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">CHANNEL_AXIS</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ROW_AXIS</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">COL_AXIS</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="k">def</span> <span class="nf">_get_block</span><span class="p">(</span><span class="n">identifier</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">identifier</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">identifier</span>
+
+
+<div class="viewcode-block" id="ResnetBuilder"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.ResnetBuilder">[docs]</a><span class="k">class</span> <span class="nc">ResnetBuilder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ResnetBuilder.build"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.ResnetBuilder.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">,</span> <span class="n">block_fn</span><span class="p">,</span> <span class="n">repetitions</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds a custom ResNet like architecture.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_shape: The input shape in the form (nb_channels, nb_rows, nb_cols)</span>
+<span class="sd">            num_outputs: The number of outputs at final softmax layer</span>
+<span class="sd">            block_fn: The block function to use. This is either `basic_block` or `bottleneck`.</span>
+<span class="sd">                The original paper used basic_block for layers &lt; 50</span>
+<span class="sd">            repetitions: Number of repetitions of various block units.</span>
+<span class="sd">                At each block unit, the number of filters are doubled and the input size is halved</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The keras `Model`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_handle_dim_ordering</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Input shape should be a tuple (nb_channels, nb_rows, nb_cols)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Permute dimension order if necessary</span>
+        <span class="k">if</span> <span class="n">K</span><span class="o">.</span><span class="n">image_dim_ordering</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tf&#39;</span><span class="p">:</span>
+            <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">input_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">input_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Load function from str if needed.</span>
+        <span class="n">block_fn</span> <span class="o">=</span> <span class="n">_get_block</span><span class="p">(</span><span class="n">block_fn</span><span class="p">)</span>
+
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">)</span>
+        <span class="n">conv1</span> <span class="o">=</span> <span class="n">_conv_bn_relu</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="n">pool1</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;same&quot;</span><span class="p">)(</span><span class="n">conv1</span><span class="p">)</span>
+
+        <span class="n">block</span> <span class="o">=</span> <span class="n">pool1</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="mi">64</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">repetitions</span><span class="p">):</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">_residual_block</span><span class="p">(</span><span class="n">block_fn</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">repetitions</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">is_first_layer</span><span class="o">=</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))(</span><span class="n">block</span><span class="p">)</span>
+            <span class="n">filters</span> <span class="o">*=</span> <span class="mi">2</span>
+
+        <span class="c1"># Last activation</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="n">_bn_relu</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+
+        <span class="c1"># Classifier block</span>
+        <span class="n">block_shape</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">int_shape</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="n">pool2</span> <span class="o">=</span> <span class="n">AveragePooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="n">block_shape</span><span class="p">[</span><span class="n">ROW_AXIS</span><span class="p">],</span> <span class="n">block_shape</span><span class="p">[</span><span class="n">COL_AXIS</span><span class="p">]),</span>
+                                 <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))(</span><span class="n">block</span><span class="p">)</span>
+        <span class="n">flatten1</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">pool2</span><span class="p">)</span>
+        <span class="n">dense</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">num_outputs</span><span class="p">,</span> <span class="n">kernel_initializer</span><span class="o">=</span><span class="s2">&quot;he_normal&quot;</span><span class="p">,</span>
+                      <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;softmax&quot;</span><span class="p">)(</span><span class="n">flatten1</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">dense</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ResnetBuilder.build_resnet_18"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_18">[docs]</a>    <span class="k">def</span> <span class="nf">build_resnet_18</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">,</span> <span class="n">basic_block</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ResnetBuilder.build_resnet_34"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_34">[docs]</a>    <span class="k">def</span> <span class="nf">build_resnet_34</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">,</span> <span class="n">basic_block</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ResnetBuilder.build_resnet_50"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_50">[docs]</a>    <span class="k">def</span> <span class="nf">build_resnet_50</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">,</span> <span class="n">bottleneck</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ResnetBuilder.build_resnet_101"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_101">[docs]</a>    <span class="k">def</span> <span class="nf">build_resnet_101</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">,</span> <span class="n">bottleneck</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ResnetBuilder.build_resnet_152"><a class="viewcode-back" href="../../../cluster.neuralnet.html#cluster.neuralnet.resnet.ResnetBuilder.build_resnet_152">[docs]</a>    <span class="k">def</span> <span class="nf">build_resnet_152</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResnetBuilder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">,</span> <span class="n">bottleneck</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

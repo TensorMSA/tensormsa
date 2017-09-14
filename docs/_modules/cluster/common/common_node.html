@@ -1,0 +1,946 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.common.common_node &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cluster.common.common_node</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">connection</span>
+<span class="kn">from</span> <span class="nn">common.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">master</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">konlpy.tag</span> <span class="k">import</span> <span class="n">Kkma</span>
+<span class="kn">from</span> <span class="nn">konlpy.tag</span> <span class="k">import</span> <span class="n">Mecab</span>
+<span class="kn">from</span> <span class="nn">konlpy.tag</span> <span class="k">import</span> <span class="n">Twitter</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">hanja</span> <span class="k">import</span> <span class="n">hangul</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<div class="viewcode-block" id="WorkFlowCommonNode"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode">[docs]</a><span class="k">class</span> <span class="nc">WorkFlowCommonNode</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        wdnn을 위한 load data를 위한 빈 메소드 생성</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_grp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_def</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net_id</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net_ver</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.run"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_data</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_set_progress_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_net_node_id"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_net_node_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_net_node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">node_id</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_net_node_id"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_net_node_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_net_node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_net_ver"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_net_ver">[docs]</a>    <span class="k">def</span> <span class="nf">set_net_ver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">net_ver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net_ver</span> <span class="o">=</span> <span class="n">net_ver</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_net_ver"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_net_ver">[docs]</a>    <span class="k">def</span> <span class="nf">get_net_ver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">net_ver</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_net_id"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_net_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_net_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">net_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net_id</span> <span class="o">=</span> <span class="n">net_id</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_net_id"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_net_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_net_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">net_id</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_search_flag"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_search_flag">[docs]</a>    <span class="k">def</span> <span class="nf">set_search_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_flag</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_search_flag"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_search_flag">[docs]</a>    <span class="k">def</span> <span class="nf">get_search_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for tree search</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_flag</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_next_node"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_next_node">[docs]</a>    <span class="k">def</span> <span class="nf">set_next_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">node_cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        next node class</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_cls</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.check_next"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.check_next">[docs]</a>    <span class="k">def</span> <span class="nf">check_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check if next nodes are all searched</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">get_search_flag</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.check_prev"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.check_prev">[docs]</a>    <span class="k">def</span> <span class="nf">check_prev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check if prev nodes are all searched</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">get_search_flag</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_next_node"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_next_node">[docs]</a>    <span class="k">def</span> <span class="nf">get_next_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        next node class</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">grp</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">grp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_grp</span><span class="p">())</span> <span class="ow">and</span>
+                    <span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_type</span><span class="p">())):</span>
+                <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">return_list</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_next_node_as_dict"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_next_node_as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_next_node_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        next node class</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_nodes</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_prev_node"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_prev_node">[docs]</a>    <span class="k">def</span> <span class="nf">set_prev_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">node_cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        prev_node class</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_cls</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_prev_node"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_prev_node">[docs]</a>    <span class="k">def</span> <span class="nf">get_prev_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        prev_node class</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">grp</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">grp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_grp</span><span class="p">())</span> <span class="ow">and</span>
+                    <span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_type</span><span class="p">())):</span>
+                <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">return_list</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_prev_node_as_dict"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_prev_node_as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_prev_node_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        prev_node class</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_nodes</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_node_name"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_node_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_name</span> <span class="o">=</span> <span class="n">node_name</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_node_name"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_node_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_name</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_node_def"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_node_def">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_def</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_def</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_node_def"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_node_def">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_def</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_def</span> <span class="o">=</span> <span class="n">name</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_node_grp"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_node_grp">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_grp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_grp</span> <span class="o">=</span> <span class="n">node_grp</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_node_grp"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_node_grp">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_grp</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.set_node_type"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.set_node_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">=</span> <span class="n">node_type</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_node_type"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_node_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        node name string</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_linked_next_node_with_grp"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_linked_next_node_with_grp">[docs]</a>    <span class="k">def</span> <span class="nf">get_linked_next_node_with_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get linked node forward with type</span>
+<span class="sd">        :param type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_obj_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="n">obj_next</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_next_node</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_next</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_next</span><span class="p">)):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">obj_next</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_grp</span><span class="p">()</span> <span class="o">==</span> <span class="n">grp</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">return_obj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_next</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span>  <span class="n">return_obj_list</span> <span class="o">+</span> <span class="n">obj_next</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_linked_next_node_with_grp</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_linked_prev_node_with_cond"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_cond">[docs]</a>    <span class="k">def</span> <span class="nf">get_linked_prev_node_with_cond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">cond</span><span class="o">=</span><span class="s1">&#39;has_value&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get linked node prev until find node which have specific parm</span>
+<span class="sd">        :param type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_obj_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="n">obj_prev</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_prev_node</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">)):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">return_obj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span>  <span class="n">return_obj_list</span> <span class="o">+</span> <span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_linked_prev_node_with_grp</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_linked_prev_node_with_grp"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_grp">[docs]</a>    <span class="k">def</span> <span class="nf">get_linked_prev_node_with_grp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get linked node prev with type</span>
+<span class="sd">        :param type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_obj_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="n">obj_prev</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_prev_node</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">)):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_grp</span><span class="p">()</span> <span class="o">==</span> <span class="n">grp</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">return_obj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span>  <span class="n">return_obj_list</span> <span class="o">+</span> <span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_linked_prev_node_with_grp</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_linked_prev_node_with_type"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_linked_prev_node_with_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_linked_prev_node_with_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get linked node forward with type</span>
+<span class="sd">        :param type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_obj_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="n">obj_prev</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_prev_node</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">)):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_type</span><span class="p">()</span> <span class="o">==</span> <span class="nb">type</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">return_obj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span>  <span class="n">return_obj_list</span> <span class="o">+</span> <span class="n">obj_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_linked_prev_node_with_type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_linked_next_node_with_type"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_linked_next_node_with_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_linked_next_node_with_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get linked node forward with type</span>
+<span class="sd">        bug fix prev node to next node</span>
+<span class="sd">        :param type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_obj_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="n">obj_next</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_next_node</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_next</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj_next</span><span class="p">)):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">obj_next</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_node_type</span><span class="p">()</span> <span class="o">==</span> <span class="nb">type</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">return_obj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_next</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span>  <span class="n">return_obj_list</span> <span class="o">+</span> <span class="n">obj_next</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_linked_next_node_with_type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.find_prev_node"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.find_prev_node">[docs]</a>    <span class="k">def</span> <span class="nf">find_prev_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        find prev node and return name</span>
+<span class="sd">        :param node_name:</span>
+<span class="sd">        :param node_list:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#TODO : will be deprecated</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_prev_node will be deprecated !! &quot;</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">node_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="n">node_list</span><span class="p">[</span><span class="n">node_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s1">&#39;no prev node available&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.find_next_node"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.find_next_node">[docs]</a>    <span class="k">def</span> <span class="nf">find_next_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        find next node and return name</span>
+<span class="sd">        :param node_name:</span>
+<span class="sd">        :param node_list:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO : will be deprecated</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_next_node will be deprecated !! &quot;</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">node_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_list</span><span class="p">))</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="n">node_list</span><span class="p">[</span><span class="n">node_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s1">&#39;no next node available&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_cluster_exec_class"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_cluster_exec_class">[docs]</a>    <span class="k">def</span> <span class="nf">get_cluster_exec_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get execute class path</span>
+<span class="sd">        :param node_id:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># make query string (use raw query only when cate is too complicated)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">query_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;SELECT wf_node_class_name, wf_node_class_path &quot;</span><span class="p">)</span>
+            <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;FROM  master_NN_WF_NODE_INFO ND JOIN master_WF_TASK_SUBMENU_RULE SB   &quot;</span><span class="p">)</span>
+            <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;      ON ND.wf_task_submenu_id_id =  SB.wf_task_submenu_id  &quot;</span><span class="p">)</span>
+            <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;WHERE ND.nn_wf_node_id = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># parm_list : set parm value as list</span>
+            <span class="n">parm_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">parm_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+                <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_list</span><span class="p">),</span> <span class="n">parm_list</span><span class="p">)</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">dictfetchall</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;wf_node_class_path&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;wf_node_class_name&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WorkFlowCommonNode.load_class"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.load_class">[docs]</a>    <span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_path</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return class with name</span>
+<span class="sd">        :param module_name:</span>
+<span class="sd">        :param class_name:</span>
+<span class="sd">        :return: Class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">class_path</span><span class="p">)</span>
+        <span class="n">LoadClass</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Execute Node Name : </span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LoadClass</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">LoadClass</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_node_relation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">wf_ver</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get node relations connected with selected node_id</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO : will be deprecated</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;_get_node_relation will be deprecated !! &quot;</span><span class="p">)</span>
+        <span class="n">return_obj</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">prev_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">prev_grp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">prev_type</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">next_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">next_grp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">next_type</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">query_set</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_RELATION</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">wf_state_id</span><span class="o">=</span><span class="n">nn_id</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">wf_ver</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">query_set</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">node_id</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">nn_wf_node_id_2</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">prev_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">nn_wf_node_id_1</span><span class="p">)</span>
+                <span class="n">submenu1</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">nn_wf_node_id_1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wf_task_submenu_id_id</span>
+                <span class="n">menu1</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">WF_TASK_SUBMENU_RULE</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">wf_task_submenu_id</span><span class="o">=</span><span class="n">submenu1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wf_task_menu_id_id</span>
+                <span class="n">prev_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">submenu1</span><span class="p">)</span>
+                <span class="n">prev_grp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">menu1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">node_id</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">nn_wf_node_id_1</span><span class="p">):</span>
+                <span class="n">next_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">nn_wf_node_id_2</span><span class="p">)</span>
+                <span class="n">submenu2</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">NN_WF_NODE_INFO</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nn_wf_node_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">nn_wf_node_id_2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wf_task_submenu_id_id</span>
+                <span class="n">menu2</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">WF_TASK_SUBMENU_RULE</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">wf_task_submenu_id</span><span class="o">=</span><span class="n">submenu2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wf_task_menu_id_id</span>
+                <span class="n">next_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">submenu2</span><span class="p">)</span>
+                <span class="n">next_grp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">menu2</span><span class="p">)</span>
+
+        <span class="n">return_obj</span><span class="p">[</span><span class="s1">&#39;prev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_arr</span>
+        <span class="n">return_obj</span><span class="p">[</span><span class="s1">&#39;prev_grp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_grp</span>
+        <span class="n">return_obj</span><span class="p">[</span><span class="s1">&#39;prev_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_type</span>
+        <span class="n">return_obj</span><span class="p">[</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_arr</span>
+        <span class="n">return_obj</span><span class="p">[</span><span class="s1">&#39;next_grp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_grp</span>
+        <span class="n">return_obj</span><span class="p">[</span><span class="s1">&#39;next_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_type</span>
+
+        <span class="k">return</span> <span class="n">return_obj</span>
+
+    <span class="k">def</span> <span class="nf">_get_forward_node_with_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get node relations connected with selected node_id</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO : will be deprecated</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;_get_forward_node_with_type will be deprecated !! &quot;</span><span class="p">)</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">node_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+            <span class="k">while</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+                <span class="c1"># make query string (use raw query only when cate is too complicated)</span>
+                <span class="n">query_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;SELECT NI.NN_WF_NODE_ID, SR.WF_TASK_MENU_ID_ID  &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;FROM MASTER_NN_WF_NODE_RELATION WR JOIN MASTER_NN_WF_NODE_INFO NI    &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     ON WR.NN_WF_NODE_ID_2 = NI.NN_WF_NODE_ID    &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     AND WR.NN_WF_NODE_ID_1 = </span><span class="si">%s</span><span class="s2">    &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     JOIN MASTER_WF_TASK_SUBMENU_RULE SR  &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     ON SR.WF_TASK_SUBMENU_ID = NI.WF_TASK_SUBMENU_ID_ID    &quot;</span><span class="p">)</span>
+
+                <span class="c1"># parm_list : set parm value as list</span>
+                <span class="n">parm_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">parm_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+                    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_list</span><span class="p">),</span> <span class="n">parm_list</span><span class="p">)</span>
+                    <span class="n">row</span> <span class="o">=</span> <span class="n">dictfetchall</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+                    <span class="k">del</span> <span class="n">node_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">))</span> <span class="p">:</span>
+                    <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;nn_wf_node_id&#39;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;wf_task_menu_id_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">type</span><span class="p">):</span>
+                        <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;nn_wf_node_id&#39;</span><span class="p">])</span>
+
+
+            <span class="k">return</span> <span class="n">return_list</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_backward_node_with_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get node relations connected with selected node_id</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO : will be deprecated</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;_get_backward_node_with_type will be deprecated !! &quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">return_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">node_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+            <span class="k">while</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">node_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="c1"># make query string (use raw query only when cate is too complicated)</span>
+                <span class="n">query_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;SELECT NI.NN_WF_NODE_ID, SR.WF_TASK_MENU_ID_ID  &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;FROM MASTER_NN_WF_NODE_RELATION WR JOIN MASTER_NN_WF_NODE_INFO NI    &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     ON WR.NN_WF_NODE_ID_1 = NI.NN_WF_NODE_ID    &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     AND WR.NN_WF_NODE_ID_2 = </span><span class="si">%s</span><span class="s2">    &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     JOIN MASTER_WF_TASK_SUBMENU_RULE SR  &quot;</span><span class="p">)</span>
+                <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     ON SR.WF_TASK_SUBMENU_ID = NI.WF_TASK_SUBMENU_ID_ID    &quot;</span><span class="p">)</span>
+
+                <span class="c1"># parm_list : set parm value as list</span>
+                <span class="n">parm_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">parm_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+                    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_list</span><span class="p">),</span> <span class="n">parm_list</span><span class="p">)</span>
+                    <span class="n">row</span> <span class="o">=</span> <span class="n">dictfetchall</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+                    <span class="k">del</span> <span class="n">node_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+                    <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;nn_wf_node_id&#39;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;wf_task_menu_id_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">type</span><span class="p">):</span>
+                        <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;nn_wf_node_id&#39;</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="n">return_list</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_mecab_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_arr</span><span class="p">,</span> <span class="n">tag_combine</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param h5file:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mecab</span> <span class="o">=</span> <span class="n">Mecab</span><span class="p">(</span><span class="s1">&#39;/usr/local/lib/mecab/dic/mecab-ko-dic&#39;</span><span class="p">)</span>
+        <span class="n">return_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">:</span>
+            <span class="n">return_arr</span> <span class="o">=</span> <span class="n">return_arr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flat</span><span class="p">(</span><span class="n">mecab</span><span class="o">.</span><span class="n">pos</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="n">tag_combine</span><span class="o">=</span><span class="n">tag_combine</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">return_arr</span>
+
+    <span class="k">def</span> <span class="nf">_kkma_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_arr</span><span class="p">,</span> <span class="n">tag_combine</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param h5file:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kkma</span> <span class="o">=</span> <span class="n">Kkma</span><span class="p">()</span>
+        <span class="n">return_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">:</span>
+            <span class="n">return_arr</span> <span class="o">=</span> <span class="n">return_arr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flat</span><span class="p">(</span><span class="n">kkma</span><span class="o">.</span><span class="n">pos</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="n">tag_combine</span><span class="o">=</span><span class="n">tag_combine</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">return_arr</span>
+
+    <span class="k">def</span> <span class="nf">_twitter_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_arr</span><span class="p">,</span> <span class="n">tag_combine</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param h5file:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">twitter</span> <span class="o">=</span> <span class="n">Twitter</span><span class="p">(</span><span class="n">jvmpath</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">return_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">str_arr</span><span class="p">:</span>
+            <span class="n">return_arr</span> <span class="o">=</span> <span class="n">return_arr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flat</span><span class="p">(</span><span class="n">twitter</span><span class="o">.</span><span class="n">pos</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="n">tag_combine</span><span class="o">=</span><span class="n">tag_combine</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">return_arr</span>
+
+    <span class="k">def</span> <span class="nf">_default_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_flat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tag_combine</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        flat corpus for gensim</span>
+<span class="sd">        :param pos:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">doc_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">line_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">pos</span> <span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">tag_combine</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">line_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">/</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">tag</span><span class="p">))</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">line_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+
+            <span class="c1">#Add POS Tagging for divide (kkma and twitter)</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">tag</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Punctuation&#39;</span><span class="p">,</span><span class="s1">&#39;SF&#39;</span><span class="p">])</span> <span class="p">:</span>
+                <span class="n">line_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;SF&#39;</span><span class="p">)</span>
+                <span class="n">doc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line_list</span><span class="p">)</span>
+                <span class="n">line_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">elif</span><span class="p">(</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="n">max_len</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">line_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;SF&#39;</span><span class="p">)</span>
+                <span class="n">doc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line_list</span><span class="p">)</span>
+                <span class="n">line_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">doc_list</span>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.encode_pad"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.encode_pad">[docs]</a>    <span class="k">def</span> <span class="nf">encode_pad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_list</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pad_char</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param pos:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">max_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">max_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sent_max_len</span>
+
+        <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">input_list</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">):</span>
+                <span class="n">output_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_len</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pad_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
+                <span class="n">output_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pad_char</span><span class="p">]</span> <span class="o">*</span> <span class="n">pad_len</span> <span class="o">+</span> <span class="nb">input</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_list</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.decode_pad"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.decode_pad">[docs]</a>    <span class="k">def</span> <span class="nf">decode_pad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_list</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pad_char</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="n">start_char</span> <span class="o">=</span> <span class="s1">&#39;@&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        [pad_char] * pad_len + input</span>
+<span class="sd">        :param pos:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">max_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">max_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sent_max_len</span>
+
+        <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">input_list</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">output_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">start_char</span><span class="p">]</span> <span class="o">+</span> <span class="nb">input</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_len</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pad_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_len</span> <span class="o">-</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">output_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">start_char</span><span class="p">]</span> <span class="o">+</span> <span class="nb">input</span> <span class="o">+</span> <span class="p">[</span><span class="n">pad_char</span><span class="p">]</span> <span class="o">*</span> <span class="n">pad_len</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_list</span></div>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.load_data"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">parm</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_find_netconf_node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_id</span><span class="p">,</span> <span class="n">wf_ver</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return node id of netconf</span>
+<span class="sd">        :param nn_id:</span>
+<span class="sd">        :param version:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># make query string (use raw query only when cate is too complicated)</span>
+        <span class="n">query_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;SELECT NI.NN_WF_NODE_ID  &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;FROM MASTER_NN_VER_WFLIST_INFO WV JOIN MASTER_NN_WF_STATE_INFO WS   &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     ON WV.NN_WF_VER_ID =  WS.NN_WF_VER_ID_ID    &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     AND WV.NN_ID_ID = WS.NN_ID    &quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wf_ver</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     AND WV.ACTIVE_FLAG = &#39;Y&#39;    &quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     AND WV.NN_WF_VER_ID = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">wf_ver</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;    &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     AND WV.NN_ID_ID = </span><span class="si">%s</span><span class="s2">    &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     JOIN MASTER_NN_WF_NODE_INFO NI    &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     ON WS.WF_STATE_ID = NI.WF_STATE_ID_ID    &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     JOIN MASTER_WF_TASK_SUBMENU_RULE SR  &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     ON SR.WF_TASK_SUBMENU_ID = NI.WF_TASK_SUBMENU_ID_ID    &quot;</span><span class="p">)</span>
+        <span class="n">query_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;     AND SR.WF_TASK_MENU_ID_ID = &#39;netconf&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># parm_list : set parm value as list</span>
+        <span class="n">parm_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">parm_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn_id</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_list</span><span class="p">),</span> <span class="n">parm_list</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">dictfetchall</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;nn_wf_node_id&#39;</span><span class="p">]</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;No Active version Exist for predict service !&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_word_embed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed_type</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">embeder_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">char_embed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        change word to vector</span>
+<span class="sd">        :param input_data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cls</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">embed_class</span> <span class="o">=</span> <span class="n">cls</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="n">embed_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">onehot_encoder</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">embeder_id</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">w2v_id</span> <span class="o">=</span> <span class="n">embeder_id</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="s1">&#39;word_embed_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">w2v_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word_embed_id</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">w2v_id</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">embed_type</span> <span class="o">==</span> <span class="s1">&#39;onehot&#39;</span> <span class="ow">and</span> <span class="n">char_embed</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">input_data</span><span class="p">:</span>
+                <span class="n">row_arr</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span> <span class="p">:</span>
+                    <span class="n">row_arr</span> <span class="o">=</span> <span class="n">row_arr</span> <span class="o">+</span> <span class="n">embed_class</span><span class="o">.</span><span class="n">get_vector</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">return_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_arr</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">return_arr</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">embed_type</span> <span class="o">==</span> <span class="s1">&#39;w2v&#39;</span> <span class="ow">and</span> <span class="n">char_embed</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">cluster.service.service_predict_w2v</span> <span class="k">import</span> <span class="n">PredictNetW2V</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">input_data</span><span class="p">:</span>
+                <span class="n">parm</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;val_1&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;val_2&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="n">parm</span><span class="p">[</span><span class="s1">&#39;val_1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="n">return_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PredictNetW2V</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">w2v_id</span><span class="p">,</span> <span class="n">parm</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">return_arr</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">embed_type</span> <span class="o">==</span> <span class="s1">&#39;onehot&#39;</span> <span class="ow">and</span> <span class="n">char_embed</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">encode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_word_embed_data</span><span class="p">(</span><span class="n">embed_type</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="n">cls</span><span class="p">)</span>
+            <span class="n">encode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">encode</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">])</span>
+            <span class="n">encode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concat_char_vector</span><span class="p">(</span><span class="n">encode</span><span class="p">,</span> <span class="n">input_data</span><span class="p">)</span>
+            <span class="n">encode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">encode</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">word_vector_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_channel</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">encode</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">embed_type</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="n">input_data</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;[Error] seq2seq train - word embeding : not defined type </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">embed_type</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_concat_char_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encode</span><span class="p">,</span> <span class="n">words</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        concat word embedding vecotr and char level embedding</span>
+<span class="sd">        :param encode : word vector list</span>
+<span class="sd">        :param words : word list</span>
+<span class="sd">        :return: concat vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_encode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vec_list</span><span class="p">,</span> <span class="n">word_list</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">encode</span><span class="p">)),</span> <span class="n">encode</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">vec</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vec_list</span><span class="p">)),</span> <span class="n">vec_list</span><span class="p">,</span> <span class="n">word_list</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">char_max_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_max_len</span> <span class="k">else</span> <span class="n">word</span>
+                <span class="n">pad_len</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">char_max_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
+                <span class="n">return_encode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">return_encode</span><span class="p">,</span>
+                                          <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">vec</span><span class="p">,</span>
+                                                          <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_onehot_vector</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">word</span><span class="p">)))</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_embed_size</span><span class="p">]),</span>
+                                                          <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">pad_len</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_embed_size</span><span class="p">])]))</span>
+        <span class="k">return</span> <span class="n">return_encode</span>
+
+
+    <span class="k">def</span> <span class="nf">_pos_tag_predict_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_input</span><span class="p">,</span> <span class="n">word_len</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_input:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">word_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mecab</span> <span class="o">=</span> <span class="n">Mecab</span><span class="p">(</span><span class="s1">&#39;/usr/local/lib/mecab/dic/mecab-ko-dic&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">word_tuple</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pad_predict_input</span><span class="p">(</span><span class="n">mecab</span><span class="o">.</span><span class="n">pos</span><span class="p">(</span><span class="n">x_input</span><span class="p">),</span> <span class="n">word_len</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">word_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">word_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">word_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">word_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">word_list</span>
+
+    <span class="k">def</span> <span class="nf">_pad_predict_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_tuple</span><span class="p">,</span> <span class="n">word_len</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        pad chars for prediction</span>
+<span class="sd">        :param input_tuple:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">pad_size</span> <span class="o">=</span> <span class="n">word_len</span> <span class="o">-</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">input_tuple</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">pad_size</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">:</span>
+                <span class="n">input_tuple</span> <span class="o">=</span> <span class="n">pad_size</span> <span class="o">*</span> <span class="p">[(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span> <span class="o">+</span> <span class="n">input_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span> <span class="n">word_len</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[(</span><span class="s1">&#39;SF&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">input_tuple</span> <span class="o">=</span> <span class="n">input_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span> <span class="n">word_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[(</span><span class="s1">&#39;SF&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">input_tuple</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_copy_node_parms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_node</span><span class="p">,</span> <span class="n">to_node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        copy node parm from a to b and save</span>
+<span class="sd">        :param from_node:</span>
+<span class="sd">        :param to_node:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span> <span class="p">:</span>
+            <span class="n">f_id</span> <span class="o">=</span> <span class="n">from_node</span><span class="o">.</span><span class="n">get_node_name</span><span class="p">()</span>
+            <span class="n">t_id</span> <span class="o">=</span> <span class="n">to_node</span><span class="o">.</span><span class="n">get_node_name</span><span class="p">()</span>
+            <span class="n">from_node_dict</span> <span class="o">=</span> <span class="n">from_node</span><span class="o">.</span><span class="n">_get_node_parm</span><span class="p">(</span><span class="n">f_id</span><span class="p">)</span>
+            <span class="n">to_node_dict</span> <span class="o">=</span> <span class="n">to_node</span><span class="o">.</span><span class="n">_get_node_parm</span><span class="p">(</span><span class="n">t_id</span><span class="p">)</span>
+            <span class="n">input_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">from_node_dict</span><span class="o">.</span><span class="n">get_view_obj</span><span class="p">(</span><span class="n">f_id</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">to_node_dict</span><span class="o">.</span><span class="n">get_view_obj</span><span class="p">(</span><span class="n">t_id</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="p">:</span>
+                    <span class="n">input_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_node_dict</span><span class="o">.</span><span class="n">get_view_obj</span><span class="p">(</span><span class="n">f_id</span><span class="p">)[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">to_node_dict</span><span class="o">.</span><span class="n">update_view_obj</span><span class="p">(</span><span class="n">t_id</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span> <span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">(</span><span class="s2">&quot;error on _copy_node_parms : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_node_parm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf_conf</span>
+
+    <span class="k">def</span> <span class="nf">_preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        preprocess with language model</span>
+<span class="sd">        :param input_data:</span>
+<span class="sd">        :returnen:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span> <span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_type</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;mecab&#39;</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mecab_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;mecab_simple&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mecab_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">tag_combine</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;kkma&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kkma_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;twitter&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_twitter_parse</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="n">input_data</span><span class="p">))</span>
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_onehot_vector"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_onehot_vector">[docs]</a>    <span class="k">def</span> <span class="nf">get_onehot_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert sentecne to vector</span>
+<span class="sd">        :return: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">return_vector</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">40</span><span class="p">])</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]</span>
+            <span class="n">num_reg</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[a-z0-9- ]&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">),</span> <span class="nb">type</span><span class="p">([])]):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;input must be str&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">([])):</span>
+                <span class="n">sent</span> <span class="o">=</span> <span class="n">sent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">:</span>
+                <span class="n">vector_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+                <span class="n">vector_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+                <span class="n">vector_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+                <span class="n">vector_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">num_reg</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hangul</span><span class="o">.</span><span class="n">is_hangul</span><span class="p">(</span><span class="n">char</span><span class="p">)):</span>
+                    <span class="n">anl</span> <span class="o">=</span> <span class="n">hangul</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                    <span class="n">vector_a</span><span class="p">[</span><span class="n">anl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">anl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">vector_b</span><span class="p">[</span><span class="n">anl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">anl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">vector_c</span><span class="p">[</span><span class="n">anl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">anl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">num_reg</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">char</span><span class="p">)):</span>
+                    <span class="n">vector_d</span><span class="p">[</span><span class="n">idx</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">char</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="n">vector_d</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">return_vector</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vector_a</span><span class="p">,</span> <span class="p">[</span><span class="n">vector_b</span><span class="p">,</span> <span class="n">vector_c</span><span class="p">,</span> <span class="n">vector_d</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">return_vector</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error on get_onehot_vector : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="WorkFlowCommonNode.get_onehot_word"><a class="viewcode-back" href="../../../cluster.common.html#cluster.common.common_node.WorkFlowCommonNode.get_onehot_word">[docs]</a>    <span class="k">def</span> <span class="nf">get_onehot_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert sentecne to vector</span>
+<span class="sd">        :return: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span>
+               <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]</span>
+        <span class="n">return_vector</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vec_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">vec_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">160</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;input size error&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="n">vec_list</span><span class="p">:</span>
+            <span class="n">anl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">anl</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">return_vector</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">anl</span><span class="p">)</span> <span class="o">-</span> <span class="mi">120</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_vector</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hangul</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">anl</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                                                  <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">anl</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                                                  <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">anl</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+        <span class="k">return</span> <span class="n">return_vector</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.workflow.data.workflow_data &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for master.workflow.data.workflow_data</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">master.workflow.common.workflow_common</span> <span class="k">import</span> <span class="n">WorkFlowCommon</span>
+
+<div class="viewcode-block" id="WorkFlowData"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData">[docs]</a><span class="k">class</span> <span class="nc">WorkFlowData</span><span class="p">(</span><span class="n">WorkFlowCommon</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="WorkFlowData.get_node_status"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.get_node_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return node status info (nn_id, nn_ver, node_type, node_prg, etc)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.get_preview_data"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.get_preview_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_preview_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        extract data from target server</span>
+<span class="sd">        1. connect datastore (use common data manager)</span>
+<span class="sd">        2. return limited number of data from source</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.set_preview_data"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.set_preview_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_preview_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        extract data from target server</span>
+<span class="sd">        1. connect datastore (use common data manager)</span>
+<span class="sd">        2. return limited number of data from source</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.get_step_source"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.get_step_source">[docs]</a>    <span class="k">def</span> <span class="nf">get_step_source</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        getter for source step</span>
+<span class="sd">        :return:obj(json) to make view</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.put_step_source"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.put_step_source">[docs]</a>    <span class="k">def</span> <span class="nf">put_step_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        putter for source step</span>
+<span class="sd">        :param obj: config data from view</span>
+<span class="sd">        :return:boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.check_step_source"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.check_step_source">[docs]</a>    <span class="k">def</span> <span class="nf">check_step_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check step_source process fit to requirement</span>
+<span class="sd">        :param obj: config data from view</span>
+<span class="sd">        :return:boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.get_step_preprocess"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.get_step_preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">get_step_preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        getter for preprocess</span>
+<span class="sd">        :return:obj(json) to make view</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.check_step_preprocess"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.check_step_preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">check_step_preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check step_source process fit to requirement</span>
+<span class="sd">        :param obj: config data from view</span>
+<span class="sd">        :return:boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.put_step_preprocess"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.put_step_preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">put_step_preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        putter for preprocess</span>
+<span class="sd">        :param obj: config data from view</span>
+<span class="sd">        :return:boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.get_step_store"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.get_step_store">[docs]</a>    <span class="k">def</span> <span class="nf">get_step_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        getter for store</span>
+<span class="sd">        :return:obj(json) to make view</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.check_step_store"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.check_step_store">[docs]</a>    <span class="k">def</span> <span class="nf">check_step_store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check step_source process fit to requirement</span>
+<span class="sd">        :param obj: config data from view</span>
+<span class="sd">        :return:boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WorkFlowData.put_step_store"><a class="viewcode-back" href="../../../../master.workflow.data.html#master.workflow.data.workflow_data.WorkFlowData.put_step_store">[docs]</a>    <span class="k">def</span> <span class="nf">put_step_store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        putter for store</span>
+<span class="sd">        :param obj: config data from view</span>
+<span class="sd">        :return:boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

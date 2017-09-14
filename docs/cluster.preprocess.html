@@ -1,0 +1,817 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cluster.preprocess package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cluster-preprocess-package">
+<h1>cluster.preprocess package<a class="headerlink" href="#cluster-preprocess-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node">
+<span id="cluster-preprocess-pre-node-module"></span><h2>cluster.preprocess.pre_node module<a class="headerlink" href="#module-cluster.preprocess.pre_node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node.PreProcessNode">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node.</code><code class="descname">PreProcessNode</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node.html#PreProcessNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node.PreProcessNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cluster.common.html#cluster.common.common_node.WorkFlowCommonNode" title="cluster.common.common_node.WorkFlowCommonNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.common.common_node.WorkFlowCommonNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node.PreProcessNode.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node.html#PreProcessNode.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node.PreProcessNode.load_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node.PreProcessNode.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node.html#PreProcessNode.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node.PreProcessNode.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed">
+<span id="cluster-preprocess-pre-node-feed-module"></span><h2>cluster.preprocess.pre_node_feed module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed.PreNodeFeed">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed.</code><code class="descname">PreNodeFeed</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed.html#PreNodeFeed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node.PreProcessNode" title="cluster.preprocess.pre_node.PreProcessNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node.PreProcessNode</span></code></a></p>
+<p>Error check rule add : Dataconf Add</p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed.PreNodeFeed.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed.html#PreNodeFeed.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed.PreNodeFeed.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed.PreNodeFeed.file_size">
+<code class="descname">file_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed.html#PreNodeFeed.file_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed.PreNodeFeed.file_size" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed.PreNodeFeed.has_next">
+<code class="descname">has_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed.html#PreNodeFeed.has_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed.PreNodeFeed.has_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if hdf5 file pointer has next
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed.PreNodeFeed.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed.html#PreNodeFeed.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed.PreNodeFeed.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>move pointer +1
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed.PreNodeFeed.reset_pointer">
+<code class="descname">reset_pointer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed.html#PreNodeFeed.reset_pointer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed.PreNodeFeed.reset_pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if hdf5 file pointer has next
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed.PreNodeFeed.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed.html#PreNodeFeed.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed.PreNodeFeed.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_fr2attn">
+<span id="cluster-preprocess-pre-node-feed-fr2attn-module"></span><h2>cluster.preprocess.pre_node_feed_fr2attn module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_fr2attn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_fr2attn.</code><code class="descname">PreNodeFeedFr2Attn</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2attn.html#PreNodeFeedFr2Attn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2attn.html#PreNodeFeedFr2Attn.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn.data_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data array size of this calss
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn.has_next">
+<code class="descname">has_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2attn.html#PreNodeFeedFr2Attn.has_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn.has_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if hdf5 file pointer has next
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2attn.html#PreNodeFeedFr2Attn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2attn.PreNodeFeedFr2Attn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_fr2auto">
+<span id="cluster-preprocess-pre-node-feed-fr2auto-module"></span><h2>cluster.preprocess.pre_node_feed_fr2auto module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_fr2auto" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_fr2auto.</code><code class="descname">PreNodeFeedFr2Auto</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2auto.html#PreNodeFeedFr2Auto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2auto.html#PreNodeFeedFr2Auto.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto.data_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data array size of this calss
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto.has_next">
+<code class="descname">has_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2auto.html#PreNodeFeedFr2Auto.has_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto.has_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if hdf5 file pointer has next
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2auto.html#PreNodeFeedFr2Auto.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2auto.PreNodeFeedFr2Auto.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_fr2cnn">
+<span id="cluster-preprocess-pre-node-feed-fr2cnn-module"></span><h2>cluster.preprocess.pre_node_feed_fr2cnn module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_fr2cnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_fr2cnn.PreNodeFeedFr2Cnn">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_fr2cnn.</code><code class="descname">PreNodeFeedFr2Cnn</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2cnn.html#PreNodeFeedFr2Cnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2cnn.PreNodeFeedFr2Cnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2cnn.PreNodeFeedFr2Cnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2cnn.html#PreNodeFeedFr2Cnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2cnn.PreNodeFeedFr2Cnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_fr2seq">
+<span id="cluster-preprocess-pre-node-feed-fr2seq-module"></span><h2>cluster.preprocess.pre_node_feed_fr2seq module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_fr2seq" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_fr2seq.PreNodeFeedFr2Seq">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_fr2seq.</code><code class="descname">PreNodeFeedFr2Seq</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2seq.html#PreNodeFeedFr2Seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2seq.PreNodeFeedFr2Seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2seq.PreNodeFeedFr2Seq.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2seq.html#PreNodeFeedFr2Seq.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2seq.PreNodeFeedFr2Seq.data_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data array size of this calss
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2seq.PreNodeFeedFr2Seq.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2seq.html#PreNodeFeedFr2Seq.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2seq.PreNodeFeedFr2Seq.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_fr2wcnn">
+<span id="cluster-preprocess-pre-node-feed-fr2wcnn-module"></span><h2>cluster.preprocess.pre_node_feed_fr2wcnn module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_fr2wcnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_fr2wcnn.</code><code class="descname">PreNodeFeedFr2Wcnn</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wcnn.html#PreNodeFeedFr2Wcnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wcnn.html#PreNodeFeedFr2Wcnn.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.data_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data array size of this calss
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.has_next">
+<code class="descname">has_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wcnn.html#PreNodeFeedFr2Wcnn.has_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.has_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if hdf5 file pointer has next
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wcnn.html#PreNodeFeedFr2Wcnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wcnn.PreNodeFeedFr2Wcnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_fr2wdnn">
+<span id="cluster-preprocess-pre-node-feed-fr2wdnn-module"></span><h2>cluster.preprocess.pre_node_feed_fr2wdnn module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_fr2wdnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_fr2wdnn.</code><code class="descname">PreNodeFeedFr2Wdnn</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.add_none_keys_cate_conti_list">
+<code class="descname">add_none_keys_cate_conti_list</code><span class="sig-paren">(</span><em>conti_list</em>, <em>cate_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.add_none_keys_cate_conti_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.add_none_keys_cate_conti_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.create_feature_columns">
+<code class="descname">create_feature_columns</code><span class="sig-paren">(</span><em>dataconf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.create_feature_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.create_feature_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get feature columns for tfrecord reader
+TFRecord에서 feature를 추출</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.input_fn">
+<code class="descname">input_fn</code><span class="sig-paren">(</span><em>mode</em>, <em>data_file</em>, <em>batch_size</em>, <em>dataconf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.input_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.input_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.input_fn2">
+<code class="descname">input_fn2</code><span class="sig-paren">(</span><em>mode</em>, <em>data_file</em>, <em>df</em>, <em>dataconf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.input_fn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.input_fn2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wide &amp; Deep Network input tensor maker
+V1.0    16.11.04    Initial</p>
+<blockquote>
+<div>:param df : dataframe from hbase
+:param df, nnid
+:return: tensor sparse, constraint</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.make_continuous_category_list">
+<code class="descname">make_continuous_category_list</code><span class="sig-paren">(</span><em>cell_feature</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.make_continuous_category_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.make_continuous_category_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.multi_queue_and_h5_print">
+<code class="descname">multi_queue_and_h5_print</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.multi_queue_and_h5_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.multi_queue_and_h5_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.set_for_predict">
+<code class="descname">set_for_predict</code><span class="sig-paren">(</span><em>nnid=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wdnn.html#PreNodeFeedFr2Wdnn.set_for_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wdnn.PreNodeFeedFr2Wdnn.set_for_predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_fr2wv">
+<span id="cluster-preprocess-pre-node-feed-fr2wv-module"></span><h2>cluster.preprocess.pre_node_feed_fr2wv module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_fr2wv" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_fr2wv.PreNodeFeedFr2Wv">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_fr2wv.</code><code class="descname">PreNodeFeedFr2Wv</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wv.html#PreNodeFeedFr2Wv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wv.PreNodeFeedFr2Wv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wv.PreNodeFeedFr2Wv.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wv.html#PreNodeFeedFr2Wv.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wv.PreNodeFeedFr2Wv.data_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data array size of this calss
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_fr2wv.PreNodeFeedFr2Wv.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_fr2wv.html#PreNodeFeedFr2Wv.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_fr2wv.PreNodeFeedFr2Wv.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_img2auto">
+<span id="cluster-preprocess-pre-node-feed-img2auto-module"></span><h2>cluster.preprocess.pre_node_feed_img2auto module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_img2auto" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_img2auto.PreNodeFeedImg2Auto">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_img2auto.</code><code class="descname">PreNodeFeedImg2Auto</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2auto.html#PreNodeFeedImg2Auto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2auto.PreNodeFeedImg2Auto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_img2auto.PreNodeFeedImg2Auto.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2auto.html#PreNodeFeedImg2Auto.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2auto.PreNodeFeedImg2Auto.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_img2auto.PreNodeFeedImg2Auto.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2auto.html#PreNodeFeedImg2Auto.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2auto.PreNodeFeedImg2Auto.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_img2cnn">
+<span id="cluster-preprocess-pre-node-feed-img2cnn-module"></span><h2>cluster.preprocess.pre_node_feed_img2cnn module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_img2cnn" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_img2cnn.PreNodeFeedImg2Cnn">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_img2cnn.</code><code class="descname">PreNodeFeedImg2Cnn</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2cnn.html#PreNodeFeedImg2Cnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2cnn.PreNodeFeedImg2Cnn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_img2cnn.PreNodeFeedImg2Cnn.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2cnn.html#PreNodeFeedImg2Cnn.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2cnn.PreNodeFeedImg2Cnn.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_img2cnn.PreNodeFeedImg2Cnn.size">
+<code class="descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2cnn.html#PreNodeFeedImg2Cnn.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2cnn.PreNodeFeedImg2Cnn.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_img2renet">
+<span id="cluster-preprocess-pre-node-feed-img2renet-module"></span><h2>cluster.preprocess.pre_node_feed_img2renet module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_img2renet" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_img2renet.PreNodeFeedImg2Renet">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_img2renet.</code><code class="descname">PreNodeFeedImg2Renet</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2renet.html#PreNodeFeedImg2Renet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2renet.PreNodeFeedImg2Renet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_img2renet.PreNodeFeedImg2Renet.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2renet.html#PreNodeFeedImg2Renet.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2renet.PreNodeFeedImg2Renet.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_img2renet.PreNodeFeedImg2Renet.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_img2renet.html#PreNodeFeedImg2Renet.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_img2renet.PreNodeFeedImg2Renet.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_iob2bilstmcrf">
+<span id="cluster-preprocess-pre-node-feed-iob2bilstmcrf-module"></span><h2>cluster.preprocess.pre_node_feed_iob2bilstmcrf module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_iob2bilstmcrf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_iob2bilstmcrf.PreNodeFeedIob2BiLstmCrf">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_iob2bilstmcrf.</code><code class="descname">PreNodeFeedIob2BiLstmCrf</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_iob2bilstmcrf.html#PreNodeFeedIob2BiLstmCrf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_iob2bilstmcrf.PreNodeFeedIob2BiLstmCrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_iob2bilstmcrf.PreNodeFeedIob2BiLstmCrf.get_file_name">
+<code class="descname">get_file_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_iob2bilstmcrf.html#PreNodeFeedIob2BiLstmCrf.get_file_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_iob2bilstmcrf.PreNodeFeedIob2BiLstmCrf.get_file_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get file name of current file pointer
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_iob2bilstmcrf.PreNodeFeedIob2BiLstmCrf.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_iob2bilstmcrf.html#PreNodeFeedIob2BiLstmCrf.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_iob2bilstmcrf.PreNodeFeedIob2BiLstmCrf.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_keras2frame">
+<span id="cluster-preprocess-pre-node-feed-keras2frame-module"></span><h2>cluster.preprocess.pre_node_feed_keras2frame module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_keras2frame" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_keras2frame.</code><code class="descname">PreNodeFeedKerasFrame</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<p>pre_feed_keras2frame</p>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder">
+<em class="property">class </em><code class="descname">LabelEncoder</code><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Encode labels with value between 0 and n_classes-1.</p>
+<p>Read more in the <span class="xref std std-ref">User Guide</span>.</p>
+<dl class="docutils">
+<dt><a href="#id1"><span class="problematic" id="id2">classes_</span></a></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">array of shape (n_class,)</span><dd>Holds the label for each class.</dd>
+</dl>
+<p><cite>LabelEncoder</cite> can be used to normalize labels.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">preprocessing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">le</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">le</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="go">LabelEncoder()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">le</span><span class="o">.</span><span class="n">classes_</span>
+<span class="go">array([1, 2, 6])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span> 
+<span class="go">array([0, 0, 1, 2]...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">le</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">array([1, 1, 2, 6])</span>
+</pre></div>
+</div>
+<p>It can also be used to transform non-numerical labels (as long as they are
+hashable and comparable) to numerical labels.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">le</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">le</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s2">&quot;paris&quot;</span><span class="p">,</span> <span class="s2">&quot;paris&quot;</span><span class="p">,</span> <span class="s2">&quot;tokyo&quot;</span><span class="p">,</span> <span class="s2">&quot;amsterdam&quot;</span><span class="p">])</span>
+<span class="go">LabelEncoder()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">le</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
+<span class="go">[&#39;amsterdam&#39;, &#39;paris&#39;, &#39;tokyo&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="s2">&quot;tokyo&quot;</span><span class="p">,</span> <span class="s2">&quot;tokyo&quot;</span><span class="p">,</span> <span class="s2">&quot;paris&quot;</span><span class="p">])</span> 
+<span class="go">array([2, 2, 1]...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">le</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="go">[&#39;tokyo&#39;, &#39;tokyo&#39;, &#39;paris&#39;]</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>sklearn.preprocessing.OneHotEncoder</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">encode categorical integer features</span><dd>using a one-hot aka one-of-K scheme.</dd>
+</dl>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit label encoder</p>
+<dl class="docutils">
+<dt>y</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">array-like of shape (n_samples,)</span><dd>Target values.</dd>
+</dl>
+<p>self : returns an instance of self.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.fit_transform">
+<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit label encoder and return encoded labels</p>
+<dl class="docutils">
+<dt>y</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">array-like of shape [n_samples]</span><dd>Target values.</dd>
+</dl>
+<p>y : array-like of shape [n_samples]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.inverse_transform">
+<code class="descname">inverse_transform</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.inverse_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform labels back to original encoding.</p>
+<dl class="docutils">
+<dt>y</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">numpy array of shape [n_samples]</span><dd>Target values.</dd>
+</dl>
+<p>y : numpy array of shape [n_samples]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.LabelEncoder.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform labels to normalized encoding.</p>
+<dl class="docutils">
+<dt>y</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">array-like of shape [n_samples]</span><dd>Target values.</dd>
+</dl>
+<p>y : array-like of shape [n_samples]</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.add_none_keys_cate_conti_list">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">add_none_keys_cate_conti_list</code><span class="sig-paren">(</span><em>conti_list</em>, <em>cate_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.add_none_keys_cate_conti_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.add_none_keys_cate_conti_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.create_feature_columns">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">create_feature_columns</code><span class="sig-paren">(</span><em>dataconf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.create_feature_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.create_feature_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get feature columns for tfrecord reader
+TFRecord에서 feature를 추출</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.data_size">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.dummyEncode">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">dummyEncode</code><span class="sig-paren">(</span><em>CATEGORICAL_COLUMNS</em>, <em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.dummyEncode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.dummyEncode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.input_fn">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">input_fn</code><span class="sig-paren">(</span><em>mode</em>, <em>data_file</em>, <em>batch_size</em>, <em>dataconf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.input_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.input_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.input_fn2">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">input_fn2</code><span class="sig-paren">(</span><em>mode</em>, <em>data_file</em>, <em>df</em>, <em>dataconf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.input_fn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.input_fn2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wide &amp; Deep Network input tensor maker
+V1.0    16.11.04    Initial</p>
+<blockquote>
+<div>:param df : dataframe from hbase
+:param df, nnid
+:return: tensor sparse, constraint</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.input_fn3">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">input_fn3</code><span class="sig-paren">(</span><em>data_file</em>, <em>df</em>, <em>dataconf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.input_fn3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.input_fn3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wide &amp; Deep Network input tensor maker
+V1.0    16.11.04    Initial</p>
+<blockquote>
+<div>:param df : dataframe from hbase
+:param df, nnid
+:return: tensor sparse, constraint</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.make_continuous_category_list">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">make_continuous_category_list</code><span class="sig-paren">(</span><em>cell_feature</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.make_continuous_category_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.make_continuous_category_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 을 위한  Continuous 랑 Categorical을 구분하기 위한 list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.multi_queue_and_h5_print">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">multi_queue_and_h5_print</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.multi_queue_and_h5_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.multi_queue_and_h5_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.run">
+<code class="descclassname">PreNodeFeedKerasFrame.</code><code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_keras2frame.html#PreNodeFeedKerasFrame.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_keras2frame.PreNodeFeedKerasFrame.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_text2dv">
+<span id="cluster-preprocess-pre-node-feed-text2dv-module"></span><h2>cluster.preprocess.pre_node_feed_text2dv module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_text2dv" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_text2dv.</code><code class="descname">PreNodeFeedText2Dv</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2dv.html#PreNodeFeedText2Dv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2dv.html#PreNodeFeedText2Dv.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2dv.html#PreNodeFeedText2Dv.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv.train_file_path">
+<code class="descname">train_file_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2dv.html#PreNodeFeedText2Dv.train_file_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2dv.PreNodeFeedText2Dv.train_file_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_text2fasttext">
+<span id="cluster-preprocess-pre-node-feed-text2fasttext-module"></span><h2>cluster.preprocess.pre_node_feed_text2fasttext module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_text2fasttext" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_text2fasttext.PreNodeFeedText2FastText">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_text2fasttext.</code><code class="descname">PreNodeFeedText2FastText</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2fasttext.html#PreNodeFeedText2FastText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2fasttext.PreNodeFeedText2FastText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2fasttext.PreNodeFeedText2FastText.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2fasttext.html#PreNodeFeedText2FastText.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2fasttext.PreNodeFeedText2FastText.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2fasttext.PreNodeFeedText2FastText.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2fasttext.html#PreNodeFeedText2FastText.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2fasttext.PreNodeFeedText2FastText.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_text2seq">
+<span id="cluster-preprocess-pre-node-feed-text2seq-module"></span><h2>cluster.preprocess.pre_node_feed_text2seq module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_text2seq" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_text2seq.</code><code class="descname">PreNodeFeedText2Seq</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2seq.html#PreNodeFeedText2Seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2seq.html#PreNodeFeedText2Seq.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.has_next">
+<code class="descname">has_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2seq.html#PreNodeFeedText2Seq.has_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.has_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if hdf5 file pointer has next
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.len">
+<code class="descname">len</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2seq.html#PreNodeFeedText2Seq.len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.len" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2seq.html#PreNodeFeedText2Seq.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>move pointer +1
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2seq.html#PreNodeFeedText2Seq.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2seq.PreNodeFeedText2Seq.run" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>conf_data</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_feed_text2wv">
+<span id="cluster-preprocess-pre-node-feed-text2wv-module"></span><h2>cluster.preprocess.pre_node_feed_text2wv module<a class="headerlink" href="#module-cluster.preprocess.pre_node_feed_text2wv" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_feed_text2wv.PreNodeFeedText2Wv">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_feed_text2wv.</code><code class="descname">PreNodeFeedText2Wv</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2wv.html#PreNodeFeedText2Wv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2wv.PreNodeFeedText2Wv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node_feed.PreNodeFeed" title="cluster.preprocess.pre_node_feed.PreNodeFeed"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node_feed.PreNodeFeed</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2wv.PreNodeFeedText2Wv.data_size">
+<code class="descname">data_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2wv.html#PreNodeFeedText2Wv.data_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2wv.PreNodeFeedText2Wv.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_feed_text2wv.PreNodeFeedText2Wv.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_feed_text2wv.html#PreNodeFeedText2Wv.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_feed_text2wv.PreNodeFeedText2Wv.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>override init class</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_merge_text2seq">
+<span id="cluster-preprocess-pre-node-merge-text2seq-module"></span><h2>cluster.preprocess.pre_node_merge_text2seq module<a class="headerlink" href="#module-cluster.preprocess.pre_node_merge_text2seq" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_merge_text2seq.PreNodeMergeText2Seq">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_merge_text2seq.</code><code class="descname">PreNodeMergeText2Seq</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_merge_text2seq.html#PreNodeMergeText2Seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_merge_text2seq.PreNodeMergeText2Seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node.PreProcessNode" title="cluster.preprocess.pre_node.PreProcessNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node.PreProcessNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_merge_text2seq.PreNodeMergeText2Seq.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>node_id</em>, <em>parm='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_merge_text2seq.html#PreNodeMergeText2Seq.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_merge_text2seq.PreNodeMergeText2Seq.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>load train data
+:param node_id:
+:param parm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_merge_text2seq.PreNodeMergeText2Seq.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_merge_text2seq.html#PreNodeMergeText2Seq.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_merge_text2seq.PreNodeMergeText2Seq.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess.pre_node_prenet">
+<span id="cluster-preprocess-pre-node-prenet-module"></span><h2>cluster.preprocess.pre_node_prenet module<a class="headerlink" href="#module-cluster.preprocess.pre_node_prenet" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cluster.preprocess.pre_node_prenet.PreProcessNodePreNet">
+<em class="property">class </em><code class="descclassname">cluster.preprocess.pre_node_prenet.</code><code class="descname">PreProcessNodePreNet</code><a class="reference internal" href="_modules/cluster/preprocess/pre_node_prenet.html#PreProcessNodePreNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_prenet.PreProcessNodePreNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cluster.preprocess.pre_node.PreProcessNode" title="cluster.preprocess.pre_node.PreProcessNode"><code class="xref py py-class docutils literal"><span class="pre">cluster.preprocess.pre_node.PreProcessNode</span></code></a></p>
+<dl class="method">
+<dt id="cluster.preprocess.pre_node_prenet.PreProcessNodePreNet.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>conf_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cluster/preprocess/pre_node_prenet.html#PreProcessNodePreNet.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cluster.preprocess.pre_node_prenet.PreProcessNodePreNet.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cluster.preprocess">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cluster.preprocess" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cluster.preprocess package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node">cluster.preprocess.pre_node module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed">cluster.preprocess.pre_node_feed module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_fr2attn">cluster.preprocess.pre_node_feed_fr2attn module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_fr2auto">cluster.preprocess.pre_node_feed_fr2auto module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_fr2cnn">cluster.preprocess.pre_node_feed_fr2cnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_fr2seq">cluster.preprocess.pre_node_feed_fr2seq module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_fr2wcnn">cluster.preprocess.pre_node_feed_fr2wcnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_fr2wdnn">cluster.preprocess.pre_node_feed_fr2wdnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_fr2wv">cluster.preprocess.pre_node_feed_fr2wv module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_img2auto">cluster.preprocess.pre_node_feed_img2auto module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_img2cnn">cluster.preprocess.pre_node_feed_img2cnn module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_img2renet">cluster.preprocess.pre_node_feed_img2renet module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_iob2bilstmcrf">cluster.preprocess.pre_node_feed_iob2bilstmcrf module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_keras2frame">cluster.preprocess.pre_node_feed_keras2frame module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_text2dv">cluster.preprocess.pre_node_feed_text2dv module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_text2fasttext">cluster.preprocess.pre_node_feed_text2fasttext module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_text2seq">cluster.preprocess.pre_node_feed_text2seq module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_feed_text2wv">cluster.preprocess.pre_node_feed_text2wv module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_merge_text2seq">cluster.preprocess.pre_node_merge_text2seq module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess.pre_node_prenet">cluster.preprocess.pre_node_prenet module</a></li>
+<li><a class="reference internal" href="#module-cluster.preprocess">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cluster.preprocess.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/cluster.preprocess.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.workflow.netconf.workflow_netconf_bilstmcrf &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for master.workflow.netconf.workflow_netconf_bilstmcrf</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">master.workflow.netconf.workflow_netconf</span> <span class="k">import</span> <span class="n">WorkFlowNetConf</span>
+<span class="kn">from</span> <span class="nn">master</span> <span class="k">import</span> <span class="n">models</span>
+
+<div class="viewcode-block" id="WorkFlowNetConfBiLstmCrf"><a class="viewcode-back" href="../../../../master.workflow.netconf.html#master.workflow.netconf.workflow_netconf_bilstmcrf.WorkFlowNetConfBiLstmCrf">[docs]</a><span class="k">class</span> <span class="nc">WorkFlowNetConfBiLstmCrf</span><span class="p">(</span><span class="n">WorkFlowNetConf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        init key variable</span>
+<span class="sd">        :param key:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_view_obj</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_key_parms</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_prhb_parms</span><span class="p">([])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">get_model_store_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        getter for preprocess</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;model_path&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">crf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        if sentence max lenghth is one you cannot usr crf layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;crf&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        if char embedding, training is 3.5x slower</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chars&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        dimension size of word vector (must be equal to word embedding models vecotr size)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dim&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">300</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dim_char</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        if you use default vector it&#39;s ok to use default value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dim_char&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">160</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set maximum iteration size (None : no limit)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_iter&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lowercase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        lowercase preprocess only needed for english</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lowercase&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">train_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        choose to chagne word embedding vector or not (recommend False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;train_embeddings&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nepochs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        iteration time of train</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nepochs&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">p_dropout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        drop rate on train process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;p_dropout&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        batch size on train</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">50</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">p_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        learning rate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;p_lr&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">0.001</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lr_decay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        hyper parms on learning rate which chage learning rate on the middle of traing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lr_decay&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">0.9</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nepoch_no_imprv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        early stop cehck rule (if there is no improvement on given amount of time, train will be stopeed)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nepoch_no_imprv&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hidden_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        rnn cell size for word</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hidden_size&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">300</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">char_hidden_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        rnn cell size for char</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;char_hidden_size&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">return_val</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_val</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

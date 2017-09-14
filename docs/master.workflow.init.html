@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>master.workflow.init package &#8212; tensormsa 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="tensormsa 1.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="master-workflow-init-package">
+<h1>master.workflow.init package<a class="headerlink" href="#master-workflow-init-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-master.workflow.init.workflow_init_easy">
+<span id="master-workflow-init-workflow-init-easy-module"></span><h2>master.workflow.init.workflow_init_easy module<a class="headerlink" href="#module-master.workflow.init.workflow_init_easy" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.init.workflow_init_easy.WorkFlowEasyRuleManager">
+<em class="property">class </em><code class="descclassname">master.workflow.init.workflow_init_easy.</code><code class="descname">WorkFlowEasyRuleManager</code><a class="reference internal" href="_modules/master/workflow/init/workflow_init_easy.html#WorkFlowEasyRuleManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_easy.WorkFlowEasyRuleManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<ol class="arabic simple" start="2">
+<li>Related Tables : NN_WF_EASYMODE_RULE</li>
+</ol>
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_easy.WorkFlowEasyRuleManager.get_easy_wf_menu">
+<code class="descname">get_easy_wf_menu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_easy.html#WorkFlowEasyRuleManager.get_easy_wf_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_easy.WorkFlowEasyRuleManager.get_easy_wf_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>return composed data set of menu info
+:return: json</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_easy.WorkFlowEasyRuleManager.get_wf_code_with_option">
+<code class="descname">get_wf_code_with_option</code><span class="sig-paren">(</span><em>option</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_easy.html#WorkFlowEasyRuleManager.get_wf_code_with_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_easy.WorkFlowEasyRuleManager.get_wf_code_with_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>recommned wf code (predefined) based on user selection
+:param option: object
+:return: str</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.init.workflow_init_history">
+<span id="master-workflow-init-workflow-init-history-module"></span><h2>master.workflow.init.workflow_init_history module<a class="headerlink" href="#module-master.workflow.init.workflow_init_history" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.init.workflow_init_history.WorkFlowHistoryManager">
+<em class="property">class </em><code class="descclassname">master.workflow.init.workflow_init_history.</code><code class="descname">WorkFlowHistoryManager</code><a class="reference internal" href="_modules/master/workflow/init/workflow_init_history.html#WorkFlowHistoryManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_history.WorkFlowHistoryManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_history.WorkFlowHistoryManager.delete_version_info">
+<code class="descname">delete_version_info</code><span class="sig-paren">(</span><em>nn_id</em>, <em>version</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_history.html#WorkFlowHistoryManager.delete_version_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_history.WorkFlowHistoryManager.delete_version_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete version info
+:param obj:
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_history.WorkFlowHistoryManager.get_version_list">
+<code class="descname">get_version_list</code><span class="sig-paren">(</span><em>nn_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_history.html#WorkFlowHistoryManager.get_version_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_history.WorkFlowHistoryManager.get_version_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>get version list of certain neural network
+:param nn_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_history.WorkFlowHistoryManager.insert_version_info">
+<code class="descname">insert_version_info</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_history.html#WorkFlowHistoryManager.insert_version_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_history.WorkFlowHistoryManager.insert_version_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert version info
+:param obj:
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_history.WorkFlowHistoryManager.set_version_active">
+<code class="descname">set_version_active</code><span class="sig-paren">(</span><em>nn_id</em>, <em>version</em>, <em>flag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_history.html#WorkFlowHistoryManager.set_version_active"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_history.WorkFlowHistoryManager.set_version_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>set active flag true, set all others false
+:param obj:
+:return: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_history.WorkFlowHistoryManager.update_version_info">
+<code class="descname">update_version_info</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_history.html#WorkFlowHistoryManager.update_version_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_history.WorkFlowHistoryManager.update_version_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>update version info
+:param obj:
+:return: boolean</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.init.workflow_init_simple">
+<span id="master-workflow-init-workflow-init-simple-module"></span><h2>master.workflow.init.workflow_init_simple module<a class="headerlink" href="#module-master.workflow.init.workflow_init_simple" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager">
+<em class="property">class </em><code class="descclassname">master.workflow.init.workflow_init_simple.</code><code class="descname">WorkFlowSimpleManager</code><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.create_workflow">
+<code class="descname">create_workflow</code><span class="sig-paren">(</span><em>nn_id</em>, <em>wf_ver</em>, <em>type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager.create_workflow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.create_workflow" title="Permalink to this definition">¶</a></dt>
+<dd><p>create workflow base node info
+:param nn_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_eval_data_node">
+<code class="descname">get_eval_data_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager.get_eval_data_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_eval_data_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_eval_feed_node">
+<code class="descname">get_eval_feed_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager.get_eval_feed_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_eval_feed_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_eval_node">
+<code class="descname">get_eval_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager.get_eval_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_eval_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_train_data_node">
+<code class="descname">get_train_data_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager.get_train_data_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_train_data_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_train_feed_node">
+<code class="descname">get_train_feed_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager.get_train_feed_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_train_feed_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_train_node">
+<code class="descname">get_train_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/master/workflow/init/workflow_init_simple.html#WorkFlowSimpleManager.get_train_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#master.workflow.init.workflow_init_simple.WorkFlowSimpleManager.get_train_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-master.workflow.init">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-master.workflow.init" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">master.workflow.init package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-master.workflow.init.workflow_init_easy">master.workflow.init.workflow_init_easy module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.init.workflow_init_history">master.workflow.init.workflow_init_history module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.init.workflow_init_simple">master.workflow.init.workflow_init_simple module</a></li>
+<li><a class="reference internal" href="#module-master.workflow.init">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/master.workflow.init.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, seungwookim.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/master.workflow.init.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
