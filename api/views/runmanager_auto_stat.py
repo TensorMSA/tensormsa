@@ -1,6 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from master.automl.automl import AutoMlCommon
 import coreapi
 
 class RunManagerAutoStat(APIView):
@@ -36,7 +37,9 @@ class RunManagerAutoStat(APIView):
             Get Result of Train for each population
         """
         try:
-            return_data = ""
+            aml = AutoMlCommon(nnid)
+            stat_info  = aml.get_stat_obj(nnid)
+            return_data = stat_info
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

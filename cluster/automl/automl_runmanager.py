@@ -28,6 +28,9 @@ class AutoMlRunManager :
         self.parm_info = self.auto_ml_info.parm_info
         self.stat_info = self.auto_ml_info.stat_info
         self.net_type = self.auto_ml_info.net_type
+        self.summary = {}
+        self.summary['bygen'] = []
+        self.summary['best'] = []
         self.debug_mode = False
 
     def run(self):
@@ -48,19 +51,52 @@ class AutoMlRunManager :
             for idx in range(generation) :
                 # create new generations
                 if(idx == 0) :
-                    networks = networks + self.create_networks(idx, population)
+                    gen_nets, ver_data_sets = self.create_networks(idx, population)
+                    networks = networks + gen_nets
+                    AutoMlCommon().reset_stat_obj(self.nn_id)
                 else :
-                    networks = networks + self.create_networks(idx, population - survive)
+                    gen_nets, ver_data_sets = self.create_networks(idx, population - survive)
+                    networks = networks + gen_nets
 
                 # train & evaluate networks
                 networks = self.train_networks(networks)
-
+                # set each train set flag to fin
+                self.set_train_finish(ver_data_sets)
+                # update traing progress
+                self.update_summary(networks, survive)
                 # sort & discard
                 networks = self.discard_inferior(networks, survive)
-            self.save_result(networks)
             return networks
         except Exception as e :
             logging.error("Error on running AutoML alogorithm : {0}".format(e))
+
+    def update_summary(self, networks, survive):
+        """
+        update summary info of processing genetic algorithm
+        arranged by generation (sequece of list means number of generation
+        each node contains extra info like survive or not 
+        :param networks: networks for one generations
+        :param survive: number of gene to survive 
+        :return: dict type result info with extra flag 
+        """
+        networks = sorted(networks, key=lambda x: x.get('acc'), reverse=True)
+        result = list(map(lambda x : self.set_value(x, 'survive', True) , networks[0:survive]))
+        self.summary['best'] = result
+        result = result + list(map(lambda x : self.set_value(x, 'survive', False) , networks[survive:]))
+        self.summary['bygen'].append(result)
+        AutoMlCommon().update_stat_obj(self.nn_id, self.summary)
+
+    def set_value(self, data_set, key, value):
+        data_set[key] = value
+        return data_set
+
+    def save_summary(self, info):
+        """
+        save best survived results
+        :return:
+        """
+        self.summary['best'] = info
+        AutoMlCommon().update_stat_obj(self.nn_id, self.summary)
 
     def discard_inferior(self, networks, survive):
         """
@@ -79,15 +115,23 @@ class AutoMlRunManager :
         """
         try :
             tasks = []
-            i = inspect()
+            #i = inspect()
             #if (i.active() == None):
             if (self.debug_mode):
+                # for debug you can run all tasks on django process
                 for network in networks:
+                    if(network['flag'] == True ) :
+                        continue
                     result = train(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
-                    key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id']), network['node_name']])
+                    key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
                     network['acc'] = result[key].get('accuracy')
+                    network['flag'] = True
             else :
+                # You can use cluster servers for faster hyper parameter searching
+                # using cluster server with celery for genetic algorithm
                 for network in networks :
+                    if (network['flag'] == True):
+                        continue
                     tasks.append(train.subtask((network.get('nn_id'), str(network.get('nn_wf_ver_id')))))
                 results = group(tasks).apply_async()
                 results = results.join()
@@ -96,6 +140,7 @@ class AutoMlRunManager :
                         key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
                         if(key in list(result.keys()) and result[key] is not None and result[key].get('accuracy') is not None) :
                             network['acc'] = result[key].get('accuracy')
+                            network['flag'] = True
             return networks
         except Exception as e :
             logging.error("Error on training : {0} ".format(e))
@@ -109,9 +154,11 @@ class AutoMlRunManager :
         """
         try :
             networks = []
+            ver_data_sets = []
             for idx in range(number) :
                 # (1) create version
-                nn_wf_ver_id = self.create_version(str(generation))
+                nn_wf_ver_id, ver_data_set = self.create_version(str(generation))
+                ver_data_sets.append(ver_data_set)
 
                 # (2) create state & graph flow
                 WorkFlowSimpleManager().create_workflow(self.nn_id, nn_wf_ver_id, self.net_type)
@@ -134,6 +181,13 @@ class AutoMlRunManager :
                             WorkFlowCommon().update_view_obj('_'.join([str(self.nn_id), str(nn_wf_ver_id), node_name]),
                                                              update_data)
 
+                        if (node.get('wf_task_menu_id_id') == "eval") :
+                            update_data = {}
+                            update_data['source_path'] = get_source_path(str(self.nn_id), "common", node_name)
+                            update_data['store_path'] = get_store_path(str(self.nn_id), "common", node_name)
+                            WorkFlowCommon().update_view_obj('_'.join([str(self.nn_id), str(nn_wf_ver_id), node_name]),
+                                                             update_data)
+
                         if (node.get('wf_task_menu_id_id') == "netconf") :
                             update_data = {}
                             update_data['model_path'] = get_model_path(str(self.nn_id), str(nn_wf_ver_id), node_name)
@@ -148,8 +202,9 @@ class AutoMlRunManager :
                 netdata['nn_wf_ver_id'] = nn_wf_ver_id
                 netdata['acc'] = 0.0
                 netdata['flag'] = False
+                netdata['survive'] = True
                 networks.append(netdata)
-            return networks
+            return networks, ver_data_sets
         except Exception as e :
             logging.error("Error AutoML create network : {0}".format(e))
 
@@ -175,21 +230,32 @@ class AutoMlRunManager :
         input_data['nn_wf_ver_id'] = nn_wf_ver_id
         input_data['nn_def_list_info_nn_id'] = generation
         input_data['automl_gen'] = generation
-        input_data['condition'] = "1"
+        input_data['condition'] = "2"  # 1 Pending, 2 Progress, 3 Finish, 4 Error
         input_data['active_flag'] = "N"
-        input_data['nn_wf_ver_desc'] = "_".join([self.nn_id, generation, str(nn_wf_ver_id)])
+        input_data['nn_wf_ver_desc'] = " ".join(["id:",self.nn_id, "gen:", generation, "ver:", str(nn_wf_ver_id)])
         input_data['nn_id'] = self.nn_id
 
         # Net Version create
         nnCommonManager.insert_nn_wf_info(input_data)
-        return nn_wf_ver_id
+        return nn_wf_ver_id, input_data
 
-    def save_result(self, info):
+    def set_train_finish(self, ver_data_sets):
         """
-        save best survived results
-        :return:
+        update state flag for version level info on database
+        :param input_data : raw info we had on database 
+        :return:version info 
         """
-        AutoMlCommon().update_stat_obj(self.nn_id, info)
+        try :
+            for input_data in ver_data_sets :
+                # Create Version
+                nnCommonManager = NNCommonManager()
+                del input_data['nn_id']
+                input_data['condition'] = "3" # 1 Pending, 2 Progress, 3 Finish, 4 Error
+                # Net Version create
+                nnCommonManager.update_nn_wf_info(self.nn_id, input_data)
+            return True
+        except Exception as e :
+            return False
 
     def _generate_random_case(self, conf_info):
         """

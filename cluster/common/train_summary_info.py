@@ -114,7 +114,6 @@ class TrainSummaryInfo:
             for labels, predicts in zip(self.result_info["labels"], self.result_info["predicts"]) :
                 gab = gab + (labels - predicts)
             return float(gab/len(labels))
-
         elif self.type == 'category':
             correct = 0
             sum = 0
@@ -123,8 +122,7 @@ class TrainSummaryInfo:
                     if(fd == sd) :
                         correct = correct + sd_val
                     sum = sum + sd_val
-            return float(sd_val/sum)
-
+            return float(correct/sum)
         else :
             return 0.0
 

@@ -14,14 +14,6 @@ class RunManagerAutoTrain(APIView):
             type='string',
         ),
     )
-    class ThreadCls(threading.Thread) :
-        def __init__(self, input, func):
-            threading.Thread.__init__(self)
-            self.input = input
-            self.func = func
-
-        def run(self):
-            self.func(self.input)
 
     def post(self, request, nnid):
         """
@@ -40,8 +32,7 @@ class RunManagerAutoTrain(APIView):
             request train on selected automl id
         """
         try:
-            #automl_run(nnid)
-            self.ThreadCls(nnid, automl_run).run()
+            automl_run(nnid)
             return Response(json.dumps([True]))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

@@ -279,6 +279,9 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             with tf.Session() as sess :
                 sess.run(self.init_val)
                 self.node_id = node_id
+                if (self.check_batch_exist(self.node_id)):
+                    self.saver.restore(sess, ''.join([self.model_path, '/', self.get_eval_batch(self.node_id), '/']))
+
                 while (data.has_next()):
                     for i in range(0, data.data_size(), self.predict_batch):
                         data_set = data[i:i + self.predict_batch]

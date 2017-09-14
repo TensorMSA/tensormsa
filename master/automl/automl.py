@@ -65,9 +65,29 @@ class AutoMlCommon:
         """
         try:
             obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=nn_id)
-            setattr(obj, "automl_stat", input_data)
+            data_set = getattr(obj, "automl_stat")
+            data_set['bygen'] = data_set['bygen'] + (input_data['bygen'])
+            data_set['best'] = input_data['best']
+            setattr(obj, "automl_stat", data_set)
             obj.save()
-            return input_data
+            return data_set
+        except Exception as e:
+            raise Exception(e)
+
+    def reset_stat_obj(self, nn_id):
+        """
+        set net config data edited on view
+        :param obj:
+        :return:
+        """
+        try:
+            obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=nn_id)
+            data_set = {}
+            data_set['bygen'] = []
+            data_set['best'] = []
+            setattr(obj, "automl_stat", data_set)
+            obj.save()
+            return data_set
         except Exception as e:
             raise Exception(e)
 
