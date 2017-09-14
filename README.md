@@ -58,7 +58,10 @@ easy and simple
 Tensorflow version upgrades really fast and seems like usages changes fast too, our goal on the project is build various kind of samples codes works on latest Tensorflow version. And also with basic tensorflow with python example, we are going to provide HOYA api examples codes step by step 
 
 # REST API *[(Link)](http://13.124.133.117:8989/docs)* 
-All functions (100%) developed on this project linked to REST API, so that you can access it via console, jupyter or UI/UX 
+All functions (100%) developed on this project are linked to REST API (support server2server, client2server services)
+
+# Python Documents *[(Link)](https://tensormsa.github.io/tensormsa/)* 
+You can visit python document site generated with sphinix and git page 
 
 # Contributions *[(Desigin Link)](https://docs.google.com/presentation/d/1SKYQ85l29PApQu8aUOFbkTMpxxefpJH3NhiR_GYr66I/pub?start=false&loop=false&delayms=3000)*
  <p align="center">
