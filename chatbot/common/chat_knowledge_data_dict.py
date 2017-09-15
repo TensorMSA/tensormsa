@@ -1,6 +1,6 @@
 from chatbot import models
 from django.core import serializers as serial
-import json
+import json, logging
 from chatbot.common.chat_knowledge_mem_dict import ChatKnowledgeMemDict
 
 class ChatKnowledgeDataDict:
@@ -14,24 +14,37 @@ class ChatKnowledgeDataDict:
         return json.loads(query_set)
 
     def get_entity_key(self, intent_id):
-        query_set = models.CB_ENTITY_LIST_INFO.objects.filter(cb_id = self.cb_id,
-                                                              intent_id_id = intent_id)
-        query_set = serial.serialize("json", query_set)
-        query_set = json.loads(query_set)[0]['fields']['entity_list']
-        return query_set.get('key')
+        try:
+            query_set = models.CB_ENTITY_LIST_INFO.objects.filter(cb_id = self.cb_id,
+                                                                  intent_id_id = intent_id)
+            query_set = serial.serialize("json", query_set)
+            query_set = json.loads(query_set)[0]['fields']['entity_list']
+            return query_set.get('key')
+        except Exception as e:
+            logging.info("[CB_ENTITY_LIST_INFO KEY] : {0}".format(e))
+            raise Exception(e)
 
     def get_entity_extra(self, intent_id):
-        query_set = models.CB_ENTITY_LIST_INFO.objects.filter(cb_id = self.cb_id,
-                                                              intent_id_id = intent_id)
-        query_set = serial.serialize("json", query_set)
-        query_set = json.loads(query_set)[0]['fields']['entity_list']
-        return query_set.get('extra')
+        try:
+            query_set = models.CB_ENTITY_LIST_INFO.objects.filter(cb_id = self.cb_id,
+                                                                  intent_id_id = intent_id)
+            query_set = serial.serialize("json", query_set)
+            query_set = json.loads(query_set)[0]['fields']['entity_list']
+            return query_set.get('extra')
+        except Exception as e:
+            logging.info("[CB_ENTITY_LIST_INFO EXTRA] : {0}".format(e))
+            raise Exception(e)
 
     def _get_proper_tagging(self, type='dict'):
-        query_set = models.CB_TAGGING_INFO.objects.filter(cb_id = self.cb_id,
-                                                          pos_type = type)
-        query_set = serial.serialize("json", query_set)
-        return json.loads(query_set)[0]['fields']['proper_noun'] #JSON Type
+        try:
+            query_set = models.CB_TAGGING_INFO.objects.filter(cb_id = self.cb_id,
+                                                              pos_type = type)
+            query_set = serial.serialize("json", query_set)
+            return json.loads(query_set)[0]['fields']['proper_noun'] #JSON Type
+        except Exception as e:
+            logging.info("[CB_TAGGING_INFO] : {0}".format(e))
+            raise Exception(e)
+
 
     def get_intent_conf(self, type):
         query_set = models.CB_INTENT_LIST_INFO.objects.filter(cb_id = self.cb_id, intent_type = type)

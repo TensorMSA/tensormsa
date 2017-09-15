@@ -27,6 +27,8 @@ class SummrizeResult():
             elif (intent_id is "" and pattern_intent_id is not ""):
                 share_data.set_intent_id(share_data.get_pattern_intent_id())
                 pass
+            elif (intent_id is "" and pattern_intent_id is ""):
+                pass
             else:
                 share_data = self.check_result(pattern_intent_id, intent_id, share_data)
             return share_data
