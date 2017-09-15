@@ -98,6 +98,8 @@ class FileUploadView(APIView):
                         None
 
                 mxcnt = str(mxcnt)
+                if not os.path.isdir(tmpfilepath+mxcnt):
+                    os.mkdir(tmpfilepath+mxcnt)
                 return_data = {"path":mxcnt}
             else:
                 return_data = []
