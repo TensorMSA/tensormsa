@@ -49,7 +49,7 @@ class EntityAnalyzer(ShareData):
         #except meaningless
         convert_dict_data = pos_tags[0]
         pos_tags_0 = pos_tags[0]
-        if (pos_tags[1] in ['NNG', 'NNP','SL'] and len(pos_tags[0]) > 1): #Check only Noun
+        if (pos_tags[1] in ['NNG', 'NNP','SL','MAG'] and len(pos_tags[0]) > 1): #Check only Noun
             key_slot = pos_tags[0]
             key_check = list(filter(lambda x : self._extract_proper_entity(pos_tags[0], x), self.proper_key_list))
             if(key_check == []):

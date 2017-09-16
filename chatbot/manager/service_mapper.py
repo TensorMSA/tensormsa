@@ -35,7 +35,10 @@ class ServiceMapper(ShareData):
         slot_key_list = list(story_slot.keys())
         for key in slot_key_list:
             entity_uuid = list(filter(lambda x: x["fields"]["entity_id"] == key, self.entity_uuid_list))
-            story_slot[entity_uuid[0]['fields']['entity_uuid']] = story_slot.pop(key)
+            if(len(entity_uuid) == 0):
+                break
+            else:
+                story_slot[entity_uuid[0]['fields']['entity_uuid']] = story_slot.pop(key)
 
     def _store_train_data(self,share_data):
         file = open("/hoya_data_root/log/log.txt", 'a')

@@ -14,7 +14,7 @@ class api_test_chatbot(TestCase):
         self.input_4 = ["포항 김수상에게 연락해줘"]
         self.input_5 = ["김수상은 휴가 인가요"]
         self.input_6 = ["터키법인장 알아"]
-        self.input_7 = ["인니법인장", "정보기획실장"]
+        self.input_7 = ["인니법인장", "정보기획실장", "비서실장"]
         self.input_8 = ["포항 정보기획실 김수상 찾아줘", "정보기획실 김수상 알아","정보기획실 김수상 찾아줘"]
         self.input_9 = ["정보기획실 과장은 누구", "정보기획실 P4"]
 
@@ -22,7 +22,7 @@ class api_test_chatbot(TestCase):
         print('Finish ChatBot test')
 
     def test_call(self):
-        self.chat_api_call(self.input_1, '1')
+        #self.chat_api_call(self.input_1, '1')
         self.chat_api_call(self.input_2, '2')
         self.chat_api_call(self.input_3, '3')
         self.chat_api_call(self.input_4, '4')
