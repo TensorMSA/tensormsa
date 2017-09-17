@@ -7,6 +7,7 @@ from chatbot.botbuilder.bot_intent_list_info import BotIntentListInfo
 from chatbot.botbuilder.bot_story_list_info import BotStoryListInfo
 from chatbot.botbuilder.bot_tagging_info import BotTaggingInfo
 from chatbot.botbuilder.bot_entity_relation_info import BotEntityRelationInfo
+from chatbot.botbuilder.bot_response_list_info import BotResponseListInfo
 
 class BotBuilder(APIView):
 
@@ -37,7 +38,10 @@ class BotBuilder(APIView):
                 return_value = BotStoryListInfo.run_story_builder(self,data=data)
 
             elif type == "entityrelation":
-                return_value = BotEntityRelationInfo.run_entity_relation_builder()
+                return_value = BotEntityRelationInfo.run_entity_relation_builder(self, data=data)
+
+            elif type == "response":
+                return_value = BotResponseListInfo.run_response_builder(self, data=data)
 
             return return_value
 

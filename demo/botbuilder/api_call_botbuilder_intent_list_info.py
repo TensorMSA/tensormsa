@@ -14,3 +14,29 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/intent/'
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/intent/',
+                     json={
+                        #intent
+                        "cb_id": "cb0001",
+                        "intent_id": "2",
+                        "intent_type": "model",
+                        "intent_desc": "",
+                        "rule_value": {"key": []},
+                        "nn_type": "char-cnn",
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+
+resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/intent/',
+                     json={
+                        #intent
+                        "cb_id": "cb0001",
+                        "intent_id": "3",
+                        "intent_type": "model",
+                        "intent_desc": "",
+                        "rule_value": {"key": []},
+                        "nn_type": "char-cnn",
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
