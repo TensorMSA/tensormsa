@@ -18,7 +18,7 @@ class ServiceMapper(ShareData):
 
         logging.info("■■■■■■■■■■ 의도 최종 결과 : " + str(share_data.get_intent_id()))
         logging.info("■■■■■■■■■■ Slot 최종 결과 : " + str(story_slot))
-        self._store_train_data(share_data)
+        #self._store_train_data(share_data)
 
         self._replace_intent_uuid(share_data)
         self._replace_entity_uuid(story_slot)

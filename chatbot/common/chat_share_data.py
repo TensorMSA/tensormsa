@@ -69,10 +69,11 @@ class ShareData(ChatBotConfManager):
 
         #Check Length of String
         self._check_string_length(object.get("input_data"))
-
-        for key in ['story_slot_entity', 'story_ner_entity', 'test_slot_entity'] :
-            if key in list(object.keys()) :
-                object[key] = {}
+        #if there is no intent Reset chatbot initialize value
+        if(object.get("intent_id") == ''):
+            for key in ['story_slot_entity', 'story_ner_entity', 'test_slot_entity'] :
+                if key in list(object.keys()) :
+                    object[key] = {}
         return object
 
     def _check_string_length(self, input_data):

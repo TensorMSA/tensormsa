@@ -7,6 +7,7 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/intent/'
                         #intent
                         "cb_id": "cb0001",
                         "intent_id": "1",
+                        "intent_uuid": "1",
                         "intent_type": "model",
                         "intent_desc": "",
                         "rule_value": {"key": ["알려줘"]},
@@ -20,6 +21,7 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/intent/'
                         #intent
                         "cb_id": "cb0001",
                         "intent_id": "2",
+                        "intent_uuid": "2",
                         "intent_type": "model",
                         "intent_desc": "",
                         "rule_value": {"key": []},
@@ -33,6 +35,7 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/intent/'
                         #intent
                         "cb_id": "cb0001",
                         "intent_id": "3",
+                        "intent_uuid": "3",
                         "intent_type": "model",
                         "intent_desc": "",
                         "rule_value": {"key": []},

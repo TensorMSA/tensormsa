@@ -104,7 +104,8 @@ class ServiceManager:
 
             logging.info("■■■■■■■■■■ 챗봇 끝 ■■■■■■■■■■")
             ### 4. return result as json ###
-            share_ctx = share_ctx.add_extra_client_data()
+            #Legacy 서비스 수신 타입에 따른 Story Slot구성 Dict -> List 아래 메소드 사용시
+            #share_ctx = share_ctx.add_extra_client_data()
             return share_ctx.to_json()
         except Exception as e:
             raise Exception (e)
