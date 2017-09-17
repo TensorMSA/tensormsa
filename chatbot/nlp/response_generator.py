@@ -8,7 +8,9 @@ class ResponseGenerator(ShareData):
     def select_response(self, share_data):
         try:
             response = ""
-            response = self.response_story[0]['fields']['output_data']
+            if(len(self.response_story) > 0):
+                response = ' '.join([share_data.get_story_slot_entity(x)[0] for x in self.response_story[0]['fields']['output_entity']['entity']])
+                response += self.response_story[0]['fields']['output_data']
 
             # if (self.story_board_id == '2'):
             #     response = self.story_slot_entity["이름"] + "의 전화번호는 XX-XXX-1234입니다."
@@ -24,7 +26,7 @@ class ResponseGenerator(ShareData):
             # else :
             #     response = self.get_unknown_response()
             # print("■■■■■■■■■■ 챗봇 응답 메세지 결과 : " + response)
-            self.set_output_data(response)
+                share_data.set_output_data(response)
             return share_data
 
         except Exception as e:

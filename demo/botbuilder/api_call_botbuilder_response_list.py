@@ -5,7 +5,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/response/',
                      json={
                         "response_type" : "entity",
-                        "output_entity" : {},
+                        "output_entity" : {"entity":["tagdate","tagloc","tagmenu"]},
                         "output_data" : "",
                         "nn_id" : "", #Seq2Seq 사용시
                         "story_id" : "1"
