@@ -7,7 +7,7 @@ from django.db import connection
 from common.utils import *
 from cluster.service.service_train_task import train
 from celery import group
-from celery.task.control import inspect
+from django.conf import settings
 
 def automl_run(nnid) :
     AutoMlRunManager(nnid).run()
@@ -31,7 +31,7 @@ class AutoMlRunManager :
         self.summary = {}
         self.summary['bygen'] = []
         self.summary['best'] = []
-        self.debug_mode = False
+        self.debug_mode = settings.DEBUG
 
     def run(self):
         """

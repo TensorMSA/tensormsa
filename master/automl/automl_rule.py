@@ -84,17 +84,18 @@ class AutoMlRule:
         :return:
         """
         try:
-            if graph_flow_id != "graph_flow_id":
-                for i in input_data:
-                    obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=i)
-                    setattr(obj, graph_flow_id, input_data[i])
-                    obj.save()
-            else:
+            exists = models.AUTO_ML_RULE.objects.filter(graph_flow_id=graph_flow_id).count()
+            if (exists > 0):
                 obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=graph_flow_id)
                 data_set = getattr(obj, "graph_flow_data")
                 data_set.update(input_data)
                 setattr(obj, "graph_flow_data", data_set)
                 obj.save()
+            else:
+                for i in input_data:
+                    obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=i)
+                    setattr(obj, graph_flow_id, input_data[i])
+                    obj.save()
 
             return input_data
         except Exception as e:
