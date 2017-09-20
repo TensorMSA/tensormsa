@@ -55,14 +55,14 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         """
         getter for preprocess
         """
-        return self.conf['train'] if hasattr(self.conf,'train') else True
+        return self.conf['train'] if ('train' in self.conf) else True
 
     @property
     def auto_demension(self):
         """
         getter for preprocess
         """
-        return self.conf['auto_demension'] if hasattr(self.conf,'auto_demension') else True
+        return self.conf['auto_demension'] if ('auto_demension' in self.conf) else False
 
 
     def __init__(self, key = None):
