@@ -11,7 +11,7 @@ def get_source_path(nn_id, wf_ver, name) :
     """
 
     #path = ''.join([cache.get("source_root"), "/", nn_id, "/", wf_ver, "/", name])
-    path = ''.join(["/hoya_src_root", "/", nn_id, "/", wf_ver, "/", name])
+    path = ''.join(["/hoya_src_root", "/", nn_id, "/common/", name])
     set_filepaths(path)
     return path
 
@@ -31,7 +31,7 @@ def get_source_predict_path(nn_id, wf_ver, predict) :
 
 def get_store_path(nn_id, wf_ver, name) :
 
-    path = ''.join(["/hoya_str_root", "/", str(nn_id), "/", str(wf_ver), "/", str(name)])
+    path = ''.join(["/hoya_str_root", "/", str(nn_id), "/common/", str(name)])
     set_filepaths(path)
     return path
 

@@ -40,7 +40,7 @@ class AutoMlRule:
         except Exception as e:
             raise Exception(e)
 
-    def get_graph_info(self, graph_flow_id):
+    def get_graph_info(self, graph_flow_id, type = None):
         """
         get view data for net config
         :return:
@@ -51,7 +51,10 @@ class AutoMlRule:
             query_set = json.loads(query_set)
             ids = []
             for row in query_set :
-                ids.append(row['fields']['graph_flow_data'])
+                if type == "all":
+                    ids.append(row)
+                else:
+                    ids.append(row['fields']['graph_flow_data'])
             return ids
         except Exception as e:
             raise Exception(e)

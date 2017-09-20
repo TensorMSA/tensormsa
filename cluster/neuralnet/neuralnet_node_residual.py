@@ -1,7 +1,7 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from common.utils import *
 from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
-from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
+from master.network.nn_common_manager import NNCommonManager
 import tensorflow as tf
 import numpy as np
 import os
@@ -34,11 +34,14 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.nn_id = conf_data["nn_id"]
         self.wf_ver = conf_data["wf_ver"]
         self.node_id = conf_data["node_id"]
-        self.node = WorkFlowSimpleManager().get_train_node()
-
-        # get feed name
-        self.train_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_train_feed_node()
-        self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_eval_feed_node()
+        graph = NNCommonManager().get_nn_node_name(conf_data["nn_id"])
+        for net in graph:
+            if net['fields']['graph_node'] == 'netconf_node':
+                self.netconf_node = net['fields']['graph_node_name']
+            if net['fields']['graph_node'] == 'netconf_feed':
+                self.train_feed_name = self.nn_id + "_" + self.wf_ver + "_" + net['fields']['graph_node_name']
+            if net['fields']['graph_node'] == 'eval_feed':
+                self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + net['fields']['graph_node_name']
         self.feed_node = self.get_prev_node()
 
     def _init_value(self):
@@ -51,7 +54,7 @@ class NeuralNetNodeReNet(NeuralNetNode):
     def _set_netconf_parm(self):
         netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
         try:
-            netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(self.nn_id, self.wf_ver, self.node, self.node_id, netconf)
+            netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(self.nn_id, self.wf_ver, self.netconf_node, self.node_id, netconf)
         except:
             None
         self.netconf = netconf

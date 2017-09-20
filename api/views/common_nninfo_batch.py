@@ -3,7 +3,7 @@ from master.network.nn_common_manager import NNCommonManager
 from rest_framework.response import Response
 import json
 import coreapi
-from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
+from master.network.nn_common_manager import NNCommonManager
 from common.utils import *
 import os
 
@@ -38,8 +38,12 @@ class CommonNNInfoBatch(APIView):
             return_data = NNCommonManager().get_nn_batch_info(nnid, ver)
             conv = []
 
-            node = WorkFlowSimpleManager().get_train_node()
-            model_path = get_model_path(nnid, ver, node)
+            netconf_node = ""
+            graph = NNCommonManager().get_nn_node_name(nnid)
+            for net in graph:
+                if net['fields']['graph_node'] == 'netconf_node':
+                    netconf_node = net['fields']['graph_node_name']
+            model_path = get_model_path(nnid, ver, netconf_node)
 
             for row in return_data:
                 row["model"] = "N"

@@ -5,6 +5,8 @@ from master import serializers
 from django.db import connection
 from common.utils import dictfetchall
 import json
+from master.automl.automl_rule import AutoMlRule
+from master.workflow.common.workflow_state_menu import WorkFlowStateMenu
 
 class NNCommonManager :
     """
@@ -324,3 +326,12 @@ class NNCommonManager :
         except Exception as e:
             raise Exception(e)
 
+    def get_nn_node_name(self, nn_id):
+        condition = {}
+        condition['nn_id'] = nn_id
+        nninfo = NNCommonManager().get_nn_info(condition)
+        type = nninfo[0]['dir']
+        net_node = AutoMlRule().get_graph_info(type, "all")
+        graph_id = net_node[0]['fields']["graph_flow_info_id"]
+        graph = WorkFlowStateMenu().get_graph_info(graph_id)
+        return graph

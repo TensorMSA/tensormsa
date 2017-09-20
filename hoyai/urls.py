@@ -67,6 +67,8 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowSubMenuManager.as_view())),
     url(r'^api/v1/type/wf/target/menu/',
         csrf_exempt(rest_view.WorkFlowMenuManager.as_view())),
+    url(r'^api/v1/type/wf/target/graph/',
+        csrf_exempt(rest_view.WorkFlowGraphManager.as_view())),
 
     # data generator with pattern and dict for nlp
     url(r'^api/v1/type/augment/state/nlp/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/',

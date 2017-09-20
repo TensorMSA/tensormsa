@@ -184,3 +184,15 @@ class AUTO_ML_RULE(models.Model):
     last_updated_by = models.IntegerField(default=0)
     train_file_path = models.CharField(max_length=100, blank=True)
     eval_file_path = models.CharField(max_length=100, blank=True)
+    graph_flow_info_id =models.IntegerField(default=0)
+
+class GRAPH_FLOW_INFO(models.Model):
+    graph_flow_info_id = models.IntegerField(default=0)
+    graph_node = models.CharField(max_length=100, blank=True)
+    graph_node_name = models.CharField(max_length=100, blank=True)
+    graph_seq = models.IntegerField(default=0)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_update_date = models.DateTimeField(auto_now=True)
+    created_by = models.IntegerField(default=0)
+    last_updated_by = models.IntegerField(default=0)
+

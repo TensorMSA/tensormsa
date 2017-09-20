@@ -67,5 +67,38 @@ class WorkFlowStateMenu :
         finally:
             return input_data["wf_task_submenu_id"]
 
+    def put_graph_info(self, input_data):
+        """
 
+        :param menu:
+        :param input_data:
+        :return:
+        """
+        try:
+            exists = models.GRAPH_FLOW_INFO.objects.filter(graph_flow_info_id=input_data["graph_flow_info_id"]
+                                                         , graph_seq=input_data["graph_seq"]).count()
+            if (exists > 0):
+                obj = models.GRAPH_FLOW_INFO.objects.get(graph_flow_info_id=input_data["graph_flow_info_id"]
+                                                         , graph_seq=input_data["graph_seq"])
+                for key in input_data.keys():
+                    if (input_data[key] != None):
+                        setattr(obj, key, input_data[key])
+                obj.save()
+            else:
+                serializer = serializers.GRAPH_FLOW_INFO_Serializer(data=input_data)
+                print(serializer.is_valid())
+                if serializer.is_valid():
+                    serializer.save()
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return input_data["graph_node_name"]
+
+    def get_graph_info(self, graphid):
+        try:
+            query_set = models.GRAPH_FLOW_INFO.objects.filter(graph_flow_info_id=graphid )
+            query_set = serial.serialize("json", query_set)
+            return json.loads(query_set)
+        except Exception as e:
+            raise Exception(e)
 

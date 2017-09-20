@@ -3,10 +3,9 @@ import json, os
 
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
-##################################################
-# Data Menu
-##################################################
-
+##############################################################################################################################
+# cnn
+##############################################################################################################################
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/cnn/',
                      json=
                      {
@@ -57,9 +56,184 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                     }
 
                      })
-
-# "auto":True,"range":[],"interval":1
-# insert menu info
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# resnet
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/resnet/',
+                     json=
+                     {
+                         "netconf_node" :{
+                                             "param": {"traincnt": {"type":"int","option":None,"auto":[1,100,2]}
+                                                      ,"epoch": {"type":"int","option":None,"auto":[1,10,1]}
+                                                      ,"batch_size": {"type":"int","option":None,"auto":[10,1000,10]}
+                                                      ,"predictcnt": {"type":"int","option":5,"auto":False}
+                                                      ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
+                                                      ,"augmentation": {"type":"sel","option":["N","Y"],"auto":False}
+                                             }
+                                             ,"config": {"num_classes": {"type":"int","option":1,"auto":False}
+                                                        ,"learnrate": {"type":"int","option":None,"auto":[0.0001,0.1,0.001]}
+                                                        , "layeroutputs": {"type":"int","option":18,"auto":[1,152,10]}
+                                                        ,"eval_type":{"type":"sel","option":["category"],"auto":False}
+                                                        ,"optimizer":{"type":"sel","option":["adam","rmsp"],"auto":False}
+                                                         }
+                                             ,"labels":{"type":"str","option":[],"auto":False}
+                                        }
+                        ,  "datasrc"    :{
+                                             "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
+                                             ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
+                                                            , "y_size": {"type":"int","option":32,"auto":False}
+                                                            , "channel":{"type":"int","option":3,"auto":False}
+                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
+                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
+                                           }
+                        , "evaldata" :{
+                                                 "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
+                                                 ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
+                                                            , "y_size": {"type":"int","option":32,"auto":False}
+                                                            , "channel":{"type":"int","option":3,"auto":False}
+                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
+                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}
+                                    }
+                         }
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# wdnn
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wdnn/',
+                     json=
+                     {
+                         "data_node":
+                             {
+                                 "source":
+                                     {
+                                         "type": {"type": "sel", "option": ["csv"], "auto": False}
+                                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                                         , "source_path": {"type": "str", "option": None, "auto": False}
+                                         ,
+                                         "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                         , "drop_duplicate": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                     }
+                                 , "pre":
+                                 {
+                                     "source_sql": {"type": "sel",
+                                                    "option": ["maxabs_scale", 'scale', 'minmax_scale', 'robust_scale',
+                                                               'normalize', 'maxabs_scale'], "auto": False}
+                                 }
+                                 , "store":
+                                 {
+                                     "store_path": {"type": "str", "option": None, "auto": False}
+                                 }
+                             }
+                         , "dataconf_node":
+                         {
+                             "label": {"type": "str", "option": "SUCCESSFUL_BID_PRICE", "auto": False}
+                             , "Transformations": {"type": "str", "option": {}, "auto": False}
+                             , "cross_cell": {"type": "str", "option": {}, "auto": False}
+                             , "cell_feature": {"type": "str", "option": {}, "auto": False}
+                             , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
+                             , "label_values": {"type": "str", "option": [], "auto": False}
+                             , "label_type": {"type": "str", "option": "CONTINUOUS", "auto": False}
+                         }
+                         , "netconf_node":
+                         {
+                             "model_path": {"type": "str", "option": None, "auto": False}
+                             , "hidden_layers": {"type": "int", "option": [100], "auto": False}
+                             , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
+                             , "batch_size": {"type": "int", "option": None, "auto": [100, 100000, 100]}
+                             , "epoch": {"type": "int", "option": None, "auto": [10, 500, 10]}
+                             , "model_type": {"type": "sel", "option": ["regression"], "auto": False}
+                             , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
+                         }
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# wdnn keras
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wdnn_keras/',
+                     json=
+                     {
+                         "data_node":
+                             {
+                                 "source":
+                                     {
+                                         "type": {"type": "sel", "option": ["csv"], "auto": False}
+                                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                                         , "source_path": {"type": "str", "option": None, "auto": False}
+                                         ,
+                                         "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                         , "drop_duplicate": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                     }
+                                 , "pre":
+                                 {
+                                     "source_sql": {"type": "sel",
+                                                    "option": ["maxabs_scale", 'scale', 'minmax_scale', 'robust_scale',
+                                                               'normalize', 'maxabs_scale'], "auto": False}
+                                 }
+                                 , "store":
+                                 {
+                                     "store_path": {"type": "str", "option": None, "auto": False}
+                                 }
+                             }
+                         , "dataconf_node":
+                         {
+                             "label": {"type": "str", "option": "SUCCESSFUL_BID_PRICE", "auto": False}
+                             , "Transformations": {"type": "str", "option": {}, "auto": False}
+                             , "cross_cell": {"type": "str", "option": {}, "auto": False}
+                             , "cell_feature": {"type": "str", "option": {}, "auto": False}
+                             , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
+                             , "label_values": {"type": "str", "option": [], "auto": False}
+                             , "label_type": {"type": "str", "option": "CONTINUOUS", "auto": False}
+                         }
+                         , "netconf_node":
+                         {
+                             "model_path": {"type": "str", "option": None, "auto": False}
+                             , "hidden_layers": {"type": "int", "option": [100], "auto": False}
+                             , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
+                             , "batch_size": {"type": "int", "option": None, "auto": [100, 100000, 100]}
+                             , "epoch": {"type": "int", "option": None, "auto": [10, 500, 10]}
+                             , "model_type": {"type": "sel", "option": ["regression"], "auto": False}
+                             , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
+                         }
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# word2vec
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/word2vec/',
+                     json=
+                     {
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# word2vec_frame
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/word2vec_frame/',
+                     json=
+                     {
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# doc2vec
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/doc2vec/',
+                     json=
+                     {
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# wcnn
+##############################################################################################################################
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wcnn/',
                      json=
                      {
@@ -135,118 +309,164 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
-
-
-resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wdnn/',
+##############################################################################################################################
+# seq2seq
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/seq2seq/',
                      json=
                      {
-                        "data_node" :
-                                     {
-                                         "source" :
-                                                     {
-                                                         "type":{"type":"sel","option":["csv"],"auto":False}
-                                                         ,"source_server":{"type":"sel","option":["local"],"auto":False}
-                                                         ,"source_sql":{"type":"sel","option":["all"],"auto":False}
-                                                         ,"source_path":{"type":"str","option":None,"auto":False}
-                                                         ,"multi_node_flag": {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                                         ,"drop_duplicate": {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                                     }
-                                         ,"pre":
-                                                     {
-                                                         "source_sql":{"type":"sel","option":["maxabs_scale",'scale','minmax_scale','robust_scale','normalize','maxabs_scale'],"auto":False}
-                                                     }
-                                         ,"store":
-                                                     {
-                                                        "store_path":{"type":"str","option":None,"auto":False}
-                                                     }
-                                     }
-                         ,"dataconf_node":
-                                     {
-                                                    "label": {"type":"str","option":"SUCCESSFUL_BID_PRICE","auto":False}
-                                                    ,"Transformations":{"type":"str","option":{},"auto":False}
-                                                    ,"cross_cell":{"type":"str","option":{},"auto":False}
-                                                    ,"cell_feature":{"type":"str","option":{},"auto":False}
-                                                    ,"extend_cell_feature" :{"type":"str","option":{},"auto":False}
-                                                    ,"label_values" : {"type":"str","option":[],"auto":False}
-                                                    ,"label_type" : {"type":"str","option":"CONTINUOUS","auto":False}
-                                     }
-                         ,"netconf_node" :
-                                     {
-                                                    "model_path": {"type":"str","option":None,"auto":False}
-                                                    ,"hidden_layers": {"type": "int", "option": [100], "auto": False}
-                                                    ,"activation_function": {"type":"sel","option":["relu"],"auto":False}
-                                                    ,"batch_size" : {"type":"int","option":None,"auto":[100,100000,100]}
-                                                    ,"epoch" : {"type":"int","option":None,"auto":[10,500,10]}
-                                                    ,"model_type" : {"type":"sel","option":["regression"],"auto":False}
-                                                    ,"train" : {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                     }
                      })
-
-
-resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/resnet/',
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# seq2seq_csv
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/seq2seq_csv/',
                      json=
                      {
-                         "netconf_node" :{
-                                             "param": {"traincnt": {"type":"int","option":None,"auto":[1,100,2]}
-                                                      ,"epoch": {"type":"int","option":None,"auto":[1,10,1]}
-                                                      ,"batch_size": {"type":"int","option":None,"auto":[10,1000,10]}
-                                                      ,"predictcnt": {"type":"int","option":5,"auto":False}
-                                                      ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
-                                                      ,"augmentation": {"type":"sel","option":["N","Y"],"auto":False}
-                                             }
-                                             ,"config": {"num_classes": {"type":"int","option":1,"auto":False}
-                                                        ,"learnrate": {"type":"int","option":None,"auto":[0.0001,0.1,0.001]}
-                                                        , "layeroutputs": {"type":"int","option":18,"auto":[1,152,10]}
-                                                        ,"eval_type":{"type":"sel","option":["category"],"auto":False}
-                                                        ,"optimizer":{"type":"sel","option":["adam","rmsp"],"auto":False}
-                                                         }
-                                             ,"labels":{"type":"str","option":[],"auto":False}
-                                        }
-                        ,  "datasrc"    :{
-                                             "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
-                                             ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
-                                                            , "y_size": {"type":"int","option":32,"auto":False}
-                                                            , "channel":{"type":"int","option":3,"auto":False}
-                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
-                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
-                                           }
-                        , "evaldata" :{
-                                                 "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
-                                                 ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
-                                                            , "y_size": {"type":"int","option":32,"auto":False}
-                                                            , "channel":{"type":"int","option":3,"auto":False}
-                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
-                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}
-                                    }
-                         }
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# autoencoder_img
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/autoencoder_img/',
+                     json=
+                     {
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# autoencoder_csv
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/autoencoder_csv/',
+                     json=
+                     {
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# bilstmcrf_iob
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/bilstmcrf_iob/',
+                     json=
+                     {
+                     })
+data = json.loads(resp.json())
+print("evaluation result : {0}".format(data))
+##############################################################################################################################
+# fasttext_txt
+##############################################################################################################################
+resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/fasttext_txt/',
+                     json=
+                     {
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
 
 
+##############################################################################################################################
+##############################################################################################################################
+# Network Description
+##############################################################################################################################
+##############################################################################################################################
 resp = requests.put('http://' + url + '/api/v1/type/automl/state/rule/graph_id/graph_flow_desc/',
-                     json=
-                     {
-                            "cnn" : "CNN (convolutional neural network)은 딥러닝의 한 종류로 앞의 컨볼루셔널 계층을 통해서 입력 받은 특징(Feature)를 추출하게 되고, 이렇게 추출된 특징을 기반으로 기존의 뉴럴 네트워크를 이용하여 분류를 해내게 된다."
-                            ,"resnet" : "ResNet Network Description"
-                            ,"wcnn" : "WCNN Network Description"
-                            ,"wdnn" : "WDNN Network Description"
-                     })
-# Json Param 1 or 1,2 or 1,2,3
-resp = requests.put('http://' + url + '/api/v1/type/automl/state/rule/graph_id/graph_flow_group_id/',
-                     json=
-                     {      "wdnn" : "1"
-                            ,"cnn" : "2"
-                            ,"resnet" : "2"
-                            ,"wcnn" : "3"
-                     })
+json=
+{
+    "cnn" : "CNN (convolutional neural network)은 딥러닝의 한 종류로 앞의 컨볼루셔널 계층을 통해서 입력 받은 특징(Feature)를 추출하게 되고, 이렇게 추출된 특징을 기반으로 기존의 뉴럴 네트워크를 이용하여 분류를 해내게 된다."
+    ,"resnet" : "ResNet Network Description"
+    ,"wdnn": "wdnn Network Description"
+    ,"wdnn_keras": "wdnn_keras Network Description"
+    ,"word2vec": "word2vec Network Description"
+    ,"word2vec_frame" : "word2vec_frame Network Description"
+    ,"doc2vec" : "doc2vec Network Description"
+    ,"wcnn" : "WCNN Network Description"
+    ,"seq2seq" : "seq2seq Network Description"
+    ,"seq2seq_csv" : "seq2seq_csv Network Description"
+    ,"autoencoder_img" : "autoencoder_img Network Description"
+    ,"autoencoder_csv" : "autoencoder_csv Network Description"
+    ,"bilstmcrf_iob" : "bilstmcrf_iob Network Description"
+    ,"fasttext_txt" : "fasttext_txt Network Description"
+})
+##############################################################################################################################
+##############################################################################################################################
+# Network Group
+# Fram : 1
+# Image : 2
+# NLP : 3
 
-# Json Param 1 or 1,2 or 1,2,3
+# Multy Ex) 1, 2
+##############################################################################################################################
+##############################################################################################################################
+resp = requests.put('http://' + url + '/api/v1/type/automl/state/rule/graph_id/graph_flow_group_id/',
+json=
+{
+    "cnn" : "2"
+    ,"resnet" : "2"
+    ,"wdnn": "1"
+    ,"wdnn_keras": "1"
+    ,"word2vec" : "3"
+    ,"word2vec_frame" : "3"
+    ,"doc2vec" :"3"
+    ,"wcnn" : "3"
+    ,"seq2seq" : "3"
+    ,"seq2seq_csv" : "3"
+    ,"autoencoder_img" : "2"
+    ,"autoencoder_csv" : "3"
+    ,"bilstmcrf_iob" : "3"
+    ,"fasttext_txt" : "3"
+})
+##############################################################################################################################
+##############################################################################################################################
+# Sample file path
+##############################################################################################################################
+##############################################################################################################################
 resp = requests.put('http://' + url + '/api/v1/type/automl/state/rule/graph_id/train_file_path/',
-                     json=
-                     {      "wdnn" : "/samples/wdnn_sample.csv"
-                            ,"cnn" : "/samples/cnn_sample.zip"
-                            ,"resnet" : "/samples/resnet_sample.zip"
-                            ,"wcnn" : "/samples/wcnn_sample.csv"
-                     })
+json=
+{
+    "cnn" : "/samples/cnn_sample.zip"
+    ,"resnet" : "/samples/resnet_sample.zip"
+    ,"wdnn" : "/samples/wdnn_sample.csv"
+    ,"wdnn_keras" : "/samples/wdnn_keras_sample.csv"
+    ,"word2vec" : "/samples/word2vec_sample.zip"
+    ,"word2vec_frame" : "/samples/word2vec_frame_sample.zip"
+    ,"doc2vec" : "/samples/doc2vec_sample.zip"
+    ,"wcnn" : "/samples/wcnn_sample.csv"
+    ,"seq2seq" : "/samples/seq2seq_sample.csv"
+    ,"seq2seq_csv" : "/samples/seq2seq_csv_sample.csv"
+    ,"autoencoder_img" : "/samples/autoencoder_imgsample.csv"
+    ,"autoencoder_csv" : "/samples/autoencoder_csv_sample.csv"
+    ,"bilstmcrf_iob" : "/samples/bilstmcrf_iob_sample.csv"
+    ,"fasttext_txt" : "/samples/fasttext_txt_sample.csv"
+
+})
+##############################################################################################################################
+##############################################################################################################################
+# Sample Network Create Type.
+##############################################################################################################################
+##############################################################################################################################
+resp = requests.put('http://' + url + '/api/v1/type/automl/state/rule/graph_id/graph_flow_info_id/',
+json=
+{
+    "cnn" : 1
+    ,"resnet" : 1
+    ,"wdnn": 2
+    ,"wdnn_keras" : 3
+    ,"word2vec" : 4
+    ,"word2vec_frame" : 5
+    ,"doc2vec" : 6
+    ,"wcnn" : 7
+    ,"seq2seq" : 8
+    ,"seq2seq_csv" : 9
+    ,"autoencoder_img" : 10
+    ,"autoencoder_csv" : 11
+    ,"bilstmcrf_iob" : 7
+    ,"fasttext_txt" : 7
+
+})
+
+
+
+
+

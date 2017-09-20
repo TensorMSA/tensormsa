@@ -102,3 +102,15 @@ class AUTO_ML_RULE_Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.AUTO_ML_RULE
         fields = ('graph_flow_id', 'graph_flow_data')
+
+class GRAPH_FLOW_INFO_Serializer(serializers.ModelSerializer):
+    """
+    Table : AUTO_ML_RULE
+    """
+    class Meta:
+        model = models.GRAPH_FLOW_INFO
+        fields = ('graph_flow_info_id', 'graph_node', 'graph_node_name', 'graph_seq')
+
+
+
+

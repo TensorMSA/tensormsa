@@ -69,15 +69,18 @@ class CommonNNInfoVersion(APIView):
         try:
             return_data = NNCommonManager().get_nn_wf_info(nnid)
             conv = []
-
-            node = WorkFlowSimpleManager().get_train_node()
+            netconf_node = ""
+            graph = NNCommonManager().get_nn_node_name(nnid)
+            for net in graph:
+                if net['fields']['graph_node'] == 'netconf_node':
+                    netconf_node = net['fields']['graph_node_name']
 
             for row in return_data:
                 row["model"] = "N"
                 train_filename = row["train_batch_ver_id"]
                 pred_filename  = row["pred_batch_ver_id"]
                 ver = str(row["nn_wf_ver_id"])
-                model_path = get_model_path(nnid, ver, node)
+                model_path = get_model_path(nnid, ver, netconf_node)
                 for fn in os.listdir(model_path):
                     fnsplit = fn.split(".")
                     fnsplitName = fnsplit[0]
