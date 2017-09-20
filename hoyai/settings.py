@@ -17,7 +17,8 @@ import platform
 host = platform.uname()[1]
 #CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
 #CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c:5672//52.79.201.93'
-CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@'+host+'//'
+#CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@'+host+'//'
+CELERY_BROKER_URL =  'amqp://admin:mypass@rabbit//'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
 CELERY_TASK_SERIALIZER = 'json'
@@ -110,7 +111,16 @@ DATABASES = {
         'PORT': '',
     }
 }
-
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'postgres',
+#        'USER': 'postgres',
+#        'PASSWORD': 'postgres',
+#        'HOST': 'db',
+#        'PORT': '5432',
+#    }
+#}
 CELERYD_HIJACK_ROOT_LOGGER = False
 """ How to Logging
 
