@@ -269,14 +269,6 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.predict_path = _wf_data_node.predict_path
 
 
-        #if 'test' in self.get_prev_node()[0].node_name:
-        #    _wf_data_node = wf_data_node(key.split(not'_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
-        #    self.multi_read_flag = _wf_data_node.multi_node_flag
-        #else:
-        #_wf_data_node = wf_data_node(key.split('_')[0] + '_' + key.split('_')[1] + '_' + 'data_node')
-        #self.multi_read_flag = _wf_data_node.multi_node_flag
-
-
     def eval(self, node_id, conf_data, data=None, result=None):
         """
 
