@@ -3,8 +3,7 @@ import json, os
 from common.utils import *
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
-nn_id = "nn00000028"
-nn_id = ""
+nn_id = "nn00000030"
 biz_cate = "ERP"
 biz_sub_cate = "MRO"
 nn_title = "MRO Image Classification"
@@ -26,7 +25,7 @@ resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'
                      })
 data = json.loads(resp.json())
 print("Insert nn_info evaluation result : {0}".format(data))
-
+nn_id = data
 # CNN Network WorkFlow : Create
 # (CNN Network WorkFlow를 생성해 준다. 실행할 때마다 신규 버전을 새로 생성 한다.)<br>
 resp = requests.post('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/',

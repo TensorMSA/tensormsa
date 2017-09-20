@@ -15,72 +15,72 @@ import sys
 
 # println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-nn_id = "nn00000028"
-wf_ver_id = 0
+nn_id = "nn00000030"
+wf_ver_id = 1
 
-# get workflow version
-if wf_ver_id == 0:
-    resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
-    data = json.loads(resp.json())
-
+# # get workflow version
+# if wf_ver_id == 0:
+#     resp = requests.get('http://' + url + '/api/v1/type/common/target/nninfo/nnid/'+nn_id+'/version/')
+#     data = json.loads(resp.json())
+#
 #     # get Max workflow version
 #     for config in data:
 #         if config["fields"]["nn_wf_ver_id"] > wf_ver_id:
 #             wf_ver_id = config["fields"]["nn_wf_ver_id"]
 
 wf_ver_id = str(wf_ver_id)
-# ########################################################################################################################
-# # CNN Network WorkFlow Node : Network Config Setup
-# # (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
-# resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
-#                  json={
-#                      "param":{"traincnt": 1
-#                               ,"epoch": 5
-#                               ,"batch_size":20
-#                               ,"predictcnt": 2
-#                               ,"predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
-#                               ,"augmentation": "Y"
-#                      },
-#                      "config": {"num_classes":1,
-#                                 "learnrate": 0.001,
-#                                 "layeroutputs":18, #18, 34, 50, 101, 152, 200
-#                                 "optimizer":"adam", #
-#                                 "eval_type":"category"
-#                                  }
-#                      ,"labels":[]
-#                     })
-# netconf = json.loads(resp.json())
-# # print("insert workflow node conf info evaluation result : {0}".format(netconf))
-#
-# # CNN Network WorkFlow Node :  Eval Config Setup
-# resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/eval_node/'
-#                     ,json={})
-# evalconf = json.loads(resp.json())
-# ########################################################################################################################
-# # yolo min image size 385 and %7 = 0
-# datajson = {"preprocess": {"x_size": 32,
-#                            "y_size": 32,
-#                            "channel":3,
-#                            "filesize": 1000000,
-#                            "yolo": "n"}
-#             }
-#
-# # CNN Network WorkFlow Node :  Data Config Setup
-# resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/datasrc/',
-#                      json=datajson)
-# dataconf = json.loads(resp.json())
-#
-# # CNN Network WorkFlow Node :  Eval Data Config Setup
-# resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/evaldata/'
-#                      ,json=datajson)
-# edataconf = json.loads(resp.json())
+########################################################################################################################
+# CNN Network WorkFlow Node : Network Config Setup
+# (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
+                 json={
+                     "param":{"traincnt": 1
+                              ,"epoch": 5
+                              ,"batch_size":20
+                              ,"predictcnt": 2
+                              ,"predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
+                              ,"augmentation": "Y"
+                     },
+                     "config": {"num_classes":1,
+                                "learnrate": 0.001,
+                                "layeroutputs":18, #18, 34, 50, 101, 152, 200
+                                "optimizer":"adam", #
+                                "eval_type":"category"
+                                 }
+                     ,"labels":[]
+                    })
+netconf = json.loads(resp.json())
+# print("insert workflow node conf info evaluation result : {0}".format(netconf))
+
+# CNN Network WorkFlow Node :  Eval Config Setup
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/eval_node/'
+                    ,json={})
+evalconf = json.loads(resp.json())
+########################################################################################################################
+# yolo min image size 385 and %7 = 0
+datajson = {"preprocess": {"x_size": 32,
+                           "y_size": 32,
+                           "channel":3,
+                           "filesize": 1000000,
+                           "yolo": "n"}
+            }
+
+# CNN Network WorkFlow Node :  Data Config Setup
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_data/',
+                     json=datajson)
+dataconf = json.loads(resp.json())
+
+# CNN Network WorkFlow Node :  Eval Data Config Setup
+resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/eval_data/'
+                     ,json=datajson)
+edataconf = json.loads(resp.json())
 
 # ########################################################################################################################
-# # CNN Network Training
-# # (CNN Network Training을 실행한다 .)
-# resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
-# data = json.loads(resp.json())
-# print(data)
+# CNN Network Training
+# (CNN Network Training을 실행한다 .)
+resp = requests.post('http://' + url + '/api/v1/type/runmanager/state/train/nnid/'+nn_id+'/ver/'+wf_ver_id+'/')
+data = json.loads(resp.json())
+print(data)
 #
 # def spaceprint(val, cnt):
 #     leng = len(str(val))

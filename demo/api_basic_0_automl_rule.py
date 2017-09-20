@@ -38,7 +38,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                     }
                                              ,"labels":{"type":"list","option":[],"auto":False}
                                         },
-                         "datasrc"    :{
+                         "netconf_data"    :{
                                              "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
                                              ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
                                                             , "y_size": {"type":"int","option":32,"auto":False}
@@ -46,7 +46,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                             , "filesize": {"type":"int","option":1000000,"auto":False}
                                                             , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
                                         },
-                         "evaldata" :{
+                         "eval_data" :{
                                              "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
                                                 , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
                                                     , "y_size": {"type": "int", "option": 32, "auto": False}
@@ -80,7 +80,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                          }
                                              ,"labels":{"type":"str","option":[],"auto":False}
                                         }
-                        ,  "datasrc"    :{
+                        ,  "netconf_data"    :{
                                              "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
                                              ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
                                                             , "y_size": {"type":"int","option":32,"auto":False}
@@ -88,7 +88,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                             , "filesize": {"type":"int","option":1000000,"auto":False}
                                                             , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
                                            }
-                        , "evaldata" :{
+                        , "eval_data" :{
                                                  "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
                                                  ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
                                                             , "y_size": {"type":"int","option":32,"auto":False}
