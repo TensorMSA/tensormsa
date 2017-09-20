@@ -327,11 +327,19 @@ class NNCommonManager :
             raise Exception(e)
 
     def get_nn_node_name(self, nn_id):
-        condition = {}
-        condition['nn_id'] = nn_id
-        nninfo = NNCommonManager().get_nn_info(condition)
-        type = nninfo[0]['dir']
-        net_node = AutoMlRule().get_graph_info(type, "all")
-        graph_id = net_node[0]['fields']["graph_flow_info_id"]
-        graph = WorkFlowStateMenu().get_graph_info(graph_id)
-        return graph
+        """
+        search all node name info
+        :param nn_id: neural network definition id
+        :return: sql
+        """
+        try :
+            condition = {}
+            condition['nn_id'] = nn_id
+            nninfo = NNCommonManager().get_nn_info(condition)
+            type = nninfo[0]['dir']
+            net_node = AutoMlRule().get_graph_info(type, "all")
+            graph_id = net_node[0]['fields']["graph_flow_info_id"]
+            graph = WorkFlowStateMenu().get_graph_info(graph_id)
+            return graph
+        except Exception as e :
+            return None

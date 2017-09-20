@@ -2,8 +2,8 @@ from django.core.serializers.json import json, DjangoJSONEncoder
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.network.nn_common_manager import NNCommonManager
-import logging
-import coreapi
+import logging, coreapi
+from common import utils
 
 class CommonNNInfoList(APIView):
     """
@@ -85,6 +85,11 @@ class CommonNNInfoList(APIView):
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
+        finally:
+            graph = NNCommonManager().get_nn_node_name(nnid)
+            for net in graph:
+                if net['fields']['graph_node'] in ['netconf_data','eval_data']:
+                    utils.get_source_path(nnid, None, net['fields']['graph_node_name'])
 
     def get(self, request, nnid):
         """
