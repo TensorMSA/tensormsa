@@ -61,6 +61,7 @@ class CommonNNInfoList(APIView):
             Define new neural network process
         """
         try:
+
             input_parm = request.data
             max_nnid = NNCommonManager().get_nn_id_max() + 1
             if nnid == "":
@@ -81,7 +82,14 @@ class CommonNNInfoList(APIView):
             input_parm_s['id'] = max_nnid
             input_parm_s['nn_id'] = nnid
             return_data = NNCommonManager().insert_nn_info(input_parm, input_parm_s)
-            return Response(json.dumps(return_data))
+            # Data node name
+            graph = NNCommonManager.get_nn_node_name(None, return_data)
+
+            return_param = {}
+            return_param['nn_id'] = return_data
+            return_param['graph'] = graph
+
+            return Response(json.dumps(return_param))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
