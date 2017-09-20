@@ -106,52 +106,60 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wdnn/',
                      json=
                      {
-                         "data_node":
-                             {
-                                 "source":
+                        "data_node" :
                                      {
-                                         "type": {"type": "sel", "option": ["csv"], "auto": False}
-                                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
-                                         , "source_path": {"type": "str", "option": None, "auto": False}
-                                         ,
-                                         "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
-                                         , "drop_duplicate": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                             "type":{"type":"sel","option":["csv"],"auto":False}
+                                             ,"source_server":{"type":"sel","option":["local"],"auto":False}
+                                             ,"source_sql":{"type":"sel","option":["all"],"auto":False}
+                                             ,"source_path":{"type":"str","option":None,"auto":False}
+                                             ,"multi_node_flag": {"type" : "sel", "option" : ["True","False"],"auto":False}
+                                             ,"drop_duplicate": {"type" : "sel", "option" : ["True","False"],"auto":False}
+                                             ,"preprocess":{"type":"sel","option":["maxabs_scale",'scale','minmax_scale','robust_scale','normalize','maxabs_scale'],"auto":False}
+                                             ,"store_path":{"type":"str","option":None,"auto":False}
+
                                      }
-                                 , "pre":
-                                 {
-                                     "source_sql": {"type": "sel",
-                                                    "option": ["maxabs_scale", 'scale', 'minmax_scale', 'robust_scale',
-                                                               'normalize', 'maxabs_scale'], "auto": False}
-                                 }
-                                 , "store":
-                                 {
-                                     "store_path": {"type": "str", "option": None, "auto": False}
-                                 }
-                             }
-                         , "dataconf_node":
-                         {
-                             "label": {"type": "str", "option": "SUCCESSFUL_BID_PRICE", "auto": False}
-                             , "Transformations": {"type": "str", "option": {}, "auto": False}
-                             , "cross_cell": {"type": "str", "option": {}, "auto": False}
-                             , "cell_feature": {"type": "str", "option": {}, "auto": False}
-                             , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
-                             , "label_values": {"type": "str", "option": [], "auto": False}
-                             , "label_type": {"type": "str", "option": "CONTINUOUS", "auto": False}
-                         }
-                         , "netconf_node":
-                         {
-                             "model_path": {"type": "str", "option": None, "auto": False}
-                             , "hidden_layers": {"type": "int", "option": [100], "auto": False}
-                             , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
-                             , "batch_size": {"type": "int", "option": None, "auto": [100, 100000, 100]}
-                             , "epoch": {"type": "int", "option": None, "auto": [10, 500, 10]}
-                             , "model_type": {"type": "sel", "option": ["regression"], "auto": False}
-                             , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
-                         }
+                         ,"dataconf_node":
+                                     {
+                                                        "label": {"type":"str","option":"SUCCESSFUL_BID_PRICE","auto":False}
+                                                    ,"Transformations":{"type":"str","option":{},"auto":False}
+                                                    ,"cross_cell":{"type":"str","option":{},"auto":False}
+                                                    ,"cell_feature":{"type":"str","option":{},"auto":False}
+                                                    ,"extend_cell_feature" :{"type":"str","option":{},"auto":False}
+                                                    ,"label_values" : {"type":"str","option":[],"auto":False}
+                                                    ,"label_type" : {"type":"str","option":"CONTINUOUS","auto":False}
+                                     }
+                         ,"netconf_node" :
+                                     {
+                                                    "model_path": {"type":"str","option":None,"auto":False}
+                                                    ,"hidden_layers": {"type": "int", "option": [100,100], "auto": False}
+                                                    ,"activation_function": {"type":"sel","option":["relu"],"auto":False}
+                                                    ,"batch_size" : {"type":"int","option":None,"auto":[100,100000,100]}
+                                                    ,"epoch" : {"type":"int","option":None,"auto":[10,500,10]}
+                                                    ,"model_type" : {"type":"sel","option":["regression"],"auto":False}
+                                                    ,"train" : {"type" : "sel", "option" : ["True","False"],"auto":False}
+                                     }
+                         ,"evaldata" :
+                                    {
+                                        "type": {"type": "sel", "option": ["csv"], "auto": False}
+                                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                                        , "source_path": {"type": "str", "option": None, "auto": False}
+                                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
+                                        , "preprocess": {"type": "sel",
+                                                         "option": ["maxabs_scale", 'scale', 'minmax_scale',
+                                                                    'robust_scale', 'normalize', 'maxabs_scale'],
+                                                         "auto": False}
+                                        , "store_path": {"type": "str", "option": None, "auto": False}
+
+                                    }
+                         ,"eval_node" :
+                                    {
+                                        "type": {"type":"sel","option":["regression"],"auto":False}
+                                    }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
 ##############################################################################################################################
 # wdnn keras
 ##############################################################################################################################
