@@ -65,8 +65,8 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                      json=
                      {
                          "netconf_node" :{
-                                             "param": {"traincnt": {"type":"int","option":None,"auto":[1,100,2]}
-                                                      ,"epoch": {"type":"int","option":None,"auto":[1,10,1]}
+                                             "param": {"traincnt": {"type":"int","option":2,"auto":False}
+                                                      ,"epoch": {"type":"int","option":5,"auto":False}
                                                       ,"batch_size": {"type":"int","option":None,"auto":[10,1000,10]}
                                                       ,"predictcnt": {"type":"int","option":5,"auto":False}
                                                       ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
@@ -74,7 +74,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                              }
                                              ,"config": {"num_classes": {"type":"int","option":1,"auto":False}
                                                         ,"learnrate": {"type":"int","option":None,"auto":[0.0001,0.1,0.001]}
-                                                        , "layeroutputs": {"type":"int","option":18,"auto":[1,152,10]}
+                                                        , "layeroutputs": {"type":"int","option":18,"auto":False}
                                                         ,"eval_type":{"type":"sel","option":["category"],"auto":False}
                                                         ,"optimizer":{"type":"sel","option":["adam","rmsp"],"auto":False}
                                                          }
@@ -113,8 +113,8 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                              ,"source_sql":{"type":"sel","option":["all"],"auto":False}
                                              ,"source_path":{"type":"str","option":None,"auto":False}
                                              ,"multi_node_flag": {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                             ,"drop_duplicate": {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                             ,"preprocess":{"type":"sel","option":["maxabs_scale",'scale','minmax_scale','robust_scale','normalize','maxabs_scale'],"auto":False}
+                                             ,"drop_duplicate": {"type" : "sel", "option" : ["False", "True"],"auto":False}
+                                             ,"preprocess":{"type":"sel","option":["null","maxabs_scale",'scale','minmax_scale','robust_scale','normalize','maxabs_scale'],"auto":False}
                                              ,"store_path":{"type":"str","option":None,"auto":False}
 
                                      }
@@ -126,16 +126,16 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                     ,"cell_feature":{"type":"str","option":{},"auto":False}
                                                     ,"extend_cell_feature" :{"type":"str","option":{},"auto":False}
                                                     ,"label_values" : {"type":"str","option":[],"auto":False}
-                                                    ,"label_type" : {"type":"str","option":"CONTINUOUS","auto":False}
+                                                    ,"label_type" : {"type":"sel","option":["CATEGORYCAL", "CONTINUOUS"],"auto":False}
                                      }
                          ,"netconf_node" :
                                      {
                                                     "model_path": {"type":"str","option":None,"auto":False}
                                                     ,"hidden_layers": {"type": "int", "option": [100,100], "auto": False}
                                                     ,"activation_function": {"type":"sel","option":["relu"],"auto":False}
-                                                    ,"batch_size" : {"type":"int","option":None,"auto":[100,100000,100]}
-                                                    ,"epoch" : {"type":"int","option":None,"auto":[10,500,10]}
-                                                    ,"model_type" : {"type":"sel","option":["regression"],"auto":False}
+                                                    ,"batch_size" : {"type":"int","option":1000,"auto":False}
+                                                    ,"epoch" : {"type":"int","option":None,"auto":[1,10,1]}
+                                                    ,"model_type" : {"type":"sel","option":["regression","category"],"auto":False}
                                                     ,"train" : {"type" : "sel", "option" : ["True","False"],"auto":False}
                                      }
                          ,"evaldata" :
@@ -146,7 +146,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                         , "source_path": {"type": "str", "option": None, "auto": False}
                                         , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
                                         , "preprocess": {"type": "sel",
-                                                         "option": ["maxabs_scale", 'scale', 'minmax_scale',
+                                                         "option": ["null","maxabs_scale", 'scale', 'minmax_scale',
                                                                     'robust_scale', 'normalize', 'maxabs_scale'],
                                                          "auto": False}
                                         , "store_path": {"type": "str", "option": None, "auto": False}
@@ -154,7 +154,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                     }
                          ,"eval_node" :
                                     {
-                                        "type": {"type":"sel","option":["regression"],"auto":False}
+                                        "type": {"type":"sel","option":["regression","category"],"auto":False}
                                     }
                      })
 data = json.loads(resp.json())
@@ -273,14 +273,13 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                  , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                                  , "optimizer": {"type": "sel", "option": ["AdamOptimizer"], "auto": False}
                                               }
-                                 , "layers": {"active": "relu",
-                                              "cnnfilter": [2, 3, 4, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 2, 3, 4, 5, 2, 3,
-                                                            4, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 2, 3, 4, 5],
-                                              "droprate": "0.5",
+                                 , "layers": {"active": {"type": "sel", "option": ["relu"], "auto": False},
+                                              "cnnfilter": {"type": "int", "option": None, "auto": [[1,10,1],[1,3,1]]},
+                                              "droprate":  {"type":"int","option":None,"auto":[0.0,1.0,0.1]}
                                               }
                                  , "out": {
-                                 "active": "softmax",
-                                 "padding": "SAME"
+                                 "active": {"type": "sel", "option": ["softmax"], "auto": False},
+                                 "padding": {"type": "sel", "option": ["SAME"], "auto": False}
                              }
                                  , "labels": {"type": "str", "option": [], "auto": False}
                              },
@@ -292,7 +291,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                  "encode_len": {"type": "int", "option": 10, "auto": False},
                                  "preprocess": {"type": "sel", "option": ['none','mecab'], "auto": False},
                                  "vocab_size": {"type": "int", "option": 100, "auto": False},
-                                 "char_encode": {"type": "sel", "option": [True,False], "auto": [0, 1, 1]},
+                                 "char_encode": {"type": "sel", "option": ['True','False'], "auto": [0, 1, 1]},
                                  "char_max_len": {"type": "int", "option": 5, "auto": False},
                                  "lable_size": {"type": "int", "option": 15, "auto": False},
                                  "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
@@ -305,7 +304,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                  "encode_len": {"type": "int", "option": 10, "auto": False},
                                  "preprocess": {"type": "sel", "option": ['none','mecab'], "auto": False},
                                  "vocab_size": {"type": "int", "option": 100, "auto": False},
-                                 "char_encode": {"type": "sel", "option": [True,False], "auto": [0, 1, 1]},
+                                 "char_encode": {"type": "sel", "option": ['True','False'], "auto": [0, 1, 1]},
                                  "char_max_len": {"type": "int", "option": 5, "auto": False},
                                  "lable_size": {"type": "int", "option": 15, "auto": False},
                                  "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
