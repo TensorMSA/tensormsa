@@ -125,7 +125,7 @@ class FileUploadView(APIView):
         """
         firsttmpfolder = request.data["first_tmp_folder"]
         lasttmpfolder = request.data["last_tmp_folder"]
-        tmpfilepath = get_source_path(firsttmpfolder, "1", lasttmpfolder)
+        tmpfilepath = get_source_path(firsttmpfolder, ver, lasttmpfolder)
         filepath = get_source_path(nnid, ver, dir)
 
         for i in os.listdir(tmpfilepath):

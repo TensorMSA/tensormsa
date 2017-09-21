@@ -118,10 +118,16 @@ class CommonNNInfoList(APIView):
                 condition['nn_id'] = 'seq'
             return_data = NNCommonManager().get_nn_info(condition)
             logging.info(return_data)
-            return Response(json.dumps(return_data, cls=DjangoJSONEncoder))
+            # Data node name
+            graph = NNCommonManager.get_nn_node_name(None, nnid)
+
+            return_param = {}
+            return_param['fields'] = return_data
+            return_param['graph'] = graph
+            return Response(json.dumps(return_param, cls=DjangoJSONEncoder))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
-            return Response(json.dumps(return_data, cls=DjangoJSONEncoder))
+            return Response(json.dumps(return_param, cls=DjangoJSONEncoder))
 
     def put(self, request, nnid):
         """
