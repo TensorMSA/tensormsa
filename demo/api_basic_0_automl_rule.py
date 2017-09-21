@@ -109,14 +109,20 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                         "data_node" :
                                      {
                                              "type":{"type":"sel","option":["csv"],"auto":False}
-                                             ,"source_server":{"type":"sel","option":["local"],"auto":False}
+                                             , "preprocess": {"type": "sel",
+                                                          "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
+                                                                     'robust_scale', 'normalize', 'maxabs_scale'],
+                                                          "auto": False}
                                              ,"source_sql":{"type":"sel","option":["all"],"auto":False}
-                                             ,"source_path":{"type":"str","option":None,"auto":False}
+                                             ,"store_path": {"type": "str", "option": None, "auto": False}
+                                             ,"source_path": {"type": "str", "option": None, "auto": False}
+                                             ,"source_type": {"type": "sel", "option": ["local"], "auto": False}
+                                             ,"predict_path": {"type": "str", "option": None, "auto": False}
+                                             ,"source_server":{"type":"sel","option":["local"],"auto":False}
+                                             ,"drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
                                              ,"multi_node_flag": {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                             ,"drop_duplicate": {"type" : "sel", "option" : ["False", "True"],"auto":False}
-                                             ,"preprocess":{"type":"sel","option":["null","maxabs_scale",'scale','minmax_scale','robust_scale','normalize','maxabs_scale'],"auto":False}
-                                             ,"store_path":{"type":"str","option":None,"auto":False}
-
+                                             ,"max_sentence_len": {"type" : "int", "option" : 0,"auto":False}
+                                             , "source_parse": {"type": "str", "option": "raw", "auto": False}
                                      }
                          ,"dataconf_node":
                                      {
@@ -125,6 +131,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                     ,"cross_cell":{"type":"str","option":{},"auto":False}
                                                     ,"cell_feature":{"type":"str","option":{},"auto":False}
                                                     ,"extend_cell_feature" :{"type":"str","option":{},"auto":False}
+                                                    ,"cell_feature_unique" : {"type":"sel","option":[],"auto":False}
                                                     ,"label_values" : {"type":"str","option":[],"auto":False}
                                                     ,"label_type" : {"type":"sel","option":["CATEGORYCAL", "CONTINUOUS"],"auto":False}
                                      }
@@ -136,21 +143,26 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                     ,"batch_size" : {"type":"int","option":1000,"auto":False}
                                                     ,"epoch" : {"type":"int","option":None,"auto":[1,10,1]}
                                                     ,"model_type" : {"type":"sel","option":["regression","category"],"auto":False}
+                                                    ,"auto_demension": {"type": "sel", "option": ["False"], "auto": False}
                                                     ,"train" : {"type" : "sel", "option" : ["True","False"],"auto":False}
                                      }
                          ,"evaldata" :
                                     {
                                         "type": {"type": "sel", "option": ["csv"], "auto": False}
-                                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
-                                        , "source_path": {"type": "str", "option": None, "auto": False}
-                                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
                                         , "preprocess": {"type": "sel",
-                                                         "option": ["null","maxabs_scale", 'scale', 'minmax_scale',
+                                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
                                                                     'robust_scale', 'normalize', 'maxabs_scale'],
                                                          "auto": False}
+                                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
                                         , "store_path": {"type": "str", "option": None, "auto": False}
-
+                                        , "source_path": {"type": "str", "option": None, "auto": False}
+                                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                                        , "predict_path": {"type": "str", "option": None, "auto": False}
+                                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
+                                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
                                     }
                          ,"eval_node" :
                                     {
@@ -159,6 +171,11 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
+
+
+
+
+
 
 ##############################################################################################################################
 # wdnn keras

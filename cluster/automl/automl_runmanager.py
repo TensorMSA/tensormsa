@@ -307,7 +307,7 @@ class AutoMlRunManager :
         """
         if (type(conf_info) == dict):
             for row in list(conf_info.keys()):
-                if (str(conf_info[row]).find("auto") < 0) :
+                if (str(conf_info[row]).find("'auto'") < 0) :
                     continue
                 if (type(conf_info[row]) in [list]):
                     return row
