@@ -355,6 +355,8 @@ class AutoMlRunManager :
                     return self.conv_type(auto_form.get('option'))
                 elif (type(auto_form.get('option')) == int):
                     return self.conv_type(auto_form.get('option'))
+                elif (type(auto_form.get('option')) == dict):
+                    return self.conv_type(auto_form.get('option'))
             else :
                 if(auto_form.get('auto') is not None and len(auto_form.get('auto')) > 1
                     and str(len(auto_form.get('auto'))-1) in list(auto_form.keys())) :

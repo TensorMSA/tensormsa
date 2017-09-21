@@ -64,6 +64,10 @@ class WorkFlowSimpleManager :
         input_data['wf_state_id'] = str(nn_id) + "_" + str(wf_ver)
         state_id = self._create_workflow_state(input_data)
 
+        #todo 나중에 꼭 지울것!!!!!!!! 임시방편 it is temporary solution
+        if (type =='frame'):
+            type = 'wdnn'
+
         # create nodes fit to requested type (img, text, frame)
         net_node = AutoMlRule().get_graph_info(type, "all")
         self.set_node_name(net_node)
@@ -232,7 +236,7 @@ class WorkFlowSimpleManager :
         try:
             # netconf info
             self._set_nn_wf_node_info( wf_state_id, self.netconf_data, 'data_frame')
-            self._set_nn_wf_node_info( wf_state_id, self.netconf_dataconf, 'data_dfconf')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data_conf, 'data_dfconf')
             self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_fr2wdnn')
             self._set_nn_wf_node_info( wf_state_id, self.netconf_node, 'nf_wdnn')
 
@@ -242,8 +246,8 @@ class WorkFlowSimpleManager :
             self._set_nn_wf_node_info( wf_state_id, self.eval_node, 'eval_extra')
 
             # netconf relation
-            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_dataconf)
-            self._set_nn_wf_node_relation(wf_state_id, self.netconf_dataconf, self.netconf_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_data_conf)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data_conf, self.netconf_feed)
             self._set_nn_wf_node_relation(wf_state_id, self.netconf_feed, self.netconf_node)
             self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
             self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_feed)
@@ -262,7 +266,7 @@ class WorkFlowSimpleManager :
         try:
             # netconf info
             self._set_nn_wf_node_info( wf_state_id, self.netconf_data, 'data_frame')
-            self._set_nn_wf_node_info( wf_state_id, self.netconf_dataconf, 'data_dfconf')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data_conf, 'data_dfconf')
             self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_keras2frame')
             self._set_nn_wf_node_info( wf_state_id, self.netconf_node, 'keras_dnn')
 
@@ -272,8 +276,8 @@ class WorkFlowSimpleManager :
             self._set_nn_wf_node_info( wf_state_id, self.eval_node, 'eval_extra')
 
             # netconf relation
-            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_dataconf)
-            self._set_nn_wf_node_relation(wf_state_id, self.netconf_dataconf, self.netconf_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_data_conf)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data_conf, self.netconf_feed)
             self._set_nn_wf_node_relation(wf_state_id, self.netconf_feed, self.netconf_node)
             self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
             self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_feed)
