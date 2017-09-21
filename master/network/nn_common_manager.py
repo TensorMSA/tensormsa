@@ -342,4 +342,4 @@ class NNCommonManager :
             graph = WorkFlowStateMenu().get_graph_info(graph_id)
             return graph
         except Exception as e :
-            return None
+            raise []

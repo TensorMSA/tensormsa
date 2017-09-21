@@ -86,6 +86,12 @@ class AutoMlRunManager :
         self.summary['bygen'].append(result)
         AutoMlCommon().update_stat_obj(self.nn_id, self.summary)
 
+        # Set Best Active
+        nnCommonManager = NNCommonManager()
+        input_data = {}
+        input_data['active_flag'] = "Y"
+        nnCommonManager.update_nn_wf_info(networks[0].get('nn_id'), input_data)
+
     def set_value(self, data_set, key, value):
         data_set[key] = value
         return data_set
@@ -343,17 +349,29 @@ class AutoMlRunManager :
         try :
             if(auto_form.get('auto') == False) :
                 if(type(auto_form.get('option')) == list) :
-                    return auto_form.get('option')
+                    return self.conv_type(auto_form.get('option'))
                 elif(type(auto_form.get('option')) == str) :
-                    return auto_form.get('option')
+                    return self.conv_type(auto_form.get('option'))
                 elif (type(auto_form.get('option')) == int):
-                    return auto_form.get('option')
+                    return self.conv_type(auto_form.get('option'))
             else :
-                if(auto_form.get('option') == None) :
+                if(auto_form.get('auto') is not None and len(auto_form.get('auto')) > 1
+                    and str(len(auto_form.get('auto'))-1) in list(auto_form.keys())) :
+                    return_list = []
+                    st, en, ir = auto_form.get('0')
+                    for i in range(0, random.randrange(int(st), int(en), int(ir))) :
+                        st_, en_, ir_ = auto_form.get('1')
+                        return_list.append(random.randrange(int(st_), int(en_), int(ir_)))
+                    return return_list
+                elif(auto_form.get('option') == None) :
                     st, en, ir = auto_form.get('auto')
                     if(type(st) == float or type(en) == float or type(ir) == float) :
                         return random.uniform(st, en)
                     else :
+                        if (ir == 0):
+                            ir = 1
+                        if (en == st) :
+                            en = en + 1
                         if(en > st) :
                             return random.randrange(st, en, ir)
                         else :
@@ -361,11 +379,41 @@ class AutoMlRunManager :
                 elif(type(auto_form.get('option')) == list) :
                     st, en, ir = auto_form.get('auto')
                     num =  random.randrange(st, en, ir)
-                    return auto_form.get('option')[num]
+                    return self.conv_type(auto_form.get('option')[num])
+                elif (type(auto_form.get('option')) == str):
+                    if(auto_form.get('option') in ['true', 'True']) :
+                        return True
+                    if (auto_form.get('option') in ['false', 'False']):
+                        return False
+                    return self.conv_type(auto_form.get('option'))
                 else :
-                    return auto_form.get('option')
+                    return self.conv_type(auto_form.get('option'))
         except Exception as e :
             raise Exception ("error on automl format conv : {0}".format(e))
+
+    def conv_type(self, value):
+        """
+        convert data type in force when data type is string 
+        to prevent errors may can happen after
+        :param value: data
+        :return: data convrted
+        """
+        if value == None :
+            return None
+        if (type(value) is not str) :
+            return value
+        if value.isdigit() :
+            return int(value)
+        if self.isfloat(value) :
+            return float(value)
+        return value
+
+    def isfloat(self, value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
 
     def get_all_nodes_list(self, nn_id, wf_ver):
         """
