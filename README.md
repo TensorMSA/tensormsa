@@ -1,69 +1,60 @@
-# TensorMSA : Tensorflow Micro Service Architecture
+<div align="center">
+  <img src="http://hugrypiggykim.com/wp-content/uploads/2017/09/title.png"><br><br>
+</div>
 
-<b>1.TensorMSA </b> </br>
-   - Tensor Micro Service Architecture is a project started to make TensorFlow more accessable from Java legacy systems
-   with out modifying too much source codes.
-   - We know there are AI platforms like Azure ML,Nvidia digits, AWS ML and etc, but our goal is little bit diffrent form theirs.
-   - We saw many models that work perfect on lab environment but don't works properly on real field or accuracy start to drop by the time goes. That's why we started this project. 
-   - Our project's goal is real time upgrading AI system from data collet,train,eval to prediction service, for that purpose we seperate action definition process and running processs. 
-   - Our system gathers data from specified web page, RDB or Hadoop and train, eval automatically. If the train reault is better than before our system chages prediction service model to new one. 
-   - More focus on enterprise support (continuous training, neural network management, history management, user managemetn and etc)
-   - More focus on neural network (UI/UX based network configuration, work flow based management and etc)
+| **`Linux CPU`** | **`Linux GPU`** |
+|-----------------|---------------------|
+| [![Build Status](https://ci.tensorflow.org/buildStatus/icon?job=tensorflow-master-cpu)](https://ci.tensorflow.org/job/tensorflow-master-cpu) | [![Build Status](https://ci.tensorflow.org/buildStatus/icon?job=tensorflow-master-linux-gpu)](https://ci.tensorflow.org/job/tensorflow-master-linux-gpu) |
 
-<b>2. Function </b></br>
-   - REST APIs corresponding to Tensorflow
-   - JAVA API component interface with python REST APIS
-   - Easy to use UI component provide NN configuration, train remotly, save & load NN models, handling train data sets
-   - Data collectors from various kind of source and types 
-   - Data preprocess for text, image and frame data sets 
-   - Neural Network models and continuous training, evaluation service 
-   - Android mobile SDK are also part of the plan (gather data and predict)
+## TensorMSA : Tensorflow Micro Service Architecture
+**TensorMSA** is a framework for machine learning and deep learning. Main purpose of developing this framework is to provide automated pipe lines (data extraction, data preprocessing, train model, evaluate model, service model). Importance of effective pipeline is really important when we proceed real project. There are so many hard tasks which has to be done to build data driven model. 
+* Set up environment for deep learning is not a easy task (os, gpu, tensorflow, hadoop, etc..) 
+* Build pipe line from data to train model 
+* Difficulties of understading deep learning and implement those algorithms (even with tensorflow it's not that easy) 
+* Manage model and data for service on legacy systems (usually works on Java)
+* Build applications with using data driven models 
+* Continuously update model by the environment and data changes 
+* Hyper Parameter tunning for deep learning is also very exhausting job
+* Managing and scheduling GPU server resource 
 
-<b>3. Schedule </b></br>
-   - start project : 2016.8
-   - start dev : 2016.9
-   - pilot version : 2016.12 *[(Link)](https://github.com/TensorMSA/TensorMSA)*
-   - version 0.1 target date : 2017.5
+**Function**
+* Easy to set up cluster with Docker images 
+* Manage GPU resources with Celery and own job manager 
+* REST APIs corresponding to Tensorflow
+* JAVA API component interface with python REST APIS
+* Easy to use UI for deep learning and machine learning 
+* Pipe lines for various type of data and algorithms 
+* Data collectors from various kind of source and types 
+* Data preprocess for text, image and frame data sets 
+* Support various deep learning and machine learning reusable componets 
+* AutoML for hyperparameter tunning (genetic algorithm, random hp search, gpu cluster)
 
-<b>4. Stack </b></br>
-   - FE(not supported this version) : React(ES6), SVG, D3, Pure CSS, Mobile(for Chatbot FW)
-   - BE : Django(Python 3.5), Restful Service(Micro Service Architecture), Tensorflow(v1.2), PostgreSQL, Memcache, Celery, Spqrk QL, HDF5, Ngix, Gensim, Konlpy
+**Stack**
+* Front End : React(ES6), SVG, D3, Pure CSS, Mobile(for Chatbot FW)
+* Back End : Django(Python 3.5), Restful Service(Micro Service Architecture), Tensorflow(v1.2), PostgreSQL, Memcache, Celery, Spqrk QL, HDF5, Ngix, Gensim, Konlpy
 
-<b>5. Methodology </b></br>
-   - Agile (CI, TDD, Pair programming and Cloud)
+## Overview - Deep Learning Pipe Lines
 
-# Overview - NeuralNetwork Management
-Bellow is the pratice version of hoya which shows the concept of our project well. Though our current project aims much more complicated and powerful system, concepts make easy to use system for enterprise is quite similar.
-[![HOYA ver0.1](https://github.com/TensorMSA/tensormsa_old/blob/master/video.PNG?raw=true)](https://youtu.be/sxx9l5gWbk0 "HOYA ver0.1 - Click to Watch!")
+Our framework provide easy to use UI/UX and AutoML based super easy process of build & service deep learning models
+[![TensorMSA DeepLearning Layer](https://github.com/TensorMSA/tensormsa_old/blob/master/video.PNG?raw=true)](https://youtu.be/sxx9l5gWbk0 "HOYA ver0.1 - Click to Watch!")
 
-# Overview - ChatBot Frame Work
-We are working on chatbot F/W based on stroy board and ontology. Benefit of this chatbot F/W is it uses neural networks created on Hoyai neural network management system. This means you can reuse various kind of AI models (※ CNN,ReNet, Wdnn, Seq2Seq, Word2Vec, Doc2Vec, Autoencode) on this chat bot F/W.   
-[![HOYA ChatBot ver0.1](https://github.com/TensorMSA/tensormsa_old/blob/master/chat_bot_alpha.jpg?raw=true)](https://youtu.be/TZsLuGv6_bU "HOYA ChatBot ver0.1 - Click to Watch!")
+## Overview - ChatBot Frame Work
 
-# Set Development & Run Env with Docker  *[(Link)](https://github.com/TensorMSA/hoyai_docker)*
-<b>1.Download Docker Images </b> </br>
-   ```bash
-     docker pull hoyai/hoyai_dev_docker
-   ```
-<b>2.Run Docker Container </b> </br>
-   - Changes Resolution for vnc = VNC_RESOLUTION=<b>"1920x1080"</b> </br>
-```bash
-     docker run -itd --env="VNC_RESOLUTION=1920x1080" --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --name hoyai_dev -p 5672:5672 -p 2266:2266 -p 5432:5432 -p 8000:8000 -p 6006:6006 -p 8888:8888 -p 5901:5901 hoyai/hoyai_dev_docker
-```
-# Google SyntaxNet Korean Docker *[(Link)](https://github.com/TensorMSA/syntax_docker)*
-Google SyntaxNet provide 20 default languages but Korean is not included so you must do some tricky jobs to train Korean Corpus and build Rest API service environment with Google Syntaxnet so we build up some Docker script make those process
-easy and simple
+Sometimes we need more complex architecture for machine learning service. (Ensemble multiple models with user logics)
+[![TensorMSA Application Layer](https://github.com/TensorMSA/tensormsa_old/blob/master/chat_bot_alpha.jpg?raw=true)](https://youtu.be/TZsLuGv6_bU "HOYA ChatBot ver0.1 - Click to Watch!")
 
-# Tensorflow Jupyter Sample Codes *[(Link)](https://github.com/TensorMSA/hoyai_jupyter)* 
-Tensorflow version upgrades really fast and seems like usages changes fast too, our goal on the project is build various kind of samples codes works on latest Tensorflow version. And also with basic tensorflow with python example, we are going to provide HOYA api examples codes step by step 
+## For more information  
 
-# REST API *[(Link)](http://13.124.133.117:8989/docs)* 
-All functions (100%) developed on this project are linked to REST API (support server2server, client2server services)
+* [TensorMSA install with Docker](https://github.com/TensorMSA/hoyai_docker)
+* [Swagger API page for TensorMSA](http://13.124.133.117:8989/docs)
+* [Sphinx Pydoc page for TensorMSA](https://tensormsa.github.io/tensormsa/)
+* [TensorMSA Project Design Document](https://docs.google.com/presentation/d/1SKYQ85l29PApQu8aUOFbkTMpxxefpJH3NhiR_GYr66I/pub?start=false&loop=false&delayms=3000)
+* [TensorMSA User Guide](http://hugrypiggykim.com/category/tensormsa-guide/)
+* [*etc* : Google syntaxNet Korean docker](https://github.com/TensorMSA/syntax_docker)
+* [*etc* : Tensorflow education Jupyter notebooks](https://github.com/TensorMSA/hoyai_jupyter)
+* [*etc* : Deep Learning Education Materials](http://hugrypiggykim.com/2017/08/24/%EB%94%A5%EB%9F%AC%EB%8B%9D-%EA%B5%90%EC%9C%A1-%EC%9E%90%EB%A3%8C-deep-learning-lecture/)
 
-# Python Documents *[(Link)](https://tensormsa.github.io/tensormsa/)* 
-You can visit python document site generated with sphinix and git page 
 
-# Contributions *[(Desigin Link)](https://docs.google.com/presentation/d/1SKYQ85l29PApQu8aUOFbkTMpxxefpJH3NhiR_GYr66I/pub?start=false&loop=false&delayms=3000)*
- <p align="center">
-  <img src="https://github.com/TensorMSA/tensormsa_old/blob/master/HOYA%20F_W%20Design%20Document.jpg?raw=true" width="750"/>
- </p>
+## License
+
+[Apache License 2.0](LICENSE)
