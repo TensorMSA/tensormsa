@@ -66,7 +66,7 @@ class AutoMlCommon:
         try:
             obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=nn_id)
             data_set = getattr(obj, "automl_stat")
-            data_set['bygen'] = data_set['bygen'] + (input_data['bygen'])
+            data_set['bygen'] = input_data['bygen']
             data_set['best'] = input_data['best']
             setattr(obj, "automl_stat", data_set)
             obj.save()
