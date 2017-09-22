@@ -239,7 +239,7 @@ class AutoMlRunManager :
         input_data['automl_gen'] = generation
         input_data['condition'] = "2"  # 1 Pending, 2 Progress, 3 Finish, 4 Error
         input_data['active_flag'] = "N"
-        input_data['nn_wf_ver_desc'] = " ".join(["id:",self.nn_id, "gen:", generation, "ver:", str(nn_wf_ver_id)])
+        # input_data['nn_wf_ver_desc'] = " ".join(["id:",self.nn_id, "gen:", generation, "ver:", str(nn_wf_ver_id)])
         input_data['nn_id'] = self.nn_id
 
         # Net Version create
