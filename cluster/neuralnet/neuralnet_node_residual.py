@@ -52,13 +52,6 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
     ####################################################################################################################
     def _set_netconf_parm(self):
-        netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
-        try:
-            netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(self.nn_id, self.wf_ver, self.netconf_node, self.node_id, netconf)
-        except:
-            None
-        self.netconf = netconf
-
         try:
             self.train_cnt = self.netconf["param"]["traincnt"]
             self.epoch = self.netconf["param"]["epoch"]
@@ -216,7 +209,11 @@ class NeuralNetNodeReNet(NeuralNetNode):
             test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
             input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
 
+
             # set netconf, dataconf
+            netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
+            self.netconf = netconf
+            self._set_netconf_labels(input_data)
             self._set_netconf_parm()
             self._set_dataconf_parm(dataconf)
 

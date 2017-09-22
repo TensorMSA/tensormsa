@@ -66,9 +66,9 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                      {
                          "netconf_node" :{
                                              "param": {"traincnt": {"type":"int","option":2,"auto":False}
-                                                      ,"epoch": {"type":"int","option":5,"auto":False}
+                                                      ,"epoch": {"type":"int","option":2,"auto":False}
                                                       ,"batch_size": {"type":"int","option":None,"auto":[10,1000,10]}
-                                                      ,"predictcnt": {"type":"int","option":5,"auto":False}
+                                                      ,"predictcnt": {"type":"int","option":1,"auto":False}
                                                       ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
                                                       ,"augmentation": {"type":"sel","option":["N","Y"],"auto":False}
                                              }

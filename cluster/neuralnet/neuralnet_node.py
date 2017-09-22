@@ -8,6 +8,7 @@ from PIL import Image
 import io
 import os
 import datetime
+from common.utils import *
 
 class NeuralNetNode(WorkFlowCommonNode):
     """
@@ -285,8 +286,8 @@ class NeuralNetNode(WorkFlowCommonNode):
                 os.remove(model_path + "/" + flistsort[i][0])
 
     def get_batch_img_data(self, data_set, type):
-        num_classes = self.netconf["config"]["num_classes"]
         labels = self.netconf["labels"]
+        num_classes = len(labels)
         x_size = self.dataconf["preprocess"]["x_size"]
         y_size = self.dataconf["preprocess"]["y_size"]
         channel = self.dataconf["preprocess"]["channel"]
@@ -302,7 +303,7 @@ class NeuralNetNode(WorkFlowCommonNode):
         label_data_batch = data_set[1]
         img_data_batch = data_set[0]
 
-        if type == "T":
+        if type == "T" or type == "":
             r = 0
             y_batch = np.zeros((len(label_data_batch), num_classes))
             for j in label_data_batch:
@@ -340,3 +341,31 @@ class NeuralNetNode(WorkFlowCommonNode):
         # logging.info(x_batch)
 
         return x_batch, y_batch, n_batch
+
+    def _set_netconf_labels(self, input_data):
+        labels = []
+        while (input_data.has_next()):
+            data_set = input_data[0:input_data.data_size()]
+            label_data_batch = data_set[1]
+            for j in label_data_batch:
+                j = j.decode('UTF-8')
+                try:
+                    idx = labels.index(j)
+                except:
+                    labels.append(j)
+
+            input_data.next()
+        input_data.reset_pointer()
+        self.netconf["labels"] = labels
+
+        pred_cnt = self.netconf["param"]["predictcnt"]
+        if pred_cnt > len(labels):
+            pred_cnt = len(labels)
+
+        self.netconf["config"]["num_classes"] = len(labels)
+        self.netconf["param"]["predictcnt"] = pred_cnt
+        self.netconf["modelpath"] = get_model_path(self.nn_id, self.net_ver, self.netconf_node)
+        self.netconf["modelname"] = self.nn_id + "_" + self.net_ver
+
+        WorkFlowCommon().set_view_obj(self.node_id, self.netconf)
+        return labels
