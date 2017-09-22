@@ -225,7 +225,7 @@ class DataNodeFrame(DataNode):
 
                     file_name_bk = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".csvbk"
                     shutil.copy(file_path,self.data_src_path+"/backup/"+file_name_bk )
-                    os.remove(file_path) #승우씨것
+                    #os.remove(file_path) #승우씨것
             except Exception as e:
                 logging.error("Datanode making h5 or tfrecord error".format(e))
                 raise Exception(e)
@@ -267,6 +267,11 @@ class DataNodeFrame(DataNode):
         example transofmration function
         """
         try:
+            # automl temparary method
+            fp_list = utils.get_filepaths(self.data_src_path, file_type='.tfrecords')
+            for file_path in fp_list:
+                os.remove(file_path)  # 승우씨것
+
             writer = tf.python_io.TFRecordWriter(output_file)
             logging.info("Creating TFRecords file at", output_file, "...")
 
@@ -357,11 +362,19 @@ class DataNodeFrame(DataNode):
         :param data_path:
         :return:dataframe
         """
+        #todo fix
+        #automl temparary method
+        fp_list = utils.get_filepaths(self.data_src_path, file_type='.h5')
+        for file_path in fp_list:
+            os.remove(file_path) #승우씨것
+
         file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".h5"
         output_path = os.path.join(data_path, file_name)
         hdf = pd.HDFStore(output_path)
         hdf.put('table1', dataframe, format='table', data_columns=True, encoding='UTF-8')
         hdf.close()
+
+
 
 
     def load_data(self, node_id = "", parm = 'all'):
