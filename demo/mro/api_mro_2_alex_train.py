@@ -13,7 +13,7 @@ import sys
 # ./manage.py runserver 2fb1ece74beb:8000 --noreload
 
 println("S")
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 nn_id = "mro001"
 net_type = "cnn" # cnn, resnet
 wf_ver_id = 1

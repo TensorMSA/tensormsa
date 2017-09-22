@@ -1,7 +1,7 @@
 import requests
 import json, os
 from common.utils import *
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 
 nnid = 'nn00031'

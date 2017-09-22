@@ -1,7 +1,7 @@
 import requests
 import json, os
 
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 # merge data sets to one
 resp = requests.post('http://' + url + '/api/v1/type/wf/state/pre/detail/feed/src/frame/net/seq2seq/nnid/nn00007/ver/1/node/feed_fr2seq/',

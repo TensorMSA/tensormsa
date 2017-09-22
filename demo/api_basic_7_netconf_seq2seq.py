@@ -1,7 +1,7 @@
 import requests
 import json, os
 
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 # update source_info
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/seq2seq/nnid/nn00004/ver/1/node/netconf_node/',

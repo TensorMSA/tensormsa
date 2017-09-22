@@ -12,7 +12,7 @@ println("S")
 # rabbitmqctl set_permissions -p / tensormsa '.*' '.*' '.*'
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 nn_id = "mro0003"
 
 files = {

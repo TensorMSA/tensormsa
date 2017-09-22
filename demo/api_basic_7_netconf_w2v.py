@@ -1,7 +1,7 @@
 import requests
 import json, os
 
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 nn_id = "nn00002"
 wf_ver_id = "1"

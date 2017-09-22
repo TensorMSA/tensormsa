@@ -1,7 +1,7 @@
 import requests
 import json, os
 
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 types = ["cnn", "frame",  "word2vec", "doc2vec", "seq2seq", "autoencoder", "anomaly", "seq2seq_csv", "renet", "word2vec_frame"]
 

@@ -107,8 +107,8 @@ DATABASES = {
         'NAME': 'tensormsa',
         'USER': 'tfmsauser',
         'PASSWORD': '1234',
-        'HOST': '10.60.1.100',
-        'PORT': '',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 #DATABASES = {

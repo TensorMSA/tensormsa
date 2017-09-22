@@ -1,7 +1,7 @@
 import requests
 import json, os
 from demo.api_basic_0_util import get_all_files
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 train_files =  get_all_files('/home/dev/text/')
 

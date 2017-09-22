@@ -1,6 +1,6 @@
 import requests
 import json, os
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 #No Intent
 resp = requests.put('http://' + url + '/api/v1/type/service/chatbot/cb0001/',

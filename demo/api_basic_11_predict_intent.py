@@ -3,7 +3,7 @@ import json, os
 
 nn_id = 'nnnnn994'  # put some key value you want to test
 
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 
 resp = requests.post('http://' + url + '/api/v1/type/service/state/predict/type/wcnn/nnid/'+nn_id+'/ver/active/',
                      json={"input_data" : "[이름]" }
