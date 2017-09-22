@@ -222,7 +222,7 @@ class DataNodeImage(DataNode):
             output_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
             output_path = os.path.join(output_directory, output_filename)
 
-            labels = netconf['labels']
+            # labels = netconf['labels']
             try:
                 filesize = dataconf["preprocess"]["filesize"]
             except:
@@ -289,17 +289,17 @@ class DataNodeImage(DataNode):
                             print("Processcnt="+ str(processcnt) + " ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
                         processcnt += 1
                     shutil.rmtree(self.directory + "/" + forder)
-                    try:
-                        idx = labels.index(forder)
-                    except:
-                        labels.append(forder)
+                    # try:
+                    #     idx = labels.index(forder)
+                    # except:
+                    #     labels.append(forder)
 
             if filecnt > 0:
                 output_path_sub = output_path + "_" + str(createcnt)
                 hdf_create(self, output_path_sub, filecnt, self.channel, image_arr, shape_arr, lable_arr, name_arr)
 
-            netconf["labels"] = labels
-            WorkFlowDataImage().put_step_source_ori(net_conf_id, netconf)
+            # netconf["labels"] = labels
+            # WorkFlowDataImage().put_step_source_ori(net_conf_id, netconf)
 
             return None
 
