@@ -35,6 +35,10 @@ class ChatKnowledgeDataDict:
             logging.info("[CB_ENTITY_LIST_INFO EXTRA] : {0}".format(e))
             raise Exception(e)
 
+    # If User Relative File Path (for tagging)
+    # import os
+    # settings_dir = os.path.dirname(__file__)
+    # PROJECT_ROOT = os.path.abspath(os.path.dirname(settings_dir))
     def _get_proper_tagging(self, type='dict'):
         try:
             query_set = models.CB_TAGGING_INFO.objects.filter(cb_id = self.cb_id,

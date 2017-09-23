@@ -6,9 +6,9 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/tagging/
                      json={
                         "cb_id": "cb0001",
                         "pos_type": "dict",
-                        "proper_noun": {"tagdate": [1, "/hoya_model_root/chatbot/date.txt", False],
-                                        "tagloc": [1, "/hoya_model_root/chatbot/loc.txt", False],
-                                         "tagmenu": [3, "/hoya_model_root/chatbot/menu.txt", False]
+                        "proper_noun": {"tagdate": [1, "/home/dev/hoyai/demo/botbuilder/data/date.txt", False],
+                                        "tagloc": [1, "/home/dev/hoyai/demo/botbuilder/data/loc.txt", False],
+                                         "tagmenu": [3, "/home/dev/hoyai/demo/botbuilder/data/menu.txt", False]
                                         }
 
                      })

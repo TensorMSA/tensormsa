@@ -22,6 +22,7 @@ class ServiceManager:
         initialze chatbot servic with id
         :param cb_id:
         """
+
         try :
             self.cb_id = cb_id
             self.chatbot_conf = ChatBotConfManager(cb_id)
