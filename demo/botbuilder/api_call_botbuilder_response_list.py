@@ -6,7 +6,7 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/response
                      json={
                         "response_type" : "entity",
                         "output_entity" : {"entity":["tagdate","tagloc","tagmenu"]},
-                        "output_data" : "",
+                        "output_data" : "주문이 완료", #entity에 추가로 마지막 문장 완성
                         "nn_id" : "", #Seq2Seq 사용시
                         "story_id" : "1"
                      })
