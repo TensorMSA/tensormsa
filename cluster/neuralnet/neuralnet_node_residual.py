@@ -15,17 +15,9 @@ from cluster.neuralnet import resnet
 from common.graph.nn_graph_manager import NeuralNetModel
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 
-class History(keras.callbacks.Callback):
-    def on_train_begin(self, logs={}):
-        self.losses = []
-        self.acc = []
-
-    def on_batch_end(self, batch, logs={}):
-        self.losses.append(str(logs.get('loss')))
-        self.acc.append(str(logs.get('acc')))
-
 class NeuralNetNodeReNet(NeuralNetNode):
     """
+    Residual Network Init Param
     """
     def _init_train_parm(self, conf_data):
         # get initial value
@@ -44,6 +36,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
                 self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + net['fields']['graph_node_name']
         self.feed_node = self.get_prev_node()
 
+    """
+    Residual Network Init Value
+    """
     def _init_value(self):
         self.g_train_cnt = 0
         self.file_end = '.bin'
@@ -51,6 +46,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.train_return_arr = ["Trainning .................................................."]
 
     ####################################################################################################################
+    """
+    NetConfig Set
+    """
     def _set_netconf_parm(self):
         try:
             self.train_cnt = self.netconf["param"]["traincnt"]
@@ -66,6 +64,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.dataconf = dataconf
 
     ####################################################################################################################
+    """
+    Model Save
+    """
     def set_saver_model(self):
         self.save_path = self.model_path + "/" + str(self.batch) + str(self.file_end)
         keras.models.save_model(self.model, self.save_path)
@@ -81,8 +82,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
         config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
         result = TrainSummaryAccLossInfo(config)
-        result.loss_info["loss"] = str(val_loss)
-        result.acc_info["acc"] = str(val_acc)
+        result.loss_info["loss"].append(str(val_loss))
+        result.acc_info["acc"].append(str(val_acc))
         self.save_accloss_info(result)
 
         result = [msg]
@@ -92,7 +93,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.train_return_arr.append(result)
 
         self.eval(self.node_id, self.conf_data, None, None)
-
+    """
+    get Network
+    """
     def get_model_resnet(self):
         try :
             keras.backend.tensorflow_backend.clear_session()
@@ -134,6 +137,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
             logging.error("===Error on Residualnet build model : {0}".format(e))
 
     ####################################################################################################################
+    """
+    Train
+    """
     def train_run_resnet(self, input_data, test_data):
         data_augmentation = self.netconf["param"]["augmentation"]
         try:
@@ -197,7 +203,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
         except Exception as e:
             logging.info("Error[400] ..............................................")
             logging.info(e)
-
+    """
+    Train Run
+    """
     def run(self, conf_data):
         try :
             logging.info("run NeuralNetNodeResnet Train")
@@ -238,6 +246,9 @@ class NeuralNetNodeReNet(NeuralNetNode):
             logging.info("===Error on running residualnet : {0}".format(e))
 
     ####################################################################################################################
+    """
+    Eval Run
+    """
     def eval_run(self, input_data):
         self.batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]

@@ -144,20 +144,38 @@ class NeuralNetNode(WorkFlowCommonNode):
         input_data['nn_id'] = result.get_nn_id()
         input_data['nn_wf_ver_id'] = result.get_nn_wf_ver_id()
         input_data['nn_batch_ver_id'] = result.get_nn_batch_ver_id()
+        #
 
         try:
-            input_data['acc_info'] = result.get_acc_info()
-            input_data['loss_info'] = result.get_loss_info()
-
-            try:
+            exists = models.TRAIN_SUMMARY_ACCLOSS_INFO.objects.filter(nn_batch_ver_id=str(input_data['nn_batch_ver_id'])).count()
+            if (exists > 0):
                 obj = models.TRAIN_SUMMARY_ACCLOSS_INFO.objects.get(nn_batch_ver_id=str(input_data['nn_batch_ver_id']))
-                setattr(obj, 'acc_info', input_data['acc_info'])
-                setattr(obj, 'loss_info', input_data['loss_info'])
+                data_set1 = getattr(obj, "acc_info")
+                data_set2 = getattr(obj, "loss_info")
+                data_set1['acc'].append(result.acc_info['acc'][0])
+                data_set2['loss'].append(result.loss_info['loss'][0])
+
+                setattr(obj, "acc_info", data_set1)
+                setattr(obj, "loss_info", data_set2)
                 obj.save()
-            except Exception as e:
+            else:
+                input_data['acc_info'] = result.acc_info
+                input_data['loss_info'] = result.loss_info
                 serializer = serializers.TRAIN_SUMMARY_ACCLOSS_INFO_Serializer(data=input_data)
                 if serializer.is_valid():
                     serializer.save()
+
+
+            # input_data['acc_info'] = result.get_acc_info()
+            # input_data['loss_info'] = result.get_loss_info()
+            #
+            #
+            # obj = models.TRAIN_SUMMARY_ACCLOSS_INFO.objects.get(nn_batch_ver_id=str(input_data['nn_batch_ver_id']))
+            # setattr(obj, 'acc_info', input_data['acc_info'])
+            # setattr(obj, 'loss_info', input_data['loss_info'])
+            # obj.save()
+
+
         except Exception as e:
             raise Exception(e)
 
