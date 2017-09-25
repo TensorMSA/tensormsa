@@ -77,23 +77,24 @@ class ServiceManager:
                 share_ctx = self.entity_analyzer.parse(share_ctx)
                 share_ctx = self.entity_recognizer.parse(share_ctx)
 
-                if(mode == 'thread'):
-                    logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
-                    job_list = [
-                                self.ThreadCls(share_ctx, self.intent_analyzer_rule.parse, 'Rule'),
-                                self.ThreadCls(share_ctx, self.intent_analyzer_ner.parse, 'NER')]
-                    for job in job_list:
-                        job.start()
+                if(share_ctx.get_intent_id() == ""):
+                    if(mode == 'thread'):
+                        logging.info("■■■■■■■■■■ Thread Mode ■■■■■■■■■■")
+                        job_list = [
+                                    self.ThreadCls(share_ctx, self.intent_analyzer_rule.parse, 'Rule'),
+                                    self.ThreadCls(share_ctx, self.intent_analyzer_ner.parse, 'NER')]
+                        for job in job_list:
+                            job.start()
 
-                    for job in job_list:
-                        share_ctx.__dict__.update(job.join().__dict__)
-                else :
-                    logging.info("■■■■■■■■■■ None Thread Mode ■■■■■■■■■■")
-                    share_ctx = self.intent_analyzer_rule.parse(share_ctx, 'Rule')
-                    share_ctx = self.intent_analyzer_ner.parse(share_ctx, 'NER')
+                        for job in job_list:
+                            share_ctx.__dict__.update(job.join().__dict__)
+                    else:
+                        logging.info("■■■■■■■■■■ None Thread Mode ■■■■■■■■■■")
+                        share_ctx = self.intent_analyzer_rule.parse(share_ctx, 'Rule')
+                        share_ctx = self.intent_analyzer_ner.parse(share_ctx, 'NER')
 
-                ### summrize result ###
-                share_ctx = self.summrize_result.parse(share_ctx)
+                    ### summrize result ###
+                    share_ctx = self.summrize_result.parse(share_ctx)
 
             share_ctx.add_test_client_data()
 
