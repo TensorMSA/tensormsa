@@ -66,8 +66,11 @@ class ShareData(ChatBotConfManager):
         for key in ['input_data', 'intent_id']:
             if key not in object :
                 raise Exception (''.join([key, ' not exist!']))
+        #복수개의 Intent가 출력될 경우를 대비 Intent가 결정되었을 경우엔 하나의 Story만 타야함
+        if (len(object.get("intent_id")) > 0):
+            object["intent_id"] = object["intent_id"][0]
 
-        #Check Length of String
+            #Check Length of String
         self._check_string_length(object.get("input_data"))
         #if there is no intent Reset chatbot initialize value
         if(object.get("intent_id") == ''):
@@ -470,7 +473,8 @@ class ShareData(ChatBotConfManager):
         add unchanged info for client test
         :return: 
         """
-        self.intent_id = list(set(self.intent_id))
+
+        self.intent_id = list(set(self.intent_id)) if isinstance(self.intent_id, (list,)) else [self.intent_id]
         self.test_intent_id = self.intent_id.copy()
         self.test_slot_entity = self.story_slot_entity.copy()
         return self

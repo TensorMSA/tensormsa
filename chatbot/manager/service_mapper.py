@@ -29,7 +29,8 @@ class ServiceMapper(ShareData):
         for intent_id in share_data.get_intent_id() :
             intent_uuid = intent_uuid + list(filter(lambda x: x["pk"] == str(intent_id), self.intent_uuid_list))
         intent_uuid =  list(map(lambda x : x['fields']['intent_uuid'], intent_uuid))
-        share_data.set_intent_id(intent_uuid)
+        if (intent_uuid[0] != ''):
+            share_data.set_intent_id(intent_uuid)
 
     def _replace_entity_uuid(self, story_slot):
         slot_key_list = list(story_slot.keys())

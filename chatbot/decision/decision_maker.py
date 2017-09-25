@@ -49,8 +49,13 @@ class DecisionMaker(ShareData):
         for entity in self.dict_conf.get_entity_key(share_data.get_intent_id()[0]):
             if (entity in entity_list):
                 pass
-            else :
+            else:
                 share_data.set_output_data(entity + " 값을 입력해 주세요")
+                #Story상 필수 Slot값이 없을 경우 필요한 Slot 값을 출력
+                key_slot = self.dict_conf.get_entity_key(share_data.get_intent_id()[0])
+                input_slot = list(share_data.get_story_slot_entity().keys())
+                need_slot = [x for x in key_slot if x not in input_slot]
+                share_data.set_output_data(' '.join(need_slot) + " 값을 입력해 주세요")
                 check_value = False
                 break
         return check_value
