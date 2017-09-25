@@ -138,7 +138,7 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                          ,"netconf_node" :
                                      {
                                                     "model_path": {"type":"str","option":None,"auto":False}
-                                                    ,"hidden_layers": {"type": "int", "option": [100,100], "auto": False}
+                                                    ,"hidden_layers": {"type": "int", "option": None, "auto": [[1,4,1],[1,100,1]]}
                                                     ,"activation_function": {"type":"sel","option":["relu"],"auto":False}
                                                     ,"batch_size" : {"type":"int","option":1000,"auto":False}
                                                     ,"epoch" : {"type":"int","option":None,"auto":[1,10,1]}

@@ -268,7 +268,7 @@ class DataNodeFrame(DataNode):
         """
         try:
             # automl temparary method
-            fp_list = utils.get_filepaths(self.data_src_path, file_type='.tfrecords')
+            fp_list = utils.get_filepaths(self.data_store_path, file_type='tfrecords')
             for file_path in fp_list:
                 os.remove(file_path)  # 승우씨것
 
@@ -364,7 +364,7 @@ class DataNodeFrame(DataNode):
         """
         #todo fix
         #automl temparary method
-        fp_list = utils.get_filepaths(self.data_src_path, file_type='.h5')
+        fp_list = utils.get_filepaths(data_path, file_type='h5')
         for file_path in fp_list:
             os.remove(file_path) #승우씨것
 
