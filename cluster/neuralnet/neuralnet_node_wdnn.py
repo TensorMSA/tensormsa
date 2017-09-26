@@ -487,19 +487,21 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         """
         try:
             logging.info("wdnn predict_start nnid : {0}".format(node_id))
-            _node_id = node_id + "_" + ver+ "_" + "netconf_node"
+            self.batch, wf_ver = self.get_active_batch2(node_id)
+            _node_id = node_id + "_" + wf_ver+ "_" + "netconf_node"
 
-            _data_conf_id = node_id + "_" + ver + "_dataconf_node"
+            _data_conf_id = node_id + "_" + wf_ver + "_dataconf_node"
             self._init_node_parm(_node_id)
             #self.cls_pool_all = conf_data['cls_pool']  # Data feeder
 
             config = {"type": self.model_type, "labels": self.label_values, "nn_id":node_id, "nn_wf_ver_id":ver}
             train = TrainSummaryInfo(conf=config)
             #print(config)
-            self.batch = self.get_active_batch(_node_id)
+
             #print(train)
             self.model_predict_path = ''.join([self.model_path + '/' + self.batch])
             self.multi_node_flag = False
+            self.predict_path = ''.join(['/hoya_src_root/'+node_id+'/common/predict'])
 
             conf_data = {}
             conf_data['node_id'] = _node_id
@@ -522,8 +524,17 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                                          str(self.activation_function), data_conf_info, str(self.model_predict_path))
 
             # feed
+
+            file_cnt = len(parm.FILES.keys())
+            dir = 'predict'
+            filelist = list()
+            if file_cnt > 0:
+                for key, requestSingleFile in parm.FILES.items():
+                    filelist.append(str(requestSingleFile._name))
+
+
             # TODO file이 여러개면 어떻하지?
-            filelist = sorted(parm.items())
+            #filelist = sorted(parm.FILES.items())
             #train_data_set = self.cls_pool  # get filename
             #file_queue = str(train_data_set.input_paths[0])  # get file_name
 
@@ -551,7 +562,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 #set_for_predict
                 feeder.set_for_predict(_data_conf_id)
                 data_node = DataNodeFrame()
-                train_data_set = data_node.load_csv_by_pandas(self.predict_path + "/" + filename[1].name)
+                train_data_set = data_node.load_csv_by_pandas(self.predict_path + "/" + filename)
 
                 #feeder.set_input_paths([self.predict_path + "/" + filename[1].name])
                 #train_data_set = feeder
@@ -641,7 +652,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
 
             logging.info("eval end")
-            return train
+            return json.loads(result_df.to_json())
         except Exception as e:
             logging.error("Wdnn predict error {0}".format(e))
 

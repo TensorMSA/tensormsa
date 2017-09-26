@@ -47,7 +47,7 @@ class ServiceManagerPredict(APIView):
                     # TO-DO : need predict function for active taged version
                     raise Exception("on developing now !")
                 elif (type == "wdnn"):
-                    return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
+                    return_data = PredictNetWdnn().run(nnid, ver, request)
                 elif(type == "seq2seq"):
                     return_data = PredictNetSeq2Seq().run(nnid, request.data)
                 elif(type == "autoencoder"):
@@ -84,7 +84,6 @@ class ServiceManagerPredict(APIView):
                 else:
                     raise Exception("Not defined type error")
 
-            # return Response(json.dumps(return_data))
             return Response(return_data)
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

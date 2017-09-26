@@ -101,26 +101,26 @@ WSGI_APPLICATION = 'hoyai.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'tensormsa',
+#         'USER': 'tfmsauser',
+#         'PASSWORD': '1234',
+#         'HOST': '10.60.1.100',
+#         'PORT': '',
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tensormsa',
-        'USER': 'tfmsauser',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       'NAME': 'postgres',
+       'USER': 'postgres',
+       'PASSWORD': 'postgres',
+       'HOST': 'db',
+       'PORT': '5432',
+   }
 }
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'postgres',
-#        'USER': 'postgres',
-#        'PASSWORD': 'postgres',
-#        'HOST': 'db',
-#        'PORT': '5432',
-#    }
-#}
 CELERYD_HIJACK_ROOT_LOGGER = False
 """ How to Logging
 

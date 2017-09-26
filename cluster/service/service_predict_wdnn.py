@@ -1,6 +1,8 @@
 from cluster.neuralnet.neuralnet_node_wdnn import NeuralNetNodeWdnn
 from cluster.service.service_predict import PredictNet
 from master import models
+import os
+from common.utils import *
 
 class PredictNetWdnn(PredictNet):
     """
@@ -18,6 +20,25 @@ class PredictNetWdnn(PredictNet):
         """
 
         # if(self._valid_check(parm)) :
+
+
+        file_cnt = len(parm.FILES.keys())
+        dir = 'predict'
+        if file_cnt > 0:
+            for key, requestSingleFile in parm.FILES.items():
+
+                file = requestSingleFile
+                filepath = get_source_path(nn_id, ver, dir)
+
+                if not os.path.exists(filepath):
+                    os.makedirs(filepath)
+                fp = open(filepath + "/" + file.name, 'wb')
+
+                for chunk in file.chunks():
+                    fp.write(chunk)
+                fp.close()
+
+
         netconf_arr =[]
         dataconf_arr = []
 

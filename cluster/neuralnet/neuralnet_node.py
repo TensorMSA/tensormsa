@@ -90,13 +90,34 @@ class NeuralNetNode(WorkFlowCommonNode):
             serializer.save()
         return train_batch, input_data['nn_batch_ver_id']
 
+    def get_active_batch2(self, node_id):
+        """
+        find batch version for predict
+        :param node_id:
+        :return:
+        """
+        netnode = models.NN_VER_WFLIST_INFO.objects.get(nn_id_id=node_id, active_flag='Y')
+        #nn_id = netnode.wf_state_id.nn_id
+        #nn_wf_ver_id = netnode.wf_state_id.nn_wf_ver_id.nn_wf_ver_id
+        #ver_id = models.NN_VER_WFLIST_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=nn_wf_ver_id).id
+        count = len(models.NN_VER_WFLIST_INFO.objects.filter(nn_id_id=node_id, active_flag='Y'))
+        if count == 0:
+            batch = str(netnode.nn_id_id) + '_' + str(1) + str("_1")
+            wf_ver = '1'
+        else:
+            #Todo Batch Version id로 수정 예정
+            #batch = models.NN_VER_BATCHLIST_INFO.objects.get(nn_wf_ver_id=ver_id, active_flag='Y').nn_batch_ver_id
+            batch = str(netnode.nn_id_id) + '_' + str(netnode.nn_wf_ver_id) + str("_1")
+            wf_ver= str(netnode.nn_wf_ver_id)
+        return batch, wf_ver
+
     def get_active_batch(self, node_id):
         """
         find batch version for predict
         :param node_id:
         :return:
         """
-        netnode = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
+        netnode = models.NN_VER_WFLIST_INFO.objects.get(nn_wf_node_id=node_id)
         nn_id = netnode.wf_state_id.nn_id
         nn_wf_ver_id = netnode.wf_state_id.nn_wf_ver_id.nn_wf_ver_id
         ver_id = models.NN_VER_WFLIST_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=nn_wf_ver_id).id
