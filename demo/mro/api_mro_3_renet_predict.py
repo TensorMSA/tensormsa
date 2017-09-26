@@ -3,7 +3,6 @@ import json, os
 from common.utils import *
 import operator
 
-println("S")
 # [TEST - Celery]
 # apt-get install rabbitmq-server
 # service rabbitmq-server start
@@ -13,7 +12,7 @@ println("S")
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-nn_id = "mro0003"
+nn_id = "nn00000100"
 
 files = {
         #  'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
@@ -27,7 +26,7 @@ files = {
         # ,'files000009':  open('/home/dev/hoyai/demo/data/motor/1motor.jpg','rb')
         # ,'files000010':  open('/home/dev/hoyai/demo/data/motor/2motor.jpg','rb')
 
-'files000001':  open('//hoya_src_root/mro0001/test.jpg','rb')
+'files000001':  open('/hoya_src_root/bolt1.jpg','rb')
     # ,'files000002':  open('/home/dev/hoyai/demo/data/airplane/2air.jpg','rb')
 # ,'files000003':  open('/hoya_src_root/nn00004/21/personData/LSH/20170418_094624.jpg','rb')
 
@@ -37,14 +36,16 @@ files = {
 
         }
 
-restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/renet/nnid/'+nn_id+'/ver/0/'
+restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/resnet/nnid/'+nn_id+'/ver/1/'
 
-resp = requests.post(restURL, files=files, json={
-                         "config": {}
-                         ,"labels":[]
+resp = requests.post(restURL
+                     , files=files
+                     , json={
+
                         }
                      )
 data = json.loads(resp.json())
+print(data)
 try:
     if data["status"] == "404":
         print(data["result"])
@@ -55,6 +56,6 @@ except:
         print(data[train]['val'])
         print('')
 
-println("E")
+
 
 

@@ -403,6 +403,8 @@ class NeuralNetNodeReNet(NeuralNetNode):
         # net, data config setup
         data_node_name = self._get_backward_node_with_type(node_id, 'data')
         dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
+        netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
+        self.netconf = netconf
         self._set_netconf_parm()
         self._set_dataconf_parm(dataconf)
 

@@ -52,9 +52,10 @@ class ServiceManagerPredict(APIView):
                     return_data = PredictNetSeq2Seq().run(nnid, request.data)
                 elif(type == "autoencoder"):
                     return_data = PredictNetAutoEncoder().run(nnid, request.data)
-                elif (type == "renet"):
+                elif (type == "resnet"):
                     #return_data = PredictNetRenet().run(nnid, ver, request.FILES)
                     # TO-DO : need to create PredictNetRenet class first
+                    return_data = PredictNetRenet().run(nnid, ver, request.FILES)
                     raise Exception("on developing now !")
                 elif (type == "anomaly"):
                     return_data = PredictNetAnomaly().run(nnid, request.data)
@@ -78,12 +79,13 @@ class ServiceManagerPredict(APIView):
                 elif (type == "seq2seq"):
                     # TO-DO : need predict function for specific  version
                     raise Exception("on developing now !")
-                elif (type == "renet"):
+                elif (type == "resnet"):
                     return_data = PredictNetRenet().run(nnid, ver, request.FILES)
                 else:
                     raise Exception("Not defined type error")
 
-            return Response(json.dumps(return_data))
+            # return Response(json.dumps(return_data))
+            return Response(return_data)
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
