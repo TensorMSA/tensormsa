@@ -12,7 +12,7 @@ import operator
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-nn_id = "nn00000100"
+nn_id = "nn00000003"
 
 files = {
         #  'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
@@ -36,7 +36,7 @@ files = {
 
         }
 
-restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/resnet/nnid/'+nn_id+'/ver/1/'
+restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/resnet/nnid/'+nn_id+'/ver/5/'
 
 resp = requests.post(restURL
                      , files=files
@@ -44,17 +44,17 @@ resp = requests.post(restURL
 
                         }
                      )
-data = json.loads(resp.json())
-print(data)
-try:
-    if data["status"] == "404":
-        print(data["result"])
-except:
-    for train in data:
-        print("FileName = "+train)
-        print(data[train]['key'])
-        print(data[train]['val'])
-        print('')
+# data = json.loads(resp.json())
+# print(data)
+# try:
+#     if data["status"] == "404":
+#         print(data["result"])
+# except:
+#     for train in data:
+#         print("FileName = "+train)
+#         print(data[train]['key'])
+#         print(data[train]['val'])
+#         print('')
 
 
 

@@ -23,7 +23,6 @@ from cluster.preprocess.pre_node_feed_fr2wdnn import PreNodeFeedFr2Wdnn
 from cluster.data.data_node_frame import DataNodeFrame
 from common import utils
 from time import gmtime, strftime
-from cluster.neuralnet.monitors_wdnn import HookMonitorsWdnn
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 
 
