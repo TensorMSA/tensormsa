@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="http://hugrypiggykim.com/wp-content/uploads/2017/09/title.png"><br><br>
+  <img src="http://hugrypiggykim.com/wp-content/uploads/2017/09/header.png"><br><br>
 </div>
 
 | **`Linux CPU`** | **`Linux GPU`** |
@@ -7,7 +7,9 @@
 | [![Build Status](https://ci.tensorflow.org/buildStatus/icon?job=tensorflow-master-cpu)](https://ci.tensorflow.org/job/tensorflow-master-cpu) | [![Build Status](https://ci.tensorflow.org/buildStatus/icon?job=tensorflow-master-linux-gpu)](https://ci.tensorflow.org/job/tensorflow-master-linux-gpu) |
 
 ## TensorMSA : Tensorflow Micro Service Architecture
-**TensorMSA** is a framework for machine learning and deep learning. Main purpose of developing this framework is to provide automated pipe lines (data extraction, data preprocessing, train model, evaluate model, service model). Importance of effective pipeline is really important when we proceed real project. There are so many hard tasks which has to be done to build data driven model. 
+**TensorMSA** is a framework for machine learning and deep learning. Main purpose of developing this framework is to provide automated pipe lines (data extraction > data preprocessing > train model > evaluate model > service model). Use of effective pipeline is really important when we proceed real project. There are so many hard tasks which has to be done to build data driven model. 
+
+**Problems**
 * Set up environment for deep learning is not a easy task (os, gpu, tensorflow, hadoop, etc..) 
 * Build pipe line from data to train model 
 * Difficulties of understading deep learning and implement those algorithms (even with tensorflow it's not that easy) 
@@ -17,7 +19,7 @@
 * Hyper Parameter tunning for deep learning is also very exhausting job
 * Managing and scheduling GPU server resource 
 
-**Function**
+**Solutions**
 * Easy to set up cluster with Docker images 
 * Manage GPU resources with Celery and own job manager 
 * REST APIs corresponding to Tensorflow
@@ -33,21 +35,17 @@
 * Front End : React(ES6), SVG, D3, Pure CSS, Mobile(for Chatbot FW)
 * Back End : Django(Python 3.5), Restful Service(Micro Service Architecture), Tensorflow(v1.2), PostgreSQL, Memcache, Celery, Spqrk QL, HDF5, Ngix, Gensim, Konlpy
 
-## Overview - Deep Learning Pipe Lines
+## Overview - Framework introduction video 
 
 Our framework provide easy to use UI/UX and AutoML based super easy process of build & service deep learning models
-[![TensorMSA DeepLearning Layer](https://github.com/TensorMSA/tensormsa_old/blob/master/video.PNG?raw=true)](https://youtu.be/sxx9l5gWbk0 "HOYA ver0.1 - Click to Watch!")
 
-## Overview - ChatBot Frame Work
-
-Sometimes we need more complex architecture for machine learning service. (Ensemble multiple models with user logics)
-[![TensorMSA Application Layer](https://github.com/TensorMSA/tensormsa_old/blob/master/chat_bot_alpha.jpg?raw=true)](https://youtu.be/TZsLuGv6_bU "HOYA ChatBot ver0.1 - Click to Watch!")
+[![TensorMSA DeepLearning Layer](http://hugrypiggykim.com/wp-content/uploads/2017/09/user_main_page.png)](https://youtu.be/oShf9N7rdAE "HOYA ver0.1 - Click to Watch!")
 
 ## For more information  
 
-* [TensorMSA install with Docker](https://github.com/TensorMSA/hoyai_docker)
-* [Swagger API page for TensorMSA](http://13.124.133.117:8989/docs)
-* [Sphinx Pydoc page for TensorMSA](https://tensormsa.github.io/tensormsa/)
+* [TensorMSA install guide with docker](https://github.com/TensorMSA/hoyai_docker)
+* [TensorMSA API guide](http://13.124.133.117:8989/docs)
+* [TensorMSA PyDoc guide](https://tensormsa.github.io/tensormsa/)
 * [TensorMSA Project Design Document](https://docs.google.com/presentation/d/1SKYQ85l29PApQu8aUOFbkTMpxxefpJH3NhiR_GYr66I/pub?start=false&loop=false&delayms=3000)
 * [TensorMSA User Guide](http://hugrypiggykim.com/category/tensormsa-guide/)
 * [*etc* : Google syntaxNet Korean docker](https://github.com/TensorMSA/syntax_docker)
@@ -57,4 +55,4 @@ Sometimes we need more complex architecture for machine learning service. (Ensem
 
 ## License
 
-[Apache License 2.0](LICENSE)
+* [Apache License 2.0](LICENSE)
