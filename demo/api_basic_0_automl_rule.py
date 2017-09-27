@@ -57,49 +57,56 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                         },
                      "single":{
                          "netconf_node" :{
-                                             "param":{"traincnt": {"type":"int","option":10,"auto":False}
-                                                      ,"epoch": {"type":"int","option":10,"auto":False}
-                                                      ,"batch_size":{"type":"int","option":200,"auto":False}
-                                                      ,"predictcnt": {"type":"int","option":5,"auto":False}
-                                                      ,"predlog": {"type":"sel","option":["N","Y"],"auto":False}
+                                             "param":{"traincnt": 1
+                                                      ,"epoch": 1
+                                                      ,"batch_size":1000000
+                                                      ,"predictcnt": 5
+                                                      ,"predlog": "N" # T:Ture, F:False, A:True&False, N:None
                                              },
-                                             "config": {"num_classes":{"type":"int","option":1,"auto":False}
-                                                        ,"learnrate": {"type":"int","option":0.001,"auto":False}
-                                                        ,"layeroutputs":{"type":"int","option":32,"auto":False}
-                                                        ,"net_type":{"type":"str","option":"cnn","auto":False}
-                                                        ,"eval_type":{"type":"sel","option":["category"],"auto":False}
-                                                        ,"optimizer":{"type":"sel","option":["AdamOptimizer","RMSPropOptimizer"],"auto":False}
+                                             "config": {"num_classes":10,
+                                                        "learnrate": 0.001,
+                                                        "layeroutputs":32,
+                                                        "net_type":"cnn",
+                                                        "eval_type":"category",
+                                                        "optimizer":"AdamOptimizer" #RMSPropOptimizer
                                                          }
-                                             ,"layer1": {"active": {"type":"sel","option":["relu"],"auto":False},
-                                                         "cnnfilter": {"type":"int","option":[3, 3],"auto":False},
-                                                         "cnnstride": {"type":"int","option":[1, 1],"auto":False},
-                                                         "maxpoolmatrix": {"type":"int","option":[2, 2],"auto":False},
-                                                         "maxpoolstride": {"type":"int","option":[2, 2],"auto":False},
-                                                         "padding": {"type":"sel","option":["SAME", "NONE"],"auto":False},
-                                                         "droprate": {"type":"int","option":0.8,"auto":False},
-                                                         "layercnt":{"type":"int","option":3,"auto":False}
+                                             ,"layer1": {"active": "relu",
+                                                         "cnnfilter": [3, 3],
+                                                         "cnnstride": [1, 1],
+                                                         "maxpoolmatrix": [2, 2],
+                                                         "maxpoolstride": [2, 2],
+                                                         "padding": "SAME",
+                                                         "droprate": "0.8",
+                                                         "layercnt":4
                                                         }
-                                             ,"out": {"active": {"type":"sel","option":["softmax","relu",'tanh',"sigmoid"],"auto":False},
-                                                       "node_out": {"type":"int","option":1024,"auto":False},
-                                                       "padding": {"type":"sel","option":["SAME", "NONE"],"auto":False}
+                                             ,"layer2": {"active": "relu",
+                                                         "cnnfilter": [3, 3],
+                                                         "cnnstride": [1, 1],
+                                                         "maxpoolmatrix": [1, 1],
+                                                         "maxpoolstride": [2, 2],
+                                                         "padding": "SAME",
+                                                         "droprate": "0.8",
+                                                         "layercnt":1
+                                                        }
+                                             ,"out": {"active": "softmax",
+                                                       "node_out": 625,
+                                                       "padding": "SAME"
                                                     }
-                                             ,"labels":{"type":"list","option":[],"auto":False}
+                                             ,"labels":[]
                                         },
                          "netconf_data"    :{
-                                             "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
-                                             ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
-                                                            , "y_size": {"type":"int","option":32,"auto":False}
-                                                            , "channel":{"type":"int","option":3,"auto":False}
-                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
-                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
+                                             "x_size": 32,
+                                           "y_size": 32,
+                                           "channel":3,
+                                           "filesize": 1000000,
+                                           "yolo": "n"
                                         },
                          "eval_data" :{
-                                             "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
-                                                , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
-                                                    , "y_size": {"type": "int", "option": 32, "auto": False}
-                                                    , "channel": {"type": "int", "option": 3, "auto": False}
-                                                    , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                                                    , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}}
+                             "x_size": 32,
+                             "y_size": 32,
+                             "channel": 3,
+                             "filesize": 1000000,
+                             "yolo": "n"
                                     }
                         }
                      })
@@ -148,38 +155,37 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                          },
                         "single":{
                              "netconf_node" :{
-                                                 "param": {"traincnt": {"type":"int","option":2,"auto":False}
-                                                          ,"epoch": {"type":"int","option":2,"auto":False}
-                                                          ,"batch_size": {"type":"int","option":200,"auto":False}
-                                                          ,"predictcnt": {"type":"int","option":1,"auto":False}
-                                                          ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
-                                                          ,"augmentation": {"type":"sel","option":["N","Y"],"auto":False}
-                                                 }
-                                                 ,"config": {"num_classes": {"type":"int","option":1,"auto":False}
-                                                            ,"learnrate": {"type":"int","option":0.001,"auto":False}
-                                                            , "layeroutputs": {"type":"int","option":18,"auto":False}
-                                                            ,"eval_type":{"type":"sel","option":["category"],"auto":False}
-                                                            ,"optimizer":{"type":"sel","option":["adam","rmsp"],"auto":False}
+                                                 "param":{"traincnt": 2
+                                                          ,"epoch": 2
+                                                          ,"batch_size":100
+                                                          ,"predictcnt": 2
+                                                          ,"predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
+                                                          ,"augmentation": "N"
+                                                 },
+                                                 "config": {"num_classes":1,
+                                                            "learnrate": 0.001,
+                                                            "layeroutputs":18, #18, 34, 50, 101, 152, 200
+                                                            "optimizer":"adam", #
+                                                            "eval_type":"category"
                                                              }
-                                                 ,"labels":{"type":"str","option":[],"auto":False}
+                                                 ,"labels":[]
                                             }
                             ,  "netconf_data"    :{
-                                                 "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
-                                                 ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
-                                                                , "y_size": {"type":"int","option":32,"auto":False}
-                                                                , "channel":{"type":"int","option":3,"auto":False}
-                                                                , "filesize": {"type":"int","option":1000000,"auto":False}
-                                                                , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
+                                                 "preprocess": {"x_size": 32,
+                                                   "y_size": 32,
+                                                   "channel":3,
+                                                   "filesize": 1000000,
+                                                   "yolo": "n"
                                                }
+                            }
                             , "eval_data" :{
-                                                     "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
-                                                     ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
-                                                                , "y_size": {"type":"int","option":32,"auto":False}
-                                                                , "channel":{"type":"int","option":3,"auto":False}
-                                                                , "filesize": {"type":"int","option":1000000,"auto":False}
-                                                                , "yolo": {"type":"sel","option":["N","Y"],"auto":False}
-                                        }
-                             }
+                                                     "preprocess": {"x_size": 32,
+                                                   "y_size": 32,
+                                                   "channel":3,
+                                                   "filesize": 1000000,
+                                                   "yolo": "n"}
+                            }
+
                          }
                      })
 data = json.loads(resp.json())

@@ -206,9 +206,14 @@ class DataNodeImage(DataNode):
             nnid = conf_data['nn_id']
             node_id = conf_data['node_id']
             wf_ver = conf_data['wf_ver']
+            node = ""
+            for i in conf_data['node_list']:
+                if i['nn_wf_node_id'] == node_id:
+                    node = i['nn_wf_node_name']
             net_conf_id = self._find_netconf_node_id(nnid, wf_ver = wf_ver)
             netconf = WorkFlowDataImage().get_step_source(net_conf_id)
             dataconf = WorkFlowDataImage().get_step_source(node_id)
+            dataconf = WorkFlowDataImage().put_step_source(nnid, wf_ver, node, dataconf)
             if dataconf == {}:
                 logging.info("/cluster/data/data_node_image DataNodeImage run dataconf("+node_id+") is not Exist")
                 return
@@ -285,7 +290,7 @@ class DataNodeImage(DataNode):
                                 createcnt += 1
 
                             print("Processcnt="+ str(processcnt) + " File=" + directory + " forder=" + forder + "  name=" + filename)
-                        except:
+                        except Exception as e:
                             print("Processcnt="+ str(processcnt) + " ErrorFile=" + directory + " forder=" + forder + "  name=" + filename)
                         processcnt += 1
                     shutil.rmtree(self.directory + "/" + forder)
