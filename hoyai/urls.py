@@ -142,6 +142,8 @@ urlpatterns = [
         csrf_exempt(rest_view.WorkFlowNetConfBiLstmCrf.as_view())),
     url(r'^api/v1/type/wf/state/netconf/detail/fasttext/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
         csrf_exempt(rest_view.WorkFlowNetConfFastText.as_view())),
+    url(r'^api/v1/type/wf/direct/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',
+        csrf_exempt(rest_view.WorkFlowNetConf.as_view())),
 
     # workflow - test APIs
     url(r'^api/v1/type/wf/state/eval/nnid/(?P<nnid>.*)/ver/(?P<ver>.*)/node/(?P<node>.*)/',

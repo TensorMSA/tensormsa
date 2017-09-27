@@ -51,10 +51,7 @@ class AutoMlRule:
             query_set = json.loads(query_set)
             ids = []
             for row in query_set :
-                if type == "all":
-                    ids.append(row)
-                else:
-                    ids.append(row['fields']['graph_flow_data'])
+                ids.append(row)
             return ids
         except Exception as e:
             raise Exception(e)
@@ -72,8 +69,10 @@ class AutoMlRule:
                 self.update_graph_type_list(graph_flow_id, req)
             else :
                 obj = models.AUTO_ML_RULE.objects.create(graph_flow_id=graph_flow_id,
-                                                         graph_flow_data={})
-                setattr(obj, "graph_flow_data", req)
+                                                         graph_flow_data={},
+                                                         graph_flow_data_single={})
+                setattr(obj, "graph_flow_data", req['auto'])
+                setattr(obj, "graph_flow_data_single", req['single'])
                 obj.save()
         except Exception as e:
             raise Exception(e)
@@ -90,9 +89,8 @@ class AutoMlRule:
             exists = models.AUTO_ML_RULE.objects.filter(graph_flow_id=graph_flow_id).count()
             if (exists > 0):
                 obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=graph_flow_id)
-                data_set = getattr(obj, "graph_flow_data")
-                data_set.update(input_data)
-                setattr(obj, "graph_flow_data", data_set)
+                setattr(obj, "graph_flow_data", input_data['auto'])
+                setattr(obj, "graph_flow_data_single", input_data['single'])
                 obj.save()
             else:
                 for i in input_data:

@@ -8,7 +8,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
 ##############################################################################################################################
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/cnn/',
                      json=
-                     {
+                     {"auto":{
                          "netconf_node" :{
                                              "param":{"traincnt": {"type":"int","option":10,"auto":False}
                                                       ,"epoch": {"type":"int","option":10,"auto":False}
@@ -54,7 +54,54 @@ resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/
                                                     , "filesize": {"type": "int", "option": 1000000, "auto": False}
                                                     , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}}
                                     }
-
+                        },
+                     "single":{
+                         "netconf_node" :{
+                                             "param":{"traincnt": {"type":"int","option":10,"auto":False}
+                                                      ,"epoch": {"type":"int","option":10,"auto":False}
+                                                      ,"batch_size":{"type":"int","option":200,"auto":False}
+                                                      ,"predictcnt": {"type":"int","option":5,"auto":False}
+                                                      ,"predlog": {"type":"sel","option":["N","Y"],"auto":False}
+                                             },
+                                             "config": {"num_classes":{"type":"int","option":1,"auto":False}
+                                                        ,"learnrate": {"type":"int","option":0.001,"auto":False}
+                                                        ,"layeroutputs":{"type":"int","option":32,"auto":False}
+                                                        ,"net_type":{"type":"str","option":"cnn","auto":False}
+                                                        ,"eval_type":{"type":"sel","option":["category"],"auto":False}
+                                                        ,"optimizer":{"type":"sel","option":["AdamOptimizer","RMSPropOptimizer"],"auto":False}
+                                                         }
+                                             ,"layer1": {"active": {"type":"sel","option":["relu"],"auto":False},
+                                                         "cnnfilter": {"type":"int","option":[3, 3],"auto":False},
+                                                         "cnnstride": {"type":"int","option":[1, 1],"auto":False},
+                                                         "maxpoolmatrix": {"type":"int","option":[2, 2],"auto":False},
+                                                         "maxpoolstride": {"type":"int","option":[2, 2],"auto":False},
+                                                         "padding": {"type":"sel","option":["SAME", "NONE"],"auto":False},
+                                                         "droprate": {"type":"int","option":0.8,"auto":False},
+                                                         "layercnt":{"type":"int","option":3,"auto":False}
+                                                        }
+                                             ,"out": {"active": {"type":"sel","option":["softmax","relu",'tanh',"sigmoid"],"auto":False},
+                                                       "node_out": {"type":"int","option":1024,"auto":False},
+                                                       "padding": {"type":"sel","option":["SAME", "NONE"],"auto":False}
+                                                    }
+                                             ,"labels":{"type":"list","option":[],"auto":False}
+                                        },
+                         "netconf_data"    :{
+                                             "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
+                                             ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
+                                                            , "y_size": {"type":"int","option":32,"auto":False}
+                                                            , "channel":{"type":"int","option":3,"auto":False}
+                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
+                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
+                                        },
+                         "eval_data" :{
+                                             "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
+                                                , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
+                                                    , "y_size": {"type": "int", "option": 32, "auto": False}
+                                                    , "channel": {"type": "int", "option": 3, "auto": False}
+                                                    , "filesize": {"type": "int", "option": 1000000, "auto": False}
+                                                    , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}}
+                                    }
+                        }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -64,38 +111,75 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/resnet/',
                      json=
                      {
-                         "netconf_node" :{
-                                             "param": {"traincnt": {"type":"int","option":2,"auto":False}
-                                                      ,"epoch": {"type":"int","option":2,"auto":False}
-                                                      ,"batch_size": {"type":"int","option":None,"auto":[10,1000,10]}
-                                                      ,"predictcnt": {"type":"int","option":1,"auto":False}
-                                                      ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
-                                                      ,"augmentation": {"type":"sel","option":["N","Y"],"auto":False}
-                                             }
-                                             ,"config": {"num_classes": {"type":"int","option":1,"auto":False}
-                                                        ,"learnrate": {"type":"int","option":None,"auto":[0.0001,0.1,0.001]}
-                                                        , "layeroutputs": {"type":"int","option":18,"auto":False}
-                                                        ,"eval_type":{"type":"sel","option":["category"],"auto":False}
-                                                        ,"optimizer":{"type":"sel","option":["adam","rmsp"],"auto":False}
-                                                         }
-                                             ,"labels":{"type":"str","option":[],"auto":False}
-                                        }
-                        ,  "netconf_data"    :{
-                                             "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
-                                             ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
-                                                            , "y_size": {"type":"int","option":32,"auto":False}
-                                                            , "channel":{"type":"int","option":3,"auto":False}
-                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
-                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
-                                           }
-                        , "eval_data" :{
+                         "auto":{
+                             "netconf_node" :{
+                                                 "param": {"traincnt": {"type":"int","option":2,"auto":False}
+                                                          ,"epoch": {"type":"int","option":2,"auto":False}
+                                                          ,"batch_size": {"type":"int","option":None,"auto":[10,1000,10]}
+                                                          ,"predictcnt": {"type":"int","option":1,"auto":False}
+                                                          ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
+                                                          ,"augmentation": {"type":"sel","option":["N","Y"],"auto":False}
+                                                 }
+                                                 ,"config": {"num_classes": {"type":"int","option":1,"auto":False}
+                                                            ,"learnrate": {"type":"int","option":None,"auto":[0.0001,0.1,0.001]}
+                                                            , "layeroutputs": {"type":"int","option":18,"auto":False}
+                                                            ,"eval_type":{"type":"sel","option":["category"],"auto":False}
+                                                            ,"optimizer":{"type":"sel","option":["adam","rmsp"],"auto":False}
+                                                             }
+                                                 ,"labels":{"type":"str","option":[],"auto":False}
+                                            }
+                            ,  "netconf_data"    :{
                                                  "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
                                                  ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
-                                                            , "y_size": {"type":"int","option":32,"auto":False}
-                                                            , "channel":{"type":"int","option":3,"auto":False}
-                                                            , "filesize": {"type":"int","option":1000000,"auto":False}
-                                                            , "yolo": {"type":"sel","option":["N","Y"],"auto":False}
-                                    }
+                                                                , "y_size": {"type":"int","option":32,"auto":False}
+                                                                , "channel":{"type":"int","option":3,"auto":False}
+                                                                , "filesize": {"type":"int","option":1000000,"auto":False}
+                                                                , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
+                                               }
+                            , "eval_data" :{
+                                                     "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
+                                                     ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
+                                                                , "y_size": {"type":"int","option":32,"auto":False}
+                                                                , "channel":{"type":"int","option":3,"auto":False}
+                                                                , "filesize": {"type":"int","option":1000000,"auto":False}
+                                                                , "yolo": {"type":"sel","option":["N","Y"],"auto":False}
+                                        }
+                             }
+                         },
+                        "single":{
+                             "netconf_node" :{
+                                                 "param": {"traincnt": {"type":"int","option":2,"auto":False}
+                                                          ,"epoch": {"type":"int","option":2,"auto":False}
+                                                          ,"batch_size": {"type":"int","option":200,"auto":False}
+                                                          ,"predictcnt": {"type":"int","option":1,"auto":False}
+                                                          ,"predictlog": {"type":"sel","option":["N","Y"],"auto":False}
+                                                          ,"augmentation": {"type":"sel","option":["N","Y"],"auto":False}
+                                                 }
+                                                 ,"config": {"num_classes": {"type":"int","option":1,"auto":False}
+                                                            ,"learnrate": {"type":"int","option":0.001,"auto":False}
+                                                            , "layeroutputs": {"type":"int","option":18,"auto":False}
+                                                            ,"eval_type":{"type":"sel","option":["category"],"auto":False}
+                                                            ,"optimizer":{"type":"sel","option":["adam","rmsp"],"auto":False}
+                                                             }
+                                                 ,"labels":{"type":"str","option":[],"auto":False}
+                                            }
+                            ,  "netconf_data"    :{
+                                                 "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
+                                                 ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
+                                                                , "y_size": {"type":"int","option":32,"auto":False}
+                                                                , "channel":{"type":"int","option":3,"auto":False}
+                                                                , "filesize": {"type":"int","option":1000000,"auto":False}
+                                                                , "yolo": {"type":"sel","option":["N","Y"],"auto":False}}
+                                               }
+                            , "eval_data" :{
+                                                     "type":{"type":"sel","option":["imgdata","framedata","textdata","iobdata"],"auto":False}
+                                                     ,"preprocess": {"x_size": {"type":"int","option":32,"auto":False}
+                                                                , "y_size": {"type":"int","option":32,"auto":False}
+                                                                , "channel":{"type":"int","option":3,"auto":False}
+                                                                , "filesize": {"type":"int","option":1000000,"auto":False}
+                                                                , "yolo": {"type":"sel","option":["N","Y"],"auto":False}
+                                        }
+                             }
                          }
                      })
 data = json.loads(resp.json())
@@ -106,68 +190,133 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wdnn/',
                      json=
                      {
-                        "data_node" :
-                                     {
-                                             "type":{"type":"sel","option":["csv"],"auto":False}
-                                             , "preprocess": {"type": "sel",
-                                                          "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
-                                                                     'robust_scale', 'normalize', 'maxabs_scale'],
-                                                          "auto": False}
-                                             ,"source_sql":{"type":"sel","option":["all"],"auto":False}
-                                             ,"store_path": {"type": "str", "option": None, "auto": False}
-                                             ,"source_path": {"type": "str", "option": None, "auto": False}
-                                             ,"source_type": {"type": "sel", "option": ["local"], "auto": False}
-                                             ,"predict_path": {"type": "str", "option": None, "auto": False}
-                                             ,"source_server":{"type":"sel","option":["local"],"auto":False}
-                                             ,"drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
-                                             ,"multi_node_flag": {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                             ,"max_sentence_len": {"type" : "int", "option" : 0,"auto":False}
-                                             , "source_parse": {"type": "str", "option": "raw", "auto": False}
-                                     }
-                         ,"dataconf_node":
-                                     {
-                                                        "label": {"type":"str","option":"SUCCESSFUL_BID_PRICE","auto":False}
-                                                    ,"Transformations":{"type":"str","option":{},"auto":False}
-                                                    ,"cross_cell":{"type":"str","option":{},"auto":False}
-                                                    ,"cell_feature":{"type":"str","option":{},"auto":False}
-                                                    ,"extend_cell_feature" :{"type":"str","option":{},"auto":False}
-                                                    ,"cell_feature_unique" : {"type":"sel","option":[],"auto":False}
-                                                    ,"label_values" : {"type":"str","option":[],"auto":False}
-                                                    ,"label_type" : {"type":"sel","option":["CATEGORYCAL", "CONTINUOUS"],"auto":False}
-                                     }
-                         ,"netconf_node" :
-                                     {
-                                                    "model_path": {"type":"str","option":None,"auto":False}
-                                                    ,"hidden_layers": {"type": "int", "option": None, "auto": [[1,4,1],[1,100,1]]}
-                                                    ,"activation_function": {"type":"sel","option":["relu"],"auto":False}
-                                                    ,"batch_size" : {"type":"int","option":1000,"auto":False}
-                                                    ,"epoch" : {"type":"int","option":None,"auto":[1,10,1]}
-                                                    ,"model_type" : {"type":"sel","option":["regression","category"],"auto":False}
-                                                    ,"auto_demension": {"type": "sel", "option": ["False"], "auto": False}
-                                                    ,"train" : {"type" : "sel", "option" : ["True","False"],"auto":False}
-                                     }
-                         ,"evaldata" :
-                                    {
-                                        "type": {"type": "sel", "option": ["csv"], "auto": False}
-                                        , "preprocess": {"type": "sel",
-                                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
-                                                                    'robust_scale', 'normalize', 'maxabs_scale'],
-                                                         "auto": False}
-                                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
-                                        , "store_path": {"type": "str", "option": None, "auto": False}
-                                        , "source_path": {"type": "str", "option": None, "auto": False}
-                                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
-                                        , "predict_path": {"type": "str", "option": None, "auto": False}
-                                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
-                                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
-                                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
-                                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
-                                    }
-                         ,"eval_node" :
-                                    {
-                                        "type": {"type":"sel","option":["regression","category"],"auto":False}
-                                    }
+                        "auto":{
+                             "data_node" :
+                                         {
+                                                 "type":{"type":"sel","option":["csv"],"auto":False}
+                                                 , "preprocess": {"type": "sel",
+                                                              "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
+                                                                         'robust_scale', 'normalize', 'maxabs_scale'],
+                                                              "auto": False}
+                                                 ,"source_sql":{"type":"sel","option":["all"],"auto":False}
+                                                 ,"store_path": {"type": "str", "option": None, "auto": False}
+                                                 ,"source_path": {"type": "str", "option": None, "auto": False}
+                                                 ,"source_type": {"type": "sel", "option": ["local"], "auto": False}
+                                                 ,"predict_path": {"type": "str", "option": None, "auto": False}
+                                                 ,"source_server":{"type":"sel","option":["local"],"auto":False}
+                                                 ,"drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
+                                                 ,"multi_node_flag": {"type" : "sel", "option" : ["True","False"],"auto":False}
+                                                 ,"max_sentence_len": {"type" : "int", "option" : 0,"auto":False}
+                                                 , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                                         }
+                             ,"dataconf_node":
+                                         {
+                                                            "label": {"type":"str","option":"SUCCESSFUL_BID_PRICE","auto":False}
+                                                        ,"Transformations":{"type":"str","option":{},"auto":False}
+                                                        ,"cross_cell":{"type":"str","option":{},"auto":False}
+                                                        ,"cell_feature":{"type":"str","option":{},"auto":False}
+                                                        ,"extend_cell_feature" :{"type":"str","option":{},"auto":False}
+                                                        ,"cell_feature_unique" : {"type":"sel","option":[],"auto":False}
+                                                        ,"label_values" : {"type":"str","option":[],"auto":False}
+                                                        ,"label_type" : {"type":"sel","option":["CATEGORYCAL", "CONTINUOUS"],"auto":False}
+                                         }
+                             ,"netconf_node" :
+                                         {
+                                                        "model_path": {"type":"str","option":None,"auto":False}
+                                                        ,"hidden_layers": {"type": "int", "option": None, "auto": [[1,4,1],[1,100,1]]}
+                                                        ,"activation_function": {"type":"sel","option":["relu"],"auto":False}
+                                                        ,"batch_size" : {"type":"int","option":1000,"auto":False}
+                                                        ,"epoch" : {"type":"int","option":None,"auto":[1,10,1]}
+                                                        ,"model_type" : {"type":"sel","option":["regression","category"],"auto":False}
+                                                        ,"auto_demension": {"type": "sel", "option": ["False"], "auto": False}
+                                                        ,"train" : {"type" : "sel", "option" : ["True","False"],"auto":False}
+                                         }
+                             ,"evaldata" :
+                                        {
+                                            "type": {"type": "sel", "option": ["csv"], "auto": False}
+                                            , "preprocess": {"type": "sel",
+                                                             "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
+                                                                        'robust_scale', 'normalize', 'maxabs_scale'],
+                                                             "auto": False}
+                                            , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                                            , "store_path": {"type": "str", "option": None, "auto": False}
+                                            , "source_path": {"type": "str", "option": None, "auto": False}
+                                            , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                                            , "predict_path": {"type": "str", "option": None, "auto": False}
+                                            , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                                            , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
+                                            , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                            , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                                            , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                                        }
+                             ,"eval_node" :
+                                        {
+                                            "type": {"type":"sel","option":["regression","category"],"auto":False}
+                                        }
+                        },"single":{
+                             "data_node" :
+                                         {
+                                                 "type":{"type":"sel","option":["csv"],"auto":False}
+                                                 , "preprocess": {"type": "sel",
+                                                              "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
+                                                                         'robust_scale', 'normalize', 'maxabs_scale'],
+                                                              "auto": False}
+                                                 ,"source_sql":{"type":"sel","option":["all"],"auto":False}
+                                                 ,"store_path": {"type": "str", "option": None, "auto": False}
+                                                 ,"source_path": {"type": "str", "option": None, "auto": False}
+                                                 ,"source_type": {"type": "sel", "option": ["local"], "auto": False}
+                                                 ,"predict_path": {"type": "str", "option": None, "auto": False}
+                                                 ,"source_server":{"type":"sel","option":["local"],"auto":False}
+                                                 ,"drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
+                                                 ,"multi_node_flag": {"type" : "sel", "option" : ["True","False"],"auto":False}
+                                                 ,"max_sentence_len": {"type" : "int", "option" : 0,"auto":False}
+                                                 , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                                         }
+                             ,"dataconf_node":
+                                         {
+                                                            "label": {"type":"str","option":"SUCCESSFUL_BID_PRICE","auto":False}
+                                                        ,"Transformations":{"type":"str","option":{},"auto":False}
+                                                        ,"cross_cell":{"type":"str","option":{},"auto":False}
+                                                        ,"cell_feature":{"type":"str","option":{},"auto":False}
+                                                        ,"extend_cell_feature" :{"type":"str","option":{},"auto":False}
+                                                        ,"cell_feature_unique" : {"type":"sel","option":[],"auto":False}
+                                                        ,"label_values" : {"type":"str","option":[],"auto":False}
+                                                        ,"label_type" : {"type":"sel","option":["CATEGORYCAL", "CONTINUOUS"],"auto":False}
+                                         }
+                             ,"netconf_node" :
+                                         {
+                                                        "model_path": {"type":"str","option":None,"auto":False}
+                                                        ,"hidden_layers": {"type": "int", "option": [2, 50], "auto": False}
+                                                        ,"activation_function": {"type":"sel","option":["relu"],"auto":False}
+                                                        ,"batch_size" : {"type":"int","option":1000,"auto":False}
+                                                        ,"epoch" : {"type":"int","option":5,"auto":False}
+                                                        ,"model_type" : {"type":"sel","option":["regression","category"],"auto":False}
+                                                        ,"auto_demension": {"type": "sel", "option": ["False"], "auto": False}
+                                                        ,"train" : {"type" : "sel", "option" : ["True","False"],"auto":False}
+                                         }
+                             ,"evaldata" :
+                                        {
+                                            "type": {"type": "sel", "option": ["csv"], "auto": False}
+                                            , "preprocess": {"type": "sel",
+                                                             "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
+                                                                        'robust_scale', 'normalize', 'maxabs_scale'],
+                                                             "auto": False}
+                                            , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                                            , "store_path": {"type": "str", "option": None, "auto": False}
+                                            , "source_path": {"type": "str", "option": None, "auto": False}
+                                            , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                                            , "predict_path": {"type": "str", "option": None, "auto": False}
+                                            , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                                            , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
+                                            , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                                            , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                                            , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                                        }
+                             ,"eval_node" :
+                                        {
+                                            "type": {"type":"sel","option":["regression","category"],"auto":False}
+                                        }
+                        }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -183,48 +332,11 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wdnn_keras/',
                      json=
                      {
-                         "data_node":
-                             {
-                                 "source":
-                                     {
-                                         "type": {"type": "sel", "option": ["csv"], "auto": False}
-                                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
-                                         , "source_path": {"type": "str", "option": None, "auto": False}
-                                         ,
-                                         "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
-                                         , "drop_duplicate": {"type": "sel", "option": ["True", "False"], "auto": False}
-                                     }
-                                 , "pre":
-                                 {
-                                     "source_sql": {"type": "sel",
-                                                    "option": ["maxabs_scale", 'scale', 'minmax_scale', 'robust_scale',
-                                                               'normalize', 'maxabs_scale'], "auto": False}
-                                 }
-                                 , "store":
-                                 {
-                                     "store_path": {"type": "str", "option": None, "auto": False}
-                                 }
-                             }
-                         , "dataconf_node":
-                         {
-                             "label": {"type": "str", "option": "SUCCESSFUL_BID_PRICE", "auto": False}
-                             , "Transformations": {"type": "str", "option": {}, "auto": False}
-                             , "cross_cell": {"type": "str", "option": {}, "auto": False}
-                             , "cell_feature": {"type": "str", "option": {}, "auto": False}
-                             , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
-                             , "label_values": {"type": "str", "option": [], "auto": False}
-                             , "label_type": {"type": "str", "option": "CONTINUOUS", "auto": False}
-                         }
-                         , "netconf_node":
-                         {
-                             "model_path": {"type": "str", "option": None, "auto": False}
-                             , "hidden_layers": {"type": "int", "option": [100], "auto": False}
-                             , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
-                             , "batch_size": {"type": "int", "option": None, "auto": [100, 100000, 100]}
-                             , "epoch": {"type": "int", "option": None, "auto": [10, 500, 10]}
-                             , "model_type": {"type": "sel", "option": ["regression"], "auto": False}
-                             , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
+                         "auto":{
+
+                         },
+                         "single":{
+
                          }
                      })
 data = json.loads(resp.json())
@@ -235,6 +347,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/word2vec/',
                      json=
                      {
+                         "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -244,6 +362,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/word2vec_frame/',
                      json=
                      {
+                         "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -253,6 +377,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/doc2vec/',
                      json=
                      {
+                         "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -262,74 +392,79 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/wcnn/',
                      json=
                      {
-                         "data_node":
-                             {
-                                 "source_type": {"type": "sel", "option": ['local'], "auto": False},
-                                 "type": {"type": "sel", "option": ['csv'], "auto": False},
-                                 "source_server": {"type": "sel", "option": ["local"], "auto": False},
-                                 "source_sql": {"type": "sel", "option": ["all"], "auto": False},
-                                 "preprocess": {"type": "sel", "option": ["none"], "auto": False},
-                             },
-                         "test_data_node":
-                             {
-                                 "source_type": {"type": "sel", "option": ['local'], "auto": False},
-                                 "type": {"type": "sel", "option": ['csv'], "auto": False},
-                                 "source_server": {"type": "sel", "option": ["local"], "auto": False},
-                                 "source_sql": {"type": "sel", "option": ["all"], "auto": False},
-                                 "preprocess": {"type": "sel", "option": ["none"], "auto": False},
-                             },
-                         "netconf_node":
-                             {
-                                 "param": {"epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
-                                     , "traincnt": {"type": "int", "option": None, "auto": [1, 10, 2]}
-                                     , "batch_size": {"type": "int", "option": None, "auto": [5, 100, 10]}
-                                     , "predictcnt": {"type": "int", "option": None, "auto": [5, 100, 10]}
-                                           }
-                                 , "config": {"num_classes": {"type": "int", "option": 15, "auto": False}
-                                 , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
-                                 , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
-                                 , "optimizer": {"type": "sel", "option": ["AdamOptimizer"], "auto": False}
-                                              }
-                                 , "layers": {"active": {"type": "sel", "option": ["relu"], "auto": False},
-                                              "cnnfilter": {"type": "int", "option": None, "auto": [[1,10,1],[1,3,1]]},
-                                              "droprate":  {"type":"int","option":None,"auto":[0.0,1.0,0.1]}
-                                              }
-                                 , "out": {
-                                 "active": {"type": "sel", "option": ["softmax"], "auto": False},
-                                 "padding": {"type": "sel", "option": ["SAME"], "auto": False}
-                             }
-                                 , "labels": {"type": "str", "option": [], "auto": False}
-                             },
-                         "pre_feed_test":
-                             {
-                                 "encode_column": {"type": "str", "option": 'encode', "auto": False},
-                                 "decode_column": {"type": "str", "option": 'decode', "auto": False},
-                                 "channel": {"type": "sel", "option": [1,2,3], "auto": False},
-                                 "encode_len": {"type": "int", "option": 10, "auto": False},
-                                 "preprocess": {"type": "sel", "option": ['none','mecab'], "auto": False},
-                                 "vocab_size": {"type": "int", "option": 100, "auto": False},
-                                 "char_encode": {"type": "sel", "option": ['True','False'], "auto": [0, 1, 1]},
-                                 "char_max_len": {"type": "int", "option": 5, "auto": False},
-                                 "lable_size": {"type": "int", "option": 15, "auto": False},
-                                 "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
-                             },
-                         "pre_feed_train":
-                             {
-                                 "encode_column": {"type": "str", "option": 'encode', "auto": False},
-                                 "decode_column": {"type": "str", "option": 'decode', "auto": False},
-                                 "channel": {"type": "sel", "option": [1,2,3], "auto": False},
-                                 "encode_len": {"type": "int", "option": 10, "auto": False},
-                                 "preprocess": {"type": "sel", "option": ['none','mecab'], "auto": False},
-                                 "vocab_size": {"type": "int", "option": 100, "auto": False},
-                                 "char_encode": {"type": "sel", "option": ['True','False'], "auto": [0, 1, 1]},
-                                 "char_max_len": {"type": "int", "option": 5, "auto": False},
-                                 "lable_size": {"type": "int", "option": 15, "auto": False},
-                                 "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
-                             },
-                         "eval_node":
-                             {
-                                 "type": {"type": "sel", "option": ["category"], "auto": False}
-                             }
+                        "auto": {
+                             "data_node":
+                                 {
+                                     "source_type": {"type": "sel", "option": ['local'], "auto": False},
+                                     "type": {"type": "sel", "option": ['csv'], "auto": False},
+                                     "source_server": {"type": "sel", "option": ["local"], "auto": False},
+                                     "source_sql": {"type": "sel", "option": ["all"], "auto": False},
+                                     "preprocess": {"type": "sel", "option": ["none"], "auto": False},
+                                 },
+                             "test_data_node":
+                                 {
+                                     "source_type": {"type": "sel", "option": ['local'], "auto": False},
+                                     "type": {"type": "sel", "option": ['csv'], "auto": False},
+                                     "source_server": {"type": "sel", "option": ["local"], "auto": False},
+                                     "source_sql": {"type": "sel", "option": ["all"], "auto": False},
+                                     "preprocess": {"type": "sel", "option": ["none"], "auto": False},
+                                 },
+                             "netconf_node":
+                                 {
+                                     "param": {"epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
+                                         , "traincnt": {"type": "int", "option": None, "auto": [1, 10, 2]}
+                                         , "batch_size": {"type": "int", "option": None, "auto": [5, 100, 10]}
+                                         , "predictcnt": {"type": "int", "option": None, "auto": [5, 100, 10]}
+                                               }
+                                     , "config": {"num_classes": {"type": "int", "option": 15, "auto": False}
+                                     , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
+                                     , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
+                                     , "optimizer": {"type": "sel", "option": ["AdamOptimizer"], "auto": False}
+                                                  }
+                                     , "layers": {"active": {"type": "sel", "option": ["relu"], "auto": False},
+                                                  "cnnfilter": {"type": "int", "option": None, "auto": [[1,10,1],[1,3,1]]},
+                                                  "droprate":  {"type":"int","option":None,"auto":[0.0,1.0,0.1]}
+                                                  }
+                                     , "out": {
+                                     "active": {"type": "sel", "option": ["softmax"], "auto": False},
+                                     "padding": {"type": "sel", "option": ["SAME"], "auto": False}
+                                 }
+                                     , "labels": {"type": "str", "option": [], "auto": False}
+                                 },
+                             "pre_feed_test":
+                                 {
+                                     "encode_column": {"type": "str", "option": 'encode', "auto": False},
+                                     "decode_column": {"type": "str", "option": 'decode', "auto": False},
+                                     "channel": {"type": "sel", "option": [1,2,3], "auto": False},
+                                     "encode_len": {"type": "int", "option": 10, "auto": False},
+                                     "preprocess": {"type": "sel", "option": ['none','mecab'], "auto": False},
+                                     "vocab_size": {"type": "int", "option": 100, "auto": False},
+                                     "char_encode": {"type": "sel", "option": ['True','False'], "auto": [0, 1, 1]},
+                                     "char_max_len": {"type": "int", "option": 5, "auto": False},
+                                     "lable_size": {"type": "int", "option": 15, "auto": False},
+                                     "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
+                                 },
+                             "pre_feed_train":
+                                 {
+                                     "encode_column": {"type": "str", "option": 'encode', "auto": False},
+                                     "decode_column": {"type": "str", "option": 'decode', "auto": False},
+                                     "channel": {"type": "sel", "option": [1,2,3], "auto": False},
+                                     "encode_len": {"type": "int", "option": 10, "auto": False},
+                                     "preprocess": {"type": "sel", "option": ['none','mecab'], "auto": False},
+                                     "vocab_size": {"type": "int", "option": 100, "auto": False},
+                                     "char_encode": {"type": "sel", "option": ['True','False'], "auto": [0, 1, 1]},
+                                     "char_max_len": {"type": "int", "option": 5, "auto": False},
+                                     "lable_size": {"type": "int", "option": 15, "auto": False},
+                                     "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
+                                 },
+                             "eval_node":
+                                 {
+                                     "type": {"type": "sel", "option": ["category"], "auto": False}
+                                 }
+                        },
+                         "single":{
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -339,6 +474,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/seq2seq/',
                      json=
                      {
+                        "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -348,6 +489,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/seq2seq_csv/',
                      json=
                      {
+                        "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -357,6 +504,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/autoencoder_img/',
                      json=
                      {
+                         "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -366,6 +519,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/autoencoder_csv/',
                      json=
                      {
+                         "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -375,6 +534,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/bilstmcrf_iob/',
                      json=
                      {
+                         "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
@@ -384,6 +549,12 @@ print("evaluation result : {0}".format(data))
 resp = requests.post('http://' + url + '/api/v1/type/automl/state/rule/graph_id/fasttext_txt/',
                      json=
                      {
+                         "auto": {
+
+                         },
+                         "single": {
+
+                         }
                      })
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))

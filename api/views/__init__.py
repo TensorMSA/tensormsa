@@ -11,6 +11,7 @@ from .workflow_dataconf_frame import WorkFlowDataConfFrame
 from .workflow_dataconf_image import WorkFlowDataConfImage
 from .workflow_pre_merge import WorkFlowPreMerge
 from .workflow_pre_predict import WorkFlowPrePredict
+from .workflow_netconf import WorkFlowNetConf
 from .workflow_netconf_autoencoder import WorkFlowNetConfAutoEncoder
 from .workflow_netconf_cnn import WorkFlowNetConfCnn
 from .workflow_netconf_predefined import WorkFlowNetConfPredefined
