@@ -15,8 +15,8 @@ import sys
 
 # println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-nn_id = "nn00000003"
-wf_ver_id = str(5)
+nn_id = "nn00000001"
+wf_ver_id = str(1)
 #
 # # # get workflow version
 # # if wf_ver_id == 0:
@@ -32,7 +32,7 @@ wf_ver_id = str(5)
 # ########################################################################################################################
 # CNN Network WorkFlow Node : Network Config Setup
 # (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/direct/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
                  json={
                      "param":{"traincnt": 2
                               ,"epoch": 2
@@ -53,7 +53,7 @@ netconf = json.loads(resp.json())
 # print("insert workflow node conf info evaluation result : {0}".format(netconf))
 
 # CNN Network WorkFlow Node :  Eval Config Setup
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/eval_node/'
+resp = requests.put('http://' + url + '/api/v1/type/wf/direct/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/eval_node/'
                     ,json={})
 evalconf = json.loads(resp.json())
 ########################################################################################################################
@@ -66,12 +66,12 @@ datajson = {"preprocess": {"x_size": 32,
             }
 
 # CNN Network WorkFlow Node :  Data Config Setup
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_data/',
+resp = requests.put('http://' + url + '/api/v1/type/wf/direct/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_data/',
                      json=datajson)
 dataconf = json.loads(resp.json())
 
 # CNN Network WorkFlow Node :  Eval Data Config Setup
-resp = requests.put('http://' + url + '/api/v1/type/wf/state/imgdata/src/local/form/file/prg/source/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/eval_data/'
+resp = requests.put('http://' + url + '/api/v1/type/wf/direct/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/eval_data/'
                      ,json=datajson)
 edataconf = json.loads(resp.json())
 

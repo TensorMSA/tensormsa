@@ -42,12 +42,17 @@ class WorkFlowNetConf(APIView) :
 
     def put(self, request, nnid, ver, node):
         """
-        - desc ; update data
+        - request ; update data
         """
         try:
             input_data = json.loads(str(request.body, 'utf-8'))
-            node_id = nnid+'_'+ver+'_'+node
-            return_data = WorkFlowDirect().set_view_obj_node(node_id, input_data)
+            return_data =''
+            if node != '':
+                node_id = nnid + '_' + ver + '_' + node
+                return_data = WorkFlowDirect().set_view_obj_node(node_id, input_data)
+            else:
+                return_data = WorkFlowDirect().set_node_config_single(nnid, ver, input_data)
+
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

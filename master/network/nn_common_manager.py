@@ -282,12 +282,32 @@ class NNCommonManager :
         :return:
         """
         try:
-            # update user request
-            obj = models.NN_VER_BATCHLIST_INFO.objects.get(nn_batch_ver_id=str(up_data['nn_batch_ver_id']))
-            for key in up_data.keys():
-                if (up_data[key] != None):
-                    setattr(obj, key, up_data[key])
-            obj.save()
+            # # update user request
+            #
+            # for key in up_data.keys():
+            #     if (up_data[key] != None):
+            #         setattr(obj, key, up_data[key])
+            # obj.save()
+
+            vobj = models.NN_VER_WFLIST_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=ver)
+            query_list = models.NN_VER_BATCHLIST_INFO.objects.filter(nn_wf_ver_id_id=str(vobj.id))
+
+            if (up_data['active_flag'] == 'Y'):
+                for query_item in query_list:
+                    query_item.active_flag = 'N'
+                    if up_data['nn_batch_ver_id'] == query_item.nn_batch_ver_id:
+                        query_item.active_flag = 'Y'
+
+                    query_item.save()
+
+            if (up_data['eval_flag'] == 'Y'):
+                for query_item in query_list:
+                    query_item.eval_flag = 'N'
+                    if up_data['nn_batch_ver_id'] == query_item.nn_batch_ver_id:
+                        query_item.eval_flag = 'Y'
+
+                    query_item.save()
+
             return str(up_data['nn_batch_ver_id'])
         except Exception as e:
             raise Exception(e)
