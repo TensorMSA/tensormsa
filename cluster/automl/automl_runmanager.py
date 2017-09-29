@@ -59,7 +59,8 @@ class AutoMlRunManager :
                     networks = networks + gen_nets
 
                 # train & evaluate networks
-                networks = self.train_networks(networks)
+                initial = True if idx == 0 else False
+                networks = self.train_networks(networks, initial=initial)
                 # set each train set flag to fin
                 self.set_train_finish(ver_data_sets)
                 # update traing progress
@@ -114,7 +115,7 @@ class AutoMlRunManager :
         networks = sorted(networks, key=lambda x : x.get('acc'), reverse=True)
         return networks[0:survive]
 
-    def train_networks(self, networks):
+    def train_networks(self, networks, initial=False):
         """
         train each networks on cluster server
         :param networks: network lists
@@ -122,8 +123,23 @@ class AutoMlRunManager :
         """
         try :
             tasks = []
-            #i = inspect()
-            #if (i.active() == None):
+            # if first version run it alone first for
+            first_network = {}
+            if (initial == True and len(networks) > 0 and len(list(first_network.keys())) == 0):
+                network = networks[0]
+                network['flag'] = True
+                key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
+
+                if (self.debug_mode):
+                    result = train(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
+                    network['acc'] = result[key].get('accuracy')
+                else :
+                    result = train.delay(network.get('nn_id'), str(network.get('nn_wf_ver_id'))).get()
+                    network['acc'] = result[key].get('accuracy')
+
+                first_network = networks[0].copy()
+                del networks[0]
+
             if (self.debug_mode):
                 # for debug you can run all tasks on django process
                 for network in networks:
@@ -148,9 +164,12 @@ class AutoMlRunManager :
                         if(key in list(result.keys()) and result[key] is not None and result[key].get('accuracy') is not None) :
                             network['acc'] = result[key].get('accuracy')
                             network['flag'] = True
-            return networks
+            if len(list(first_network.keys())) > 0 :
+                networks.append(first_network)
         except Exception as e :
             logging.error("Error on training : {0} ".format(e))
+        finally :
+            return networks
 
     def create_networks(self, generation, number):
         """
