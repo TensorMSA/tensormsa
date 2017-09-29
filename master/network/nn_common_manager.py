@@ -160,7 +160,7 @@ class NNCommonManager :
         """
         try:
             # set all other version info active tag to false
-            if(up_data['active_flag'] == 'Y'):
+            if('active_flag' in up_data and up_data['active_flag'] == 'Y'):
                 query_list = models.NN_VER_WFLIST_INFO.objects.filter(nn_id=nn_id)
                 for query_item in query_list:
                     query_item.active_flag = 'N'

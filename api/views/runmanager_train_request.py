@@ -6,6 +6,7 @@ from celery.task.control import inspect
 from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 import coreapi
+from master.network.nn_common_manager import NNCommonManager
 
 class RunManagerTrainRequest(APIView):
 
@@ -26,6 +27,12 @@ class RunManagerTrainRequest(APIView):
             execute all process at once
         """
         try:
+            condition_data = {}
+            condition_data['nn_wf_ver_id'] = ver
+            condition_data['condition'] = "2"  # 1 Pending, 2 Progress, 3 Finish, 4 Error
+            # Net Version create
+            NNCommonManager().update_nn_wf_info(nnid, condition_data)
+
             if(self._same_request_check(nnid, ver) == 'run'):
                 result = train.delay(nnid, ver)
                 return Response(json.dumps({"status": "200", "id": result.id, "state": result.state}))
@@ -35,7 +42,13 @@ class RunManagerTrainRequest(APIView):
             else :
                 return_data = {"status": "404", "result": str("same ID is already on training")}
                 return Response(json.dumps(return_data))
+
         except Exception as e:
+            condition_data = {}
+            condition_data['nn_wf_ver_id'] = ver
+            condition_data['condition'] = "4"  # 1 Pending, 2 Progress, 3 Finish, 4 Error
+            # Net Version create
+            NNCommonManager().update_nn_wf_info(nnid, condition_data)
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
