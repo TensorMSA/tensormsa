@@ -55,7 +55,11 @@ class FileUploadView(APIView):
                     fp = open(filename,'wb')
 
                     for chunk in file.chunks():
-                        fp.write(chunk)
+                        if file.name.find('.zip') >= 0 :
+                            fp.write(chunk)
+                        else:
+                            fp.write(chunk.decode('cp949').encode('utf-8'))
+
                     fp.close()
                     return_data_sub["File"] = "File Create.(" + filename + ")"
                     return_data["File"+str(i)] = return_data_sub
