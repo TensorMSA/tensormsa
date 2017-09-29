@@ -1,0 +1,89 @@
+.form-table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    td,
+    th {
+        border: 1px solid #c7c7c7;
+        border-left: none;
+        border-right: none;
+        padding: 8px $tbl-basic-h-padding;
+        font-size: 12px;
+    }
+    tr {
+        td:last-child,
+        th:last-child {
+            border-right: none;
+        }
+        &:last-child td {
+            border-bottom: 1px solid #c3c3c3
+        }
+        th {
+            background: #f3f3f3;
+        }
+    }
+}
+
+.jsonOdd{
+    background: #eee;
+}
+.scroll-container {
+    position:relative;
+    padding-top:34px; 
+    display:block;
+    background:#f1f7fc;
+    border-top:2px solid #3e80ab;
+}
+.scroll-wrap {
+    overflow-y:auto;
+    height:200px;
+    display:block;
+    background:#fff;
+    border-top:1px solid #3e80ab;
+    table {
+        width:100%;
+        thead,tbody {
+            tr {
+                td,th {
+                    padding:5px 8px;
+                    text-align:left;
+                }
+            }
+        }
+        thead {
+            tr {
+                th {
+                    height:0;
+                    line-height:0;
+                    padding-top:0;
+                    padding-bottom:0;
+                    font-size:0;
+                    color:transparent;
+                    border:none;
+                    white-space:nowrap;
+                    div {
+                        position:absolute;
+                        background:transparent;
+                        color:$font-color-blue;
+                        padding:10px 8px;
+                        top:0;
+                        margin-left:-9px;
+                        line-height:normal;
+                        border-left:1px solid #c3c3c3; 
+                        font-size:12px;
+                    }
+                    &:first-child div {
+                        border:none;
+
+                    }
+                }
+            }
+        
+        }
+        tbody {
+            background:#fff;
+        }
+    }
+    
+    
+}

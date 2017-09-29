@@ -1,0 +1,42 @@
+table {
+    thead {
+        tr.option-select {
+            td {
+                background: $option-select-color;
+                padding : 0 0 0 0;
+                select{
+                &.selected {
+                    background: $option-selected-color;
+                    .option-select {
+                        background: $selected-img-url no-repeat 96% 0;
+                        select {
+                            color: #fff;
+                        }
+                    }
+                }
+                }
+            }
+        }
+    }
+}
+
+.option-select {
+    background: $select-img-url no-repeat 96% 0;
+    height: 24px;
+    overflow: hidden;
+    width: 100%;
+    select {
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        height: 24px;
+        padding: 0 5px;
+        width: calc(100% + 30px);
+        outline: none;
+        color: #fff;
+        option {
+            color: $option-select-color;
+            background: #f9f9f9;
+        }
+    }
+}

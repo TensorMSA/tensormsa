@@ -1,0 +1,81 @@
+.utilMenu {
+  float: right;
+  width: $utilMenu-width;
+  height: 100%;
+  border-left: 1px solid $border-color-base;
+  background: #ffffff; /* Old browsers */
+  background: -moz-linear-gradient(top,  #ffffff 0%, #e9e9e9 100%);
+  background: -webkit-linear-gradient(top,  #ffffff 0%,#e9e9e9 100%);
+  background: linear-gradient(to bottom,  #ffffff 0%,#e9e9e9 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e9e9e9',GradientType=0 );
+  z-index:3;
+  dt {
+    display:none;
+  }
+  dd {
+    float:left;
+    width:50%;
+    height:50%;
+    text-align:center;
+    font-size: $utilMenus-font-size;
+    a {
+      color: $utilMenus-font-color;
+      position:relative;
+      padding-top:6px;
+      padding-left:43px;
+      display:inline-block;
+      width:100%;
+      height:100%;
+      text-align:left;
+      @include box-sizing(border-box);
+      &:hover {
+        background: rgba(0,0,0,.05);
+        @include transition(background, 1s);
+      }
+      &:active {
+        box-shadow: $active-shadow-effect;
+      }
+      &:before {
+        content:'';
+        @include box-sizing(border-box);
+        display:inline-block;
+        position:absolute;
+        left:18px;
+        width:19px;
+        height:19px;
+        background: $utilMenu-icon-url;
+      }
+      .user-name {
+        color: $name-text-color;
+      }
+    }
+    &.utilMenu-help {
+      border-right:1px solid $border-color-base;
+    }
+    &.utilMenu-logout a:before {
+      background-position:-19px 0;
+    }
+    &.utilMenu-user-info {
+      width:100%;
+      border-top:1px solid $border-color-base;
+      a {
+        cursor:default;
+        &:before {
+          background-position:-38px 0;
+        }
+        &:active {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .utilMenu {
+    width: $resize-util-width;
+    dd span:not(.user-name) {
+      display:none;
+    }
+  }
+}

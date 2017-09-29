@@ -12,6 +12,7 @@ class ResponseGenerator(ShareData):
                 response = ' '.join([share_data.get_story_slot_entity(x)[0] for x in self.response_story[0]['fields']['output_entity']['entity']])
                 response += self.response_story[0]['fields']['output_data']
                 share_data.set_output_data(response)
+                #share_data.initialize_story()
             else:
                 share_data.set_output_data(self.get_unknown_response())
             return share_data

@@ -1,0 +1,49 @@
+.bullet {
+    position: relative;
+    &:before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        background: #3c92ca;
+        position: absolute;
+        left: -10px;
+        top: 7px;
+        margin-right: 2px;
+    }
+}
+
+td {
+    .bullet {
+        margin-left: 10px;
+    }
+}
+
+[class^="circle-"] {
+    position: relative;
+    &:before {
+        content: '';
+        @include box-sizing(border-box);
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background: #fff;
+        position: absolute;
+        top: 5px;
+        margin-right: 2px;
+        border: 3px solid #333;
+        border-radius: 100%;
+        margin-left: -18px;
+    }
+}
+.circle-yellow:before {
+    border-color: $yellow !important;
+}
+
+.circle-green:before {
+    border-color: $green !important;
+}
+
+.circle-blue:before {
+    border-color: $blue !important;
+}

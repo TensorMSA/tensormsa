@@ -1,0 +1,7 @@
+@mixin background($start,$end) {
+  background: $start;
+  background: -moz-linear-gradient(top,  $start 0%, $end 100%);
+  background: -webkit-linear-gradient(top,  $start 0%,$end 100%);
+  background: linear-gradient(to bottom,  $start 0%,$end 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end',GradientType=0 );
+}
