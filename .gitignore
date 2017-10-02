@@ -1,5 +1,4 @@
-
-### Hoyai remoce
+### TensorMSA except source
 .idea/*
 *.pyc
 */migrations/
@@ -7,3 +6,6 @@ tests/__pycache__
 *.log
 demo/*.txt
 *.sqlite
+gui/static/node_modules
+gui/templates/js/TensorMSA.js.map
+gui/templates/js/TensorMSA.js

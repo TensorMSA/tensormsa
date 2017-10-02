@@ -5,7 +5,7 @@ export default class MainSectionComponent extends React.Component {
         return (   
                 <section>
 	            	<div className="main_visual_area">
-						<div><img src="images/main_visual01.png" alt="" />
+						<div><img src="./../images/main_visual01.png" alt="" />
 						</div>
 						<div className="visual_txt_area">
 							<p className="visual_txt">
