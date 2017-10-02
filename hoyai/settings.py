@@ -249,10 +249,10 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR , 'gui/dist')
-STATIC_URL = '/dist/'
+STATIC_ROOT = os.path.join(BASE_DIR , 'gui')
+STATIC_URL = '/templates/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "gui/static/dist"),
+    os.path.join(BASE_DIR, "gui/templates"),
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
