@@ -190,5 +190,6 @@ urlpatterns = [
     # UI / View index
     url(r'^$', csrf_exempt(ui_view.UI_Service.as_view())),
     url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
+    url(r'^chatbot/$', csrf_exempt(ui_view.Chatbot_Service.as_view())),
 
 ]

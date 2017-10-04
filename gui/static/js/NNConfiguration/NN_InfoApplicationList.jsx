@@ -92,7 +92,7 @@ export default class NN_InfoApplicationList extends React.Component {
 
     runChat(){
         let params = "width=800,height=1000";
-        window.open(EnvConstants.getWebServerUrl()+"/chatbot/index.html","chatbot",params)
+        window.open(EnvConstants.getWebServerUrl()+"/chatbot","chatbot",params)
     }
 
     render() {
@@ -195,7 +195,7 @@ export default class NN_InfoApplicationList extends React.Component {
             <section>
                 <h1 className="hidden">tensor MSA main table</h1>
                 <div className="container paddingT10">
-                    <div><img src="./images/chatbot_ico.png" width="128" height="128"></img></div>
+                    <div><img src="./templates/images/chatbot_ico.png" width="128" height="128"></img></div>
                     <div className="tblBtnArea">
                         <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.saveData()} >Save</button>
                         <button type="button" className="save" onClick={() => this.runChat()} >Run Chat</button>

@@ -32,8 +32,8 @@
 * AutoML for hyperparameter tunning (genetic algorithm, random hp search, gpu cluster)
 
 **Stack**
-* Front End : React(ES6), SVG, D3, Pure CSS, Mobile(for Chatbot FW)
-* Back End : Django(Python 3.5), Restful Service(Micro Service Architecture), Tensorflow(v1.2), PostgreSQL, Memcache, Celery, Spqrk QL, HDF5, Ngix, Gensim, Konlpy
+* Front End : React(ES6 + Webpack), Pure CSS + Scss, D3, jQuery Mobile(for Chatbot Client)
+* Back End : Django(Python 3.5), Tensorflow(v1.2), Restful Service(Micro Service Architecture), PostgreSQL, Memcache, Celery, HDF5, Ngix, Gensim(W2V), Konlpy
 
 ## Overview - Framework introduction video 
 
