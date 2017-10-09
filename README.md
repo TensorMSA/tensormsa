@@ -39,7 +39,32 @@
 
 Our framework provide easy to use UI/UX and AutoML based super easy process of build & service deep learning models
 
-[![TensorMSA DeepLearning Layer](http://hugrypiggykim.com/wp-content/uploads/2017/09/user_main_page.png)](https://youtu.be/oShf9N7rdAE "HOYA ver0.1 - Click to Watch!")
+[![TensorMSA DeepLearning Layer](http://hugrypiggykim.com/wp-content/uploads/2017/09/user_main_page.png)](https://youtu.be/oShf9N7rdAE "TensorMSA ver0.1 - Click to Watch!")
+
+
+## How to install
+Download the latest version of TensorMSA from https://github.com/TensorMSA/tensormsa.git and unzip it.
+Also, consider to use wget like followings.
+```
+    git clone https://github.com/TensorMSA/tensormsa.git
+    unzip tensormsa-master.zip
+```
+Install PostgreSQL https://www.postgresql.org/download/
+```
+    ./manage.py makemigrations
+    ./manage.py migrate --fake master zero (Optional)
+    ./manage.py migrate
+```
+Run for Service
+```
+    ./start_hoyai.sh 1
+```
+Call APIs
+```
+    ./demo/python api_basic_0_node_rule.py
+    ./demo/python api_basic_0_automl_rule.py
+    ...
+```
 
 ## For more information  
 
