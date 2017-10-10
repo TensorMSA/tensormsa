@@ -43,7 +43,7 @@ Our framework provide easy to use UI/UX and AutoML based super easy process of b
 
 
 ## How to install
-You can install and use our framework with docker. If you are not familiar with Docker( [Docker Install](https://docs.docker.com/engine/installation/) ) or Docker Compose ( [Docker Compose Install](https://docs.docker.com/compose/install/) ) check the link. If you have to install framework on multi server (cluster version) check this link [Detail Install Guide](https://github.com/TensorMSA/tensormsa_docker), If you have to install our project on your host server without using docker check this link [Host install guide](https://github.com/TensorMSA/tensormsa_docker)  
+You can install and use our framework with docker. If you are not familiar with Docker( [Docker Install](https://docs.docker.com/engine/installation/) ) or Docker Compose ( [Docker Compose Install](https://docs.docker.com/compose/install/) ) check the link. If you have to install framework on multi server (cluster version) check this link [Detail Install Guide](https://github.com/TensorMSA/tensormsa_docker), If you have to install our project on your host server without using docker check this link [Host install guide](./hostinstall.md)  
 
 **1.download docker project**
 ```
@@ -64,14 +64,22 @@ You can install and use our framework with docker. If you are not familiar with 
     docker volume inspect pg_data
 ```
 
-**4.migrate database**
+**4.run docker-compose**
+```
+    #first time you start docker-compose : create new containers
+    docker-compose up -d
+    #just to restart docker-compose 
+    docker-compose restart
+```
+
+**5.migrate database**
 ```
     docker-compose run web python /home/dev/tensormsa/manage.py collectstatic
     docker-compose run web python /home/dev/tensormsa/manage.py makemigrations
     docker-compose run web python /home/dev/tensormsa/manage.py migrate
 ```
 
-**5.choose number of celery/ap server**
+**6.choose number of celery/ap server**
 ```
     docker-compose scale celery=3
 ```
