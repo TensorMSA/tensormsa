@@ -55,3 +55,4 @@ from .workflow_netconf_fasttext import WorkFlowNetConfFastText
 from .common_server_restart import CommonServerRestart
 from .runmanager_auto_parm import RunManagerAutoParm
 from .workflow_graph_manager import WorkFlowGraphManager
+from .common_set_rules import CommonSetRules

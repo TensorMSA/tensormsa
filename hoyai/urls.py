@@ -26,8 +26,12 @@ urlpatterns = [
     url(r'^docs/', SwaggerSchemaView.as_view()),
     url(r'^admin/', admin.site.urls),
 
+    # restart server api
     url(r'^api/v1/type/server/target/restart/',
         csrf_exempt(rest_view.CommonServerRestart.as_view())),
+
+    url(r'^api/v1/type/common/target/rules/mode/default/',
+        csrf_exempt(rest_view.CommonSetRules.as_view())),
 
     # (?P<target>.*) : etl, master, cluster  , (?P<type>.*) : local, s3, rdb, etc
     url(r'^api/v1/type/server/target/(?P<target>.*)/type/(?P<type>.*)/',
