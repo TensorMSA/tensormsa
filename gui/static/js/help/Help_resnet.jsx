@@ -1,13 +1,15 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_resnet extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-        	NN_TableData: null
+        	NN_TableData: null,
+            url1:EnvConstants.getImgUrl()+"help_resnet1.png",
+            url2:EnvConstants.getImgUrl()+"help_resnet2.png"
         };
 
     }
@@ -18,15 +20,13 @@ export default class Help_resnet extends React.Component {
     }
 
     render() {
-        let url1 = "./images/help_resnet1.png"
-        let url2 = "./images/help_resnet2.png"
         return (  
 
             <div>
                 <h1> Resnet </h1>
                 
                 <div className="container tabBody">
-                <img src={url1} />
+                <img src={this.state.url1} />
                 <br />
                 <br />
                 <h3>
@@ -39,7 +39,7 @@ export default class Help_resnet extends React.Component {
                 이닝 에러 자체가 높아지는 현상이다. 아래 그림은 degradation의 예시를 보여준다.<br />
                 </h3>
 
-                <img src={url2} />
+                <img src={this.state.url2} />
                  <br />
                   <br />
                 <h3>

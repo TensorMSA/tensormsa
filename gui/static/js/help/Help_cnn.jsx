@@ -1,13 +1,22 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_cnn extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-        	NN_TableData: null
+        	NN_TableData: null,
+            url1:EnvConstants.getImgUrl()+"help_cnn1.png",
+            url2:EnvConstants.getImgUrl()+"help_cnn2.png",
+            url3:EnvConstants.getImgUrl()+"help_cnn3.png",
+            url4:EnvConstants.getImgUrl()+"help_cnn4.png",
+            url5:EnvConstants.getImgUrl()+"help_cnn5.png",
+            url6:EnvConstants.getImgUrl()+"help_cnn6.png",
+            url7:EnvConstants.getImgUrl()+"help_cnn7.png",
+            url8:EnvConstants.getImgUrl()+"help_cnn8.png",
+            url9:EnvConstants.getImgUrl()+"help_cnn9.png"
         };
 
     }
@@ -18,22 +27,13 @@ export default class Help_cnn extends React.Component {
     }
 
     render() {
-        let url1 = "./images/help_cnn1.png"
-        let url2 = "./images/help_cnn2.png"
-        let url3 = "./images/help_cnn3.png"
-        let url4 = "./images/help_cnn4.png"
-        let url5 = "./images/help_cnn5.png"
-        let url6 = "./images/help_cnn6.png"
-        let url7 = "./images/help_cnn7.png"
-        let url8 = "./images/help_cnn8.png"
-        let url9 = "./images/help_cnn9.png"
         return (  
 
             <div>
                 <h1> Cnn </h1>
                 
                 <div className="container tabBody">
-        <img src={url1} />
+        <img src={this.state.url1} />
                 <br />
                 <br />
                 <h2>컨볼루션 신경망 (ConvNet)</h2>
@@ -75,7 +75,7 @@ export default class Help_cnn extends React.Component {
                 </h3>
 <br />
                 <br />
-<img src={url2} />
+<img src={this.state.url2} />
                 <br />
  
                 <h2>ConvNet을 이루는 레이어들</h2>

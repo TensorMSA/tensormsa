@@ -1,4 +1,4 @@
-import React from 'react'
+  import React from 'react'
 import NN_HeaderComponent from './NNLayout/NN_HeaderComponent'
 import NN_SectionComponent from './NNLayout/NN_SectionComponent'
 import NN_FooterComponent from './NNLayout/NN_FooterComponent'
@@ -30,6 +30,18 @@ export default class HomeComponent extends React.Component {
             this.getHeaderEvent = this.getHeaderEvent.bind(this);
             this.setActiveItem = this.setActiveItem.bind(this);
         }
+    componentDidMount(){
+        this.getCommonMenuInfo();// 화면에 들어 올때 검색을 해준다.
+    }
+
+    getCommonMenuInfo(params) {
+        this.props.reportRepository.getCommonMenuInfo(params).then((tableData) => {
+          if(tableData.length < 1){
+            this.props.reportRepository.postCommonRuleInfo(params).then((tableData) => {
+              }); 
+          }
+        });   
+    }
 
     getChildContext() {
           return {NN_ID        : this.state.NN_ID,
@@ -57,30 +69,19 @@ export default class HomeComponent extends React.Component {
 
     setFootContents(item1, item2, item8) {
       let footContens = 'Copyrights ⓒ POSCO ICT. All rights reserved.'
-      if(item1){
-            footContens = ' 1. Network Id : ' + item1;
-            footContens += ' | 2. Title : ' + item8;
-            footContens += ' | 3. Net Type : ' + item2;
-        }
+      // if(item1){
+      //       footContens = ' 1. Network Id : ' + item1;
+      //       footContens += ' | 2. Title : ' + item8;
+      //       footContens += ' | 3. Net Type : ' + item2;
+      //   }
 
         this.setState({footerArea:<NN_FooterComponent netBaseInfo={footContens}/> })
     }
 
     getHeaderEvent(i){
-
         if(this.state.NN_ID){
             this.props.reportRepository.getCommonNNInfo(this.state.NN_ID).then((nnBaseInfo) => {
-            //   if(nnBaseInfo && nnBaseInfo.length > 0){
-            //     this.setState({NN_TYPE : nnBaseInfo['result'][0]['fields']['type']});
-            //     this.setState({NN_DATAVALID : nnBaseInfo['result'][0]['fields']['datavaild']});
-            //     this.setState({NN_CONFIG : nnBaseInfo['result'][0]['fields']['config']});
-            //     this.setState({NN_CONFVALID : nnBaseInfo['result'][0]['fields']['confvaild']});
-            //     this.setState({NN_TRAIN : nnBaseInfo['result'][0]['fields']['train']});
-            //     this.setState({NN_DATATYPE : nnBaseInfo['result'][0]['fields']['preprocess']});
-            //     this.setState({NN_TITLE : nnBaseInfo['result'][0]['fields']['name']});
-            // }
-              this.getHeaderSwitch(i);
-              
+            this.getHeaderSwitch(i);
             });  
         }else{
             this.getHeaderSwitch(i);
@@ -94,18 +95,15 @@ export default class HomeComponent extends React.Component {
           case 1:
               return this.getNetInfo();
           case 2:
-              // return this.getPreProcessing(); 
-              return this.getNetDetailInfo();
+              return this.setNetInfo(); 
           case 3:
-              return this.setDataConfiguration();  
+              return this.getMonitering();
           case 4:
-              return this.setNetConfiguration(); 
-          case 5:
-              return this.getTimeStatistics();
-          case 6:
-              return this.getPredictResult(); 
-          case 7:
               return this.getApplicationList(); 
+          case 5:
+              return this.setSetup(); 
+          case 6:
+              return this.getNetInfoDetail();
           }
     }
 
@@ -114,47 +112,34 @@ export default class HomeComponent extends React.Component {
     }
 
     getNetInfo(){
-       this.setState({NN_InfoList: <NN_InfoListComponent setActiveItem={this.setActiveItem} addNewNNInfo={this.addNewNNInfo} getHeaderEvent={this.getHeaderEvent} />});
+       this.setState({NN_InfoList: <NN_InfoListComponent getHeaderEvent={this.getHeaderEvent} 
+                                                         setActiveItem={this.setActiveItem} 
+                                                         addNewNNInfo={this.addNewNNInfo} />});
     }
     
-
-
-    getNetDetailInfo(){
-        // if(this.state.NN_ID){
-            this.setState({NN_InfoList: <NN_InfoDetailComponent getHeaderEvent={this.getHeaderEvent} 
-                                                                nn_id={this.state.NN_ID}
-                                                                nn_type = {this.state.NN_TYPE}/> });  
-        // } 
-    }
-    
-    setDataConfiguration(){
-        // if(this.state.NN_ID && this.state.NN_TYPE != 'cifar'){
-            this.setState({NN_InfoList: <NN_DataConfigurationComponent getHeaderEvent={this.getHeaderEvent}/> });   
-        // }
+    setNetInfo(){
+        this.setState({NN_InfoList: <NN_InfoNewComponent getHeaderEvent={this.getHeaderEvent} 
+                                                         setActiveItem={this.setActiveItem} /> }); 
     }
 
-    setNetConfiguration(){
-        // if(this.state.NN_DATAVALID && this.state.NN_TYPE != 'cifar'){
-        //     this.setState({NN_InfoList: <NN_NetworkConfigurationComponent getHeaderEvent={this.getHeaderEvent}/> });  
-        // }
-        this.setState({NN_InfoList: <NN_InfoNewComponent getHeaderEvent={this.getHeaderEvent} setActiveItem={this.setActiveItem} /> }); 
-    }
-
-    getTimeStatistics(){
-        if(this.state.NN_CONFIG && this.state.NN_TYPE != 'cifar'){
-            this.setState({NN_InfoList: <NN_TrainStaticComponent getHeaderEvent={this.getHeaderEvent}/> }); 
-        }  
-    }
-
-    getPredictResult(){
-        if(this.state.NN_TRAIN || this.state.NN_TYPE == 'cifar'){
-            this.setState({NN_InfoList: <NN_PredictResultComponent getHeaderEvent={this.getHeaderEvent}/> });   
-        }
+    getMonitering(){
+        this.setState({NN_InfoList: <NN_Monitering getHeaderEvent={this.getHeaderEvent}/> });  
     }
 
     getApplicationList(){
             this.setState({NN_InfoList: <NN_InfoApplicationList  getHeaderEvent={this.getHeaderEvent}/> });   
     }
+
+    setSetup(){
+        this.setState({NN_InfoList: <NN_Setup getHeaderEvent={this.getHeaderEvent}/> });   
+    }
+
+    getNetInfoDetail(){
+       this.setState({NN_InfoList: <NN_InfoDetailComponent getHeaderEvent={this.getHeaderEvent} 
+                                                            nn_id={this.state.NN_ID}
+                                                            nn_type = {this.state.NN_TYPE}/> });  
+    }
+    
 
     render() {
         return (

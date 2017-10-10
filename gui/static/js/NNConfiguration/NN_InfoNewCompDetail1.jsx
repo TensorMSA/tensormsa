@@ -42,6 +42,8 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             isViewImageDetail : null,//Net Select Image view
             netType : null,
             url : EnvConstants.getWebServerUrl(),
+            sampleFileUrl : EnvConstants.getImgUrl()+"ico_menu03.png",
+            helpUrl : EnvConstants.getImgUrl()+"ico_help_on.png",
             NN_TableColArr1:[    {index:0,      id:"sel",                   name:"Sel"}
                                 ,{index:1,      id:"network",               name:"Network"}
                                 ,{index:2,      id:"description",           name:"Description"}
@@ -189,7 +191,6 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
         let tableHeaderSL = makeHeader(this.state.NN_TableColArr1)
 
         //Network Select Data
-        let clickUrl = ""
         let tableDataSL = []; // make tabledata
 
         for(let rows in nnInfoNewList){
@@ -210,12 +211,12 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             
             colDataSL.push(<td key={k++} value = {row["id"]} onClick={this.handleChangeRadio.bind(this)} > {row["id"]} </td>) 
             colDataSL.push(<td key={k++} value = {row["id"]} style={{"textAlign":"left"}} onClick={this.handleChangeRadio.bind(this)} > {row["desc"]} </td>) 
-            clickUrl = "./images/ico_menu03.png"
-            colDataSL.push(<td key={k++} > <a href= {row["path"]} download ><img src={clickUrl} /></a></td>)
-            clickUrl = "./images/ico_help_on.png"
+            
+            colDataSL.push(<td key={k++} > <a href= {row["path"]} download ><img src={this.state.sampleFileUrl} /></a></td>)
+            
             colDataSL.push(<td key={k++} > <img style ={{width:20, "cursor":"pointer"}} alt = {row["id"]}
                                                 onClick={this.viewNetImage.bind(this)} 
-                                                src={clickUrl} /></td>)
+                                                src={this.state.helpUrl} /></td>)
 
             
 

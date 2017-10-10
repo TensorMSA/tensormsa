@@ -31,7 +31,8 @@ class AutoMlRule:
             ids = []
             for row in query_set :
                 grow = row["fields"]["graph_flow_group_id"]
-                if grow.find(graph_id) > -1:
+                active = row["fields"]["active_flag"]
+                if grow.find(graph_id) > -1 and active == "Y":
                     ids.append(row)
 
             # obj = models.NN_DEF_LIST_INFO.objects.get(nn_id=str(input_data['nn_id']))

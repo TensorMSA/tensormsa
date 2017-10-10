@@ -19,7 +19,9 @@ export default class NN_HeaderComponent extends React.Component {
     }
 
     setFilter(filter){
-		//console.log("[Header]" + filter + "," + JSON.stringify(this.context))
+		// if (!this.context.NN_CONFIG) {
+		// 	msg.show("설정이 완료되지 않았습니다.")
+		// }
         this.setState({selected  : filter})
         switch (filter) {
             case 1:
@@ -27,77 +29,30 @@ export default class NN_HeaderComponent extends React.Component {
             case 2:
             	return this.props.getHeaderEvent(2);
             case 3:
-            	// if(this.context.NN_ID && this.context.NN_TYPE != 'cifar'){
-            		return this.props.getHeaderEvent(3);
-            	// }
-				break;
+            	msg.show("설정이 완료되지 않았습니다.")
+            	return this.props.getHeaderEvent(3);
+					
             case 4:
             	return this.props.getHeaderEvent(4);
-    //         	if(this.context.NN_DATAVALID && this.context.NN_TYPE != 'cifar'){
-    //         		return this.props.getHeaderEvent(4);
-    //         	} else {
-				// 	if (!this.context.NN_DATAVALID) {
-				// 		msg.show("데이터가 유효하지 않습니다.")
-				// 	}
-				// }
-				// break;
             case 5:
-            	if(this.context.NN_CONFIG && this.context.NN_TYPE != 'cifar'){
-	                return this.props.getHeaderEvent(5); 
-            	} else {
-					if (!this.context.NN_CONFIG) {
-						msg.show("설정이 완료되지 않았습니다.")
-					}
-				}
-				break;
-			case 6:
-            	if(this.context.NN_CONFIG && this.context.NN_TYPE != 'cifar'){
-	                return this.props.getHeaderEvent(6); 
-            	} else {
-					if (!this.context.NN_CONFIG) {
-						msg.show("설정이 완료되지 않았습니다.")
-					}
-				}
-			case 7:
-            	// if(this.context.NN_TRAIN || this.context.NN_TYPE == 'cifar'){
-	                return this.props.getHeaderEvent(7); 
-	   //          } else {
-				// 	console.log("Can't predict. - " + JSON.stringify(this.context))
-				// 	if (!this.context.NN_TRAIN) {
-				// 		msg.show("학습이 완료되지 않았습니다.")
-				// 	}
-				// }
-            case 8:
-            	return this.props.getHeaderEvent(8);
+            	msg.show("설정이 완료되지 않았습니다.")
+            	return this.props.getHeaderEvent(5); 
+
         }
     }
 
     isActive(value){
-        //console.log(this.context.NN_TYPE == 'cifar')
     	switch (value) {
             case 1:
-        		this.checkPrerequirement = 1;
             	return ((value===this.state.selected) ? 'current':'');
             case 2:
-            	if(this.context.NN_ID && this.context.NN_TYPE != 'cifar'){
-            		return ((value===this.state.selected) ? 'current':'');
-            	}
+            	return ((value===this.state.selected) ? 'current':'');
             case 3:
-            	if(this.context.NN_ID && this.context.NN_TYPE != 'cifar'){
-            		return ((value===this.state.selected) ? 'current':'');
-            	}
+            	return ((value===this.state.selected) ? 'current':'');
             case 4:
-            	if(this.context.NN_DATAVALID && this.context.NN_TYPE != 'cifar'){
-            		return ((value===this.state.selected) ? 'current':'');
-            	}
+            	return ((value===this.state.selected) ? 'current':'');
             case 5:
-            	if(this.context.NN_CONFIG && this.context.NN_TYPE != 'cifar'){
-	                return ((value===this.state.selected) ? 'current':'');
-            	}
-            case 6:
-            	if(this.context.NN_TYPE == 'cifar' || this.context.NN_TRAIN){
-	                return ((value===this.state.selected) ? 'current':'');
-	            }
+	            return ((value===this.state.selected) ? 'current':'');
         }   	
     }
 
@@ -117,10 +72,10 @@ export default class NN_HeaderComponent extends React.Component {
 					<h1 className="hidden">Navigator</h1>
 					<ul>
 						<li className={this.isActive(1)}><a href="#" onClick={this.setFilter.bind(this, 1)}>Net Info</a></li>
-						<li className={this.isActive(4)}><a href="#" onClick={this.setFilter.bind(this, 4)}>Net Create</a></li>  
-						<li className={this.isActive(5)}><a href="#" onClick={this.setFilter.bind(this, 5)}>Monitoring</a></li>
-						<li className={this.isActive(7)}><a href="#" onClick={this.setFilter.bind(this, 7)}>App List</a></li>
-						<li className={this.isActive(2)}><a href="#" onClick={this.setFilter.bind(this, 2)}>Settings</a></li>
+						<li className={this.isActive(2)}><a href="#" onClick={this.setFilter.bind(this, 2)}>Net Create</a></li>  
+						<li className={this.isActive(3)}><a href="#" onClick={this.setFilter.bind(this, 3)}>Monitoring</a></li>
+						<li className={this.isActive(4)}><a href="#" onClick={this.setFilter.bind(this, 4)}>App List</a></li>
+						<li className={this.isActive(5)}><a href="#" onClick={this.setFilter.bind(this, 5)}>Settings</a></li>
 					</ul>
 				</nav>
 					<dl className="utilMenu">

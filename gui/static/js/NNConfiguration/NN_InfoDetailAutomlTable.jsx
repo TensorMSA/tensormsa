@@ -1,7 +1,7 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 import {ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer}  from 'recharts';
 
 export default class NN_InfoDetailAutomlTable extends React.Component {
@@ -10,6 +10,8 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
         this.state = {
             NN_DataPre:null,
             NN_Data:null,
+            yImg:EnvConstants.getImgUrl()+"ic_state_y.png",
+            nImg:EnvConstants.getImgUrl()+"ic_state_n.png",
             NN_TableColArr0:[    {index:0,      id:"generation"     , name:"Generation"}
                                 ,{index:1,      id:"population"     , name:"Population"}
                                 ,{index:2,      id:"survive"        , name:"Survive"}
@@ -34,8 +36,6 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
 
     render() {
         let k = 1
-        let yImg = "./images/ic_state_y.png"
-        let nImg = "./images/ic_state_n.png"
         /////////////////////////////////////////////////////////////////////////////////////////
         // Common Function
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -100,9 +100,9 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
           colData.push(<td key={k++} > {row["nn_wf_ver_id"]} </td>)
           colData.push(<td key={k++} > {row["acc"]} </td>)
           if(row["survive"] == true){
-            colData.push(<td key={k++} > <img src={yImg} /></td>)
+            colData.push(<td key={k++} > <img src={this.state.yImg} /></td>)
           }else{
-            colData.push(<td key={k++} > <img src={nImg} /></td>)
+            colData.push(<td key={k++} > <img src={this.state.nImg} /></td>)
           }
           
 
@@ -128,9 +128,9 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
             colData.push(<td key={k++} > {row[col]["nn_wf_ver_id"]} </td>)
             colData.push(<td key={k++} > {row[col]["acc"]} </td>)
             if(row[col]["survive"] == true){
-              colData.push(<td key={k++} > <img src={yImg} /></td>)
+              colData.push(<td key={k++} > <img src={this.state.yImg} /></td>)
             }else{
-              colData.push(<td key={k++} > <img src={nImg} /></td>)
+              colData.push(<td key={k++} > <img src={this.state.nImg} /></td>)
             }
             
 

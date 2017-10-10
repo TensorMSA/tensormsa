@@ -1,13 +1,15 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_word2vec extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-        	NN_TableData: null
+        	NN_TableData: null,
+            url1:EnvConstants.getImgUrl()+"help_word2vec1.png",
+            url2:EnvConstants.getImgUrl()+"help_word2vec2.png"
         };
 
     }
@@ -18,15 +20,13 @@ export default class Help_word2vec extends React.Component {
     }
 
     render() {
-let url1 = "./images/help_word2vec1.png"
-let url2 = "./images/help_word2vec2.png"
         return (  
 
             <div>
                 <h1> Word2Vec </h1>
                 
                 <div className="container tabBody">
-        <img src={url1} />
+        <img src={this.state.url1} />
                     <br />
                 <br />
                 <h3>
@@ -48,7 +48,7 @@ let url2 = "./images/help_word2vec2.png"
                 정말 예전부터 이루어져왔던 연구이다. 현재 ‘CBOW’와 ‘Skip-gram’ 이라는 아키텍쳐로 다시 한번 발전하여 현재 word2vec의 
                 모양새로 이어지게 되었다.<br />
 </h3>
-<img src={url2} />
+<img src={this.state.url2} />
 <br />
 <br />
 <h3>

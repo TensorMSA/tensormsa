@@ -1,13 +1,15 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_wcnn extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-        	NN_TableData: null
+        	NN_TableData: null,
+            url1:EnvConstants.getImgUrl()+"help_charCNN1.png",
+            url2:EnvConstants.getImgUrl()+"help_charCNN2.png"
         };
 
     }
@@ -18,15 +20,13 @@ export default class Help_wcnn extends React.Component {
     }
 
     render() {
-            let url1 = "./images/help_charCNN1.png"
-            let url2 = "./images/help_charCNN2.png"
         return (  
             
             <div>
                 <h1> Wcnn </h1>
                 
                 <div className="container tabBody">
-<img src={url1} />
+<img src={this.state.url1} />
                 <br />
                 <br />
                 <h3>
@@ -41,7 +41,7 @@ export default class Help_wcnn extends React.Component {
                 참조테이블(look up table)은 각 단어를 사용자가 정의한 차원의 벡터로 변형해 사용된다. <br />
                 따라서 n개의 단어로 이뤄진 입력문장 (s1,s2,..,sn)은 참조테이블을 활용해 벡터들의 나열인 (ws1,ws2,…,wsn)으로 변환된다.<br />
                 </h3>
-                <img src={url2} />
+                <img src={this.state.url2} />
                 <br />
                 <br />
                 <h3>

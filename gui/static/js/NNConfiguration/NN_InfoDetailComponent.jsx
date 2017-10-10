@@ -14,6 +14,7 @@ import {Pie} from 'react-chartjs-2';
 import Modal from 'react-modal';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.scss';
+import EnvConstants from './../constants/EnvConstants';
 
 export default class NN_InfoDetailComponent extends React.Component {
     constructor(props, context) {
@@ -77,7 +78,9 @@ export default class NN_InfoDetailComponent extends React.Component {
             file_wf_ver_id : 'common',
             active_color : "#14c0f2",
             configEditFlag:"N",
-            trainType:true // true : auto, false : single
+            trainType:true, // true : auto, false : single
+            batchImg :EnvConstants.getImgUrl()+"ico_menu05.png",
+            memoImg : EnvConstants.getImgUrl()+"ico_menu06.png"
         };
         this.closeModal = this.closeModal.bind(this);
         this.closeModalPredictAPI = this.closeModalPredictAPI.bind(this);
@@ -524,9 +527,6 @@ export default class NN_InfoDetailComponent extends React.Component {
     }
 
     render() {
-        let batchImg = "./images/ico_menu05.png"
-        let memoImg = "./images/ico_menu06.png"
-
         this.state.nn_id = this.props.nn_id
         /////////////////////////////////////////////////////////////////////////////////////////
         // Common Function
@@ -656,13 +656,13 @@ export default class NN_InfoDetailComponent extends React.Component {
                                         onClick = {this.clickSeletVersion.bind(this)} > {row["train_model_exists"]} </td>)
             colData.push(<td key={k++} > <img style ={{width:20, "cursor":"pointer"}} alt = {row["nn_wf_ver_id"]}
                                                 onClick={this.clickOpenModalMenu.bind(this)} 
-                                                src={memoImg} /></td>)
+                                                src={this.state.memoImg} /></td>)
             colData.push(<td key={k++} width="50" > <button name="btn2"
                                                             alt = {row["nn_wf_ver_id"]} 
                                                             value = {"Train"}
                                                             onClick = {this.clickTrainVersion.bind(this)}
                                                             style={{"textAlign":"center", "width":"100%"}} >Train</button></td>)
-            colData.push(<td key={k++} width="50" > <button name="btn3"
+            colData.push(<td key={k++} width="70" > <button name="btn3"
                                                             alt = {row["nn_wf_ver_id"]} 
                                                             value = {"Predict"}
                                                             onClick = {this.clickOpenModalPredictAPI.bind(this)}
@@ -672,8 +672,8 @@ export default class NN_InfoDetailComponent extends React.Component {
             //                                                         value = {"Train"}
             //                                                         onClick = {this.clickTrainVersion.bind(this)}
             //                                                         style={{"textAlign":"center", "width":"100%"}} /></td>)
-            colData.push(<td key={k++} style={{"padding":"5px 20px"}} className={status}  ><span  alt = {row["nn_wf_ver_id"]} 
-                                        onClick = {this.clickSeletVersion.bind(this)} /> {statusName} </td>)
+            colData.push(<td key={k++}   ><span className={status}  alt = {row["nn_wf_ver_id"]} 
+                                        onClick = {this.clickSeletVersion.bind(this)} > {statusName} </span> </td>)
             tableData.push(<tr key={k++}>{colData}</tr>)
         }
 
@@ -820,7 +820,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             <div className="container paddingT10">
                 
                 <div className="tblBtnArea">
-                    <button type="button" className="search" style={{"marginRight":"5px"}} onClick={() => this.searchData()} >Search</button>
+                    <button type="button" className="serch" style={{"marginRight":"5px"}} onClick={() => this.searchData()} >Search</button>
                     <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.addVersion() } >Add Ver</button>
                     <button type="button" className="save" onClick={() => this.saveData()} >Save</button>
                 </div>

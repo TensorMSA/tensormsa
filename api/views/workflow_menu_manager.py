@@ -71,7 +71,7 @@ class WorkFlowMenuManager(APIView) :
         """
         try:
             return_data = ""
-            WorkFlowStateMenu().get_menu_info()
+            return_data = WorkFlowStateMenu().get_menu_info()
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

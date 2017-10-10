@@ -182,6 +182,7 @@ class AUTO_ML_RULE(models.Model):
     graph_flow_info_id = models.IntegerField(default=0)
     train_file_path = models.CharField(max_length=100, blank=True)
     eval_file_path = models.CharField(max_length=100, blank=True)
+    active_flag = models.CharField(max_length=1, blank=True, default='Y')
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)

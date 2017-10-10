@@ -1,7 +1,7 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_fasttext_txt extends React.Component {
     constructor(props, context) {

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_doc2vec extends React.Component {
     constructor(props, context) {

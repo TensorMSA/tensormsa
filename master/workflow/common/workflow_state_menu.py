@@ -19,8 +19,23 @@ class WorkFlowStateMenu :
         return None
 
     def get_menu_info(self):
+        """
+                get menu
+                :return:
+                """
+        try:
+            query_list = []
+            query_list.append(" select wf_task_menu_id,wf_task_menu_name,wf_task_menu_desc ")
+            query_list.append(" from master_wf_task_menu_rule menu ")
 
-        return None
+            # parm_list : set parm value as list
+            parm_list = []
+            with connection.cursor() as cursor:
+                cursor.execute(''.join(query_list), parm_list)
+                row = dictfetchall(cursor)
+            return row
+        except Exception as e:
+            raise Exception(e)
 
     def get_submenu_info(self):
 

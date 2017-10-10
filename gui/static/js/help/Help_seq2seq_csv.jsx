@@ -1,13 +1,14 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_seq2seq_csv extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-        	NN_TableData: null
+        	NN_TableData: null,
+            url1:EnvConstants.getImgUrl()+"help_seq2seq.png"
         };
 
     }
@@ -18,14 +19,13 @@ export default class Help_seq2seq_csv extends React.Component {
     }
 
    render() {
-let url1 = "./images/help_seq2seq.png"
         return (  
 
             <div>
                 <h1> Seq2Seq CSV </h1>
                 
                 <div className="container tabBody">
-                <img src={url1} />
+                <img src={this.state.url1} />
                     <br />
                 <br />
                 <h3>

@@ -12,7 +12,8 @@ export default class FileUploadComponent extends React.Component {
             fileData:null,
             percent:0,
             fileurl:'/api/v1/type/wf/state/data/detail/upload/file/nnid/',
-            lineview:false
+            lineview:false,
+            del:EnvConstants.getImgUrl()+"del.png"
             };
         this.getFileData= this.getFileData.bind(this);
         this._handleUploading = this._handleUploading.bind(this);
@@ -103,7 +104,7 @@ export default class FileUploadComponent extends React.Component {
               if(row["filename"] != null){
                   colData.push(<td key={k++} > <img style ={{width:20, "cursor":"pointer"}} alt = {row["filename"]}
                                                       onClick={this.deleteFileData.bind(this)} 
-                                                      src="./images/del.png" /></td>)
+                                                      src={this.state.del} /></td>)
               }
             }else{
 

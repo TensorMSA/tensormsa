@@ -33,12 +33,12 @@ export default class MainSectionComponent extends React.Component {
 										<tr>
 											<td>1</td>
 											<td><a href="#none">There are regular updates</a></td>
-											<td><span className="table_date">2016.11.21</span></td>
+											<td><span className="table_date">2017.09.29</span></td>
 										</tr>
 										<tr>
 											<td>2</td>
 											<td><a href="#none">There are regular updates</a></td>
-											<td><span className="table_date">2016.11.21</span></td>
+											<td><span className="table_date">2017.02.11</span></td>
 										</tr>
 										<tr>
 											<td>3</td>
@@ -69,11 +69,11 @@ export default class MainSectionComponent extends React.Component {
 										</tr>
 										<tr>
 											<td>2</td>
-											<td><a href="#none">Pre Process shortcut</a></td>
+											<td><a href="#none">Net Create shortcut</a></td>
 										</tr>
 										<tr>
 											<td>3</td>
-											<td><a href="#none">Data Process shortcut</a></td>
+											<td><a href="#none">Chatbot shortcut</a></td>
 										</tr>
 									</tbody>
 								</table>

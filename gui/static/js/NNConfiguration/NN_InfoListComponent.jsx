@@ -147,7 +147,7 @@ export default class NN_InfoListComponent extends React.Component {
 
     handleClick(row){// Table Cell Clcik and Call Net Detail
         this.props.setActiveItem(row["nn_id"], 'U', null, null, null, null, null, null);
-        return this.props.getHeaderEvent(2); //call Net Info 
+        return this.props.getHeaderEvent(6); //call Net Info 
     }
 
     handleClickCheckBox(value){//마지막 체크 박스 클릭 한 것을 체크 한다.
@@ -175,7 +175,7 @@ export default class NN_InfoListComponent extends React.Component {
     }
 
     addCommonNNInfo(params) {//Add New Button Click and Call Net Create   
-        return this.props.getHeaderEvent(4); 
+        return this.props.getHeaderEvent(2); 
     }
 
     render() {

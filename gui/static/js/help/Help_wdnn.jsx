@@ -1,13 +1,15 @@
 import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class Help_wdnn extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-        	NN_TableData: null
+        	NN_TableData: null,
+            url1:EnvConstants.getImgUrl()+"help_wdnn1.png",
+            url2:EnvConstants.getImgUrl()+"help_wdnn2.png"
         };
 
     }
@@ -18,15 +20,13 @@ export default class Help_wdnn extends React.Component {
     }
 
     render() {
-let url1 = "./images/help_wdnn1.png"
-let url2 = "./images/help_wdnn2.png"
         return (  
 
             <div>
                 <h1> Wdnn </h1>
                 
                 <div className="container tabBody">
-        <img src={url1} />
+        <img src={this.state.url1} />
                     <br />
                 <br />
                 <h3 >
@@ -48,7 +48,7 @@ let url2 = "./images/help_wdnn2.png"
                 뉴런의 모습에서 와이드(wide)하다는 표현을 쓰는 것으로 보입니다. 텍스트 데이터 분석에 매우 유용하다 할 수 있습니다.
 
 </h3>
-<img src={url2} />
+<img src={this.state.url2} />
 <br />
 <br />
 <h3  >

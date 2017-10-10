@@ -192,7 +192,21 @@ export default class ReportRepository {
         });
     }
 
+    getCommonMenuInfo(params) {
+        return this.api.get('/api/v1/type/wf/target/menu/'+params+'/', '').then((data) => {
+            data = JSON.parse(data);
+            this.log("getCommonMenuInfo", data)
+           return data;
+        });
+    }
 
+    postCommonRuleInfo(params) {
+        return this.api.post('/api/v1/type/common/target/rules/mode/default/', '').then((data) => {
+            data = JSON.parse(data);
+            this.log("postCommonRuleInfo", data)
+           return data;
+        });
+    }
 
 
     
