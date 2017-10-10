@@ -36,13 +36,27 @@ export default class ReportRepository {
     }
 
 
-    //Network WF Info
-    putBotSetupInfo(params, jsonData) {
-        return this.api.post('/api/v1/type/service/botbuilder/def/', jsonData).then((data) => {
-            this.log("putBotSetupInfo", data)
-            data = JSON.parse(data);
-            return data;
-        });
+    //Bot Builder Info
+    putBotSetupInfo(bot_type, jsonData) {
+        if(bot_type == "def"){
+            return this.api.post('/api/v1/type/service/botbuilder/def/', jsonData).then((data) => {
+                this.log("putBotSetupInfo", data)
+                data = JSON.parse(data);
+                return data;
+            });
+        }else if(bot_type == "tag"){
+            return this.api.post('/api/v1/type/service/botbuilder/tagging/', jsonData).then((data) => {
+                this.log("putBotSetupInfo", data)
+                data = JSON.parse(data);
+                return data;
+            });   
+        }else if(bot_type == "intent"){
+            return this.api.post('/api/v1/type/service/botbuilder/intent/', jsonData).then((data) => {
+                this.log("putBotSetupInfo", data)
+                data = JSON.parse(data);
+                return data;
+            });   
+        }
     }
 
     //Network WF Info

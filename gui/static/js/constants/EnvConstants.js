@@ -1,4 +1,4 @@
-let ip = location.origin //'http://52.78.67.19:8989'
+let ip = location.origin
 
 export default {
     

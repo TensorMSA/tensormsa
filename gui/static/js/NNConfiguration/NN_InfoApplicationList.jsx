@@ -53,6 +53,86 @@ export default class NN_InfoApplicationList extends React.Component {
         let input_data = ""
         let table = this.refs.master1
         let col = this.state.NN_TableColArr1
+        // Make Chatbot Info
+        let bot_def_list = {}
+        let bot_tagging = {}
+        let bot_entity_list = {}
+        let bot_entity_relation = {}
+        let bot_intent_list = {}
+        let bot_model_list = {}
+        let bot_response_list = {}
+        let bot_story_list = {}
+
+        // Validation Check
+        for (let i=1 ; i < table.rows.length ; i++) {
+            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
+        }
+        
+        let inDefault = ["", "cb_id","chat_cate","chat_sub_cate"]// "biz_cate","biz_sub_cate","nn_title","nn_desc"]
+
+        //for (let i=1 ; i < table.rows.length ; i++) {
+        for (let i=1 ; i < 4 ; i++) {
+            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            bot_def_list[inDefault[i]] = input_data
+            console.log(inDefault[i] + " " + input_data )
+        }
+        console.log(bot_def_list)
+
+        bot_def_list["cb_title"] = "info_bot",
+        bot_def_list["cb_desc"] = "info_bot",
+        bot_def_list["creation_date"]= "2017-05-22T18:00:00.000",
+        bot_def_list["last_update_date"]= "2017-05-22T18:00:00.000",
+        bot_def_list["created_by"] = "KSS",
+        bot_def_list["last_updated_by"] = "KSS"
+
+
+                        // "cb_id": "cb0001",
+                        // "nn_id": "wcnntest02",
+                        // 'nn_purpose': "Intend",
+                        // 'nn_type': "char-cnn",
+                        // 'nn_label_data': {"entity": []},
+                        // 'nn_desc': "Intend",
+
+                        // "cb_id": "cb0001",
+                        // "intent_id": "1",
+                        // "intent_uuid": "1",
+                        // "intent_type": "model",
+                        // "intent_desc": "",
+                        // "rule_value": {"key": ["알려줘"]},
+                        // "nn_type": "Seq2Seq",
+        //Add Intent Info
+        table = this.refs.master2
+        col = this.state.NN_TableColArr2
+
+        // Validation Check
+        for (let i=1 ; i < table.rows.length ; i++) {
+            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
+        }
+        
+        // Make Chatbot Info
+        let inDefault2 = ["", "nn_id","intent_id","entity_type","entity_list"]// "biz_cate","biz_sub_cate","nn_title","nn_desc"]
+
+        //for (let i=1 ; i < table.rows.length ; i++) {
+        for (let i=1 ; i < 5 ; i++) {
+            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            bot_entity_list[inDefault2[i]] = input_data
+            console.log(bot_entity_list[i] + " " + input_data )
+        }
+        console.log(bot_entity_list)
+
+        bot_model_list["cb_id"] = bot_def_list["cb_id"]
+        bot_model_list["nn_id"] = bot_entity_list["nn_id"]
+
+
+        //Add Story Info
+        table3 = this.refs.master3
+        col3 = this.state.NN_TableColArr3
         
         // Validation Check
         for (let i=1 ; i < table.rows.length ; i++) {
@@ -61,31 +141,25 @@ export default class NN_InfoApplicationList extends React.Component {
             if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
         }
         
-        // Make NN Info
-        let inDefault = ["test", "cb_id","intent_id"]// "biz_cate","biz_sub_cate","nn_title","nn_desc"]
-        let dparam = {}
+        // Make Chatbot Info
+        let inDefault3 = ["", "story_id","story_type","output_entity","output_data","response_type"]// "biz_cate","biz_sub_cate","nn_title","nn_desc"]
+
         //for (let i=1 ; i < table.rows.length ; i++) {
-        for (let i=1 ; i < 2 ; i++) {
+        for (let i=1 ; i < 6 ; i++) {
             title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
             input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
-            dparam[inDefault[i]] = input_data
-            console.log(inDefault[i] + " " + input_data )
+            bot_story_list[inDefault3[i]] = input_data
+            console.log(bot_story_list[i] + " " + input_data )
         }
-        console.log(dparam)
+        console.log(bot_story_list)
 
-
-        dparam["chat_cate"]=  "service",
-        dparam["chat_sub_cate"] = "info_bot",
-        dparam["cb_title"] = "info_bot",
-        dparam["cb_desc"] = "info_bot",
-        dparam["creation_date"]= "2017-05-22T18:00:00.000",
-        dparam["last_update_date"]= "2017-05-22T18:00:00.000",
-        dparam["created_by"] = "KSS",
-        dparam["last_updated_by"] = "KSS"
         // Make NN Info
-        this.props.reportRepository.putBotSetupInfo("", dparam).then((dparam) => {
-            dparam["use_flag"] = "Y"
-
+        this.props.reportRepository.putBotSetupInfo("def", bot_def_list).then((bot_def_list) => {
+            this.props.reportRepository.putBotSetupInfo("tag", bot_tagging).then((bot_tagging) => {
+                this.props.reportRepository.putBotSetupInfo("intent", bot_intent_list).then((bot_tagging) => {
+                        console.log("Bot is set up")
+                });
+            });
         });
 
     }
