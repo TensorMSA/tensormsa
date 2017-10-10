@@ -56,7 +56,9 @@ class PreNodeFeedFr2Auto(PreNodeFeed):
         :param wf_conf:
         :return:
         """
+        self.exclude_col = wf_conf.get_exclude_column()
         self.encode_col = wf_conf.get_encode_column()
+        self.col_names = []
         self.encode_len = {}
         self.encode_dtype = {}
         self.encode_onehot = {}
@@ -82,7 +84,10 @@ class PreNodeFeedFr2Auto(PreNodeFeed):
                                  start=0,
                                  stop=100)
 
-            for col_name in self.encode_col:
+            if (chunk.columns.base != None and self.exclude_col != None) :
+                self.col_names = list(set(chunk.columns.base) - (set(self.exclude_col) - set(self.encode_col)))
+
+            for col_name in self.col_names:
                 if (self.encode_len.get(col_name) == None):
                     if (chunk[col_name].dtype in ['int', 'float']):
                         self.encode_len[col_name] = 1
@@ -136,7 +141,7 @@ class PreNodeFeedFr2Auto(PreNodeFeed):
             input_vector = []
             count = index.stop - index.start
 
-            for col_name in self.encode_col:
+            for col_name in self.col_names:
                 if (chunk[col_name].dtype == 'O'):
                     input_vector.append(list(map(lambda x: self.encode_onehot[col_name].get_vector(x),
                                              chunk[col_name][0:count].tolist())))
@@ -240,7 +245,7 @@ class PreNodeFeedFr2Auto(PreNodeFeed):
             if (self.preprocess_type in ['frame']):
                 if (self.embed_type == 'onehot'):
                     save_dic = {}
-                    for col_name in self.encode_col:
+                    for col_name in self.col_names:
                         save_dic[col_name] = self.encode_onehot[col_name].dics()
                     self.wf_conf.set_vocab_list(save_dic)
                 return False

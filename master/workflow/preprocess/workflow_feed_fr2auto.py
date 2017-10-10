@@ -26,6 +26,16 @@ class WorkflowFeedFr2Auto(WorkFlowPre):
             self.conf = self.get_view_obj(self.key)
         return self.conf.get('encode_column')
 
+    def get_exclude_column(self):
+        """
+        get col names to exclude on analysis
+        :param node_id:
+        :return:
+        """
+        if('conf' not in self.__dict__) :
+            self.conf = self.get_view_obj(self.key)
+        return self.conf.get('exclude_column')
+
     def get_encode_len(self):
         """
 

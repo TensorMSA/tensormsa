@@ -113,8 +113,10 @@ class TrainSummaryInfo:
         if self.type == 'regression':
             gab = 0
             for labels, predicts in zip(self.result_info["labels"], self.result_info["predicts"]) :
-                gab = gab + (labels - predicts)
-            return float(gab/len(self.result_info["labels"]))
+                labels = float(labels)
+                predicts = float(predicts)
+                gab = gab + abs(labels - predicts)
+            return -float(gab/len(self.result_info["labels"]))
         elif self.type == 'category':
             correct = 0
             sum = 0

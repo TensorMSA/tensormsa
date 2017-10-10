@@ -154,7 +154,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
             _, cost_val = sess.run([self.optimizer, self.cost], feed_dict={self.x: data_set})
             logging.info('Avg. cost = {0}'.format(cost_val / self.n_input))
         except Exception as e :
-            raise Exception ('autoencoder run_train step error : {0}'.foramt(e) )
+            raise Exception ('autoencoder run_train step error : {0}'.format(e) )
 
     def _get_node_parm(self, node_id):
         """
@@ -295,7 +295,7 @@ class NeuralNetNodeAutoEncoder(NeuralNetNode):
     def _set_progress_state(self):
         return None
 
-    def eval(self, node_id, conf_data, data=None, result=None, stand=0.1):
+    def eval(self, node_id, conf_data, data=None, result=None, stand=1.0):
         """
         eval process check if model works well (accuracy with cross table)
         :param node_id:
