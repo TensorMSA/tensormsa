@@ -43,28 +43,46 @@ Our framework provide easy to use UI/UX and AutoML based super easy process of b
 
 
 ## How to install
-Download the latest version of TensorMSA from https://github.com/TensorMSA/tensormsa.git and unzip it.
-Also, consider to use wget like followings.
+You can install and use our framework with docker. If you are not familiar with Docker( [Docker Install](https://docs.docker.com/engine/installation/) ) or Docker Compose ( [Docker Compose Install](https://docs.docker.com/compose/install/) ) check the link. If you have to install framework on multi server (cluster version) check this link [Detail Install Guide](https://github.com/TensorMSA/tensormsa_docker), If you have to install our project on your host server without using docker check this link [Host install guide](https://github.com/TensorMSA/tensormsa_docker)  
+
+**1.download docker project**
 ```
-    git clone https://github.com/TensorMSA/tensormsa.git
-    unzip tensormsa-master.zip
+    git clone --recursive https://github.com/TensorMSA/tensormsa_docker.git
 ```
-Install PostgreSQL https://www.postgresql.org/download/
+
+**2.select GPU.CPU version to install**
 ```
-    ./manage.py makemigrations
-    ./manage.py migrate --fake master zero (Optional)
-    ./manage.py migrate
+    cd ./tensormsa_docker/docker_compose_gpu
 ```
-Run for Service
 ```
-    ./start_hoyai.sh 1
+    cd ./tensormsa_docker/docker_compose_cpu
 ```
-Call APIs
+
+**3.create docker volume**
 ```
-    ./demo/python api_basic_0_node_rule.py
-    ./demo/python api_basic_0_automl_rule.py
-    ...
+    docker volume create --name=pg_data
+    docker volume inspect pg_data
 ```
+
+**4.migrate database**
+```
+    docker-compose run web python /home/dev/tensormsa/manage.py collectstatic
+    docker-compose run web python /home/dev/tensormsa/manage.py makemigrations
+    docker-compose run web python /home/dev/tensormsa/manage.py migrate
+```
+
+**5.choose number of celery/ap server**
+```
+    docker-compose scale celery=3
+```
+
+**Service Ports ( all service started automatically on docker start )**
+* ***Easy UI/UX :*** [your ip address] : 8000 
+* ***API Server :*** [your ip address] : 8000 
+* ***Celery Monitor :*** [your ip address] : 5555 
+* ***Jupter :*** [your ip address] : 8018 
+* ***VNC :*** [your ip address] : 5901 
+
 
 ## For more information  
 
