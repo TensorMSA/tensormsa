@@ -211,14 +211,12 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             
             colDataSL.push(<td key={k++} value = {row["id"]} onClick={this.handleChangeRadio.bind(this)} > {row["id"]} </td>) 
             colDataSL.push(<td key={k++} value = {row["id"]} style={{"textAlign":"left"}} onClick={this.handleChangeRadio.bind(this)} > {row["desc"]} </td>) 
-            
-            colDataSL.push(<td key={k++} > <a href= {row["path"]} download ><img src={this.state.sampleFileUrl} /></a></td>)
+            let path = EnvConstants.getSampleFileUrl()+row["path"]
+            colDataSL.push(<td key={k++} > <a href= {path} download ><img src={this.state.sampleFileUrl} /></a></td>)
             
             colDataSL.push(<td key={k++} > <img style ={{width:20, "cursor":"pointer"}} alt = {row["id"]}
                                                 onClick={this.viewNetImage.bind(this)} 
                                                 src={this.state.helpUrl} /></td>)
-
-            
 
             tableDataSL.push(<tr key={k++}>{colDataSL}</tr>)
         }
@@ -261,7 +259,6 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             helpData.push(<Help_word2vec_frame key={k++} width={width} />)
         }
 
-
         return (
             <section>
                     <div>
@@ -294,34 +291,7 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
 
 
  <div>
-                    <table className="table detail">
-                    <tr>
-                    <td style={{"verticalAlign":"top"}}>
 
-                        <FileUploadComponent ref="trainfilesrc" 
-                                              title="Network Train Source File Upload"
-                                                nn_id={this.props.tmp_train_node_name} 
-                                                nn_wf_ver_id={"1"} 
-                                                nn_node_name={this.props.train_node_name} 
-                                                nn_path_type={"source"}
-                                                uploadbtnflag={true} 
-                                                deletebtnflag={true} />
-                    </td>
-
-                    <td style={{"verticalAlign":"top"}}>
-
-                        <FileUploadComponent ref="evalfilesrc" 
-                                                title="Network Eval Source File Upload"
-                                                nn_id={this.props.tmp_eval_node_name} 
-                                                nn_wf_ver_id={"1"} 
-                                                nn_node_name={this.props.eval_node_name} 
-                                                nn_path_type={"source"}
-                                                uploadbtnflag={true} 
-                                                deletebtnflag={true} />
-                        </td>
-
-                    </tr>
-                    </table>
 
                     </div>
             </section>

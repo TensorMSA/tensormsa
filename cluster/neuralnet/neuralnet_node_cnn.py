@@ -1,7 +1,7 @@
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from common.utils import *
 from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
-from master.workflow.init.workflow_init_simple import WorkFlowSimpleManager
+from master.network.nn_common_manager import NNCommonManager
 import tensorflow as tf
 import numpy as np
 import os
@@ -12,27 +12,39 @@ from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 from common.graph.nn_graph_manager import NeuralNetModel
 
 class NeuralNetNodeCnn(NeuralNetNode):
-    """
-    """
+
     def _init_train_parm(self, conf_data):
+        '''
+        Parameter init
+        :param conf_data: 
+        :return: 
+        '''
+
         # get initial value
         self.conf_data = conf_data
         self.cls_pool = conf_data["cls_pool"]
         self.nn_id = conf_data["nn_id"]
         self.wf_ver = conf_data["wf_ver"]
         self.node_id = conf_data["node_id"]
-        self.node = WorkFlowSimpleManager().get_train_node()
-
-        # get feed name
-        self.train_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_train_feed_node()
-        self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + WorkFlowSimpleManager().get_eval_feed_node()
+        graph = NNCommonManager().get_nn_node_name(conf_data["nn_id"])
+        for net in graph:
+            if net['fields']['graph_node'] == 'netconf_node':
+                self.netconf_node = net['fields']['graph_node_name']
+            if net['fields']['graph_node'] == 'netconf_feed':
+                self.train_feed_name = self.nn_id + "_" + self.wf_ver + "_" + net['fields']['graph_node_name']
+            if net['fields']['graph_node'] == 'eval_feed':
+                self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + net['fields']['graph_node_name']
         self.feed_node = self.get_prev_node()
 
     def _init_value(self):
+        '''
+        value init
+        :return: 
+        '''
         self.g_ffile_print = "N"
         self.g_train_cnt = 0
         self.g_epoch_cnt = 0
-        self.step_gap = 1
+        # self.step_gap = 1
         self.file_end = '.h5'
         self.train_return_data = {}
         self.train_return_arr = ["Trainning .................................................."]
@@ -40,24 +52,35 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
     ####################################################################################################################
     def _set_netconf_parm(self):
-        netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
+        '''
+        netconf param set
+        :return: 
+        '''
         try:
-            netconf = WorkFlowNetConfCNN().set_num_classes_predcnt(self.nn_id, self.wf_ver, self.node, self.node_id, netconf)
-        except:
-            None
-        self.netconf = netconf
-
-        self.train_cnt = self.netconf["param"]["traincnt"]
-        self.epoch = self.netconf["param"]["epoch"]
-        self.batch_size = self.netconf["param"]["batch_size"]
-        self.model_path = self.netconf["modelpath"]
-        self.modelname = self.netconf["modelname"]
+            self.train_cnt = self.netconf["param"]["traincnt"]
+            self.epoch = self.netconf["param"]["epoch"]
+            self.batch_size = self.netconf["param"]["batch_size"]
+            self.model_path = self.netconf["modelpath"]
+            self.modelname = self.netconf["modelname"]
+        except Exception as e:
+            logging.info("NetConf is not exist.")
+            logging.info(e)
 
     def _set_dataconf_parm(self, dataconf):
+        '''
+        dataconf set
+        :param dataconf: 
+        :return: 
+        '''
         self.dataconf = dataconf
 
     ####################################################################################################################
     def get_saver_model(self, sess):
+        '''
+        get save model
+        :param sess: 
+        :return: 
+        '''
         self.model_path = self.netconf["modelpath"]
         self.modelname = self.netconf["modelname"]
         last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
@@ -65,37 +88,43 @@ class NeuralNetNodeCnn(NeuralNetNode):
         saver = None
         try:
             step = last_chk_path.split("-")
-            self.step_gap = int(step[1]) + 1
+            # self.step_gap = int(step[1]) + 1
             saver = tf.train.Saver()
             saver.restore(sess, save_path=last_chk_path)
             logging.info("Train Restored checkpoint from:" + last_chk_path)
         except:
-            self.step_gap = 1
+            # self.step_gap = 1
             logging.info("None to restore checkpoint. Initializing variables instead.")
 
-        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
+        # self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
 
         return sess
 
     def set_saver_model(self, sess):
+        '''
+        model save
+        :param sess: 
+        :return: 
+        '''
+        self.save_path = self.model_path + "/" + str(self.batch)
         saver = tf.train.Saver()
         saver.save(sess, save_path=self.save_path)
 
         batch_accR = round(self.batch_acc * 100, 2)
-        msg = "Global Step: " + str(self.step_gap) + ", Training Batch Accuracy: " + str(
+        msg = "Global Step:  Training Batch Accuracy: " + str(
             batch_accR) + "%" + ", Cost: " + str(self.i_cost)
         logging.info(msg)
 
         config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.wf_ver, "nn_batch_ver_id": self.batch}
         result = TrainSummaryAccLossInfo(config)
-        result.loss_info["loss"] = str(self.i_cost)
-        result.acc_info["acc"] = str(batch_accR)
+        result.loss_info["loss"].append(str(self.i_cost))
+        result.acc_info["acc"].append(str(batch_accR))
         self.save_accloss_info(result)
 
         result = [msg]
 
-        self.step_gap = self.step_gap + self.g_epoch_cnt
-        self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
+        # self.step_gap = self.step_gap + self.g_epoch_cnt
+        # self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
 
         # self.model_file_delete(self.model_path, self.modelname)
 
@@ -104,6 +133,11 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.eval(self.node_id, self.conf_data, None, None)
 
     def get_model_cnn(self, type=None):
+        '''
+        cnn model setup
+        :param type: 
+        :return: 
+        '''
         prenumoutputs = 1
         num_classes = self.netconf["config"]["num_classes"]
         learnrate = self.netconf["config"]["learnrate"]
@@ -205,6 +239,13 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
     ####################################################################################################################
     def train_run_cnn(self, sess, input_data, test_data):
+        '''
+        cnn train run
+        :param sess: 
+        :param input_data: 
+        :param test_data: 
+        :return: 
+        '''
         try:
             while (input_data.has_next()):
                 for i in range(self.train_cnt):
@@ -232,21 +273,34 @@ class NeuralNetNodeCnn(NeuralNetNode):
         return self.train_return_data
 
     def run(self, conf_data):
+        '''
+        init run 
+        :param conf_data: 
+        :return: 
+        '''
         try :
             logging.info("run NeuralNetNodeCnn Train")
             # init data setup
             self._init_train_parm(conf_data)
             self._init_value()
-            # set batch
-            self.train_batch, self.batch = self.make_batch(self.node_id)
 
             # get data & dataconf
             test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
             input_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.train_feed_name)
 
             # set netconf, dataconf
+            netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
+            self.netconf = netconf
+            self._set_netconf_labels(input_data)
             self._set_netconf_parm()
             self._set_dataconf_parm(dataconf)
+
+            # set batch
+            self.load_batch = self.get_eval_batch(self.node_id)
+            if self.epoch != 0 and self.train_cnt != 0:
+                self.train_batch, self.batch = self.make_batch(self.node_id)
+            else:
+                self.batch = self.load_batch
 
             self.get_model_cnn("T")
 
@@ -267,6 +321,12 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
     ####################################################################################################################
     def eval_run(self, sess, input_data):
+        '''
+        eval run
+        :param sess: 
+        :param input_data: 
+        :return: 
+        '''
         self.batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]
         pred_cnt = self.netconf["param"]["predictcnt"]
@@ -354,6 +414,13 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.eval_print(labels, t_cnt_arr, f_cnt_arr)
 
     def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
+        '''
+        eval info print
+        :param labels: 
+        :param t_cnt_arr: 
+        :param f_cnt_arr: 
+        :return: 
+        '''
         logging.info("####################################################################################################")
         result = []
         strResult = "['Eval ......................................................']"
@@ -387,6 +454,14 @@ class NeuralNetNodeCnn(NeuralNetNode):
         logging.info("###################################################################################################")
 
     def eval(self, node_id, conf_data, data=None, result=None):
+        '''
+        eval init run
+        :param node_id: 
+        :param conf_data: 
+        :param data: 
+        :param result: 
+        :return: 
+        '''
         logging.info("run NeuralNetNodeCnn eval")
         if data == None:
             self.eval_flag = "T"
@@ -412,6 +487,12 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
     ####################################################################################################################
     def _run_predict(self, sess, filelist):
+        '''
+        predict run
+        :param sess: 
+        :param filelist: 
+        :return: 
+        '''
         sess.run(tf.global_variables_initializer())
 
         # data shape change MultiValuDict -> nd array
@@ -432,8 +513,12 @@ class NeuralNetNodeCnn(NeuralNetNode):
             logging.info(self.pred_return_data)
 
     def predict(self, node_id, filelist):
-        """
-        """
+        '''
+        predict inti run
+        :param node_id: 
+        :param filelist: 
+        :return: 
+        '''
         logging.info("run NeuralNetNodeCnn Predict")
         # init data setup
         self.node_id = node_id

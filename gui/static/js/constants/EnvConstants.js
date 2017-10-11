@@ -10,5 +10,8 @@ export default {
       },
       getImgUrl(){
       	return './../templates/images/';
+      },
+      getSampleFileUrl(){
+        return './../templates/js/help/samples/';
       }
   };	 

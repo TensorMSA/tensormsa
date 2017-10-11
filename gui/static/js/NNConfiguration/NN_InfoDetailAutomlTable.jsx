@@ -8,7 +8,6 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-            NN_DataPre:null,
             NN_Data:null,
             yImg:EnvConstants.getImgUrl()+"ic_state_y.png",
             nImg:EnvConstants.getImgUrl()+"ic_state_n.png",
@@ -28,11 +27,18 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
                                 ,{index:4,      id:"survive"      , name:"Survive"}
                             ]
         };
+        this.getCommonNodeInfoView= this.getCommonNodeInfoView.bind(this);
     }
 
     componentDidMount() {
+        this.getCommonNodeInfoView()
     }
 
+    getCommonNodeInfoView() {
+        this.props.reportRepository.getCommonNodeInfoView(this.props.nn_id).then((tableData) => {// Network Auto Info
+            this.setState({ NN_Data: tableData })
+        });
+    }
 
     render() {
         let k = 1
@@ -67,11 +73,7 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
             tableHeader.push(<tr key={k++} >{headerData}</tr>)
             return tableHeader
         }
-        let lineData = this.props.NN_Data
 
-        if(lineData != null && this.state.NN_Data == null){
-          this.state.NN_Data = lineData
-        }
         /////////////////////////////////////////////////////////////////////////////////////////
         // Genetation
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -90,67 +92,72 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
         /////////////////////////////////////////////////////////////////////////////////////////
         // Best
         /////////////////////////////////////////////////////////////////////////////////////////
-        let tableHeader = makeHeader(this.state.NN_TableColArr1)
-
-        let tableData = []; // make tabledata
-        for(let rows in lineData['best']){
-          let colData = [];
-          let row = lineData['best'][rows]
-          colData.push(<td key={k++} > {row["generation"]*1+1} </td>)
-          colData.push(<td key={k++} > {row["nn_wf_ver_id"]} </td>)
-          colData.push(<td key={k++} > {row["acc"]} </td>)
-          if(row["survive"] == true){
-            colData.push(<td key={k++} > <img src={this.state.yImg} /></td>)
-          }else{
-            colData.push(<td key={k++} > <img src={this.state.nImg} /></td>)
-          }
-          
-
-          tableData.push(<tr key={k++}>{colData}</tr>)
-        }
-
         let bestListTable = []
+        let tableHeader = makeHeader(this.state.NN_TableColArr1)
         bestListTable.push(<thead ref='thead' key={k++} className="center">{tableHeader}</thead>)
-        bestListTable.push(<tbody ref='tbody' key={k++} className="center" >{tableData}</tbody>)
+
+        if(this.state.NN_Data != null){
+            let tableData = []; // make tabledata
+            for(let rows in this.state.NN_Data['best']){
+              let colData = [];
+              let row = this.state.NN_Data['best'][rows]
+              colData.push(<td key={k++} > {row["generation"]*1+1} </td>)
+              colData.push(<td key={k++} > {row["nn_wf_ver_id"]} </td>)
+              colData.push(<td key={k++} > {row["acc"]} </td>)
+              if(row["survive"] == true){
+                colData.push(<td key={k++} > <img src={this.state.yImg} /></td>)
+              }else{
+                colData.push(<td key={k++} > <img src={this.state.nImg} /></td>)
+              }
+              
+
+              tableData.push(<tr key={k++}>{colData}</tr>)
+            }
+
+            bestListTable.push(<tbody ref='tbody' key={k++} className="center" >{tableData}</tbody>)
+        }
         /////////////////////////////////////////////////////////////////////////////////////////
         // Detail
         ////////////////////////////////////////////////////////////////////////////////////////
+        let bestListGTable = []
         let tableGHeader = makeHeader(this.state.NN_TableColArr2)
+        bestListGTable.push(<thead ref='thead' key={k++} className="center">{tableGHeader}</thead>)
 
-        let depth = 1
-        let tableGData = []; // make tabledata
-        for(let rows in lineData['bygen']){
-          let row = lineData['bygen'][rows]
-          for(let col in row){
-            let colData = [];
-            colData.push(<td key={k++} > {depth} </td>)
-            colData.push(<td key={k++} > {row[col]["generation"]*1+1} </td>)
-            colData.push(<td key={k++} > {row[col]["nn_wf_ver_id"]} </td>)
-            colData.push(<td key={k++} > {row[col]["acc"]} </td>)
-            if(row[col]["survive"] == true){
-              colData.push(<td key={k++} > <img src={this.state.yImg} /></td>)
-            }else{
-              colData.push(<td key={k++} > <img src={this.state.nImg} /></td>)
+        if(this.state.NN_Data != null){
+            let depth = 1
+            let tableGData = []; // make tabledata
+            for(let rows in this.state.NN_Data['bygen']){
+              let row = this.state.NN_Data['bygen'][rows]
+              for(let col in row){
+                let colData = [];
+                colData.push(<td key={k++} > {depth} </td>)
+                colData.push(<td key={k++} > {row[col]["generation"]*1+1} </td>)
+                colData.push(<td key={k++} > {row[col]["nn_wf_ver_id"]} </td>)
+                colData.push(<td key={k++} > {row[col]["acc"]} </td>)
+                if(row[col]["survive"] == true){
+                  colData.push(<td key={k++} > <img src={this.state.yImg} /></td>)
+                }else{
+                  colData.push(<td key={k++} > <img src={this.state.nImg} /></td>)
+                }
+                
+
+                tableGData.push(<tr key={k++}>{colData}</tr>)
+                
+              }
+              let blankData = []
+              blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
+              blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
+              blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
+              blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
+              blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
+              tableGData.push(<tr key={k++}>{blankData}</tr>)
+              depth += 1
+              
             }
-            
 
-            tableGData.push(<tr key={k++}>{colData}</tr>)
-            
-          }
-          let blankData = []
-          blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
-          blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
-          blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
-          blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
-          blankData.push(<td key={k++} style={{"backgroundColor":"#f1f1f1"}} >  </td>)
-          tableGData.push(<tr key={k++}>{blankData}</tr>)
-          depth += 1
-          
+            bestListGTable.push(<tbody ref='tbody' key={k++} className="center" >{tableGData}</tbody>)
         }
 
-        let bestListGTable = []
-        bestListGTable.push(<thead ref='thead' key={k++} className="center">{tableGHeader}</thead>)
-        bestListGTable.push(<tbody ref='tbody' key={k++} className="center" >{tableGData}</tbody>)
 
         return (  
 
@@ -186,3 +193,6 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
     }
 }
 
+NN_InfoDetailAutomlTable.defaultProps = {
+    reportRepository: new ReportRepository(new Api())
+};

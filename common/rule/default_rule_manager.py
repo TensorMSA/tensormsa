@@ -691,16 +691,16 @@ def set_automl_rule() :
         # CNN net conf
         conf = {"auto": {
                     "netconf_node": {
-                        "param": {"traincnt": {"type": "int", "option": 10, "auto": False}
-                            , "epoch": {"type": "int", "option": 10, "auto": False}
+                        "param": {"traincnt": {"type": "int", "option": 2, "auto": False}
+                            , "epoch": {"type": "int", "option": 2, "auto": False}
                             , "batch_size": {"type": "int", "option": None, "auto": [100, 1000000, 100]}
-                            , "predictcnt": {"type": "int", "option": 5, "auto": False}
+                            , "predictcnt": {"type": "int", "option": 3, "auto": False}
                             , "predlog": {"type": "sel", "option": ["N", "Y"], "auto": False}
                                   },
                         "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
                             , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
                             , "layeroutputs": {"type": "int", "option": None, "auto": [5, 100, 3]}
-                            , "net_type": {"type": "str", "option": "cnn", "auto": False}
+                            , "net_type": {"type": "sel", "option": ["cnn"], "auto": False}
                             , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                             , "optimizer": {"type": "sel", "option": ["AdamOptimizer", "RMSPropOptimizer"], "auto": False}
                                    }
@@ -718,7 +718,7 @@ def set_automl_rule() :
                                 "node_out": {"type": "int", "option": None, "auto": [600, 2000, 5]},
                                 "padding": {"type": "sel", "option": ["SAME", "NONE"], "auto": False}
                                 }
-                        , "labels": {"type": "list", "option": [], "auto": False}
+                        # , "labels": {"type": "list", "option": [], "auto": False}
                     },
                     "netconf_data": {
                         "type": {"type": "sel", "option": ["imgdata", "framedata", "textdata", "iobdata"], "auto": False}
@@ -739,13 +739,13 @@ def set_automl_rule() :
                 },
                     "single": {
                         "netconf_node": {
-                            "param": {"traincnt": 1
-                                , "epoch": 1
+                            "param": {"traincnt": 2
+                                , "epoch": 2
                                 , "batch_size": 1000000
-                                , "predictcnt": 5
+                                , "predictcnt": 3
                                 , "predlog": "N"  # T:Ture, F:False, A:True&False, N:None
                                       },
-                            "config": {"num_classes": 10,
+                            "config": {"num_classes": 1,
                                        "learnrate": 0.001,
                                        "layeroutputs": 32,
                                        "net_type": "cnn",
@@ -759,7 +759,7 @@ def set_automl_rule() :
                                          "maxpoolstride": [2, 2],
                                          "padding": "SAME",
                                          "droprate": "0.8",
-                                         "layercnt": 4
+                                         "layercnt": 1
                                          }
                             , "layer2": {"active": "relu",
                                          "cnnfilter": [3, 3],
@@ -774,21 +774,23 @@ def set_automl_rule() :
                                       "node_out": 625,
                                       "padding": "SAME"
                                       }
-                            , "labels": []
+                            # , "labels": []
                         },
                         "netconf_data": {
-                            "x_size": 32,
-                            "y_size": 32,
-                            "channel": 3,
-                            "filesize": 1000000,
-                            "yolo": "n"
+                                  "type": ["imgdata"]
+                                , "preprocess": {"x_size": 32,
+                                                   "y_size": 32,
+                                                   "channel":3,
+                                                   "filesize": 1000000,
+                                                   "yolo": "n"}
                         },
                         "eval_data": {
-                            "x_size": 32,
-                            "y_size": 32,
-                            "channel": 3,
-                            "filesize": 1000000,
-                            "yolo": "n"
+                                  "type": ["imgdata"]
+                                , "preprocess": {"x_size": 32,
+                                                   "y_size": 32,
+                                                   "channel":3,
+                                                   "filesize": 1000000,
+                                                   "yolo": "n"}
                         }
                     }
                 }
@@ -796,7 +798,7 @@ def set_automl_rule() :
         AutoMlRule().set_graph_type_list('cnn', conf)
 
         # set netconf for resnet
-        {
+        conf = {
             "auto": {
                 "netconf_node": {
                     "param": {"traincnt": {"type": "int", "option": 2, "auto": False}
@@ -847,7 +849,7 @@ def set_automl_rule() :
                                "optimizer": "adam",  #
                                "eval_type": "category"
                                }
-                    , "labels": []
+                    # , "labels": []
                 }
                 , "netconf_data": {
                     "preprocess": {"x_size": 32,
@@ -870,7 +872,7 @@ def set_automl_rule() :
         AutoMlRule().set_graph_type_list('resnet', conf)
 
         # set netconf for wdnn
-        {
+        conf = {
             "auto": {
                 "data_node":
                     {
@@ -941,7 +943,7 @@ def set_automl_rule() :
         AutoMlRule().set_graph_type_list('wdnn', conf)
 
         # set netconf for charcnn
-        {
+        conf = {
             "auto": {
                 "data_node":
                     {
@@ -1080,20 +1082,20 @@ def set_automl_rule_etc():
 
         # set network sample file path
         conf = {
-            "cnn" : "/samples/cnn_sample.zip"
-            ,"resnet" : "/samples/resnet_sample.zip"
-            ,"wdnn" : "/samples/wdnn_sample.csv"
-            ,"wdnn_keras" : "/samples/wdnn_keras_sample.csv"
-            ,"word2vec" : "/samples/word2vec_sample.zip"
-            ,"word2vec_frame" : "/samples/word2vec_frame_sample.zip"
-            ,"doc2vec" : "/samples/doc2vec_sample.zip"
-            ,"wcnn" : "/samples/wcnn_sample.csv"
-            ,"seq2seq" : "/samples/seq2seq_sample.csv"
-            ,"seq2seq_csv" : "/samples/seq2seq_csv_sample.csv"
-            ,"autoencoder_img" : "/samples/autoencoder_imgsample.csv"
-            ,"autoencoder_csv" : "/samples/autoencoder_csv_sample.csv"
-            ,"bilstmcrf_iob" : "/samples/bilstmcrf_iob_sample.csv"
-            ,"fasttext_txt" : "/samples/fasttext_txt_sample.csv"
+            "cnn" : "cnn_sample.zip"
+            ,"resnet" : "resnet_sample.zip"
+            ,"wdnn" : "wdnn_sample.csv"
+            ,"wdnn_keras" : "wdnn_keras_sample.csv"
+            ,"word2vec" : "word2vec_sample.zip"
+            ,"word2vec_frame" : "word2vec_frame_sample.zip"
+            ,"doc2vec" : "doc2vec_sample.zip"
+            ,"wcnn" : "wcnn_sample.csv"
+            ,"seq2seq" : "seq2seq_sample.csv"
+            ,"seq2seq_csv" : "seq2seq_csv_sample.csv"
+            ,"autoencoder_img" : "autoencoder_imgsample.csv"
+            ,"autoencoder_csv" : "autoencoder_csv_sample.csv"
+            ,"bilstmcrf_iob" : "bilstmcrf_iob_sample.csv"
+            ,"fasttext_txt" : "fasttext_txt_sample.csv"
 
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
@@ -1117,6 +1119,26 @@ def set_automl_rule_etc():
 
         }
         AutoMlRule().update_graph_type_list('graph_flow_info_id', conf)
+
+        # set network node alias name key
+        conf = {
+            "cnn": "Y"
+            , "resnet": "Y"
+            , "wdnn": "Y"
+            , "wdnn_keras": "N"
+            , "word2vec": "Y"
+            , "word2vec_frame": "Y"
+            , "doc2vec": "Y"
+            , "wcnn": "Y"
+            , "seq2seq": "Y"
+            , "seq2seq_csv": "Y"
+            , "autoencoder_img": "Y"
+            , "autoencoder_csv": "Y"
+            , "bilstmcrf_iob": "Y"
+            , "fasttext_txt": "Y"
+
+        }
+        AutoMlRule().update_graph_type_list('active_flag', conf)
 
         return {"automl_extra_parm" : True}
     except Exception as e:

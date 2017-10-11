@@ -9,11 +9,13 @@ export default class FileUploadComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            nn_node_name:null,
             fileData:null,
             percent:0,
             fileurl:'/api/v1/type/wf/state/data/detail/upload/file/nnid/',
             lineview:false,
-            del:EnvConstants.getImgUrl()+"del.png"
+            del:EnvConstants.getImgUrl()+"del.png",
+            nn_id_tmp:null,
             };
         this.getFileData= this.getFileData.bind(this);
         this._handleUploading = this._handleUploading.bind(this);
@@ -32,6 +34,7 @@ export default class FileUploadComponent extends React.Component {
     
     componentDidMount() {
         this.getFileData()
+
     }
 
     _handleUploading(progress, mill){
@@ -46,10 +49,29 @@ export default class FileUploadComponent extends React.Component {
     getFileData(){
         let nn_id = this.props.nn_id
         let nn_wf_ver_id = this.props.nn_wf_ver_id
-        let nn_node_name = this.props.nn_node_name
-        this.props.reportRepository.getFileUpload(nn_id, nn_wf_ver_id, nn_node_name, this.props.nn_path_type).then((tableData) => {
-                                        this.setState({ fileData : tableData})
-                                    });
+        //get node name 
+        this.state.nn_node_name = this.props.nn_node_name
+
+        if(this.state.nn_node_name == "netconf_data" || this.state.nn_node_name == "eval_data"){ 
+            this.props.reportRepository.getCommonNNInfo(this.props.nn_id).then((tableData) => {   
+                for(let i in tableData['graph']){
+                    let nn_node = tableData['graph'][i]['fields']['graph_node']
+                    if(nn_node == this.state.nn_node_name){
+                        this.state.nn_node_name = tableData['graph'][i]['fields']['graph_node_name']
+                    }
+                }
+                
+                this.props.reportRepository.getFileUpload(nn_id, nn_wf_ver_id, this.state.nn_node_name, this.props.nn_path_type).then((tableData) => {
+                                                this.setState({ fileData : tableData})
+                                            });
+            });  
+            
+        }else{
+           this.props.reportRepository.getFileUpload(nn_id, nn_wf_ver_id, this.state.nn_node_name, this.props.nn_path_type).then((tableData) => {
+                                                this.setState({ fileData : tableData})
+                                            });
+        }
+        
     }
 
     deleteFileData(value){
@@ -58,7 +80,7 @@ export default class FileUploadComponent extends React.Component {
         fparam["type"] = this.props.nn_path_type
         let re = confirm( "Are you delete?" )
         if(re == true){
-            this.props.reportRepository.deleteFileUpload(this.props.nn_id, this.props.nn_wf_ver_id, this.props.nn_node_name, fparam).then((tableData) => {
+            this.props.reportRepository.deleteFileUpload(this.props.nn_id, this.props.nn_wf_ver_id, this.state.nn_node_name, fparam).then((tableData) => {
                                                     this.getFileData()
                                                     });
         }
@@ -69,7 +91,12 @@ export default class FileUploadComponent extends React.Component {
         let listFile = []
 
         this.fileOption.baseUrl = EnvConstants.getApiServerUrl()+this.state.fileurl
-        this.fileOption.baseUrl += this.props.nn_id+'/ver/'+this.props.nn_wf_ver_id+'/dir/'+this.props.nn_node_name+'/type/'+this.props.nn_path_type+'/'
+        if(this.state.nn_node_name == "netconf_data" || this.state.nn_node_name == "eval_data"){ 
+            this.fileOption.baseUrl += this.props.nn_id+'/ver/'+this.props.nn_wf_ver_id+'/dir/'+this.state.nn_node_name+'/type/'+this.props.nn_path_type+'/'
+        }else{
+            this.fileOption.baseUrl += this.props.nn_id+'/ver/'+this.props.nn_wf_ver_id+'/dir/'+this.props.nn_node_name+'/type/'+this.props.nn_path_type+'/'
+        }
+        
 
         if (this.state.fileData != null) {
             listFile = this.state.fileData

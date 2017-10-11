@@ -57,8 +57,6 @@ export default class NN_InfoDetailComponent extends React.Component {
             nn_id:null,
             nn_wf_ver_id:null,
             nn_batch_id:null,
-            train_node_name:null,
-            eval_node_name:null,
             nn_title:null,
             nodeType:null,
             netType:null,
@@ -66,7 +64,6 @@ export default class NN_InfoDetailComponent extends React.Component {
             isViewFile:true,
             color:"black",
             acclossLineChartBTData:null,
-            lineAutoChart:null,
             tBarChartBTData:null,
             pBarChartBTData:null,
             modalViewMenu : null,
@@ -110,6 +107,25 @@ export default class NN_InfoDetailComponent extends React.Component {
     /////////////////////////////////////////////////////////////////////////////////////////
     // Top Button Function
     /////////////////////////////////////////////////////////////////////////////////////////
+    searchData(){
+        this.getCommonNNInfoWF()
+
+        if(this.refs.trainfilesrc != undefined){
+            this.refs.trainfilesrc.getFileData()
+            this.refs.trainfilestr.getFileData()
+            this.refs.evalfilesrc.getFileData()
+            this.refs.evalfilestr.getFileData()
+        }
+
+        if(this.refs.barline != undefined){
+            this.refs.barline.getCommonNodeInfoView()
+        }
+
+        if(this.refs.automlTable != undefined){
+            this.refs.automlTable.getCommonNodeInfoView()
+        }
+    }
+
     fileView(){
         if(this.state.isViewFile == true){
             this.setState({ isViewFile: false })
@@ -205,15 +221,6 @@ export default class NN_InfoDetailComponent extends React.Component {
         }
     }
 
-    searchData(){
-        this.getCommonNNInfoWF()
-        if(this.refs.trainfilesrc != undefined){
-            this.refs.trainfilesrc.getFileData()
-            this.refs.trainfilestr.getFileData()
-            this.refs.evalfilesrc.getFileData()
-            this.refs.evalfilestr.getFileData()
-        }
-    }
     /////////////////////////////////////////////////////////////////////////////////////////
     // Search Function
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -235,40 +242,28 @@ export default class NN_InfoDetailComponent extends React.Component {
                     this.state.trainType = false
                     this.state.configEditFlag = "Y"
                 }
-
-                //get node name
-                for(let i in tableData['graph']){
-                    let nn_node = tableData['graph'][i]['fields']['graph_node']
-                    if(nn_node == 'netconf_data'){
-                        this.state.train_node_name = tableData['graph'][i]['fields']['graph_node_name']
-                    }
-                    if(nn_node == 'eval_data'){
-                        this.state.eval_node_name = tableData['graph'][i]['fields']['graph_node_name']
-                    }
-                }
-
+                
                 this.props.reportRepository.getCommonNNInfoWF(this.state.nn_id).then((tableData) => {// Network Version Info
                     this.setState({ NN_TableWFData: tableData })
                     this.setBatchLineChartData(tableData)
+                    let active_flag = "N"
                     for(let i in tableData){
                         if(tableData[i].active_flag == "Y"){//active version을 선택해준다.
+                            active_flag = "Y"
                             this.clickSeletVersion(tableData[i].nn_wf_ver_id)  
                         }
                     }
+                    if (active_flag == "N" && tableData.length > 0){
+                        this.clickSeletVersion(tableData[0].nn_wf_ver_id)  
+                    }
                 });
 
-                this.getCommonNodeInfoView()
+                // this.getCommonNodeInfoView()
 
             });
             
 
         }   
-    }
-
-    getCommonNodeInfoView() {
-        this.props.reportRepository.getCommonNodeInfoView(this.state.nn_id).then((tableData) => {// Network Auto Info
-            this.setState({ lineAutoChart: tableData })
-        });
     }
 
     getCommonBatchInfo(ver) {
@@ -456,7 +451,7 @@ export default class NN_InfoDetailComponent extends React.Component {
     /////////////////////////////////////////////////////////////////////////////////////////  
     handleChangeSelBTE(selectedValue){//Batch Train Active가 Y가 되면 다른 Y를 N으로 변경해 준다.
         let value = selectedValue.target.value //active select cell
-        let table = this.refs.master3
+        let table = this.refs.batch
         if(value != undefined && value == "Y"){// key, desc cell
             let changekey = selectedValue.target.attributes.name.value // 변경된 Cell 키값 
             for(let i=1 ; i < table.rows.length ; i++){
@@ -474,7 +469,7 @@ export default class NN_InfoDetailComponent extends React.Component {
 
     handleChangeSelBTA(selectedValue){//Batch Predict Active가 Y가 되면 다른 Y를 N으로 변경해 준다.
         let value = selectedValue.target.value //active select cell
-        let table = this.refs.master3
+        let table = this.refs.batch
         if(value != undefined && value == "Y"){// key, desc cell
             let changekey = selectedValue.target.attributes.name.value // 변경된 Cell 키값 
             for(let i=1 ; i < table.rows.length ; i++){
@@ -493,7 +488,7 @@ export default class NN_InfoDetailComponent extends React.Component {
     // Node Table Action
     /////////////////////////////////////////////////////////////////////////////////////////  
     clickNodeConfig(selectedValue){//Node를 선택했을때 Config 리스트를 보여준다.
-        let table = this.refs.master4
+        let table = this.refs.netconf_info
         let value = selectedValue
         if(value.target != undefined){
             value = selectedValue.target.attributes.alt.value
@@ -685,9 +680,21 @@ export default class NN_InfoDetailComponent extends React.Component {
         // File 파일이 없으면 가장 먼저 등록할 수 있게 화면에 표시해준다.
         /////////////////////////////////////////////////////////////////////////////////////////
         let fileDefaultIndex = 0
-        if(this.props.nn_type != undefined && this.props.nn_type == "C"){
+        if(this.props.nn_type != undefined && this.props.nn_type == "C" ){
             fileDefaultIndex = 2
         }
+
+        if(this.refs.trainfilesrc != undefined){
+            this.refs.trainfilesrc.getFileData()
+            this.refs.trainfilestr.getFileData()
+        }
+
+        if(this.refs.evalfilesrc != undefined){
+            this.refs.evalfilesrc.getFileData()
+            this.refs.evalfilestr.getFileData()
+        }
+
+
         /////////////////////////////////////////////////////////////////////////////////////////
         // Batch Table Data Make
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -865,14 +872,12 @@ export default class NN_InfoDetailComponent extends React.Component {
                     <TabPanel>
                         <div>
                             <h2>Auto ML chart</h2>
-                            <NN_InfoDetailBarLine ref="barline" NN_Data={this.state.lineAutoChart} />
+                            <NN_InfoDetailBarLine ref="barline" nn_id={this.state.nn_id}  />
                         </div>
                     </TabPanel>
                     <TabPanel>
                         <div>
-                            <NN_InfoDetailAutomlTable ref="automlTable" 
-                                                      NN_Data={this.state.lineAutoChart}
-                                                      NN_Auto ={this.state.NN_TableData} />
+                            <NN_InfoDetailAutomlTable ref="automlTable" nn_id={this.state.nn_id} NN_Auto={this.state.NN_TableData}      />
                         </div>
                     </TabPanel>
                     <TabPanel>
@@ -884,7 +889,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title= "Network Train Source File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.train_node_name} 
+                                                            nn_node_name={"netconf_data"} 
                                                             nn_path_type={"source"}
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
@@ -895,7 +900,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title= "Network Eval Source File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.eval_node_name} 
+                                                            nn_node_name={"eval_data"} 
                                                             nn_path_type={"source"}
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
@@ -912,7 +917,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title="Network Train Store File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.train_node_name} 
+                                                            nn_node_name={"netconf_data"} 
                                                             nn_path_type={"store"} 
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
@@ -922,7 +927,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title="Network Eval Store File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.eval_node_name} 
+                                                            nn_node_name={"eval_data"} 
                                                             nn_path_type={"store"}
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
@@ -941,7 +946,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title= "Network Train Source File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.train_node_name} 
+                                                            nn_node_name={"netconf_data"} 
                                                             nn_path_type={"source"}
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
@@ -952,7 +957,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title= "Network Eval Source File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.eval_node_name} 
+                                                            nn_node_name={"eval_data"} 
                                                             nn_path_type={"source"}
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
@@ -967,7 +972,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title="Network Train Store File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.train_node_name} 
+                                                            nn_node_name={"netconf_data"} 
                                                             nn_path_type={"store"} 
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
@@ -977,7 +982,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             title="Network Eval Store File Upload"
                                                             nn_id={this.state.nn_id} 
                                                             nn_wf_ver_id={this.state.file_wf_ver_id} 
-                                                            nn_node_name={this.state.eval_node_name} 
+                                                            nn_node_name={"eval_data"} 
                                                             nn_path_type={"store"}
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
@@ -1011,7 +1016,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                     <TabPanel>
                         <div>
                             <h2> Network Batch Info (Version : {this.state.nn_wf_ver_id}) </h2>
-                            <table className="table detail" ref= 'master3' >
+                            <table className="table detail" ref= 'batch' >
                                 {batchInfoListTable}
                             </table>
                         </div>
@@ -1019,7 +1024,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                     <TabPanel>
                         <div>
                             <h2> Network Node Info (Version : {this.state.nn_wf_ver_id}) </h2>
-                            <table className="table detail" ref= 'master4' >
+                            <table className="table detail" ref= 'netconf_info' >
                                 {nodeInfoListTable}
                             </table>
                         </div>

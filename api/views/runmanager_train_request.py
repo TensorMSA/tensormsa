@@ -7,6 +7,7 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 import coreapi
 from master.network.nn_common_manager import NNCommonManager
+from django.conf import settings
 
 class RunManagerTrainRequest(APIView):
 
@@ -33,10 +34,10 @@ class RunManagerTrainRequest(APIView):
             # Net Version create
             NNCommonManager().update_nn_wf_info(nnid, condition_data)
 
-            if(self._same_request_check(nnid, ver) == 'run'):
+            if (settings.DEBUG == False):
                 result = train.delay(nnid, ver)
                 return Response(json.dumps({"status": "200", "id": result.id, "state": result.state}))
-            elif(self._same_request_check(nnid, ver) == 'debug'):
+            elif(settings.DEBUG == True):
                 result = train(nnid, ver)
                 return Response(json.dumps(result))
             else :

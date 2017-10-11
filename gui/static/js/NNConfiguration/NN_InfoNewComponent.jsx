@@ -43,7 +43,7 @@ export default class NN_InfoNewComponent extends React.Component {
     // 최초 1회 실행하여 Network Config List를 가져온다.
     componentDidMount(){
         this.props.setActiveItem("init",null,null,null,null,null,null,null);
-        // 파일 임시 저장소를 만들어 가져와 준다.
+
         this.props.reportRepository.getFileUpload(this.state.tmp_train_node_name, "1", "1", "tmp").then((tableData) => {
             // this.state.train_node_name = tableData["path"]
             this.setState({ train_node_name: tableData["path"] })
@@ -183,24 +183,24 @@ export default class NN_InfoNewComponent extends React.Component {
                                     // });
                                 });
                             }else{
-                                //version create
-                                this.props.reportRepository.postCommonNNInfoWF(nn_id, wfparam).then((ver) => {
-                                    //node create
-                                    this.props.reportRepository.postCommonNNInfoWFNode(nn_id, ver, nodeparam).then((tableData) => {
-                                        //node config update
-                                        for(let i in nodekeys){
-                                            this.props.reportRepository.putCommonNNInfoWFNode(nn_id, ver, nodekeys[i], params[nodekeys[i]]).then((tableData) => {
+                                // //version create
+                                // this.props.reportRepository.postCommonNNInfoWF(nn_id, wfparam).then((ver) => {
+                                //     //node create
+                                //     this.props.reportRepository.postCommonNNInfoWFNode(nn_id, ver, nodeparam).then((tableData) => {
+                                //         //node config update
+                                //         for(let i in nodekeys){
+                                //             this.props.reportRepository.putCommonNNInfoWFNode(nn_id, ver, nodekeys[i], params[nodekeys[i]]).then((tableData) => {
 
-                                            });
-                                        }
-                                    });
-                                });
+                                //             });
+                                //         }
+                                //     });
+                                // });
                             }
                         });
                     });
                 }
                 this.props.setActiveItem(nn_id, "C", null, null, null, null, null, null)
-                return this.props.getHeaderEvent(2);
+                return this.props.getHeaderEvent(6);
             });
 
         }
@@ -317,6 +317,14 @@ export default class NN_InfoNewComponent extends React.Component {
         // masterListTableAuto.push(<thead ref='thead' key={k++} className="center">{tableHeaderAuto}</thead>)
         masterListTableAuto.push(<tbody ref='tbody' key={k++} className="center" >{tableDataAuto}</tbody>)
 
+        // if(this.state.train_node_name != null && this.refs.trainfilesrc != null){
+        //     this.refs.trainfilesrc.getFileData(this.state.train_node_name)
+        // }
+
+        // if(this.state.eval_node_name != null && this.refs.evalfilesrc != null){
+        //     this.refs.evalfilesrc.getFileData(this.state.eval_node_name)
+        // }
+
         return (
             <section>
                 <h1 className="hidden">tensor MSA main table</h1>
@@ -370,31 +378,46 @@ export default class NN_InfoNewComponent extends React.Component {
 
                             <TabPanel key={k++}>
                                 <NN_InfoNewCompDetail1 ref="netDetail1" tabIndex={this.state.tabIndex}
-                                                        tabIndexAS={this.state.tabIndexAS} 
-                                                        train_node_name={this.state.train_node_name}
-                                                        eval_node_name={this.state.eval_node_name}
-                                                        tmp_train_node_name={this.state.tmp_train_node_name}
-                                                        tmp_eval_node_name={this.state.tmp_eval_node_name} />
+                                                        tabIndexAS={this.state.tabIndexAS} />
                             </TabPanel>
                             <TabPanel key={k++}>
                                 <NN_InfoNewCompDetail1 ref="netDetail2" tabIndex={this.state.tabIndex} 
-                                                        tabIndexAS={this.state.tabIndexAS} 
-                                                        train_node_name={this.state.train_node_name}
-                                                        eval_node_name={this.state.eval_node_name}
-                                                        tmp_train_node_name={this.state.tmp_train_node_name}
-                                                        tmp_eval_node_name={this.state.tmp_eval_node_name} />
+                                                        tabIndexAS={this.state.tabIndexAS} />
                             </TabPanel> 
                             <TabPanel key={k++}>
                                 <NN_InfoNewCompDetail1 ref="netDetail3" tabIndex={this.state.tabIndex} 
-                                                        tabIndexAS={this.state.tabIndexAS} 
-                                                        train_node_name={this.state.train_node_name}
-                                                        eval_node_name={this.state.eval_node_name}
-                                                        tmp_train_node_name={this.state.tmp_train_node_name}
-                                                        tmp_eval_node_name={this.state.tmp_eval_node_name} />
+                                                        tabIndexAS={this.state.tabIndexAS} />
                             </TabPanel>
                         </Tabs>
                    
-                
+                    <table className="table detail">
+                    <tr>
+                    <td style={{"verticalAlign":"top"}}>
+
+                        <FileUploadComponent ref="trainfilesrc" 
+                                              title="Network Train Source File Upload"
+                                                nn_id={this.state.tmp_train_node_name} 
+                                                nn_wf_ver_id={"1"} 
+                                                nn_path_type={"source"}
+                                                nn_node_name={this.state.train_node_name} 
+                                                uploadbtnflag={true} 
+                                                deletebtnflag={true} />
+                    </td>
+
+                    <td style={{"verticalAlign":"top"}}>
+
+                        <FileUploadComponent ref="evalfilesrc" 
+                                                title="Network Eval Source File Upload"
+                                                nn_id={this.state.tmp_eval_node_name} 
+                                                nn_wf_ver_id={"1"} 
+                                                nn_node_name={this.state.eval_node_name} 
+                                                nn_path_type={"source"}
+                                                uploadbtnflag={true} 
+                                                deletebtnflag={true} />
+                        </td>
+
+                    </tr>
+                    </table>
                     
 
                     

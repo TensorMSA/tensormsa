@@ -8,7 +8,6 @@ export default class NN_InfoDetailBarLine extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-            NN_DataPre:null,
             NN_Data:null,
             NN_Labels:[],
             lineChartLabels:null,
@@ -16,12 +15,20 @@ export default class NN_InfoDetailBarLine extends React.Component {
             barCnt : 5,
             color:['#ef867a','#69f3cf','#cf7425','#995f7c','#68299f','#a37178','#8893a4','f2584f','#469da9','#5dda73'] 
         };
+        this.getCommonNodeInfoView= this.getCommonNodeInfoView.bind(this);
     }
     /////////////////////////////////////////////////////////////////////////////////////////
     // Search Function "#ff8022","#ffcf3b","#47de8a","#999966","#33cccc","#ff66ff","#F85F73"
     //'#ef867a','#69f3cf',#cf7425','','','','','','',''
     /////////////////////////////////////////////////////////////////////////////////////////
     componentDidMount() {
+        this.getCommonNodeInfoView()
+    }
+
+    getCommonNodeInfoView() {
+        this.props.reportRepository.getCommonNodeInfoView(this.props.nn_id).then((tableData) => {// Network Auto Info
+            this.setState({ NN_Data: tableData })
+        });
     }
     /////////////////////////////////////////////////////////////////////////////////////////
     // Version Batch Bar Chart
@@ -83,7 +90,7 @@ export default class NN_InfoDetailBarLine extends React.Component {
       }
 
       this.state.NN_Labels = this.state.NN_Labels.sort()
-      this.setState({ NN_Data: data })
+      this.state.NN_Data =  data
     }
 
     lineChartOnClick(value){//Chart의 세부 카테고리 정보를 보여준다.
@@ -104,10 +111,8 @@ export default class NN_InfoDetailBarLine extends React.Component {
           return color;
         }
 
-        let lineData = this.props.NN_Data
-
-        if(lineData != null && this.state.NN_Data == null){
-          this.setLineChartData(lineData)
+        if(this.state.NN_Data != null && this.state.NN_Data.best != null){
+          this.setLineChartData(this.state.NN_Data)
         }
 
         let lineChart = [];
@@ -121,7 +126,8 @@ export default class NN_InfoDetailBarLine extends React.Component {
           lineChart.push(    <Bar key={k++} dataKey={this.state.NN_Labels[i]} barSize={20} fill={color}/>)
         }
         if(this.state.NN_Labels.length == 0){
-          lineChart.push(    <Bar key={k++} dataKey={"1"} barSize={20} fill={color}/>)
+          lineChart.push(    <Bar key={k++} dataKey={"01"} barSize={20} fill={color}/>)
+          this.state.NN_Data = [{name:"Gen000", "01":0 , "avg":0}]
         }
         lineChart.push(    <Line key={k++}  dataKey='avg' type='monotone' stroke='#ff7300'/>)
 
@@ -155,3 +161,6 @@ export default class NN_InfoDetailBarLine extends React.Component {
     }
 }
 
+NN_InfoDetailBarLine.defaultProps = {
+    reportRepository: new ReportRepository(new Api())
+};
