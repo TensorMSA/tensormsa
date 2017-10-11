@@ -1,0 +1,426 @@
+decode,encode
+1,tagloc tagrank
+1,tagloc tagrank 찾
+1,tagrank tagloc 찾
+1,tagloc tagrank 알
+1,tagrank tagloc 알
+1,tagloc tagrank 알려
+1,tagrank tagloc 알려
+1,tagloc tagrank 누구
+1,tagrank tagloc 누구
+1,tagloc tagrank 검색
+1,tagrank tagloc 검색
+1,tagloc 근무 tagrank 알
+1,tagloc 근무 tagrank 알려
+1,tagloc 근무 tagrank 찾
+1,tagloc 근무 tagrank 누구
+1,tagloc 에 근무 tagrank 검색
+1,tagloc 에 근무 tagrank 알
+1,tagloc 에 근무 tagrank 알려
+1,tagloc 에 근무 tagrank 찾
+1,tagloc 에 근무 tagrank 누구
+1,tagloc 의 tagrank 알
+1,tagloc 의 tagrank 알려
+1,tagloc 의 tagrank 찾
+1,tagloc 의 tagrank 누구
+1,tagloc 의 tagrank 검색
+9,tagorg tagrank
+9,tagorg tagrank 알
+9,tagorg tagrank 알려
+9,tagorg tagrank 찾
+9,tagorg tagrank 누구
+9,tagorg tagrank 검색
+9,tagorg tagrank 명단
+9,tagorg tagrank 목록
+9,tagorg tagrank 은
+9,tagorg tagrank 는
+9,tagloc tagorg tagrank 알
+9,tagloc tagorg tagrank 알려
+9,tagloc tagorg tagrank 찾
+9,tagloc tagorg tagrank 누구
+9,tagloc tagorg tagrank 검색
+9,tagloc tagorg tagrank 명단
+9,tagloc tagorg tagrank 목록
+2,tagname 의 tagsuper 찾
+2,tagname 의 tagsuper 알
+2,tagname 의 tagsuper 알려
+2,tagname 의 tagsuper 누구
+2,tagname 의 tagsuper 검색
+2,tagname 의 tagsuper 번호 검색
+2,tagname tagrank 의 tagsuper 찾
+2,tagname tagrank 의 tagsuper 알
+2,tagname tagrank 의 tagsuper 알려
+2,tagname tagrank 의 tagsuper 누구
+2,tagname tagrank 의 tagsuper 검색
+2,tagname tagrank 의 tagsuper 번호 검색
+2,tagrank tagname 의 tagsuper 찾
+2,tagrank tagname 의 tagsuper 알
+2,tagrank tagname 의 tagsuper 알려
+2,tagrank tagname 의 tagsuper 누구
+2,tagrank tagname 의 tagsuper 검색
+2,tagrank tagname 의 tagsuper 번호 검색
+2,tagorg tagname tagrank 의 tagsuper 찾
+2,tagorg tagname tagrank 의 tagsuper 알
+2,tagorg tagname tagrank 의 tagsuper 알려
+2,tagorg tagname tagrank 의 tagsuper 누구
+2,tagorg tagname tagrank 의 tagsuper 검색
+2,tagorg tagname tagrank 의 tagsuper 번호 검색
+2,tagloc 근무 tagname tagrank 의 tagsuper 찾
+2,tagloc 근무 tagname tagrank 의 tagsuper 알
+2,tagloc 근무 tagname tagrank 의 tagsuper 알려
+2,tagloc 근무 tagname tagrank 의 tagsuper 누구
+2,tagloc 근무 tagname tagrank 의 tagsuper 검색
+2,tagloc 근무 tagname tagrank 의 tagsuper 번호 검색
+5,tagname 근태 
+5,tagname 근태 검색
+5,tagname 근무 인가
+5,tagname 휴무 인가
+5,tagname 휴가 인가
+5,tagname 교육 인가
+5,tagname 출장 인가
+5,tagname 해외 출장 인가
+5,tagname 휴가 갔
+5,tagname 교육 갔
+5,tagname 출장 갔
+5,tagname 해외 출장 갔
+5,tagname 은 근무 인가
+5,tagname 은 휴무 인가
+5,tagname 은 휴가 인가
+5,tagname 은 교육 인가
+5,tagname 은 출장 인가
+5,tagname 은 해외 출장 인가
+5,tagname 은 휴가 갔
+5,tagname 은 교육 갔
+5,tagname 은 출장 갔
+5,tagname 은 해외 출장 갔
+5,tagname 은 근태
+5,tagname 은 근태 검색
+5,tagorg tagname 근태
+5,tagorg tagname 근무
+5,tagorg tagname 휴무
+5,tagorg tagname 휴가
+5,tagorg tagname 출장
+5,tagorg tagname 교육
+5,tagorg tagname 근태 검색
+5,tagorg tagname 휴가 갔
+5,tagorg tagname 출장 갔
+5,tagorg tagname 교육 갔
+5,tagorg tagname 해외 출장 갔
+5,tagloc tagname 근태
+5,tagloc tagname 근무
+5,tagloc tagname 휴무
+5,tagloc tagname 휴가
+5,tagloc tagname 출장
+5,tagloc tagname 교육
+5,tagloc tagname 해외 출장
+5,tagloc tagname 근태 검색
+5,tagloc tagname 휴가 갔
+5,tagloc tagname 출장 갔
+5,tagloc tagname 교육 갔
+5,tagloc tagname 해외 출장 갔
+5,tagorg tagname 은 근태
+5,tagorg tagname 은 근무
+5,tagorg tagname 은 휴무
+5,tagorg tagname 은 휴가
+5,tagorg tagname 은 출장
+5,tagorg tagname 은 교육
+5,tagorg tagname 은 해외 출장
+5,tagorg tagname 은 휴가 갔
+5,tagorg tagname 은 출장 갔
+5,tagorg tagname 은 교육 갔
+5,tagorg tagname 은 해외 출장 갔
+5,tagloc tagname 은 근태
+5,tagloc tagname 은 근무
+5,tagloc tagname 은 휴무
+5,tagloc tagname 은 휴가
+5,tagloc tagname 은 출장
+5,tagloc tagname 은 교육
+5,tagloc tagname 은 해외 출장
+5,tagloc tagname 은 휴가 갔
+5,tagloc tagname 은 출장 갔
+5,tagloc tagname 은 교육 갔
+5,tagloc tagname 은 해외 출장 갔
+5,tagname tagloc 은 근태
+5,tagname tagloc 은 근무
+5,tagname tagloc 은 휴무
+5,tagname tagloc 은 휴가
+5,tagname tagloc 은 출장
+5,tagname tagloc 은 교육
+5,tagname tagloc 은 해외 출장
+5,tagname tagloc 은 휴가 갔
+5,tagname tagloc 은 출장 갔
+5,tagname tagloc 은 교육 갔
+5,tagname tagloc 은 해외 출장 갔
+5,tagname tagrank 근태
+5,tagname tagrank 근무 인가
+5,tagname tagrank 휴무 인가
+5,tagname tagrank 휴가 인가
+5,tagname tagrank 교육 인가
+5,tagname tagrank 출장 인가
+5,tagname tagrank 해외 출장 인가
+5,tagname tagrank 근태 검색
+5,tagname tagrank 휴가 갔
+5,tagname tagrank 교육 갔
+5,tagname tagrank 출장 갔
+5,tagname tagrank 해외 출장 갔
+5,tagname tagrank 근무 하나
+5,tagname tagrank 휴무 하나
+5,tagname tagrank 교육 하나
+5,tagname tagrank 출장 하나
+5,tagname tagrank 해외 출장 하나
+5,tagrank tagname 근태
+5,tagrank tagname 근무 인가
+5,tagrank tagname 휴가 인가
+5,tagrank tagname 휴무 인가
+5,tagrank tagname 교육 인가
+5,tagrank tagname 출장 인가
+5,tagrank tagname 해외 출장 인가
+5,tagrank tagname 근무 하나
+5,tagrank tagname 휴무 하나
+5,tagrank tagname 교육 하나
+5,tagrank tagname 출장 하나
+5,tagrank tagname 해외 출장 하나
+5,tagrank tagname 휴가 갔
+5,tagrank tagname 교육 갔
+5,tagrank tagname 출장 갔
+5,tagrank tagname 해외 출장 갔
+5,tagrank tagname 근태 검색
+5,tagrank tagname 은 근무 인가
+5,tagrank tagname 은 휴가 인가
+5,tagrank tagname 은 휴무 인가
+5,tagrank tagname 은 교육 인가
+5,tagrank tagname 은 출장 인가
+5,tagrank tagname 은 해외 출장 인가
+5,tagrank tagname 은 근무 하나
+5,tagrank tagname 은 휴무 하나
+5,tagrank tagname 은 교육 하나
+5,tagrank tagname 은 출장 하나
+5,tagrank tagname 은 해외 출장 하나
+5,tagrank tagname 은 휴가 갔
+5,tagrank tagname 은 교육 갔
+5,tagrank tagname 은 출장 갔
+5,tagrank tagname 은 해외 출장 갔
+3,taghead 에게 전화 걸
+3,taghead 에게 전화
+3,taghead 에게 연락
+3,taghead 전화 걸
+3,taghead 전화
+3,taghead 연락
+4,tagname 에게 전화 걸
+4,tagname 에게 전화
+4,tagname 에게 연락
+4,tagname 전화 걸
+4,tagname 전화
+4,tagname 연락
+4,tagname tagrank 에게 전화 걸
+4,tagname tagrank 에게 전화
+4,tagname tagrank 에게 연락
+4,tagname tagrank 전화 걸
+4,tagname tagrank 전화
+4,tagname tagrank 연락
+4,tagrank tagname 에게 전화 걸
+4,tagrank tagname 에게 전화
+4,tagrank tagname 에게 연락
+4,tagrank tagname 전화 걸
+4,tagrank tagname 전화
+4,tagrank tagname 연락
+4,tagloc tagname 에게 전화 걸
+4,tagloc tagname 에게 전화
+4,tagloc tagname 에게 연락
+4,tagloc tagname 전화 걸
+4,tagloc tagname 전화
+4,tagloc tagname 연락
+4,tagloc 근무 tagname 에게 전화 걸
+4,tagloc 근무 tagname 에게 전화
+4,tagloc 근무 tagname 에게 연락
+4,tagloc 근무 tagname 전화 걸
+4,tagloc 근무 tagname 전화
+4,tagloc 근무 tagname 연락
+4,tagcompany tagname 에게 전화 걸
+4,tagcompany tagname 에게 전화
+4,tagcompany tagname 에게 연락
+4,tagcompany tagname 전화 걸
+4,tagcompany tagname 전화
+4,tagcompany tagname 연락
+4,tagname tagcompany 에게 전화 걸
+4,tagname tagcompany 에게 전화
+4,tagname tagcompany 에게 연락
+4,tagname tagcompany 전화 걸
+4,tagname tagcompany 전화
+4,tagname tagcompany 연락
+4,tagorg tagname 에게 전화 걸
+4,tagorg tagname 에게 전화
+4,tagorg tagname 에게 연락
+4,tagorg tagname 전화 걸
+4,tagorg tagname 전화
+4,tagorg tagname 연락
+4,tagorg tagname tagrank 에게 전화 걸
+4,tagorg tagname tagrank 에게 전화
+4,tagorg tagname tagrank 에게 연락
+4,tagorg tagname tagrank 전화 걸
+4,tagorg tagname tagrank 전화
+4,tagorg tagname tagrank 연락
+4,tagloc tagorg tagname tagrank 에게 전화 걸
+4,tagloc tagorg tagname tagrank 에게 전화
+4,tagloc tagorg tagname tagrank 에게 연락
+4,tagloc tagorg tagname tagrank 전화 걸
+4,tagloc tagorg tagname tagrank 전화
+4,tagloc tagorg tagname tagrank 연락
+4,tagloc tagorg tagrank tagname 에게 전화 걸
+4,tagloc tagorg tagrank tagname 에게 전화
+4,tagloc tagorg tagrank tagname 에게 연락
+4,tagloc tagorg tagrank tagname 전화 걸
+4,tagloc tagorg tagrank tagname 전화
+4,tagloc tagorg tagrank tagname 연락
+6,tagceo
+6,tagceo 찾
+6,tagceo 알
+6,tagceo 알려
+6,tagceo 누구
+6,tagceo 검색
+6,tagceo 번호 검색
+7,taghead
+7,taghead 찾
+7,taghead 알
+7,taghead 알려
+7,taghead 누구
+7,taghead 검색
+7,taghead 번호 검색
+7,tagcompany taghead 알
+7,tagcompany taghead 알려
+7,tagcompany taghead 누구
+7,tagcompany taghead 검색
+7,tagcompany taghead 찾
+7,tagcompany taghead 번호 검색
+8,tagname 찾
+8,tagname 알
+8,tagname 알려
+8,tagname 누구
+8,tagname 검색
+8,tagname 번호 검색
+8,tagname 은 찾
+8,tagname 은 알
+8,tagname 은 알려
+8,tagname 은 누구
+8,tagname 은 검색
+8,tagname 은 번호 검색
+8,tagname tagrank
+8,tagname tagrank 찾
+8,tagname tagrank 알
+8,tagname tagrank 알려
+8,tagname tagrank 누구
+8,tagname tagrank 검색
+8,tagname tagrank 번호 검색
+8,tagname tagrank 은 찾
+8,tagname tagrank 은 알
+8,tagname tagrank 은 알려
+8,tagname tagrank 은 누구
+8,tagname tagrank 은 검색
+8,tagname tagrank 은 번호 검색
+8,tagrank tagname
+8,tagrank tagname 찾
+8,tagrank tagname 알
+8,tagrank tagname 알려
+8,tagrank tagname 누구
+8,tagrank tagname 검색
+8,tagrank tagname 번호 검색
+8,tagloc tagname 찾
+8,tagloc tagname 알
+8,tagloc tagname 알려
+8,tagloc tagname 누구
+8,tagloc tagname 검색
+8,tagloc tagname 번호 검색
+8,tagloc tagname 은 찾
+8,tagloc tagname 은 알
+8,tagloc tagname 은 알려
+8,tagloc tagname 은 누구
+8,tagloc tagname 은 검색
+8,tagloc tagname 은 번호 검색
+8,tagloc 에 tagname 찾
+8,tagloc 에 tagname 알
+8,tagloc 에 tagname 알려
+8,tagloc 에 tagname 누구
+8,tagloc 에 tagname 검색
+8,tagloc 에 tagname 번호 검색
+8,tagloc 근무 tagname 찾
+8,tagloc 근무 tagname 알
+8,tagloc 근무 tagname 알려
+8,tagloc 근무 tagname 누구
+8,tagloc 근무 tagname 검색
+8,tagloc 근무 tagname 은 찾
+8,tagloc 근무 tagname 은 알
+8,tagloc 근무 tagname 은 알려
+8,tagloc 근무 tagname 은 누구
+8,tagloc 근무 tagname 은 검색
+8,tagloc 근무 tagname 은 번호 검색
+8,tagcompany tagname 찾
+8,tagcompany tagname 알
+8,tagcompany tagname 알려
+8,tagcompany tagname 누구
+8,tagcompany tagname 검색
+8,tagcompany tagname 번호 검색
+8,tagcompany tagname 은 찾
+8,tagcompany tagname 은 알
+8,tagcompany tagname 은 알려
+8,tagcompany tagname 은 누구
+8,tagcompany tagname 은 검색
+8,tagcompany tagname 은 번호 검색
+8,tagorg tagname 찾
+8,tagorg tagname 알
+8,tagorg tagname 알려
+8,tagorg tagname 누구
+8,tagorg tagname 검색
+8,tagorg tagname 번호 검색
+8,tagorg tagname 은 찾
+8,tagorg tagname 은 알
+8,tagorg tagname 은 알려
+8,tagorg tagname 은 누구
+8,tagorg tagname 은 검색
+8,tagorg tagname 은 번호 검색
+8,tagorg tagname tagrank 찾
+8,tagorg tagname tagrank 알
+8,tagorg tagname tagrank 알려
+8,tagorg tagname tagrank 누구
+8,tagorg tagname tagrank 검색
+8,tagorg tagname tagrank 번호 검색
+8,tagorg tagname tagrank 은 찾
+8,tagorg tagname tagrank 은 알
+8,tagorg tagname tagrank 은 알려
+8,tagorg tagname tagrank 은 누구
+8,tagorg tagname tagrank 은 검색
+8,tagorg tagname tagrank 은 번호 검색
+8,tagloc tagorg tagname 찾
+8,tagloc tagorg tagname 알
+8,tagloc tagorg tagname 알려
+8,tagloc tagorg tagname 누구
+8,tagloc tagorg tagname 검색
+8,tagloc tagorg tagname 번호 검색
+8,tagloc tagorg tagrank tagname
+8,tagloc tagorg tagrank tagname 찾
+8,tagloc tagorg tagrank tagname 알
+8,tagloc tagorg tagrank tagname 알려
+8,tagloc tagorg tagrank tagname 누구
+8,tagloc tagorg tagrank tagname 검색
+8,tagloc tagorg tagrank tagname 번호 검색
+8,tagloc tagorg tagname tagrank
+8,tagloc tagorg tagname tagrank 찾
+8,tagloc tagorg tagname tagrank 알
+8,tagloc tagorg tagname tagrank 알려
+8,tagloc tagorg tagname tagrank 누구
+8,tagloc tagorg tagname tagrank 검색
+8,tagloc tagorg tagname tagrank 번호 검색
+10,tagcompany tagrank 찾
+10,tagcompany tagrank 알
+10,tagcompany tagrank 검색 
+10,tagcompany tagrank 누구
+10,tagcompany tagrank 알려
+10,tagloc tagcompany tagrank 찾
+10,tagloc tagcompany tagrank 알
+10,tagloc tagcompany tagrank 검색
+10,tagloc tagcompany tagrank 누구
+10,tagloc tagcompany tagrank 알려
+10,tagcompany tagloc tagrank 찾
+10,tagcompany tagloc tagrank 알
+10,tagcompany tagloc tagrank 검색
+10,tagcompany tagloc tagrank 누구
+10,tagcompany tagloc tagrank 알려
