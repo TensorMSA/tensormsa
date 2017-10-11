@@ -53,7 +53,7 @@ class CommonNNInfoBatch(APIView):
                     fnsplit = fn.split(".")
                     fnsplitName = fnsplit[0]
                     if (fnsplitName == filename):
-                        row["model"] = fn
+                        row["model"] = fnsplitName
                         row["model_exists"] = "Y"
                 if row["result_info"] != None:
                     predicts = row["result_info"]["predicts"]

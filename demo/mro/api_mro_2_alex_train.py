@@ -12,9 +12,8 @@ import sys
 # celery -A hoyai worker -l info
 # ./manage.py runserver 2fb1ece74beb:8000 --noreload
 
-println("S")
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-nn_id = "mro001"
+nn_id = "nn00000033"
 net_type = "cnn" # cnn, resnet
 wf_ver_id = 1
 
@@ -33,8 +32,8 @@ wf_ver_id = str(wf_ver_id)
 # (CNN Network WorkFlow Node의 Network Config를 Setup 해준다.)
 resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/nnid/'+nn_id+'/ver/'+wf_ver_id+'/node/netconf_node/',
                      json={
-                         "param":{"traincnt": 1
-                                  ,"epoch": 1
+                         "param":{"traincnt": 2
+                                  ,"epoch": 2
                                   ,"batch_size":1000000
                                   ,"predictcnt": 5
                                   ,"predlog": "N" # T:Ture, F:False, A:True&False, N:None
@@ -53,7 +52,7 @@ resp = requests.put('http://' + url + '/api/v1/type/wf/state/netconf/detail/cnn/
                                      "maxpoolstride": [2, 2],
                                      "padding": "SAME",
                                      "droprate": "0.8",
-                                     "layercnt":4
+                                     "layercnt":1
                                     }
                          ,"layer2": {"active": "relu",
                                      "cnnfilter": [3, 3],
@@ -171,11 +170,9 @@ else:
                         print(spaceprint(train["labels"][i],maxcnt), predict_sub, str(percent)+"%")
 
 
-println("E")
 
 
 
 
 
 
-# "AC Geared Motor", "AC Induction Motor", "Air Filter", "Aux Relay", "Bolt", "Bolt-Nut", "Centrifugal Pump", "Check Valve", "Circuit Breaker", "Compressor Accessories", "Control Valve", "Controller", "DC Power Supply", "Drill Bit", "Drive Coupling", "Elbow", "Electrical Connector", "Encoder", "Equipment Spares_Accessories", "Fan", "Filter Element", "Flexible Hose", "Flowmeter", "Fuse", "Gasket", "Gear Box", "Hose", "Hydraulic Pump", "Hydraulic Valve", "Integrated Circuit", "Laboratory Supply", "Magnetic Contactor", "Manual Switch", "Nozzle", "Oil Seal_Bearing Isolator", "PIPE", "Paint_Primer_Finish", "Pipe Coupling", "Pneumatic Cylinder", "Pneumatic Valve", "Position Sensor", "Power_Control Cable", "Pressure Gauge", "Pressure Switch", "Pressure Transmitter", "Printed Circuit Board", "Protection Relay", "Proximity Switch", "Pump Accessories", "Reagent", "Ring_Retainer", "Roller Bearing", "Safety Sign_Label", "Shut-Off Valve", "Solenoid Valve", "Union", "Varied Measuring Instrument", "Varied Seal", "Varied Sensor"

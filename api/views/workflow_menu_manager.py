@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from master.workflow.common.workflow_state_menu import WorkFlowStateMenu
 import coreapi
+from django.conf import settings
 
 class WorkFlowMenuManager(APIView) :
 
@@ -71,7 +72,8 @@ class WorkFlowMenuManager(APIView) :
         """
         try:
             return_data = ""
-            return_data = WorkFlowStateMenu().get_menu_info()
+            if(settings.DEBUG != True):
+                return_data = WorkFlowStateMenu().get_menu_info()
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}
