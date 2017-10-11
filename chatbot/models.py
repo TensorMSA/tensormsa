@@ -63,7 +63,7 @@ class CB_RESPONSE_LIST_INFO(models.Model):
 
 class CB_TAGGING_INFO(models.Model):
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    pos_type = models.CharField(max_length=10, blank=True)
+    pos_type = models.CharField(max_length=10, primary_key=True)
     proper_noun = JSONField()
     parsed_length = models.IntegerField(default=10)
 

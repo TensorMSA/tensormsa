@@ -89,6 +89,7 @@ export default class NN_InfoApplicationList extends React.Component {
         bot_def_list["last_updated_by"] = "KSS"
 
 
+
                         // "cb_id": "cb0001",
                         // "nn_id": "wcnntest02",
                         // 'nn_purpose': "Intend",
@@ -96,21 +97,13 @@ export default class NN_InfoApplicationList extends React.Component {
                         // 'nn_label_data': {"entity": []},
                         // 'nn_desc': "Intend",
 
-                        // "cb_id": "cb0001",
-                        // "intent_id": "1",
-                        // "intent_uuid": "1",
-                        // "intent_type": "model",
-                        // "intent_desc": "",
-                        // "rule_value": {"key": ["알려줘"]},
-                        // "nn_type": "Seq2Seq",
         //Add Intent Info
-        table = this.refs.master2
-        col = this.state.NN_TableColArr2
+        let table2 = this.refs.master2
 
         // Validation Check
-        for (let i=1 ; i < table.rows.length ; i++) {
-            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
-            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+        for (let i=1 ; i < table2.rows.length ; i++) {
+            title = table2.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table2.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
             if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
         }
         
@@ -128,16 +121,29 @@ export default class NN_InfoApplicationList extends React.Component {
 
         bot_model_list["cb_id"] = bot_def_list["cb_id"]
         bot_model_list["nn_id"] = bot_entity_list["nn_id"]
+        bot_tagging["cb_id"] = bot_def_list["cb_id"]
+        bot_tagging["pos_type"] = "dict"
+        bot_tagging["proper_noun"] = {
+                        "tagdate": [1, "/home/dev/hoyai/demo/botbuilder/data/date.txt", false],
+                        "tagloc": [2, "/home/dev/hoyai/demo/botbuilder/data/loc.txt", false],
+                         "tagmenu": [3, "/home/dev/hoyai/demo/botbuilder/data/menu.txt", false]
+                        }
 
+        bot_intent_list["cb_id"] = bot_def_list["cb_id"]
+        bot_intent_list["intent_id"] = bot_entity_list["intent_id"]
+        bot_intent_list["intent_type"] = "model"
+        bot_intent_list["intent_uuid"] = ""
+        bot_intent_list["intent_desc"] = ""
+        bot_intent_list["rule_value"] = {"key": ["알려줘"]}
+        bot_intent_list["nn_type"] = "Seq2Seq"
 
         //Add Story Info
-        table3 = this.refs.master3
-        col3 = this.state.NN_TableColArr3
+        let table3 = this.refs.master3
         
         // Validation Check
-        for (let i=1 ; i < table.rows.length ; i++) {
-            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
-            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+        for (let i=1 ; i < table3.rows.length ; i++) {
+            title = table3.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table3.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
             if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
         }
         
@@ -146,19 +152,25 @@ export default class NN_InfoApplicationList extends React.Component {
 
         //for (let i=1 ; i < table.rows.length ; i++) {
         for (let i=1 ; i < 6 ; i++) {
-            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
-            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            title = table3.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table3.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
             bot_story_list[inDefault3[i]] = input_data
             console.log(bot_story_list[i] + " " + input_data )
         }
         console.log(bot_story_list)
 
         // Make NN Info
-        this.props.reportRepository.putBotSetupInfo("def", bot_def_list).then((bot_def_list) => {
-            this.props.reportRepository.putBotSetupInfo("tag", bot_tagging).then((bot_tagging) => {
-                this.props.reportRepository.putBotSetupInfo("intent", bot_intent_list).then((bot_tagging) => {
+        this.props.reportRepository.putBotSetupInfo("def", bot_def_list).then(() => {
+            this.props.reportRepository.putBotSetupInfo("tag", bot_tagging).then(() => {
+                //Add tag second row
+                bot_tagging["pos_type"] = "ngram"
+                bot_tagging["proper_noun"] = {}
+            this.props.reportRepository.putBotSetupInfo("tag", bot_tagging).then(() => {
+
+                this.props.reportRepository.putBotSetupInfo("intent", bot_intent_list).then(() => {
                         console.log("Bot is set up")
                 });
+            });
             });
         });
 
