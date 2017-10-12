@@ -20,6 +20,8 @@ from django.views.decorators.csrf import csrf_exempt
 from api import views as rest_view
 from api.comon.swagger_schema_view import SwaggerSchemaView
 from gui import views as ui_view
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     #url(r'^docs/', get_swagger_view(title='tensormsa API')),
@@ -196,4 +198,4 @@ urlpatterns = [
     url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
     url(r'^chatbot/$', csrf_exempt(ui_view.Chatbot_Service.as_view())),
 
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
