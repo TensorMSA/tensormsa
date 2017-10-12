@@ -42,7 +42,6 @@ export default class NN_InfoApplicationList extends React.Component {
         }else if(idxType == "name"){
             fItem = col.find(data => { return data.name == idxName})
         }
-
         return fItem
     }
 
@@ -70,14 +69,12 @@ export default class NN_InfoApplicationList extends React.Component {
             if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
         }
         
-        let inDefault = ["", "cb_id","chat_cate","chat_sub_cate"]// "biz_cate","biz_sub_cate","nn_title","nn_desc"]
+        let inDefault = ["", "cb_id","chat_cate","chat_sub_cate"]
 
-        //for (let i=1 ; i < table.rows.length ; i++) {
         for (let i=1 ; i < 4 ; i++) {
             title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
             input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
             bot_def_list[inDefault[i]] = input_data
-            console.log(inDefault[i] + " " + input_data )
         }
         console.log(bot_def_list)
 
@@ -87,15 +84,6 @@ export default class NN_InfoApplicationList extends React.Component {
         bot_def_list["last_update_date"]= "2017-05-22T18:00:00.000",
         bot_def_list["created_by"] = "KSS",
         bot_def_list["last_updated_by"] = "KSS"
-
-
-
-                        // "cb_id": "cb0001",
-                        // "nn_id": "wcnntest02",
-                        // 'nn_purpose': "Intend",
-                        // 'nn_type': "char-cnn",
-                        // 'nn_label_data': {"entity": []},
-                        // 'nn_desc': "Intend",
 
         //Add Intent Info
         let table2 = this.refs.master2
@@ -108,19 +96,17 @@ export default class NN_InfoApplicationList extends React.Component {
         }
         
         // Make Chatbot Info
-        let inDefault2 = ["", "nn_id","intent_id","entity_type","entity_list"]// "biz_cate","biz_sub_cate","nn_title","nn_desc"]
+        let inDefault2 = ["", "nn_id","intent_id","entity_type","entity_list"]
 
-        //for (let i=1 ; i < table.rows.length ; i++) {
         for (let i=1 ; i < 5 ; i++) {
-            title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
-            input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            title = table2.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
+            input_data = table2.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
             bot_entity_list[inDefault2[i]] = input_data
-            console.log(bot_entity_list[i] + " " + input_data )
         }
         console.log(bot_entity_list)
 
-        bot_model_list["cb_id"] = bot_def_list["cb_id"]
-        bot_model_list["nn_id"] = bot_entity_list["nn_id"]
+        bot_entity_list["cb_id"] = bot_def_list["cb_id"]
+
         bot_tagging["cb_id"] = bot_def_list["cb_id"]
         bot_tagging["pos_type"] = "dict"
         bot_tagging["proper_noun"] = {
@@ -137,6 +123,13 @@ export default class NN_InfoApplicationList extends React.Component {
         bot_intent_list["rule_value"] = {"key": ["알려줘"]}
         bot_intent_list["nn_type"] = "Seq2Seq"
 
+        bot_model_list["cb_id"] = bot_def_list["cb_id"]
+        bot_model_list["nn_id"] = bot_entity_list["nn_id"]
+        bot_model_list["nn_purpose"] = ""
+        bot_model_list["nn_type"] = ""
+        bot_model_list["nn_label_data"] = ""
+        bot_model_list["nn_desc"] = ""
+
         //Add Story Info
         let table3 = this.refs.master3
         
@@ -148,16 +141,24 @@ export default class NN_InfoApplicationList extends React.Component {
         }
         
         // Make Chatbot Info
-        let inDefault3 = ["", "story_id","story_type","output_entity","output_data","response_type"]// "biz_cate","biz_sub_cate","nn_title","nn_desc"]
+        let inDefault3 = ["", "story_id","story_type","output_entity","output_data","response_type"]
 
-        //for (let i=1 ; i < table.rows.length ; i++) {
         for (let i=1 ; i < 6 ; i++) {
             title = table3.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
             input_data = table3.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
             bot_story_list[inDefault3[i]] = input_data
-            console.log(bot_story_list[i] + " " + input_data )
         }
+
+
+        bot_story_list["intent_id"] = bot_entity_list["intent_id"]
+        bot_story_list["story_desc"] = ""
         console.log(bot_story_list)
+
+        bot_response_list["story_id"] = bot_story_list["story_id"]
+        bot_response_list["nn_id"] = ""
+        bot_response_list["output_entity"] = bot_story_list["output_entity"]
+        bot_response_list["output_data"] = bot_story_list["output_data"]
+        bot_response_list["response_type"] = bot_story_list["response_type"]
 
         // Make NN Info
         this.props.reportRepository.putBotSetupInfo("def", bot_def_list).then(() => {
@@ -166,14 +167,20 @@ export default class NN_InfoApplicationList extends React.Component {
                 bot_tagging["pos_type"] = "ngram"
                 bot_tagging["proper_noun"] = {}
             this.props.reportRepository.putBotSetupInfo("tag", bot_tagging).then(() => {
-
-                this.props.reportRepository.putBotSetupInfo("intent", bot_intent_list).then(() => {
-                        console.log("Bot is set up")
+                this.props.reportRepository.putBotSetupInfo("model", bot_model_list).then(() => {
+                    this.props.reportRepository.putBotSetupInfo("intent", bot_intent_list).then(() => {
+                        this.props.reportRepository.putBotSetupInfo("entity", bot_entity_list).then(() => {
+                            this.props.reportRepository.putBotSetupInfo("story", bot_story_list).then(() => {
+                                this.props.reportRepository.putBotSetupInfo("response", bot_response_list).then(() => {
+                                    console.log("Bot is set up")
+                                });
+                            });
+                        });
+                    });
                 });
             });
             });
         });
-
     }
 
     runChat(){
@@ -190,7 +197,7 @@ export default class NN_InfoApplicationList extends React.Component {
             this.state.NN_TableMaster = [   
                                             {title:"Chatbot ID" , width:10 , input_data:"cb0002", ex:"chatbot id"}
                                             ,{title:"Chatbot Category" , width:10 , input_data:"service", ex:"Category"}
-                                            ,{title:"Chatbot SubCategory" , width:10 , input_data:"info_bot", ex:"Sub"}
+                                            ,{title:"Chatbot SubCategory" , width:10 , input_data:"info_bot", ex:"Sub Category"}
                                             ,{title:"Tagging Type" , width:10  , input_data:"dict", ex:"Tagging Info"}
                                             ,{title:"Proper Noun" , width:10 , input_data:"{'tagdate': [1, '/hoya_model_root/chatbot/date.txt', False]}", ex:"Proper Noun"}
                                          ];

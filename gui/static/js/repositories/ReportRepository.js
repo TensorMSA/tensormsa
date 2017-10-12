@@ -40,19 +40,43 @@ export default class ReportRepository {
     putBotSetupInfo(bot_type, jsonData) {
         if(bot_type == "def"){
             return this.api.post('/api/v1/type/service/botbuilder/def/', jsonData).then((data) => {
-                this.log("putBotSetupInfo", data)
+                this.log("def", data)
                 data = JSON.parse(data);
                 return data;
             });
         }else if(bot_type == "tag"){
             return this.api.post('/api/v1/type/service/botbuilder/tagging/', jsonData).then((data) => {
-                this.log("putBotSetupInfo", data)
+                this.log("tag", data)
                 data = JSON.parse(data);
                 return data;
             });   
         }else if(bot_type == "intent"){
             return this.api.post('/api/v1/type/service/botbuilder/intent/', jsonData).then((data) => {
-                this.log("putBotSetupInfo", data)
+                this.log("intent", data)
+                data = JSON.parse(data);
+                return data;
+            });   
+        }else if(bot_type == "model"){
+            return this.api.post('/api/v1/type/service/botbuilder/model/', jsonData).then((data) => {
+                this.log("model", data)
+                data = JSON.parse(data);
+                return data;
+            });   
+        }else if(bot_type == "entity"){
+            return this.api.post('/api/v1/type/service/botbuilder/entitylist/', jsonData).then((data) => {
+                this.log("entity", data)
+                data = JSON.parse(data);
+                return data;
+            });   
+        }else if(bot_type == "story"){
+            return this.api.post('/api/v1/type/service/botbuilder/story/', jsonData).then((data) => {
+                this.log("story", data)
+                data = JSON.parse(data);
+                return data;
+            });   
+        }else if(bot_type == "response"){
+            return this.api.post('/api/v1/type/service/botbuilder/response/', jsonData).then((data) => {
+                this.log("response", data)
                 data = JSON.parse(data);
                 return data;
             });   
