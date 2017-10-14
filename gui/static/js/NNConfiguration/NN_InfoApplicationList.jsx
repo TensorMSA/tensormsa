@@ -199,7 +199,7 @@ export default class NN_InfoApplicationList extends React.Component {
                                             ,{title:"Chatbot Category" , width:10 , input_data:"service", ex:"Category"}
                                             ,{title:"Chatbot SubCategory" , width:10 , input_data:"info_bot", ex:"Sub Category"}
                                             ,{title:"Tagging Type" , width:10  , input_data:"dict", ex:"Tagging Info"}
-                                            ,{title:"Proper Noun" , width:10 , input_data:"{'tagdate': [1, '/hoya_model_root/chatbot/date.txt', False]}", ex:"Proper Noun"}
+                                            ,{title:"Proper Noun" , width:10 , input_data:"{'tagdate': [1, '/home/dev/hoyai/demo/botbuilder/data/date.txt', False],'tagloc': [1, '/home/dev/hoyai/demo/botbuilder/data/loc.txt', false],'tagmenu': [3, '/home/dev/hoyai/demo/botbuilder/data/menu.txt', false]}", ex:"Proper Noun"}
                                          ];
         }
 

@@ -1,10 +1,10 @@
 import requests
 import json, os
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/tagging/',
                      json={
-                        "cb_id": "cb0001",
+                        "cb_id": "cb00011",
                         "pos_type": "dict",
                         "proper_noun": {"tagdate": [1, "/home/dev/hoyai/demo/botbuilder/data/date.txt", False],
                                         "tagloc": [1, "/home/dev/hoyai/demo/botbuilder/data/loc.txt", False],
@@ -18,7 +18,7 @@ print("evaluation result : {0}".format(data))
 
 resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/tagging/',
                      json={
-                        "cb_id": "cb0001",
+                        "cb_id": "cb00011",
                         "pos_type": "ngram",
                         "proper_noun": {}
                         })

@@ -11,6 +11,15 @@ Install PostgreSQL https://www.postgresql.org/download/
     ./manage.py migrate --fake master zero (Optional)
     ./manage.py migrate
 ```
+Install Python Packages (https://github.com/TensorMSA/tensormsa_docker/blob/master/requirements.txt)
+```
+    ./pip install -r requirements.txt
+```
+Build Javascript
+```
+    ./gui/static/npm install
+    ./gui/static/npm run build
+```
 Run for Service
 ```
     ./start_hoyai.sh 1
@@ -21,3 +30,4 @@ Call APIs
     ./demo/python api_basic_0_automl_rule.py
     ...
 ```
+Then you can see the main page.

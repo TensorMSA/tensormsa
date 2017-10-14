@@ -1,10 +1,10 @@
 import requests
 import json, os
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/def/',
                      json={
-                        "cb_id" : "cb0001",
+                        "cb_id" : "cb00011",
                         "chat_cate" : "service",
                         "chat_sub_cate" : "info_bot",
                         "cb_title" : "info_bot",
