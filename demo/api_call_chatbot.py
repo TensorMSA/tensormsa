@@ -1,9 +1,9 @@
 import requests
 import json, os
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 #No Intent
-resp = requests.put('http://' + url + '/api/v1/type/service/chatbot/cb0001/',
+resp = requests.put('http://' + url + '/api/v1/type/service/chatbot/cb00013/',
                     json={
                             "intent_id" : ['1'],
                             "edit_history" : [],

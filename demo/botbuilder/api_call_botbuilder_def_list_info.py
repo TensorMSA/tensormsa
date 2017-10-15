@@ -4,7 +4,7 @@ url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
 resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/def/',
                      json={
-                        "cb_id" : "cb00011",
+                        "cb_id" : "cb00013",
                         "chat_cate" : "service",
                         "chat_sub_cate" : "info_bot",
                         "cb_title" : "info_bot",

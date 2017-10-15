@@ -1,11 +1,12 @@
 import requests
 import json, os
-url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
+url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8000")
 
+cb_id = "cb00013"
+#NER CASE
 resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/model/',
                      json={
-                        #Model List
-                        "cb_id": "cb0001",
+                        "cb_id": cb_id,
                         "nn_id": "lstmcrf0002",
                         'nn_purpose': "NER",
                         'nn_type': "bilstmcrf",
@@ -15,10 +16,10 @@ resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/model/',
 data = json.loads(resp.json())
 print("evaluation result : {0}".format(data))
 
+#Intent Case
 resp = requests.post('http://' + url + '/api/v1/type/service/botbuilder/model/',
                      json={
-                        #Model List
-                        "cb_id": "cb0001",
+                        "cb_id": cb_id,
                         "nn_id": "wcnntest02",
                         'nn_purpose': "Intend",
                         'nn_type': "char-cnn",

@@ -77,7 +77,6 @@ master_AUTO_ML_RULE
 make migrations
 ```sh
 ./manage.py makemigrations
-./manage.py migrate --fake master zero
 ./manage.py migrate
 ```
 or 
@@ -104,12 +103,11 @@ Chatbot_CB_DEF_LIST_INFO
 make migrations
 ```sh
 ./manage.py makemigrations chatbot
-./manage.py migrate --fake chatbot zero
 ./manage.py migrate chatbot
 ```
 ### Sync Table
 ```sh
-./manage.py migrate --fake (Model.py before add something)
+./manage.py migrate --fake (Model.py before add something ex)zero)
 ./manage.py makemigrations chatbot
 ./manage.py migrate chatbot
 ```

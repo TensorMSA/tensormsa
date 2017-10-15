@@ -43,7 +43,7 @@ Our framework provide easy to use UI/UX and AutoML based super easy process of b
 
 
 ## How to install
-You can install and use our framework with docker. If you are not familiar with Docker( [Docker Install](https://docs.docker.com/engine/installation/) ) or Docker Compose ( [Docker Compose Install](https://docs.docker.com/compose/install/) ) check the link. If you have to install framework on multi server (cluster version) check this link [Detail Install Guide](https://github.com/TensorMSA/tensormsa_docker), If you have to install our project on your host server without using docker check this link [Host install guide](./hostinstall.md)  
+You can install and use our framework with docker. If you are not familiar with Docker( [Docker Install](https://docs.docker.com/engine/installation/) ) or Docker Compose ( [Docker Compose Install](https://docs.docker.com/compose/install/) ) check the link. If you have to install framework on multi server (cluster version) check this link [Detail Install Guide](https://github.com/TensorMSA/tensormsa_docker), If you have to install our project on your host server without using docker check this link [Host install guide](./Host_Install.md)
 
 **1.download docker project**
 ```
