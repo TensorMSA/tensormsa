@@ -827,7 +827,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             <div className="container paddingT10">
                 
                 <div className="tblBtnArea">
-                    <button type="button" className="serch" style={{"marginRight":"5px"}} onClick={() => this.searchData()} >Search</button>
+                    <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.searchData()} >Search</button>
                     <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.addVersion() } >Add Ver</button>
                     <button type="button" className="save" onClick={() => this.saveData()} >Save</button>
                 </div>
@@ -876,7 +876,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                         </div>
                     </TabPanel>
                     <TabPanel>
-                        <div>
+                        <div style={{ "overflow":"auto", "height":700}} >
                             <NN_InfoDetailAutomlTable ref="automlTable" nn_id={this.state.nn_id} NN_Auto={this.state.NN_TableData}      />
                         </div>
                     </TabPanel>

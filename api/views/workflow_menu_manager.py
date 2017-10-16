@@ -72,7 +72,7 @@ class WorkFlowMenuManager(APIView) :
         """
         try:
             return_data = ""
-            if(settings.DEBUG != True):
+            if(settings.RULE_FLAG == False):
                 return_data = WorkFlowStateMenu().get_menu_info()
             return Response(json.dumps(return_data))
         except Exception as e:

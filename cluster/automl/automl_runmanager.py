@@ -31,7 +31,7 @@ class AutoMlRunManager :
         self.summary = {}
         self.summary['bygen'] = []
         self.summary['best'] = []
-        self.debug_mode = settings.DEBUG
+        self.celery_flag = settings.CELERY_FLAG
 
     def run(self):
         """
@@ -130,40 +130,41 @@ class AutoMlRunManager :
                 network['flag'] = True
                 key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
 
-                if (self.debug_mode):
-                    result = train(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
+                if (self.celery_flag):
+                    result = train.delay(network.get('nn_id'), str(network.get('nn_wf_ver_id'))).get()
                     network['acc'] = result[key].get('accuracy')
                 else :
-                    result = train.delay(network.get('nn_id'), str(network.get('nn_wf_ver_id'))).get()
+                    result = train(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
                     network['acc'] = result[key].get('accuracy')
 
                 first_network = networks[0].copy()
                 del networks[0]
 
-            if (self.debug_mode):
-                # for debug you can run all tasks on django process
-                for network in networks:
-                    if(network['flag'] == True ) :
-                        continue
-                    result = train(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
-                    key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
-                    network['acc'] = result[key].get('accuracy')
-                    network['flag'] = True
-            else :
+            if (self.celery_flag):
                 # You can use cluster servers for faster hyper parameter searching
                 # using cluster server with celery for genetic algorithm
-                for network in networks :
+                for network in networks:
                     if (network['flag'] == True):
                         continue
                     tasks.append(train.subtask((network.get('nn_id'), str(network.get('nn_wf_ver_id')))))
                 results = group(tasks).apply_async()
                 results = results.join()
-                for result in results :
-                    for network in networks :
+                for result in results:
+                    for network in networks:
                         key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
-                        if(key in list(result.keys()) and result[key] is not None and result[key].get('accuracy') is not None) :
+                        if (key in list(result.keys()) and result[key] is not None and result[key].get(
+                                'accuracy') is not None):
                             network['acc'] = result[key].get('accuracy')
                             network['flag'] = True
+            else :
+                # for debug you can run all tasks on django process
+                for network in networks:
+                    if (network['flag'] == True):
+                        continue
+                    result = train(network.get('nn_id'), str(network.get('nn_wf_ver_id')))
+                    key = '_'.join([network['nn_id'], str(network['nn_wf_ver_id'])])
+                    network['acc'] = result[key].get('accuracy')
+                    network['flag'] = True
             if len(list(first_network.keys())) > 0 :
                 networks.append(first_network)
         except Exception as e :

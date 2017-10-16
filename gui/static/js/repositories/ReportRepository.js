@@ -158,8 +158,6 @@ export default class ReportRepository {
         });
     }
 
-    
-
     //File Upload
     putFileUpload(params, wf_ver_id, dir, jsonData){
         return this.api.put('/api/v1/type/wf/state/data/detail/upload/file/nnid/'+params+'/ver/'+wf_ver_id+'/dir/'+dir+'/', jsonData).then((data) => {
@@ -207,7 +205,7 @@ export default class ReportRepository {
     postCommonNNInfoAuto(params) {
         return this.api.post('/api/v1/type/automl/state/train/nnid/'+params+'/', '').then((data) => {
             data = JSON.parse(data);
-            this.log("getCommonNNInfoAuto", data)
+            this.log("postCommonNNInfoAuto", data)
            return data;
         });
     }
@@ -230,6 +228,7 @@ export default class ReportRepository {
         });
     }
 
+    //Menu
     getCommonMenuInfo(params) {
         return this.api.get('/api/v1/type/wf/target/menu/'+params+'/', '').then((data) => {
             data = JSON.parse(data);
@@ -237,7 +236,7 @@ export default class ReportRepository {
            return data;
         });
     }
-
+    //Rule Setup
     postCommonRuleInfo(params) {
         return this.api.post('/api/v1/type/common/target/rules/mode/default/', '').then((data) => {
             data = JSON.parse(data);
@@ -245,6 +244,18 @@ export default class ReportRepository {
            return data;
         });
     }
+
+    //Monitering
+    getMoniteringInfo(params) {
+        return this.api.get('/api/v1/type/service/monitering/id/'+params+'/', '').then((data) => {
+            data = JSON.parse(data);
+            this.log("getCommonMenuInfo", data)
+           return data;
+        });
+    }
+
+
+
 
 
     

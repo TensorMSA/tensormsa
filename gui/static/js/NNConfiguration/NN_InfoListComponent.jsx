@@ -3,7 +3,7 @@ import Api from './../utils/Api'
 import Modal from 'react-modal';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import ReportRepository from './../repositories/ReportRepository'
-
+import EnvConstants from './../constants/EnvConstants';
 
 export default class NN_InfoListComponent extends React.Component {
     constructor(props, context) {
@@ -22,12 +22,14 @@ export default class NN_InfoListComponent extends React.Component {
                             ,{index:6, id:"autosingle",     name:"Train Type"}
                             ,{index:7, id:"nn_id",          name:"ID"}
                             ,{index:8, id:"nn_wf_ver_id",   name:"Ver"}
+                            ,{index:9, id:"job",   name:"Job"}
                             ],
             selModalView: null,
             NN_ID : null,
             nextpageInit:"init",
             nn_color:"#14c0f2",
-            NN_TableAPI:null
+            NN_TableAPI:null,
+            moniterUrl : EnvConstants.getImgUrl()+"ic_state_alive.png"
         };
     }
 
@@ -178,6 +180,11 @@ export default class NN_InfoListComponent extends React.Component {
         return this.props.getHeaderEvent(2); 
     }
 
+    viewMonitering(row){
+        this.props.setActiveItem(row.target.alt, 'U', null, null, null, null, null, null);
+        return this.props.getHeaderEvent(33); //call Net Monitergin
+    }
+
     render() {
         let k = 1
         // Data sort
@@ -256,6 +263,9 @@ export default class NN_InfoListComponent extends React.Component {
                                 style ={{"color":this.state.nn_color, "cursor":"pointer", "fontWeight":"bold"}}
                                 onClick={() => this.handleClick(row) } > {row["nn_id"]} </td>) 
             colData.push(<td key={k++} alt = {row["nn_id"]} > {row["nn_wf_ver_id"]} </td>)
+            colData.push(<td key={k++} > <img style ={{width:15,heigth:15, "cursor":"pointer"}} alt = {row["nn_id"]}
+                                                onClick={this.viewMonitering.bind(this)} 
+                                                src={this.state.moniterUrl} /></td>)
 
             tableData.push(<tr key={k++}>{colData}</tr>)
         }
@@ -286,7 +296,7 @@ export default class NN_InfoListComponent extends React.Component {
                         <button type="button" className="delete" onClick={() => this.deleteCommonNNInfo()} >Delete</button>
                     </div>
 
-                    <div>
+                    <div style={{ "overflow":"auto", "height":830}}>
                         <h1 className="bullet"> Network List </h1>
                         <table className="table detail" ref= 'master2' >
                             {nnInfoNewListTable}

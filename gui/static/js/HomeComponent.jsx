@@ -10,6 +10,7 @@ import Api from './utils/Api';
 import NN_InfoNewComponent from './NNConfiguration/NN_InfoNewComponent'
 import NN_InfoDetailComponent from './NNConfiguration/NN_InfoDetailComponent'
 import NN_InfoApplicationList from './NNConfiguration/NN_InfoApplicationList'
+import NN_InfoMonitering from './NNConfiguration/NN_InfoMonitering'
 
 export default class HomeComponent extends React.Component {
     constructor(props) {
@@ -98,6 +99,8 @@ export default class HomeComponent extends React.Component {
               return this.setNetInfo(); 
           case 3:
               return this.getMonitering();
+          case 33:
+              return this.getMoniteringDirect();
           case 4:
               return this.getApplicationList(); 
           case 5:
@@ -123,7 +126,12 @@ export default class HomeComponent extends React.Component {
     }
 
     getMonitering(){
-        this.setState({NN_InfoList: <NN_Monitering getHeaderEvent={this.getHeaderEvent}/> });  
+        this.setState({NN_InfoList: <NN_InfoMonitering getHeaderEvent={this.getHeaderEvent}  /> });  
+    }
+
+    getMoniteringDirect(){
+        this.setState({NN_InfoList: <NN_InfoMonitering getHeaderEvent={this.getHeaderEvent}
+                                                       nn_id={this.state.NN_ID} /> });  
     }
 
     getApplicationList(){

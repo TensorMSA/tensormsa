@@ -34,15 +34,12 @@ class RunManagerTrainRequest(APIView):
             # Net Version create
             NNCommonManager().update_nn_wf_info(nnid, condition_data)
 
-            if (settings.DEBUG == False):
+            if (settings.CELERY_FLAG == True):
                 result = train.delay(nnid, ver)
                 return Response(json.dumps({"status": "200", "id": result.id, "state": result.state}))
-            elif(settings.DEBUG == True):
+            else:
                 result = train(nnid, ver)
                 return Response(json.dumps(result))
-            else :
-                return_data = {"status": "404", "result": str("same ID is already on training")}
-                return Response(json.dumps(return_data))
 
         except Exception as e:
             condition_data = {}

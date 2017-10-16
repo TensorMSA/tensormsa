@@ -36,20 +36,22 @@ class NeuralNetNodeReNet(NeuralNetNode):
                 self.eval_feed_name = self.nn_id + "_" + self.wf_ver + "_" + net['fields']['graph_node_name']
         self.feed_node = self.get_prev_node()
 
-    """
-    Residual Network Init Value
-    """
     def _init_value(self):
+        '''
+        Residual Network Init Value
+        :return: 
+        '''
         self.g_train_cnt = 0
         self.file_end = '.bin'
         self.train_return_data = {}
         self.train_return_arr = ["Trainning .................................................."]
 
     ####################################################################################################################
-    """
-    NetConfig Set
-    """
     def _set_netconf_parm(self):
+        '''
+        NetConfig Set
+        :return: 
+        '''
         try:
             self.train_cnt = self.netconf["param"]["traincnt"]
             self.epoch = self.netconf["param"]["epoch"]
@@ -64,10 +66,11 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.dataconf = dataconf
 
     ####################################################################################################################
-    """
-    Model Save
-    """
     def set_saver_model(self):
+        '''
+        Network Model Save
+        :return: 
+        '''
         self.save_path = self.model_path + "/" + str(self.batch) + str(self.file_end)
         keras.models.save_model(self.model, self.save_path)
 
@@ -93,10 +96,12 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.train_return_arr.append(result)
 
         self.eval(self.node_id, self.conf_data, None, None)
-    """
-    get Network
-    """
+
     def get_model_resnet(self):
+        '''
+        get Network Model
+        :return: 
+        '''
         try :
             keras.backend.tensorflow_backend.clear_session()
             self.lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
@@ -137,10 +142,13 @@ class NeuralNetNodeReNet(NeuralNetNode):
             logging.error("===Error on Residualnet build model : {0}".format(e))
 
     ####################################################################################################################
-    """
-    Train
-    """
     def train_run_resnet(self, input_data, test_data):
+        '''
+        Train Run
+        :param input_data: 
+        :param test_data: 
+        :return: 
+        '''
         data_augmentation = self.netconf["param"]["augmentation"]
         try:
             if data_augmentation == "N" or data_augmentation == "n":
@@ -203,10 +211,13 @@ class NeuralNetNodeReNet(NeuralNetNode):
         except Exception as e:
             logging.info("Error[400] ..............................................")
             logging.info(e)
-    """
-    Train Run
-    """
+
     def run(self, conf_data):
+        '''
+        Train run init
+        :param conf_data: 
+        :return: 
+        '''
         try :
             logging.info("run NeuralNetNodeResnet Train")
             # init data setup
@@ -246,10 +257,12 @@ class NeuralNetNodeReNet(NeuralNetNode):
             logging.info("===Error on running residualnet : {0}".format(e))
 
     ####################################################################################################################
-    """
-    Eval Run
-    """
     def eval_run(self, input_data):
+        '''
+        Eval Run
+        :param input_data: 
+        :return: 
+        '''
         self.batch_size = self.netconf["param"]["batch_size"]
         labels = self.netconf["labels"]
         pred_cnt = self.netconf["param"]["predictcnt"]
@@ -344,6 +357,13 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.eval_print(labels, t_cnt_arr, f_cnt_arr)
 
     def eval_print(self, labels, t_cnt_arr, f_cnt_arr):
+        '''
+        eval print
+        :param labels: 
+        :param t_cnt_arr: 
+        :param f_cnt_arr: 
+        :return: 
+        '''
         logging.info(
             "####################################################################################################")
         result = []
@@ -379,6 +399,14 @@ class NeuralNetNodeReNet(NeuralNetNode):
             "###################################################################################################")
 
     def eval(self, node_id, conf_data, data=None, result=None):
+        '''
+        eval run init
+        :param node_id: 
+        :param conf_data: 
+        :param data: 
+        :param result: 
+        :return: 
+        '''
         logging.info("run NeuralNetNodeCnn eval")
 
         if data == None:
@@ -395,8 +423,12 @@ class NeuralNetNodeReNet(NeuralNetNode):
 
     ####################################################################################################################
     def predict(self, node_id, filelist):
-        """
-        """
+        '''
+        predict
+        :param node_id: 
+        :param filelist: 
+        :return: 
+        '''
         logging.info("run NeuralNetNodeCnn Predict")
         self.node_id = node_id
         self._init_value()

@@ -193,9 +193,14 @@ urlpatterns = [
     url(r'^api/v1/type/service/botbuilder/(?P<type>.*)/',
         csrf_exempt(rest_view.ChatbotBuildManager.as_view())),
 
+    # Monitering
+    url(r'^api/v1/type/service/monitering/id/(?P<id>.*)/',
+        csrf_exempt(rest_view.RunManagerCelery.as_view())),
+
     # UI / View index
     url(r'^$', csrf_exempt(ui_view.UI_Service.as_view())),
     url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
     url(r'^chatbot/$', csrf_exempt(ui_view.Chatbot_Service.as_view())),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

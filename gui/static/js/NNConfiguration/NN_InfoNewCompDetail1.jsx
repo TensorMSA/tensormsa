@@ -145,13 +145,13 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
         }
     }
 
-    fileDownloadFunc(selectedValue){
-        let path = selectedValue.target.alt
-        let url = this.state.url
-        url = url+path
-        console.log(url)
-        // downloadFile(url);
-    }
+    // fileDownloadFunc(selectedValue){
+    //     let path = selectedValue.target.alt
+    //     let url = this.state.url
+    //     url = url+path
+    //     // console.log(url)
+    //     // downloadFile(url);
+    // }
 
     render() {
         let k = 1

@@ -15,12 +15,9 @@ import platform
 
 #host = os.environ['HOSTNAME']
 host = platform.uname()[1]
-#CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
-#CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@223c4836164c:5672//52.79.201.93'
-#CELERY_BROKER_URL = 'amqp://tensormsa:tensormsa@'+host+'//'
 CELERY_BROKER_URL =  'amqp://admin:mypass@rabbit//'
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
+CELERY_RESULT_BACKEND = 'db+postgresql://postgres:postgres@db'
 CELERY_TASK_SERIALIZER = 'json'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -40,6 +37,10 @@ SECRET_KEY = 'p8eici$0t2b!$=2xdb41o+bid)5qa^fs6ej-9&h8(n$x1(k^zf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# Celery Flag True = On, False = Off
+CELERY_FLAG = True
+# Rule init setup True = always setup, False = Once setup
+RULE_FLAG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -101,26 +102,16 @@ WSGI_APPLICATION = 'hoyai.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'tensormsa',
-#         'USER': 'tfmsauser',
-#         'PASSWORD': '1234',
-#         'HOST': '10.60.1.100',
-#         'PORT': '',
-#     }
-# }
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME': 'postgres',
-       'USER': 'postgres',
-       'PASSWORD': 'postgres',
-       'HOST': 'db',
-       'PORT': '5432',
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
 }
+
 CELERYD_HIJACK_ROOT_LOGGER = False
 """ How to Logging
 
@@ -256,3 +247,6 @@ STATICFILES_DIRS = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+FLOWER_PORT = "5555"
+
