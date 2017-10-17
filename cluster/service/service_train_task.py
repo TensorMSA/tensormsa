@@ -13,7 +13,7 @@ import datetime
 @shared_task
 def train(nn_id, wf_ver) :
 
-    log_home = "/root"
+    log_home = "/hoya_log_root"
     _celery_log_dir = make_celery_dir_by_datetime(log_home)
     celery_log_dir = make_and_exist_directory(_celery_log_dir)
 
