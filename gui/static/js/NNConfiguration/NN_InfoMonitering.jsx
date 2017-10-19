@@ -3,6 +3,7 @@ import Api from './../utils/Api'
 import Modal from 'react-modal';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import ReportRepository from './../repositories/ReportRepository'
+import EnvConstants from './../constants/EnvConstants';
 
 
 export default class NN_InfoMonitering extends React.Component {
@@ -11,6 +12,9 @@ export default class NN_InfoMonitering extends React.Component {
         this.state = {
             tableData:null,
             NN_TableData:null,
+            NN_TableDataLog:null,
+            line:0,
+            nn_color:"#14c0f2",
             NN_TableColArr:[ {index:0, id:"uuid",             name:"TaskID"}
                             ,{index:1, id:"nn_id",          name:"ID"}
                             ,{index:2, id:"nn_wf_ver_id",   name:"Ver"}
@@ -27,8 +31,20 @@ export default class NN_InfoMonitering extends React.Component {
     }
 
     getTaskInfo(params) {
-        this.props.reportRepository.getMoniteringInfo('all').then((tableData) => {
+        this.props.reportRepository.getMoniteringInfo('all', 'all', 'all').then((tableData) => {
             this.setState({ NN_TableData: tableData})//조회한 것을 화면에 반영한다.
+        });   
+    }
+
+    getTaskLogInfo(file, line) {
+        this.props.reportRepository.getMoniteringInfo('log', file, line).then((tableData) => {
+            if( tableData[0]['line'] == null || tableData[0]['line'] == undefined){
+                this.state.line = 0
+            }else{
+                this.state.line = tableData[0]['line']
+            }
+            let log = this.state.NN_TableDataLog + tableData[0]['log']
+            this.setState({ NN_TableDataLog: log})//조회한 것을 화면에 반영한다.
         });   
     }
 
@@ -47,6 +63,11 @@ export default class NN_InfoMonitering extends React.Component {
         }
 
         return fItem
+    }
+
+    handleClick(row){// Table Cell Clcik and Call log
+        // row["uuid"]
+        this.getTaskLogInfo('log.txt', this.state.line)
     }
 
     render() {
@@ -102,7 +123,9 @@ export default class NN_InfoMonitering extends React.Component {
                 continue
             }
             
-            colData.push(<td key={k++} alt = {row["uuid"]} > {row["uuid"]} </td>)  
+            colData.push(<td key={k++} alt = {row["uuid"]} 
+                                style ={{"color":this.state.nn_color, "cursor":"pointer", "fontWeight":"bold"}}
+                                onClick={() => this.handleClick(row) } > {row["uuid"]} </td>)   
             colData.push(<td key={k++} alt = {row["uuid"]} > {row["nn_id"]} </td>) 
             colData.push(<td key={k++} alt = {row["uuid"]} > {row["nn_wf_ver_id"]}  </td>) 
             colData.push(<td key={k++} alt = {row["uuid"]} > {row["state"]} </td>) 
@@ -118,9 +141,6 @@ export default class NN_InfoMonitering extends React.Component {
         nnInfoListTable.push(<thead ref='thead' key={k++} className="center">{tableHeader}</thead>)
         nnInfoListTable.push(<tbody ref='tbody' key={k++} className="center" >{tableData}</tbody>)
 
-        // <div className="tblBtnArea">
-        //                 <button type="button" className="delete" onClick={() => this.deleteCommonNNInfo()} >Delete</button>
-        //             </div>
         return (
             <section>
                 <h1 className="hidden">tensor MSA main table</h1>
@@ -134,6 +154,9 @@ export default class NN_InfoMonitering extends React.Component {
                             {nnInfoListTable}
                         </table>
                     </div>
+                    <br/>
+
+
 
                 </div>
             </section>

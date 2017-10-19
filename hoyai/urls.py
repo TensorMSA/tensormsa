@@ -194,7 +194,7 @@ urlpatterns = [
         csrf_exempt(rest_view.ChatbotBuildManager.as_view())),
 
     # Monitering
-    url(r'^api/v1/type/service/monitering/id/(?P<id>.*)/',
+    url(r'^api/v1/type/service/monitering/type/(?P<type>.*)/id/(?P<id>.*)/line/(?P<line>.*)/',
         csrf_exempt(rest_view.RunManagerCelery.as_view())),
 
     # UI / View index

@@ -46,12 +46,16 @@ export default class FileUploadComponent extends React.Component {
         }
     }
 
-    getFileData(){
+    getFileData(self, node_name){
         let nn_id = this.props.nn_id
         let nn_wf_ver_id = this.props.nn_wf_ver_id
         //get node name 
-        this.state.nn_node_name = this.props.nn_node_name
-
+        if(node_name != null){
+            this.state.nn_node_name = node_name
+        }else{
+            this.state.nn_node_name = this.props.nn_node_name
+        }
+        
         if(this.state.nn_node_name == "netconf_data" || this.state.nn_node_name == "eval_data"){ 
             this.props.reportRepository.getCommonNNInfo(this.props.nn_id).then((tableData) => {   
                 for(let i in tableData['graph']){

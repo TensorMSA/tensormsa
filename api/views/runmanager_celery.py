@@ -22,7 +22,7 @@ class RunManagerCelery(APIView):
             return_data = {"status": "404", "result": str(e)}
             return Response(json.dumps(return_data))
 
-    def get(self, request, id):
+    def get(self, request, type, id, line):
         """
         CRUD of workflow information
         ---
@@ -33,8 +33,10 @@ class RunManagerCelery(APIView):
         """
         try:
             return_data = ""
-            if id == 'all':
-                return_data = RunManagerMoniter().get_view_obj_list(id)
+            if type == 'all':
+                return_data = RunManagerMoniter().get_view_obj_list()
+            elif type == "log":
+                return_data = RunManagerMoniter().get_view_obj_log(id, line)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

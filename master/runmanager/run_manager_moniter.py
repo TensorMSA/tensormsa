@@ -47,7 +47,7 @@ class RunManagerMoniter(RunManager):
         ddtime = year + '-' + mon + '-' + day + ' ' + hour + ':' + min + ':' + sec
         return ddtime
 
-    def get_view_obj_list(self, id):
+    def get_view_obj_list(self):
         """
         get view data for net config
         :return:
@@ -90,5 +90,28 @@ class RunManagerMoniter(RunManager):
             # respd = requests.get(url)
             # return_data[re]['worker'] = respd
             # print(respd)
+
+        return return_data
+
+    def get_view_obj_log(self, id, line):
+        """
+        get view data for net config
+        :return:
+        """
+        # cel = celery.task.control.inspect()
+        # celActive = cel.active()
+        line = int(line)
+        return_data = []
+        re_data = {}
+        file = '/hoya_log_root/'+id
+        f = open(file)
+
+        f.seek(line)
+        latest_data = f.read()
+        line = f.tell()
+        if latest_data:
+            re_data['log'] = latest_data
+            re_data['line'] = line
+            return_data.append(re_data)
 
         return return_data

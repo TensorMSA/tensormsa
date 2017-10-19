@@ -111,10 +111,10 @@ export default class NN_InfoDetailComponent extends React.Component {
         this.getCommonNNInfoWF()
 
         if(this.refs.trainfilesrc != undefined){
-            this.refs.trainfilesrc.getFileData()
-            this.refs.trainfilestr.getFileData()
-            this.refs.evalfilesrc.getFileData()
-            this.refs.evalfilestr.getFileData()
+            // this.refs.trainfilesrc.getFileData()
+            // this.refs.trainfilestr.getFileData()
+            // this.refs.evalfilesrc.getFileData()
+            // this.refs.evalfilestr.getFileData()
         }
 
         if(this.refs.barline != undefined){

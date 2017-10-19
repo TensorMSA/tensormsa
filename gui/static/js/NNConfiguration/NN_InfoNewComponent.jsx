@@ -44,14 +44,19 @@ export default class NN_InfoNewComponent extends React.Component {
     componentDidMount(){
         this.props.setActiveItem("init",null,null,null,null,null,null,null);
 
-        this.props.reportRepository.getFileUpload(this.state.tmp_train_node_name, "1", "1", "tmp").then((tableData) => {
-            // this.state.train_node_name = tableData["path"]
-            this.setState({ train_node_name: tableData["path"] })
-        });
-        this.props.reportRepository.getFileUpload(this.state.tmp_eval_node_name, "1", "1", "tmp").then((tableData) => {
-            // this.state.eval_node_name = tableData["path"]
-            this.setState({ eval_node_name: tableData["path"] })
-        });
+        if(this.state.train_node_name == null){
+            this.props.reportRepository.getFileUpload(this.state.tmp_train_node_name, "1", "1", "tmp").then((tableData) => {
+                // this.state.train_node_name = tableData["path"]
+                this.setState({ train_node_name: tableData["path"] })
+            });
+        }
+        
+        if(this.state.eval_node_name == null){
+            this.props.reportRepository.getFileUpload(this.state.tmp_eval_node_name, "1", "1", "tmp").then((tableData) => {
+                // this.state.eval_node_name = tableData["path"]
+                this.setState({ eval_node_name: tableData["path"] })
+            });
+        }
     }
 
     findColInfo(col, idxType, idxName){
@@ -317,13 +322,12 @@ export default class NN_InfoNewComponent extends React.Component {
         // masterListTableAuto.push(<thead ref='thead' key={k++} className="center">{tableHeaderAuto}</thead>)
         masterListTableAuto.push(<tbody ref='tbody' key={k++} className="center" >{tableDataAuto}</tbody>)
 
-        // if(this.state.train_node_name != null && this.refs.trainfilesrc != null){
-        //     this.refs.trainfilesrc.getFileData(this.state.train_node_name)
-        // }
 
-        // if(this.state.eval_node_name != null && this.refs.evalfilesrc != null){
-        //     this.refs.evalfilesrc.getFileData(this.state.eval_node_name)
-        // }
+
+        if(this.state.train_node_name != null && this.refs.trainfilesrc != null && this.state.eval_node_name != null && this.refs.evalfilesrc != null){
+            this.refs.trainfilesrc.getFileData(null, this.state.train_node_name)
+            this.refs.evalfilesrc.getFileData(null, this.state.eval_node_name)
+        }
 
         return (
             <section>
