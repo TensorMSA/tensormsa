@@ -899,7 +899,7 @@ def set_automl_rule() :
                         , "cross_cell": {"type": "str", "option": {}, "auto": False}
                         , "cell_feature": {"type": "str", "option": {}, "auto": False}
                         , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
-                        , "cell_feature_unique": {"type": "sel", "option": [], "auto": False}
+                        , "cell_feature_unique": {"type": "str", "option": [], "auto": False}
                         , "label_values": {"type": "str", "option": [], "auto": False}
                         , "label_type": {"type": "sel", "option": ["CATEGORYCAL", "CONTINUOUS"], "auto": False}
                     }
@@ -910,7 +910,7 @@ def set_automl_rule() :
                         , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
                         , "batch_size": {"type": "int", "option": 1000, "auto": False}
                         , "epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
-                        , "model_type": {"type": "sel", "option": ["regression", "category"], "auto": False}
+                        , "model_type": {"type": "sel", "option": ["category", "regression"], "auto": False}
                         , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
                         , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
                     }
@@ -934,7 +934,7 @@ def set_automl_rule() :
                     }
                 , "eval_node":
                     {
-                        "type": {"type": "sel", "option": ["regression", "category"], "auto": False}
+                        "type": {"type": "sel", "option": ["category", "regression"], "auto": False}
                     }
             }, "single": {
 
@@ -1126,16 +1126,16 @@ def set_automl_rule_etc():
             , "resnet": "Y"
             , "wdnn": "Y"
             , "wdnn_keras": "N"
-            , "word2vec": "Y"
-            , "word2vec_frame": "Y"
-            , "doc2vec": "Y"
+            , "word2vec": "N"
+            , "word2vec_frame": "N"
+            , "doc2vec": "N"
             , "wcnn": "Y"
             , "seq2seq": "Y"
             , "seq2seq_csv": "Y"
             , "autoencoder_img": "Y"
             , "autoencoder_csv": "Y"
-            , "bilstmcrf_iob": "Y"
-            , "fasttext_txt": "Y"
+            , "bilstmcrf_iob": "N"
+            , "fasttext_txt": "N"
 
         }
         AutoMlRule().update_graph_type_list('active_flag', conf)

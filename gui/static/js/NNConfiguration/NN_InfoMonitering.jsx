@@ -36,17 +36,17 @@ export default class NN_InfoMonitering extends React.Component {
         });   
     }
 
-    getTaskLogInfo(file, line) {
-        this.props.reportRepository.getMoniteringInfo('log', file, line).then((tableData) => {
-            if( tableData[0]['line'] == null || tableData[0]['line'] == undefined){
-                this.state.line = 0
-            }else{
-                this.state.line = tableData[0]['line']
-            }
-            let log = this.state.NN_TableDataLog + tableData[0]['log']
-            this.setState({ NN_TableDataLog: log})//조회한 것을 화면에 반영한다.
-        });   
-    }
+    // getTaskLogInfo(file, line) {
+    //     this.props.reportRepository.getMoniteringInfo('log', file, line).then((tableData) => {
+    //         if(tableData[0] != undefined && ( tableData[0]['line'] == null || tableData[0]['line'] == undefined)){
+    //             this.state.line = 0
+    //         }else{
+    //             this.state.line = tableData[0]['line']
+    //         }
+    //         let log = this.state.NN_TableDataLog + tableData[0]['log']
+    //         this.setState({ NN_TableDataLog: log})//조회한 것을 화면에 반영한다.
+    //     });   
+    // }
 
     searchData() {
         this.getTaskInfo("all")
@@ -67,7 +67,9 @@ export default class NN_InfoMonitering extends React.Component {
 
     handleClick(row){// Table Cell Clcik and Call log
         // row["uuid"]
-        this.getTaskLogInfo('log.txt', this.state.line)
+        // this.getTaskLogInfo('log.txt', this.state.line)
+        this.props.setActiveItem(row["uuid"], 'M', null, null, null, null, null, null);
+        return this.props.getHeaderEvent(34); //call Net Info 
     }
 
     render() {

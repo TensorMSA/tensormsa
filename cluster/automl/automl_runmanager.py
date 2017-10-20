@@ -379,11 +379,11 @@ class AutoMlRunManager :
                     return self.conv_type(auto_form.get('option'))
             else :
                 if(auto_form.get('auto') is not None and len(auto_form.get('auto')) > 1
-                    and str(len(auto_form.get('auto'))-1) in list(auto_form.keys())) :
+                    and type(auto_form.get('auto')[0]) == list) :
                     return_list = []
-                    st, en, ir = auto_form.get('0')
+                    st, en, ir = auto_form.get("auto")[0]
                     for i in range(0, random.randrange(int(st), int(en), int(ir))) :
-                        st_, en_, ir_ = auto_form.get('1')
+                        st_, en_, ir_ = auto_form.get("auto")[1]
                         return_list.append(random.randrange(int(st_), int(en_), int(ir_)))
                     return return_list
                 elif(auto_form.get('option') == None) :

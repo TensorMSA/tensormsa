@@ -138,9 +138,18 @@ export default class JsonConfComponent extends React.Component {
                     if(dataType == "[object Array]"){
                         param.push(vdata)
                     }else{
-                        param[data] = vdata
+                        if(vdata == this.state.arrayData){
+                            param[data] = []
+                        }else if(vdata == this.state.jsonData){
+                            param[data] = {}
+                        }else if(vdata == "null"){
+                            param[data] = null
+                        }else{
+                            param[data] = vdata
+                        }
+                        
 
-                        //Auto Ml로 돌릴경우 Type과 optino을 넣어주어야 한다. 
+                        //Auto Ml로 돌릴경우 Type과 optino을 넣어주어야 한다. Extention
                         if(this.props.tabIndexAS == 1){
                             let param1 = params
                             for(let toa=0 ;toa <= acolcnt ; toa++){

@@ -50,7 +50,7 @@ export default class FileUploadComponent extends React.Component {
         let nn_id = this.props.nn_id
         let nn_wf_ver_id = this.props.nn_wf_ver_id
         //get node name 
-        if(node_name != null){
+        if(node_name != null && node_name != undefined){
             this.state.nn_node_name = node_name
         }else{
             this.state.nn_node_name = this.props.nn_node_name

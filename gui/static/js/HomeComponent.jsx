@@ -11,6 +11,7 @@ import NN_InfoNewComponent from './NNConfiguration/NN_InfoNewComponent'
 import NN_InfoDetailComponent from './NNConfiguration/NN_InfoDetailComponent'
 import NN_InfoApplicationList from './NNConfiguration/NN_InfoApplicationList'
 import NN_InfoMonitering from './NNConfiguration/NN_InfoMonitering'
+import NN_InfoMoniteringDetail from './NNConfiguration/NN_InfoMoniteringDetail'
 
 export default class HomeComponent extends React.Component {
     constructor(props) {
@@ -101,6 +102,8 @@ export default class HomeComponent extends React.Component {
               return this.getMonitering();
           case 33:
               return this.getMoniteringDirect();
+          case 34:
+              return this.getMoniteringDetail();
           case 4:
               return this.getApplicationList(); 
           case 5:
@@ -126,11 +129,17 @@ export default class HomeComponent extends React.Component {
     }
 
     getMonitering(){
-        this.setState({NN_InfoList: <NN_InfoMonitering getHeaderEvent={this.getHeaderEvent}  /> });  
+        this.setState({NN_InfoList: <NN_InfoMonitering getHeaderEvent={this.getHeaderEvent}
+                                                       setActiveItem={this.setActiveItem}   /> });  
     }
 
     getMoniteringDirect(){
         this.setState({NN_InfoList: <NN_InfoMonitering getHeaderEvent={this.getHeaderEvent}
+                                                       nn_id={this.state.NN_ID} /> });  
+    }
+
+    getMoniteringDetail(){
+        this.setState({NN_InfoList: <NN_InfoMoniteringDetail getHeaderEvent={this.getHeaderEvent}
                                                        nn_id={this.state.NN_ID} /> });  
     }
 
