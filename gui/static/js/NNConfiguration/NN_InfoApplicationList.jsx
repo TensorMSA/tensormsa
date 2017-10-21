@@ -69,14 +69,24 @@ export default class NN_InfoApplicationList extends React.Component {
             if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
         }
         
-        let inDefault = ["", "cb_id","chat_cate","chat_sub_cate"]
+        let inDefault = ["", "cb_id","chat_cate","chat_sub_cate","pos_type","proper_noun"]
 
-        for (let i=1 ; i < 4 ; i++) {
+        for (let i=1 ; i < 6 ; i++) {
             title = table.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
             input_data = table.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
             bot_def_list[inDefault[i]] = input_data
         }
         console.log(bot_def_list)
+
+        bot_tagging["cb_id"] = bot_def_list["cb_id"]
+        bot_tagging["pos_type"] = bot_def_list["pos_type"]
+        //Tagging Table에 들어갈 단어의 경로
+        bot_tagging["proper_noun"] = {
+                        "tagdate": [1,bot_def_list["proper_noun"] + "/data/date.txt", false],
+                        "tagloc": [2, bot_def_list["proper_noun"] + "/data/loc.txt", false],
+                        "tagmenu": [3,bot_def_list["proper_noun"] + "/data/menu.txt", false]
+                        }
+        console.log("proper_noun" + bot_tagging["proper_noun"])
 
         bot_def_list["cb_title"] = "info_bot",
         bot_def_list["cb_desc"] = "info_bot",
@@ -106,14 +116,8 @@ export default class NN_InfoApplicationList extends React.Component {
         console.log(bot_entity_list)
 
         bot_entity_list["cb_id"] = bot_def_list["cb_id"]
-
-        bot_tagging["cb_id"] = bot_def_list["cb_id"]
-        bot_tagging["pos_type"] = "dict"
-        bot_tagging["proper_noun"] = {
-                        "tagdate": [1, "/home/dev/hoyai/demo/botbuilder/data/date.txt", false],
-                        "tagloc": [2, "/home/dev/hoyai/demo/botbuilder/data/loc.txt", false],
-                         "tagmenu": [3, "/home/dev/hoyai/demo/botbuilder/data/menu.txt", false]
-                        }
+        //Entity에 대한 테이블 구성 필요(Slot내 항목 정의)
+        bot_entity_list["entity_list"] = {'key': [bot_entity_list["entity_list"]]}
 
         bot_intent_list["cb_id"] = bot_def_list["cb_id"]
         bot_intent_list["intent_id"] = bot_entity_list["intent_id"]
@@ -125,7 +129,7 @@ export default class NN_InfoApplicationList extends React.Component {
 
         bot_model_list["cb_id"] = bot_def_list["cb_id"]
         bot_model_list["nn_id"] = bot_entity_list["nn_id"]
-        bot_model_list["nn_purpose"] = ""
+        bot_model_list["nn_purpose"] = "Intent" //의도 파악 모델에 대한 정의 필수
         bot_model_list["nn_type"] = ""
         bot_model_list["nn_label_data"] = ""
         bot_model_list["nn_desc"] = ""
@@ -141,7 +145,7 @@ export default class NN_InfoApplicationList extends React.Component {
         }
         
         // Make Chatbot Info
-        let inDefault3 = ["", "story_id","story_type","output_entity","output_data","response_type"]
+        let inDefault3 = ["", "story_id","story_type","entity_type","output_entity","output_data","response_type"]
 
         for (let i=1 ; i < 6 ; i++) {
             title = table3.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
@@ -195,11 +199,11 @@ export default class NN_InfoApplicationList extends React.Component {
         /////////////////////////////////////////////////////////////////////////////////////////
         if (this.state.NN_TableMaster == null){
             this.state.NN_TableMaster = [   
-                                            {title:"Chatbot ID" , width:10 , input_data:"cb0002", ex:"chatbot id"}
+                                            {title:"Chatbot ID" , width:10 , input_data:"cb01", ex:"chatbot id"}
                                             ,{title:"Chatbot Category" , width:10 , input_data:"service", ex:"Category"}
                                             ,{title:"Chatbot SubCategory" , width:10 , input_data:"info_bot", ex:"Sub Category"}
                                             ,{title:"Tagging Type" , width:10  , input_data:"dict", ex:"Tagging Info"}
-                                            ,{title:"Proper Noun" , width:10 , input_data:"{'tagdate': [1, '/home/dev/hoyai/demo/botbuilder/data/date.txt', False],'tagloc': [1, '/home/dev/hoyai/demo/botbuilder/data/loc.txt', false],'tagmenu': [3, '/home/dev/hoyai/demo/botbuilder/data/menu.txt', false]}", ex:"Proper Noun"}
+                                            ,{title:"Proper Noun" , width:10 , input_data: "/home/dev/hoyai/demo/botbuilder", ex:"Proper Noun Path"}
                                          ];
         }
 
@@ -209,7 +213,7 @@ export default class NN_InfoApplicationList extends React.Component {
                                             {title:"Intent Model" , width:10 , input_data:"wcnntest02", ex:"Intent Model Name"}
                                             ,{title:"Intent ID" , width:10 , input_data:"1", ex:"Intent"}
                                             ,{title:"entity_type" , width:10 , input_data:"key", ex:"Key, extra"}
-                                            ,{title:"entity_list" , width:10 , input_data:"{'key': ['tagdate', 'tagloc', 'tagmenu']}", ex:"JSON Format"}
+                                            ,{title:"entity_list" , width:10 , input_data:'"tagdate", "tagloc", "tagmenu"', ex:"JSON Format"}
                                          ];
         }
 
@@ -220,7 +224,7 @@ export default class NN_InfoApplicationList extends React.Component {
                                             ,{title:"Story Type" , width:10 , input_data:"response", ex:"response / default"}
                                             ,{title:"Entity Type" , width:10 ,input_data:"key", ex:"ex) key, extra"}
                                             ,{title:"Output_Entity" , width:10 ,input_data:"{'entity':['tagdate','tagloc','tagmenu']}", ex:"display entity"}
-                                            ,{title:"output_data" , width:10 ,input_data:"주문이 완료", ex:"display sentence"}
+                                            ,{title:"output_data" , width:10 ,input_data:"주문이 완료되 었습니다", ex:"display sentence"}
                                             ,{title:"Response Type" , width:10 , input_data:"entity", ex:"entity / default"}
                                          ];
         }

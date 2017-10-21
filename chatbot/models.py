@@ -17,8 +17,8 @@ class CB_INTENT_LIST_INFO(models.Model):
     class Meta:
         unique_together = (('cb_id', 'intent_id'),)
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
-    intent_id = models.CharField(max_length=10, blank=False, primary_key=True)
-    intent_uuid = models.CharField(max_length=100, blank=False)
+    intent_id = models.CharField(max_length=10, blank=False)
+    intent_uuid = models.CharField(max_length=100, blank=True)
     intent_type = models.CharField(max_length=10, blank=False) #model/custom
     intent_desc = models.CharField(max_length=50, blank=True)
     rule_value = JSONField() # custom case

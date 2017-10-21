@@ -13,13 +13,15 @@ class ServiceMapper(ShareData):
 
     def run(self, share_data):
         story_slot = share_data.get_story_slot_entity()
-        if(len(list(filter(lambda x : self.entity_synonym.convert_synonym_value(share_data, x, story_slot.get(x)) , sorted(story_slot.keys())))) > 0):
+        if(len(list(filter(lambda x : self.entity_synonym.convert_synonym_value(share_data, x, story_slot.get(x)) \
+                , sorted(story_slot.keys())))) > 0):
             logging.info("■■■■■■■■■■ 유의어 변화 결과 : " + str(list(story_slot.values())))
 
         logging.info("■■■■■■■■■■ 의도 최종 결과 : " + str(share_data.get_intent_id()))
         logging.info("■■■■■■■■■■ Slot 최종 결과 : " + str(story_slot))
         #self._store_train_data(share_data)
 
+        #API Call 시 요청자의 Key값을 위해 uuid 생성(필요시)
         self._replace_intent_uuid(share_data)
         self._replace_entity_uuid(story_slot)
         return share_data
@@ -29,7 +31,7 @@ class ServiceMapper(ShareData):
         for intent_id in share_data.get_intent_id() :
             intent_uuid = intent_uuid + list(filter(lambda x: x["pk"] == str(intent_id), self.intent_uuid_list))
         intent_uuid =  list(map(lambda x : x['fields']['intent_uuid'], intent_uuid))
-        if (intent_uuid[0] != ''):
+        if (len(intent_uuid) > 0 and intent_uuid[0] != ''):
             share_data.set_intent_id(intent_uuid)
 
     def _replace_entity_uuid(self, story_slot):
@@ -41,6 +43,7 @@ class ServiceMapper(ShareData):
             else:
                 story_slot[entity_uuid[0]['fields']['entity_uuid']] = story_slot.pop(key)
 
+    #입력 Data를 저장하기 위함(Data 수집)- Chatbot_Def_list Table에 컬럼으로 설정 필요
     def _store_train_data(self,share_data):
         file = open("/hoya_data_root/log/log.txt", 'a')
         data = "[%s , %s , %s , %s]\n"  % ( str(share_data.get_request_data()), str(share_data.get_story_slot_entity())
