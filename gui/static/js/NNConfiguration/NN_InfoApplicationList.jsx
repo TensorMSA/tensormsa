@@ -188,8 +188,11 @@ export default class NN_InfoApplicationList extends React.Component {
     }
 
     runChat(){
+        let table = this.refs.master1
+        let col = this.state.NN_TableColArr1
+        let chat_id = table.rows[1].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
         let params = "width=800,height=1000";
-        window.open(EnvConstants.getWebServerUrl()+"/chatbot","chatbot",params)
+        window.open(EnvConstants.getWebServerUrl()+"/chatbot?chat_id="+chat_id,"chatbot",params)
     }
 
     render() {

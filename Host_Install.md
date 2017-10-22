@@ -24,7 +24,11 @@ Run for Service
 ```
     ./start_hoyai.sh 1
 ```
-Call APIs
+Then you can see in your browser
+```
+    http://your_ip:8000
+```
+Call APIs (In IDE)
 ```
     ./demo/python api_basic_0_node_rule.py
     ./demo/python api_basic_0_automl_rule.py

@@ -2,11 +2,14 @@ $(document).ready(function() {
     myBotApp.initialize();
     myBotApp.start();
 });
+//화면에서 넘어온 Chatbot ID 매핑
+var parameters = location.search.substring(1).split("?");
+var temp = parameters[0].split("=");
 
 var myBotApp = {
     ajaxServiceUrl: location.origin,
     ajaxRequestMessageMethod: "PUT",
-    ajaxRequestMessageApiPath: "/api/v1/type/service/chatbot/cb0001/",
+    ajaxRequestMessageApiPath: "/api/v1/type/service/chatbot/" + temp[1] + "/",
     fileTranferImageUploadApiPath: "/",
     langMap: {
         headerTitle: "AI 테스트봇",
