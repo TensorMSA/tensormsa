@@ -24,7 +24,12 @@ export default class Api {
   
     get (url, params) {
         console.log(EnvConstants.getApiServerUrl() + url);
-        this.setLoading(true);
+        if(params != null && params === false){
+            this.setLoading(false);
+        }else{
+            this.setLoading(true);
+        }
+        
         return fetch(
             EnvConstants.getApiServerUrl() + url ,
             {

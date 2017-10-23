@@ -150,7 +150,7 @@ export default class NN_InfoMonitering extends React.Component {
                     <div className="tblBtnArea">
                         <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.searchData()} >Search</button>
                     </div>
-                    <div style={{ "overflow":"auto", "height":830}} >
+                    <div style={{ "overflow":"auto", "height":800}} >
                         <h1 className="bullet"> Celery Task List </h1>
                         <table className="table detail" ref= 'task' >
                             {nnInfoListTable}
