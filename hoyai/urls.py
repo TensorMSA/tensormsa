@@ -202,5 +202,5 @@ urlpatterns = [
     url(r'^view/index/$', csrf_exempt(ui_view.UI_Service.as_view())),
     url(r'^chatbot/$', csrf_exempt(ui_view.Chatbot_Service.as_view())),
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT+"/templates")
 

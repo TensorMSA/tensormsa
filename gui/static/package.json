@@ -43,6 +43,7 @@
     "react-router": "^2.8.1",
     "react-table": "^6.3.0",
     "react-tabs": "^2.0.0",
+    "react-timeout": "^1.0.1",
     "recharts": "^1.0.0-apha.5",
     "seedrandom": "^2.4.2"
   },

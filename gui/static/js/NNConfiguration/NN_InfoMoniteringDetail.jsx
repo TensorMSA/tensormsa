@@ -46,14 +46,14 @@ export default class NN_InfoMoniteringDetail extends React.Component {
     }
 
     getTaskLogInfo(file) {
-        file = "log.txt"
+        // file = "log.txt"
         this.props.reportRepository.getMoniteringInfo('log', file, this.state.line).then((tableData) => {
             if(tableData[0] != undefined){
-                // if(tableData[0]['line'] == null || tableData[0]['line'] == undefined){
-                //     this.state.line = 0
-                // }else{
-                //     this.state.line = tableData[0]['line']
-                // }
+                if(tableData[0]['line'] == null || tableData[0]['line'] == undefined){
+                    this.state.line = 0
+                }else{
+                    this.state.line = tableData[0]['line']
+                }
                 let log = this.state.NN_TableDataLog + tableData[0]['log']
                 this.setState({ NN_TableDataLog: log})//조회한 것을 화면에 반영한다.
             }
