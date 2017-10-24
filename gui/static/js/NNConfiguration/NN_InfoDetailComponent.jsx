@@ -77,7 +77,8 @@ export default class NN_InfoDetailComponent extends React.Component {
             configEditFlag:"N",
             trainType:true, // true : auto, false : single
             batchImg :EnvConstants.getImgUrl()+"ico_menu05.png",
-            memoImg : EnvConstants.getImgUrl()+"ico_menu06.png"
+            memoImg : EnvConstants.getImgUrl()+"ico_menu06.png",
+            runTitle : "Run"
         };
         this.closeModal = this.closeModal.bind(this);
         this.closeModalPredictAPI = this.closeModalPredictAPI.bind(this);
@@ -116,6 +117,16 @@ export default class NN_InfoDetailComponent extends React.Component {
 
         if(this.refs.automlTable != undefined){
             this.refs.automlTable.getCommonNodeInfoView()
+        }
+
+        if(this.refs.trainfilesrc != undefined){
+            this.refs.trainfilesrc.getFileData()
+            this.refs.trainfilestr.getFileData()
+        }
+
+        if(this.refs.evalfilesrc != undefined){
+            this.refs.evalfilesrc.getFileData()
+            this.refs.evalfilestr.getFileData()
         }
     }
 
@@ -203,13 +214,17 @@ export default class NN_InfoDetailComponent extends React.Component {
                 }
             }
             
-            //Config Save
-            let params = this.refs.netconfig.getConfigData()
-            
-            this.props.reportRepository.putCommonNNInfoWFNode(this.state.nn_id, this.state.nn_wf_ver_id, this.state.nodeType, params).then((tableData) => {
+            //Single Config Save
+            if(this.state.trainType == false){
+                let conf = this.refs.netconfig
+                if(conf != undefined){
+                    let params = conf.getConfigData()
+                
+                    this.props.reportRepository.putCommonNNInfoWFNode(this.state.nn_id, this.state.nn_wf_ver_id, this.state.nodeType, params).then((tableData) => {
 
-            });
-            
+                    });
+                }
+            }
 
         }
     }
@@ -516,6 +531,12 @@ export default class NN_InfoDetailComponent extends React.Component {
 
     render() {
         this.state.nn_id = this.props.nn_id
+
+        if(this.state.trainType == false){
+            this.state.runTitle = "Add Ver"
+        }else{
+            this.state.runTitle = "Run"
+        }
         /////////////////////////////////////////////////////////////////////////////////////////
         // Common Function
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -821,7 +842,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                 
                 <div className="tblBtnArea">
                     <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.searchData()} >Search</button>
-                    <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.addVersion() } >Add Ver</button>
+                    <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.addVersion() } >{this.state.runTitle}</button>
                     <button type="button" className="save" onClick={() => this.saveData()} >Save</button>
                 </div>
                 

@@ -159,7 +159,7 @@ export default class FileUploadComponent extends React.Component {
 //"float":"left",
         return (
             <div>
-                <h2 style={{"margin-right":"5px","verticalAlign":"top"}}>{this.props.title}</h2>
+                <h2 style={{"marginRight":"5px","verticalAlign":"top"}}>{this.props.title}</h2>
               {this.props.uploadbtnflag ?
                 <div>
         

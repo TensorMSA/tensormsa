@@ -1,426 +1,426 @@
 decode,encode
 1,tagloc tagrank
-1,tagloc tagrank ì°¾
-1,tagrank tagloc ì°¾
-1,tagloc tagrank ì•Œ
-1,tagrank tagloc ì•Œ
-1,tagloc tagrank ì•Œë ¤
-1,tagrank tagloc ì•Œë ¤
-1,tagloc tagrank ëˆ„êµ¬
-1,tagrank tagloc ëˆ„êµ¬
-1,tagloc tagrank ê²€ìƒ‰
-1,tagrank tagloc ê²€ìƒ‰
-1,tagloc ê·¼ë¬´ tagrank ì•Œ
-1,tagloc ê·¼ë¬´ tagrank ì•Œë ¤
-1,tagloc ê·¼ë¬´ tagrank ì°¾
-1,tagloc ê·¼ë¬´ tagrank ëˆ„êµ¬
-1,tagloc ì— ê·¼ë¬´ tagrank ê²€ìƒ‰
-1,tagloc ì— ê·¼ë¬´ tagrank ì•Œ
-1,tagloc ì— ê·¼ë¬´ tagrank ì•Œë ¤
-1,tagloc ì— ê·¼ë¬´ tagrank ì°¾
-1,tagloc ì— ê·¼ë¬´ tagrank ëˆ„êµ¬
-1,tagloc ì˜ tagrank ì•Œ
-1,tagloc ì˜ tagrank ì•Œë ¤
-1,tagloc ì˜ tagrank ì°¾
-1,tagloc ì˜ tagrank ëˆ„êµ¬
-1,tagloc ì˜ tagrank ê²€ìƒ‰
+1,tagloc tagrank Ã£
+1,tagrank tagloc Ã£
+1,tagloc tagrank ¾Ë
+1,tagrank tagloc ¾Ë
+1,tagloc tagrank ¾Ë·Á
+1,tagrank tagloc ¾Ë·Á
+1,tagloc tagrank ´©±¸
+1,tagrank tagloc ´©±¸
+1,tagloc tagrank °Ë»ö
+1,tagrank tagloc °Ë»ö
+1,tagloc ±Ù¹« tagrank ¾Ë
+1,tagloc ±Ù¹« tagrank ¾Ë·Á
+1,tagloc ±Ù¹« tagrank Ã£
+1,tagloc ±Ù¹« tagrank ´©±¸
+1,tagloc ¿¡ ±Ù¹« tagrank °Ë»ö
+1,tagloc ¿¡ ±Ù¹« tagrank ¾Ë
+1,tagloc ¿¡ ±Ù¹« tagrank ¾Ë·Á
+1,tagloc ¿¡ ±Ù¹« tagrank Ã£
+1,tagloc ¿¡ ±Ù¹« tagrank ´©±¸
+1,tagloc ÀÇ tagrank ¾Ë
+1,tagloc ÀÇ tagrank ¾Ë·Á
+1,tagloc ÀÇ tagrank Ã£
+1,tagloc ÀÇ tagrank ´©±¸
+1,tagloc ÀÇ tagrank °Ë»ö
 9,tagorg tagrank
-9,tagorg tagrank ì•Œ
-9,tagorg tagrank ì•Œë ¤
-9,tagorg tagrank ì°¾
-9,tagorg tagrank ëˆ„êµ¬
-9,tagorg tagrank ê²€ìƒ‰
-9,tagorg tagrank ëª…ë‹¨
-9,tagorg tagrank ëª©ë¡
-9,tagorg tagrank ì€
-9,tagorg tagrank ëŠ”
-9,tagloc tagorg tagrank ì•Œ
-9,tagloc tagorg tagrank ì•Œë ¤
-9,tagloc tagorg tagrank ì°¾
-9,tagloc tagorg tagrank ëˆ„êµ¬
-9,tagloc tagorg tagrank ê²€ìƒ‰
-9,tagloc tagorg tagrank ëª…ë‹¨
-9,tagloc tagorg tagrank ëª©ë¡
-2,tagname ì˜ tagsuper ì°¾
-2,tagname ì˜ tagsuper ì•Œ
-2,tagname ì˜ tagsuper ì•Œë ¤
-2,tagname ì˜ tagsuper ëˆ„êµ¬
-2,tagname ì˜ tagsuper ê²€ìƒ‰
-2,tagname ì˜ tagsuper ë²ˆí˜¸ ê²€ìƒ‰
-2,tagname tagrank ì˜ tagsuper ì°¾
-2,tagname tagrank ì˜ tagsuper ì•Œ
-2,tagname tagrank ì˜ tagsuper ì•Œë ¤
-2,tagname tagrank ì˜ tagsuper ëˆ„êµ¬
-2,tagname tagrank ì˜ tagsuper ê²€ìƒ‰
-2,tagname tagrank ì˜ tagsuper ë²ˆí˜¸ ê²€ìƒ‰
-2,tagrank tagname ì˜ tagsuper ì°¾
-2,tagrank tagname ì˜ tagsuper ì•Œ
-2,tagrank tagname ì˜ tagsuper ì•Œë ¤
-2,tagrank tagname ì˜ tagsuper ëˆ„êµ¬
-2,tagrank tagname ì˜ tagsuper ê²€ìƒ‰
-2,tagrank tagname ì˜ tagsuper ë²ˆí˜¸ ê²€ìƒ‰
-2,tagorg tagname tagrank ì˜ tagsuper ì°¾
-2,tagorg tagname tagrank ì˜ tagsuper ì•Œ
-2,tagorg tagname tagrank ì˜ tagsuper ì•Œë ¤
-2,tagorg tagname tagrank ì˜ tagsuper ëˆ„êµ¬
-2,tagorg tagname tagrank ì˜ tagsuper ê²€ìƒ‰
-2,tagorg tagname tagrank ì˜ tagsuper ë²ˆí˜¸ ê²€ìƒ‰
-2,tagloc ê·¼ë¬´ tagname tagrank ì˜ tagsuper ì°¾
-2,tagloc ê·¼ë¬´ tagname tagrank ì˜ tagsuper ì•Œ
-2,tagloc ê·¼ë¬´ tagname tagrank ì˜ tagsuper ì•Œë ¤
-2,tagloc ê·¼ë¬´ tagname tagrank ì˜ tagsuper ëˆ„êµ¬
-2,tagloc ê·¼ë¬´ tagname tagrank ì˜ tagsuper ê²€ìƒ‰
-2,tagloc ê·¼ë¬´ tagname tagrank ì˜ tagsuper ë²ˆí˜¸ ê²€ìƒ‰
-5,tagname ê·¼íƒœ 
-5,tagname ê·¼íƒœ ê²€ìƒ‰
-5,tagname ê·¼ë¬´ ì¸ê°€
-5,tagname íœ´ë¬´ ì¸ê°€
-5,tagname íœ´ê°€ ì¸ê°€
-5,tagname êµìœ¡ ì¸ê°€
-5,tagname ì¶œì¥ ì¸ê°€
-5,tagname í•´ì™¸ ì¶œì¥ ì¸ê°€
-5,tagname íœ´ê°€ ê°”
-5,tagname êµìœ¡ ê°”
-5,tagname ì¶œì¥ ê°”
-5,tagname í•´ì™¸ ì¶œì¥ ê°”
-5,tagname ì€ ê·¼ë¬´ ì¸ê°€
-5,tagname ì€ íœ´ë¬´ ì¸ê°€
-5,tagname ì€ íœ´ê°€ ì¸ê°€
-5,tagname ì€ êµìœ¡ ì¸ê°€
-5,tagname ì€ ì¶œì¥ ì¸ê°€
-5,tagname ì€ í•´ì™¸ ì¶œì¥ ì¸ê°€
-5,tagname ì€ íœ´ê°€ ê°”
-5,tagname ì€ êµìœ¡ ê°”
-5,tagname ì€ ì¶œì¥ ê°”
-5,tagname ì€ í•´ì™¸ ì¶œì¥ ê°”
-5,tagname ì€ ê·¼íƒœ
-5,tagname ì€ ê·¼íƒœ ê²€ìƒ‰
-5,tagorg tagname ê·¼íƒœ
-5,tagorg tagname ê·¼ë¬´
-5,tagorg tagname íœ´ë¬´
-5,tagorg tagname íœ´ê°€
-5,tagorg tagname ì¶œì¥
-5,tagorg tagname êµìœ¡
-5,tagorg tagname ê·¼íƒœ ê²€ìƒ‰
-5,tagorg tagname íœ´ê°€ ê°”
-5,tagorg tagname ì¶œì¥ ê°”
-5,tagorg tagname êµìœ¡ ê°”
-5,tagorg tagname í•´ì™¸ ì¶œì¥ ê°”
-5,tagloc tagname ê·¼íƒœ
-5,tagloc tagname ê·¼ë¬´
-5,tagloc tagname íœ´ë¬´
-5,tagloc tagname íœ´ê°€
-5,tagloc tagname ì¶œì¥
-5,tagloc tagname êµìœ¡
-5,tagloc tagname í•´ì™¸ ì¶œì¥
-5,tagloc tagname ê·¼íƒœ ê²€ìƒ‰
-5,tagloc tagname íœ´ê°€ ê°”
-5,tagloc tagname ì¶œì¥ ê°”
-5,tagloc tagname êµìœ¡ ê°”
-5,tagloc tagname í•´ì™¸ ì¶œì¥ ê°”
-5,tagorg tagname ì€ ê·¼íƒœ
-5,tagorg tagname ì€ ê·¼ë¬´
-5,tagorg tagname ì€ íœ´ë¬´
-5,tagorg tagname ì€ íœ´ê°€
-5,tagorg tagname ì€ ì¶œì¥
-5,tagorg tagname ì€ êµìœ¡
-5,tagorg tagname ì€ í•´ì™¸ ì¶œì¥
-5,tagorg tagname ì€ íœ´ê°€ ê°”
-5,tagorg tagname ì€ ì¶œì¥ ê°”
-5,tagorg tagname ì€ êµìœ¡ ê°”
-5,tagorg tagname ì€ í•´ì™¸ ì¶œì¥ ê°”
-5,tagloc tagname ì€ ê·¼íƒœ
-5,tagloc tagname ì€ ê·¼ë¬´
-5,tagloc tagname ì€ íœ´ë¬´
-5,tagloc tagname ì€ íœ´ê°€
-5,tagloc tagname ì€ ì¶œì¥
-5,tagloc tagname ì€ êµìœ¡
-5,tagloc tagname ì€ í•´ì™¸ ì¶œì¥
-5,tagloc tagname ì€ íœ´ê°€ ê°”
-5,tagloc tagname ì€ ì¶œì¥ ê°”
-5,tagloc tagname ì€ êµìœ¡ ê°”
-5,tagloc tagname ì€ í•´ì™¸ ì¶œì¥ ê°”
-5,tagname tagloc ì€ ê·¼íƒœ
-5,tagname tagloc ì€ ê·¼ë¬´
-5,tagname tagloc ì€ íœ´ë¬´
-5,tagname tagloc ì€ íœ´ê°€
-5,tagname tagloc ì€ ì¶œì¥
-5,tagname tagloc ì€ êµìœ¡
-5,tagname tagloc ì€ í•´ì™¸ ì¶œì¥
-5,tagname tagloc ì€ íœ´ê°€ ê°”
-5,tagname tagloc ì€ ì¶œì¥ ê°”
-5,tagname tagloc ì€ êµìœ¡ ê°”
-5,tagname tagloc ì€ í•´ì™¸ ì¶œì¥ ê°”
-5,tagname tagrank ê·¼íƒœ
-5,tagname tagrank ê·¼ë¬´ ì¸ê°€
-5,tagname tagrank íœ´ë¬´ ì¸ê°€
-5,tagname tagrank íœ´ê°€ ì¸ê°€
-5,tagname tagrank êµìœ¡ ì¸ê°€
-5,tagname tagrank ì¶œì¥ ì¸ê°€
-5,tagname tagrank í•´ì™¸ ì¶œì¥ ì¸ê°€
-5,tagname tagrank ê·¼íƒœ ê²€ìƒ‰
-5,tagname tagrank íœ´ê°€ ê°”
-5,tagname tagrank êµìœ¡ ê°”
-5,tagname tagrank ì¶œì¥ ê°”
-5,tagname tagrank í•´ì™¸ ì¶œì¥ ê°”
-5,tagname tagrank ê·¼ë¬´ í•˜ë‚˜
-5,tagname tagrank íœ´ë¬´ í•˜ë‚˜
-5,tagname tagrank êµìœ¡ í•˜ë‚˜
-5,tagname tagrank ì¶œì¥ í•˜ë‚˜
-5,tagname tagrank í•´ì™¸ ì¶œì¥ í•˜ë‚˜
-5,tagrank tagname ê·¼íƒœ
-5,tagrank tagname ê·¼ë¬´ ì¸ê°€
-5,tagrank tagname íœ´ê°€ ì¸ê°€
-5,tagrank tagname íœ´ë¬´ ì¸ê°€
-5,tagrank tagname êµìœ¡ ì¸ê°€
-5,tagrank tagname ì¶œì¥ ì¸ê°€
-5,tagrank tagname í•´ì™¸ ì¶œì¥ ì¸ê°€
-5,tagrank tagname ê·¼ë¬´ í•˜ë‚˜
-5,tagrank tagname íœ´ë¬´ í•˜ë‚˜
-5,tagrank tagname êµìœ¡ í•˜ë‚˜
-5,tagrank tagname ì¶œì¥ í•˜ë‚˜
-5,tagrank tagname í•´ì™¸ ì¶œì¥ í•˜ë‚˜
-5,tagrank tagname íœ´ê°€ ê°”
-5,tagrank tagname êµìœ¡ ê°”
-5,tagrank tagname ì¶œì¥ ê°”
-5,tagrank tagname í•´ì™¸ ì¶œì¥ ê°”
-5,tagrank tagname ê·¼íƒœ ê²€ìƒ‰
-5,tagrank tagname ì€ ê·¼ë¬´ ì¸ê°€
-5,tagrank tagname ì€ íœ´ê°€ ì¸ê°€
-5,tagrank tagname ì€ íœ´ë¬´ ì¸ê°€
-5,tagrank tagname ì€ êµìœ¡ ì¸ê°€
-5,tagrank tagname ì€ ì¶œì¥ ì¸ê°€
-5,tagrank tagname ì€ í•´ì™¸ ì¶œì¥ ì¸ê°€
-5,tagrank tagname ì€ ê·¼ë¬´ í•˜ë‚˜
-5,tagrank tagname ì€ íœ´ë¬´ í•˜ë‚˜
-5,tagrank tagname ì€ êµìœ¡ í•˜ë‚˜
-5,tagrank tagname ì€ ì¶œì¥ í•˜ë‚˜
-5,tagrank tagname ì€ í•´ì™¸ ì¶œì¥ í•˜ë‚˜
-5,tagrank tagname ì€ íœ´ê°€ ê°”
-5,tagrank tagname ì€ êµìœ¡ ê°”
-5,tagrank tagname ì€ ì¶œì¥ ê°”
-5,tagrank tagname ì€ í•´ì™¸ ì¶œì¥ ê°”
-3,taghead ì—ê²Œ ì „í™” ê±¸
-3,taghead ì—ê²Œ ì „í™”
-3,taghead ì—ê²Œ ì—°ë½
-3,taghead ì „í™” ê±¸
-3,taghead ì „í™”
-3,taghead ì—°ë½
-4,tagname ì—ê²Œ ì „í™” ê±¸
-4,tagname ì—ê²Œ ì „í™”
-4,tagname ì—ê²Œ ì—°ë½
-4,tagname ì „í™” ê±¸
-4,tagname ì „í™”
-4,tagname ì—°ë½
-4,tagname tagrank ì—ê²Œ ì „í™” ê±¸
-4,tagname tagrank ì—ê²Œ ì „í™”
-4,tagname tagrank ì—ê²Œ ì—°ë½
-4,tagname tagrank ì „í™” ê±¸
-4,tagname tagrank ì „í™”
-4,tagname tagrank ì—°ë½
-4,tagrank tagname ì—ê²Œ ì „í™” ê±¸
-4,tagrank tagname ì—ê²Œ ì „í™”
-4,tagrank tagname ì—ê²Œ ì—°ë½
-4,tagrank tagname ì „í™” ê±¸
-4,tagrank tagname ì „í™”
-4,tagrank tagname ì—°ë½
-4,tagloc tagname ì—ê²Œ ì „í™” ê±¸
-4,tagloc tagname ì—ê²Œ ì „í™”
-4,tagloc tagname ì—ê²Œ ì—°ë½
-4,tagloc tagname ì „í™” ê±¸
-4,tagloc tagname ì „í™”
-4,tagloc tagname ì—°ë½
-4,tagloc ê·¼ë¬´ tagname ì—ê²Œ ì „í™” ê±¸
-4,tagloc ê·¼ë¬´ tagname ì—ê²Œ ì „í™”
-4,tagloc ê·¼ë¬´ tagname ì—ê²Œ ì—°ë½
-4,tagloc ê·¼ë¬´ tagname ì „í™” ê±¸
-4,tagloc ê·¼ë¬´ tagname ì „í™”
-4,tagloc ê·¼ë¬´ tagname ì—°ë½
-4,tagcompany tagname ì—ê²Œ ì „í™” ê±¸
-4,tagcompany tagname ì—ê²Œ ì „í™”
-4,tagcompany tagname ì—ê²Œ ì—°ë½
-4,tagcompany tagname ì „í™” ê±¸
-4,tagcompany tagname ì „í™”
-4,tagcompany tagname ì—°ë½
-4,tagname tagcompany ì—ê²Œ ì „í™” ê±¸
-4,tagname tagcompany ì—ê²Œ ì „í™”
-4,tagname tagcompany ì—ê²Œ ì—°ë½
-4,tagname tagcompany ì „í™” ê±¸
-4,tagname tagcompany ì „í™”
-4,tagname tagcompany ì—°ë½
-4,tagorg tagname ì—ê²Œ ì „í™” ê±¸
-4,tagorg tagname ì—ê²Œ ì „í™”
-4,tagorg tagname ì—ê²Œ ì—°ë½
-4,tagorg tagname ì „í™” ê±¸
-4,tagorg tagname ì „í™”
-4,tagorg tagname ì—°ë½
-4,tagorg tagname tagrank ì—ê²Œ ì „í™” ê±¸
-4,tagorg tagname tagrank ì—ê²Œ ì „í™”
-4,tagorg tagname tagrank ì—ê²Œ ì—°ë½
-4,tagorg tagname tagrank ì „í™” ê±¸
-4,tagorg tagname tagrank ì „í™”
-4,tagorg tagname tagrank ì—°ë½
-4,tagloc tagorg tagname tagrank ì—ê²Œ ì „í™” ê±¸
-4,tagloc tagorg tagname tagrank ì—ê²Œ ì „í™”
-4,tagloc tagorg tagname tagrank ì—ê²Œ ì—°ë½
-4,tagloc tagorg tagname tagrank ì „í™” ê±¸
-4,tagloc tagorg tagname tagrank ì „í™”
-4,tagloc tagorg tagname tagrank ì—°ë½
-4,tagloc tagorg tagrank tagname ì—ê²Œ ì „í™” ê±¸
-4,tagloc tagorg tagrank tagname ì—ê²Œ ì „í™”
-4,tagloc tagorg tagrank tagname ì—ê²Œ ì—°ë½
-4,tagloc tagorg tagrank tagname ì „í™” ê±¸
-4,tagloc tagorg tagrank tagname ì „í™”
-4,tagloc tagorg tagrank tagname ì—°ë½
+9,tagorg tagrank ¾Ë
+9,tagorg tagrank ¾Ë·Á
+9,tagorg tagrank Ã£
+9,tagorg tagrank ´©±¸
+9,tagorg tagrank °Ë»ö
+9,tagorg tagrank ¸í´Ü
+9,tagorg tagrank ¸ñ·Ï
+9,tagorg tagrank Àº
+9,tagorg tagrank ´Â
+9,tagloc tagorg tagrank ¾Ë
+9,tagloc tagorg tagrank ¾Ë·Á
+9,tagloc tagorg tagrank Ã£
+9,tagloc tagorg tagrank ´©±¸
+9,tagloc tagorg tagrank °Ë»ö
+9,tagloc tagorg tagrank ¸í´Ü
+9,tagloc tagorg tagrank ¸ñ·Ï
+2,tagname ÀÇ tagsuper Ã£
+2,tagname ÀÇ tagsuper ¾Ë
+2,tagname ÀÇ tagsuper ¾Ë·Á
+2,tagname ÀÇ tagsuper ´©±¸
+2,tagname ÀÇ tagsuper °Ë»ö
+2,tagname ÀÇ tagsuper ¹øÈ£ °Ë»ö
+2,tagname tagrank ÀÇ tagsuper Ã£
+2,tagname tagrank ÀÇ tagsuper ¾Ë
+2,tagname tagrank ÀÇ tagsuper ¾Ë·Á
+2,tagname tagrank ÀÇ tagsuper ´©±¸
+2,tagname tagrank ÀÇ tagsuper °Ë»ö
+2,tagname tagrank ÀÇ tagsuper ¹øÈ£ °Ë»ö
+2,tagrank tagname ÀÇ tagsuper Ã£
+2,tagrank tagname ÀÇ tagsuper ¾Ë
+2,tagrank tagname ÀÇ tagsuper ¾Ë·Á
+2,tagrank tagname ÀÇ tagsuper ´©±¸
+2,tagrank tagname ÀÇ tagsuper °Ë»ö
+2,tagrank tagname ÀÇ tagsuper ¹øÈ£ °Ë»ö
+2,tagorg tagname tagrank ÀÇ tagsuper Ã£
+2,tagorg tagname tagrank ÀÇ tagsuper ¾Ë
+2,tagorg tagname tagrank ÀÇ tagsuper ¾Ë·Á
+2,tagorg tagname tagrank ÀÇ tagsuper ´©±¸
+2,tagorg tagname tagrank ÀÇ tagsuper °Ë»ö
+2,tagorg tagname tagrank ÀÇ tagsuper ¹øÈ£ °Ë»ö
+2,tagloc ±Ù¹« tagname tagrank ÀÇ tagsuper Ã£
+2,tagloc ±Ù¹« tagname tagrank ÀÇ tagsuper ¾Ë
+2,tagloc ±Ù¹« tagname tagrank ÀÇ tagsuper ¾Ë·Á
+2,tagloc ±Ù¹« tagname tagrank ÀÇ tagsuper ´©±¸
+2,tagloc ±Ù¹« tagname tagrank ÀÇ tagsuper °Ë»ö
+2,tagloc ±Ù¹« tagname tagrank ÀÇ tagsuper ¹øÈ£ °Ë»ö
+5,tagname ±ÙÅÂ 
+5,tagname ±ÙÅÂ °Ë»ö
+5,tagname ±Ù¹« ÀÎ°¡
+5,tagname ÈŞ¹« ÀÎ°¡
+5,tagname ÈŞ°¡ ÀÎ°¡
+5,tagname ±³À° ÀÎ°¡
+5,tagname ÃâÀå ÀÎ°¡
+5,tagname ÇØ¿Ü ÃâÀå ÀÎ°¡
+5,tagname ÈŞ°¡ °¬
+5,tagname ±³À° °¬
+5,tagname ÃâÀå °¬
+5,tagname ÇØ¿Ü ÃâÀå °¬
+5,tagname Àº ±Ù¹« ÀÎ°¡
+5,tagname Àº ÈŞ¹« ÀÎ°¡
+5,tagname Àº ÈŞ°¡ ÀÎ°¡
+5,tagname Àº ±³À° ÀÎ°¡
+5,tagname Àº ÃâÀå ÀÎ°¡
+5,tagname Àº ÇØ¿Ü ÃâÀå ÀÎ°¡
+5,tagname Àº ÈŞ°¡ °¬
+5,tagname Àº ±³À° °¬
+5,tagname Àº ÃâÀå °¬
+5,tagname Àº ÇØ¿Ü ÃâÀå °¬
+5,tagname Àº ±ÙÅÂ
+5,tagname Àº ±ÙÅÂ °Ë»ö
+5,tagorg tagname ±ÙÅÂ
+5,tagorg tagname ±Ù¹«
+5,tagorg tagname ÈŞ¹«
+5,tagorg tagname ÈŞ°¡
+5,tagorg tagname ÃâÀå
+5,tagorg tagname ±³À°
+5,tagorg tagname ±ÙÅÂ °Ë»ö
+5,tagorg tagname ÈŞ°¡ °¬
+5,tagorg tagname ÃâÀå °¬
+5,tagorg tagname ±³À° °¬
+5,tagorg tagname ÇØ¿Ü ÃâÀå °¬
+5,tagloc tagname ±ÙÅÂ
+5,tagloc tagname ±Ù¹«
+5,tagloc tagname ÈŞ¹«
+5,tagloc tagname ÈŞ°¡
+5,tagloc tagname ÃâÀå
+5,tagloc tagname ±³À°
+5,tagloc tagname ÇØ¿Ü ÃâÀå
+5,tagloc tagname ±ÙÅÂ °Ë»ö
+5,tagloc tagname ÈŞ°¡ °¬
+5,tagloc tagname ÃâÀå °¬
+5,tagloc tagname ±³À° °¬
+5,tagloc tagname ÇØ¿Ü ÃâÀå °¬
+5,tagorg tagname Àº ±ÙÅÂ
+5,tagorg tagname Àº ±Ù¹«
+5,tagorg tagname Àº ÈŞ¹«
+5,tagorg tagname Àº ÈŞ°¡
+5,tagorg tagname Àº ÃâÀå
+5,tagorg tagname Àº ±³À°
+5,tagorg tagname Àº ÇØ¿Ü ÃâÀå
+5,tagorg tagname Àº ÈŞ°¡ °¬
+5,tagorg tagname Àº ÃâÀå °¬
+5,tagorg tagname Àº ±³À° °¬
+5,tagorg tagname Àº ÇØ¿Ü ÃâÀå °¬
+5,tagloc tagname Àº ±ÙÅÂ
+5,tagloc tagname Àº ±Ù¹«
+5,tagloc tagname Àº ÈŞ¹«
+5,tagloc tagname Àº ÈŞ°¡
+5,tagloc tagname Àº ÃâÀå
+5,tagloc tagname Àº ±³À°
+5,tagloc tagname Àº ÇØ¿Ü ÃâÀå
+5,tagloc tagname Àº ÈŞ°¡ °¬
+5,tagloc tagname Àº ÃâÀå °¬
+5,tagloc tagname Àº ±³À° °¬
+5,tagloc tagname Àº ÇØ¿Ü ÃâÀå °¬
+5,tagname tagloc Àº ±ÙÅÂ
+5,tagname tagloc Àº ±Ù¹«
+5,tagname tagloc Àº ÈŞ¹«
+5,tagname tagloc Àº ÈŞ°¡
+5,tagname tagloc Àº ÃâÀå
+5,tagname tagloc Àº ±³À°
+5,tagname tagloc Àº ÇØ¿Ü ÃâÀå
+5,tagname tagloc Àº ÈŞ°¡ °¬
+5,tagname tagloc Àº ÃâÀå °¬
+5,tagname tagloc Àº ±³À° °¬
+5,tagname tagloc Àº ÇØ¿Ü ÃâÀå °¬
+5,tagname tagrank ±ÙÅÂ
+5,tagname tagrank ±Ù¹« ÀÎ°¡
+5,tagname tagrank ÈŞ¹« ÀÎ°¡
+5,tagname tagrank ÈŞ°¡ ÀÎ°¡
+5,tagname tagrank ±³À° ÀÎ°¡
+5,tagname tagrank ÃâÀå ÀÎ°¡
+5,tagname tagrank ÇØ¿Ü ÃâÀå ÀÎ°¡
+5,tagname tagrank ±ÙÅÂ °Ë»ö
+5,tagname tagrank ÈŞ°¡ °¬
+5,tagname tagrank ±³À° °¬
+5,tagname tagrank ÃâÀå °¬
+5,tagname tagrank ÇØ¿Ü ÃâÀå °¬
+5,tagname tagrank ±Ù¹« ÇÏ³ª
+5,tagname tagrank ÈŞ¹« ÇÏ³ª
+5,tagname tagrank ±³À° ÇÏ³ª
+5,tagname tagrank ÃâÀå ÇÏ³ª
+5,tagname tagrank ÇØ¿Ü ÃâÀå ÇÏ³ª
+5,tagrank tagname ±ÙÅÂ
+5,tagrank tagname ±Ù¹« ÀÎ°¡
+5,tagrank tagname ÈŞ°¡ ÀÎ°¡
+5,tagrank tagname ÈŞ¹« ÀÎ°¡
+5,tagrank tagname ±³À° ÀÎ°¡
+5,tagrank tagname ÃâÀå ÀÎ°¡
+5,tagrank tagname ÇØ¿Ü ÃâÀå ÀÎ°¡
+5,tagrank tagname ±Ù¹« ÇÏ³ª
+5,tagrank tagname ÈŞ¹« ÇÏ³ª
+5,tagrank tagname ±³À° ÇÏ³ª
+5,tagrank tagname ÃâÀå ÇÏ³ª
+5,tagrank tagname ÇØ¿Ü ÃâÀå ÇÏ³ª
+5,tagrank tagname ÈŞ°¡ °¬
+5,tagrank tagname ±³À° °¬
+5,tagrank tagname ÃâÀå °¬
+5,tagrank tagname ÇØ¿Ü ÃâÀå °¬
+5,tagrank tagname ±ÙÅÂ °Ë»ö
+5,tagrank tagname Àº ±Ù¹« ÀÎ°¡
+5,tagrank tagname Àº ÈŞ°¡ ÀÎ°¡
+5,tagrank tagname Àº ÈŞ¹« ÀÎ°¡
+5,tagrank tagname Àº ±³À° ÀÎ°¡
+5,tagrank tagname Àº ÃâÀå ÀÎ°¡
+5,tagrank tagname Àº ÇØ¿Ü ÃâÀå ÀÎ°¡
+5,tagrank tagname Àº ±Ù¹« ÇÏ³ª
+5,tagrank tagname Àº ÈŞ¹« ÇÏ³ª
+5,tagrank tagname Àº ±³À° ÇÏ³ª
+5,tagrank tagname Àº ÃâÀå ÇÏ³ª
+5,tagrank tagname Àº ÇØ¿Ü ÃâÀå ÇÏ³ª
+5,tagrank tagname Àº ÈŞ°¡ °¬
+5,tagrank tagname Àº ±³À° °¬
+5,tagrank tagname Àº ÃâÀå °¬
+5,tagrank tagname Àº ÇØ¿Ü ÃâÀå °¬
+3,taghead ¿¡°Ô ÀüÈ­ °É
+3,taghead ¿¡°Ô ÀüÈ­
+3,taghead ¿¡°Ô ¿¬¶ô
+3,taghead ÀüÈ­ °É
+3,taghead ÀüÈ­
+3,taghead ¿¬¶ô
+4,tagname ¿¡°Ô ÀüÈ­ °É
+4,tagname ¿¡°Ô ÀüÈ­
+4,tagname ¿¡°Ô ¿¬¶ô
+4,tagname ÀüÈ­ °É
+4,tagname ÀüÈ­
+4,tagname ¿¬¶ô
+4,tagname tagrank ¿¡°Ô ÀüÈ­ °É
+4,tagname tagrank ¿¡°Ô ÀüÈ­
+4,tagname tagrank ¿¡°Ô ¿¬¶ô
+4,tagname tagrank ÀüÈ­ °É
+4,tagname tagrank ÀüÈ­
+4,tagname tagrank ¿¬¶ô
+4,tagrank tagname ¿¡°Ô ÀüÈ­ °É
+4,tagrank tagname ¿¡°Ô ÀüÈ­
+4,tagrank tagname ¿¡°Ô ¿¬¶ô
+4,tagrank tagname ÀüÈ­ °É
+4,tagrank tagname ÀüÈ­
+4,tagrank tagname ¿¬¶ô
+4,tagloc tagname ¿¡°Ô ÀüÈ­ °É
+4,tagloc tagname ¿¡°Ô ÀüÈ­
+4,tagloc tagname ¿¡°Ô ¿¬¶ô
+4,tagloc tagname ÀüÈ­ °É
+4,tagloc tagname ÀüÈ­
+4,tagloc tagname ¿¬¶ô
+4,tagloc ±Ù¹« tagname ¿¡°Ô ÀüÈ­ °É
+4,tagloc ±Ù¹« tagname ¿¡°Ô ÀüÈ­
+4,tagloc ±Ù¹« tagname ¿¡°Ô ¿¬¶ô
+4,tagloc ±Ù¹« tagname ÀüÈ­ °É
+4,tagloc ±Ù¹« tagname ÀüÈ­
+4,tagloc ±Ù¹« tagname ¿¬¶ô
+4,tagcompany tagname ¿¡°Ô ÀüÈ­ °É
+4,tagcompany tagname ¿¡°Ô ÀüÈ­
+4,tagcompany tagname ¿¡°Ô ¿¬¶ô
+4,tagcompany tagname ÀüÈ­ °É
+4,tagcompany tagname ÀüÈ­
+4,tagcompany tagname ¿¬¶ô
+4,tagname tagcompany ¿¡°Ô ÀüÈ­ °É
+4,tagname tagcompany ¿¡°Ô ÀüÈ­
+4,tagname tagcompany ¿¡°Ô ¿¬¶ô
+4,tagname tagcompany ÀüÈ­ °É
+4,tagname tagcompany ÀüÈ­
+4,tagname tagcompany ¿¬¶ô
+4,tagorg tagname ¿¡°Ô ÀüÈ­ °É
+4,tagorg tagname ¿¡°Ô ÀüÈ­
+4,tagorg tagname ¿¡°Ô ¿¬¶ô
+4,tagorg tagname ÀüÈ­ °É
+4,tagorg tagname ÀüÈ­
+4,tagorg tagname ¿¬¶ô
+4,tagorg tagname tagrank ¿¡°Ô ÀüÈ­ °É
+4,tagorg tagname tagrank ¿¡°Ô ÀüÈ­
+4,tagorg tagname tagrank ¿¡°Ô ¿¬¶ô
+4,tagorg tagname tagrank ÀüÈ­ °É
+4,tagorg tagname tagrank ÀüÈ­
+4,tagorg tagname tagrank ¿¬¶ô
+4,tagloc tagorg tagname tagrank ¿¡°Ô ÀüÈ­ °É
+4,tagloc tagorg tagname tagrank ¿¡°Ô ÀüÈ­
+4,tagloc tagorg tagname tagrank ¿¡°Ô ¿¬¶ô
+4,tagloc tagorg tagname tagrank ÀüÈ­ °É
+4,tagloc tagorg tagname tagrank ÀüÈ­
+4,tagloc tagorg tagname tagrank ¿¬¶ô
+4,tagloc tagorg tagrank tagname ¿¡°Ô ÀüÈ­ °É
+4,tagloc tagorg tagrank tagname ¿¡°Ô ÀüÈ­
+4,tagloc tagorg tagrank tagname ¿¡°Ô ¿¬¶ô
+4,tagloc tagorg tagrank tagname ÀüÈ­ °É
+4,tagloc tagorg tagrank tagname ÀüÈ­
+4,tagloc tagorg tagrank tagname ¿¬¶ô
 6,tagceo
-6,tagceo ì°¾
-6,tagceo ì•Œ
-6,tagceo ì•Œë ¤
-6,tagceo ëˆ„êµ¬
-6,tagceo ê²€ìƒ‰
-6,tagceo ë²ˆí˜¸ ê²€ìƒ‰
+6,tagceo Ã£
+6,tagceo ¾Ë
+6,tagceo ¾Ë·Á
+6,tagceo ´©±¸
+6,tagceo °Ë»ö
+6,tagceo ¹øÈ£ °Ë»ö
 7,taghead
-7,taghead ì°¾
-7,taghead ì•Œ
-7,taghead ì•Œë ¤
-7,taghead ëˆ„êµ¬
-7,taghead ê²€ìƒ‰
-7,taghead ë²ˆí˜¸ ê²€ìƒ‰
-7,tagcompany taghead ì•Œ
-7,tagcompany taghead ì•Œë ¤
-7,tagcompany taghead ëˆ„êµ¬
-7,tagcompany taghead ê²€ìƒ‰
-7,tagcompany taghead ì°¾
-7,tagcompany taghead ë²ˆí˜¸ ê²€ìƒ‰
-8,tagname ì°¾
-8,tagname ì•Œ
-8,tagname ì•Œë ¤
-8,tagname ëˆ„êµ¬
-8,tagname ê²€ìƒ‰
-8,tagname ë²ˆí˜¸ ê²€ìƒ‰
-8,tagname ì€ ì°¾
-8,tagname ì€ ì•Œ
-8,tagname ì€ ì•Œë ¤
-8,tagname ì€ ëˆ„êµ¬
-8,tagname ì€ ê²€ìƒ‰
-8,tagname ì€ ë²ˆí˜¸ ê²€ìƒ‰
+7,taghead Ã£
+7,taghead ¾Ë
+7,taghead ¾Ë·Á
+7,taghead ´©±¸
+7,taghead °Ë»ö
+7,taghead ¹øÈ£ °Ë»ö
+7,tagcompany taghead ¾Ë
+7,tagcompany taghead ¾Ë·Á
+7,tagcompany taghead ´©±¸
+7,tagcompany taghead °Ë»ö
+7,tagcompany taghead Ã£
+7,tagcompany taghead ¹øÈ£ °Ë»ö
+8,tagname Ã£
+8,tagname ¾Ë
+8,tagname ¾Ë·Á
+8,tagname ´©±¸
+8,tagname °Ë»ö
+8,tagname ¹øÈ£ °Ë»ö
+8,tagname Àº Ã£
+8,tagname Àº ¾Ë
+8,tagname Àº ¾Ë·Á
+8,tagname Àº ´©±¸
+8,tagname Àº °Ë»ö
+8,tagname Àº ¹øÈ£ °Ë»ö
 8,tagname tagrank
-8,tagname tagrank ì°¾
-8,tagname tagrank ì•Œ
-8,tagname tagrank ì•Œë ¤
-8,tagname tagrank ëˆ„êµ¬
-8,tagname tagrank ê²€ìƒ‰
-8,tagname tagrank ë²ˆí˜¸ ê²€ìƒ‰
-8,tagname tagrank ì€ ì°¾
-8,tagname tagrank ì€ ì•Œ
-8,tagname tagrank ì€ ì•Œë ¤
-8,tagname tagrank ì€ ëˆ„êµ¬
-8,tagname tagrank ì€ ê²€ìƒ‰
-8,tagname tagrank ì€ ë²ˆí˜¸ ê²€ìƒ‰
+8,tagname tagrank Ã£
+8,tagname tagrank ¾Ë
+8,tagname tagrank ¾Ë·Á
+8,tagname tagrank ´©±¸
+8,tagname tagrank °Ë»ö
+8,tagname tagrank ¹øÈ£ °Ë»ö
+8,tagname tagrank Àº Ã£
+8,tagname tagrank Àº ¾Ë
+8,tagname tagrank Àº ¾Ë·Á
+8,tagname tagrank Àº ´©±¸
+8,tagname tagrank Àº °Ë»ö
+8,tagname tagrank Àº ¹øÈ£ °Ë»ö
 8,tagrank tagname
-8,tagrank tagname ì°¾
-8,tagrank tagname ì•Œ
-8,tagrank tagname ì•Œë ¤
-8,tagrank tagname ëˆ„êµ¬
-8,tagrank tagname ê²€ìƒ‰
-8,tagrank tagname ë²ˆí˜¸ ê²€ìƒ‰
-8,tagloc tagname ì°¾
-8,tagloc tagname ì•Œ
-8,tagloc tagname ì•Œë ¤
-8,tagloc tagname ëˆ„êµ¬
-8,tagloc tagname ê²€ìƒ‰
-8,tagloc tagname ë²ˆí˜¸ ê²€ìƒ‰
-8,tagloc tagname ì€ ì°¾
-8,tagloc tagname ì€ ì•Œ
-8,tagloc tagname ì€ ì•Œë ¤
-8,tagloc tagname ì€ ëˆ„êµ¬
-8,tagloc tagname ì€ ê²€ìƒ‰
-8,tagloc tagname ì€ ë²ˆí˜¸ ê²€ìƒ‰
-8,tagloc ì— tagname ì°¾
-8,tagloc ì— tagname ì•Œ
-8,tagloc ì— tagname ì•Œë ¤
-8,tagloc ì— tagname ëˆ„êµ¬
-8,tagloc ì— tagname ê²€ìƒ‰
-8,tagloc ì— tagname ë²ˆí˜¸ ê²€ìƒ‰
-8,tagloc ê·¼ë¬´ tagname ì°¾
-8,tagloc ê·¼ë¬´ tagname ì•Œ
-8,tagloc ê·¼ë¬´ tagname ì•Œë ¤
-8,tagloc ê·¼ë¬´ tagname ëˆ„êµ¬
-8,tagloc ê·¼ë¬´ tagname ê²€ìƒ‰
-8,tagloc ê·¼ë¬´ tagname ì€ ì°¾
-8,tagloc ê·¼ë¬´ tagname ì€ ì•Œ
-8,tagloc ê·¼ë¬´ tagname ì€ ì•Œë ¤
-8,tagloc ê·¼ë¬´ tagname ì€ ëˆ„êµ¬
-8,tagloc ê·¼ë¬´ tagname ì€ ê²€ìƒ‰
-8,tagloc ê·¼ë¬´ tagname ì€ ë²ˆí˜¸ ê²€ìƒ‰
-8,tagcompany tagname ì°¾
-8,tagcompany tagname ì•Œ
-8,tagcompany tagname ì•Œë ¤
-8,tagcompany tagname ëˆ„êµ¬
-8,tagcompany tagname ê²€ìƒ‰
-8,tagcompany tagname ë²ˆí˜¸ ê²€ìƒ‰
-8,tagcompany tagname ì€ ì°¾
-8,tagcompany tagname ì€ ì•Œ
-8,tagcompany tagname ì€ ì•Œë ¤
-8,tagcompany tagname ì€ ëˆ„êµ¬
-8,tagcompany tagname ì€ ê²€ìƒ‰
-8,tagcompany tagname ì€ ë²ˆí˜¸ ê²€ìƒ‰
-8,tagorg tagname ì°¾
-8,tagorg tagname ì•Œ
-8,tagorg tagname ì•Œë ¤
-8,tagorg tagname ëˆ„êµ¬
-8,tagorg tagname ê²€ìƒ‰
-8,tagorg tagname ë²ˆí˜¸ ê²€ìƒ‰
-8,tagorg tagname ì€ ì°¾
-8,tagorg tagname ì€ ì•Œ
-8,tagorg tagname ì€ ì•Œë ¤
-8,tagorg tagname ì€ ëˆ„êµ¬
-8,tagorg tagname ì€ ê²€ìƒ‰
-8,tagorg tagname ì€ ë²ˆí˜¸ ê²€ìƒ‰
-8,tagorg tagname tagrank ì°¾
-8,tagorg tagname tagrank ì•Œ
-8,tagorg tagname tagrank ì•Œë ¤
-8,tagorg tagname tagrank ëˆ„êµ¬
-8,tagorg tagname tagrank ê²€ìƒ‰
-8,tagorg tagname tagrank ë²ˆí˜¸ ê²€ìƒ‰
-8,tagorg tagname tagrank ì€ ì°¾
-8,tagorg tagname tagrank ì€ ì•Œ
-8,tagorg tagname tagrank ì€ ì•Œë ¤
-8,tagorg tagname tagrank ì€ ëˆ„êµ¬
-8,tagorg tagname tagrank ì€ ê²€ìƒ‰
-8,tagorg tagname tagrank ì€ ë²ˆí˜¸ ê²€ìƒ‰
-8,tagloc tagorg tagname ì°¾
-8,tagloc tagorg tagname ì•Œ
-8,tagloc tagorg tagname ì•Œë ¤
-8,tagloc tagorg tagname ëˆ„êµ¬
-8,tagloc tagorg tagname ê²€ìƒ‰
-8,tagloc tagorg tagname ë²ˆí˜¸ ê²€ìƒ‰
+8,tagrank tagname Ã£
+8,tagrank tagname ¾Ë
+8,tagrank tagname ¾Ë·Á
+8,tagrank tagname ´©±¸
+8,tagrank tagname °Ë»ö
+8,tagrank tagname ¹øÈ£ °Ë»ö
+8,tagloc tagname Ã£
+8,tagloc tagname ¾Ë
+8,tagloc tagname ¾Ë·Á
+8,tagloc tagname ´©±¸
+8,tagloc tagname °Ë»ö
+8,tagloc tagname ¹øÈ£ °Ë»ö
+8,tagloc tagname Àº Ã£
+8,tagloc tagname Àº ¾Ë
+8,tagloc tagname Àº ¾Ë·Á
+8,tagloc tagname Àº ´©±¸
+8,tagloc tagname Àº °Ë»ö
+8,tagloc tagname Àº ¹øÈ£ °Ë»ö
+8,tagloc ¿¡ tagname Ã£
+8,tagloc ¿¡ tagname ¾Ë
+8,tagloc ¿¡ tagname ¾Ë·Á
+8,tagloc ¿¡ tagname ´©±¸
+8,tagloc ¿¡ tagname °Ë»ö
+8,tagloc ¿¡ tagname ¹øÈ£ °Ë»ö
+8,tagloc ±Ù¹« tagname Ã£
+8,tagloc ±Ù¹« tagname ¾Ë
+8,tagloc ±Ù¹« tagname ¾Ë·Á
+8,tagloc ±Ù¹« tagname ´©±¸
+8,tagloc ±Ù¹« tagname °Ë»ö
+8,tagloc ±Ù¹« tagname Àº Ã£
+8,tagloc ±Ù¹« tagname Àº ¾Ë
+8,tagloc ±Ù¹« tagname Àº ¾Ë·Á
+8,tagloc ±Ù¹« tagname Àº ´©±¸
+8,tagloc ±Ù¹« tagname Àº °Ë»ö
+8,tagloc ±Ù¹« tagname Àº ¹øÈ£ °Ë»ö
+8,tagcompany tagname Ã£
+8,tagcompany tagname ¾Ë
+8,tagcompany tagname ¾Ë·Á
+8,tagcompany tagname ´©±¸
+8,tagcompany tagname °Ë»ö
+8,tagcompany tagname ¹øÈ£ °Ë»ö
+8,tagcompany tagname Àº Ã£
+8,tagcompany tagname Àº ¾Ë
+8,tagcompany tagname Àº ¾Ë·Á
+8,tagcompany tagname Àº ´©±¸
+8,tagcompany tagname Àº °Ë»ö
+8,tagcompany tagname Àº ¹øÈ£ °Ë»ö
+8,tagorg tagname Ã£
+8,tagorg tagname ¾Ë
+8,tagorg tagname ¾Ë·Á
+8,tagorg tagname ´©±¸
+8,tagorg tagname °Ë»ö
+8,tagorg tagname ¹øÈ£ °Ë»ö
+8,tagorg tagname Àº Ã£
+8,tagorg tagname Àº ¾Ë
+8,tagorg tagname Àº ¾Ë·Á
+8,tagorg tagname Àº ´©±¸
+8,tagorg tagname Àº °Ë»ö
+8,tagorg tagname Àº ¹øÈ£ °Ë»ö
+8,tagorg tagname tagrank Ã£
+8,tagorg tagname tagrank ¾Ë
+8,tagorg tagname tagrank ¾Ë·Á
+8,tagorg tagname tagrank ´©±¸
+8,tagorg tagname tagrank °Ë»ö
+8,tagorg tagname tagrank ¹øÈ£ °Ë»ö
+8,tagorg tagname tagrank Àº Ã£
+8,tagorg tagname tagrank Àº ¾Ë
+8,tagorg tagname tagrank Àº ¾Ë·Á
+8,tagorg tagname tagrank Àº ´©±¸
+8,tagorg tagname tagrank Àº °Ë»ö
+8,tagorg tagname tagrank Àº ¹øÈ£ °Ë»ö
+8,tagloc tagorg tagname Ã£
+8,tagloc tagorg tagname ¾Ë
+8,tagloc tagorg tagname ¾Ë·Á
+8,tagloc tagorg tagname ´©±¸
+8,tagloc tagorg tagname °Ë»ö
+8,tagloc tagorg tagname ¹øÈ£ °Ë»ö
 8,tagloc tagorg tagrank tagname
-8,tagloc tagorg tagrank tagname ì°¾
-8,tagloc tagorg tagrank tagname ì•Œ
-8,tagloc tagorg tagrank tagname ì•Œë ¤
-8,tagloc tagorg tagrank tagname ëˆ„êµ¬
-8,tagloc tagorg tagrank tagname ê²€ìƒ‰
-8,tagloc tagorg tagrank tagname ë²ˆí˜¸ ê²€ìƒ‰
+8,tagloc tagorg tagrank tagname Ã£
+8,tagloc tagorg tagrank tagname ¾Ë
+8,tagloc tagorg tagrank tagname ¾Ë·Á
+8,tagloc tagorg tagrank tagname ´©±¸
+8,tagloc tagorg tagrank tagname °Ë»ö
+8,tagloc tagorg tagrank tagname ¹øÈ£ °Ë»ö
 8,tagloc tagorg tagname tagrank
-8,tagloc tagorg tagname tagrank ì°¾
-8,tagloc tagorg tagname tagrank ì•Œ
-8,tagloc tagorg tagname tagrank ì•Œë ¤
-8,tagloc tagorg tagname tagrank ëˆ„êµ¬
-8,tagloc tagorg tagname tagrank ê²€ìƒ‰
-8,tagloc tagorg tagname tagrank ë²ˆí˜¸ ê²€ìƒ‰
-10,tagcompany tagrank ì°¾
-10,tagcompany tagrank ì•Œ
-10,tagcompany tagrank ê²€ìƒ‰ 
-10,tagcompany tagrank ëˆ„êµ¬
-10,tagcompany tagrank ì•Œë ¤
-10,tagloc tagcompany tagrank ì°¾
-10,tagloc tagcompany tagrank ì•Œ
-10,tagloc tagcompany tagrank ê²€ìƒ‰
-10,tagloc tagcompany tagrank ëˆ„êµ¬
-10,tagloc tagcompany tagrank ì•Œë ¤
-10,tagcompany tagloc tagrank ì°¾
-10,tagcompany tagloc tagrank ì•Œ
-10,tagcompany tagloc tagrank ê²€ìƒ‰
-10,tagcompany tagloc tagrank ëˆ„êµ¬
-10,tagcompany tagloc tagrank ì•Œë ¤
+8,tagloc tagorg tagname tagrank Ã£
+8,tagloc tagorg tagname tagrank ¾Ë
+8,tagloc tagorg tagname tagrank ¾Ë·Á
+8,tagloc tagorg tagname tagrank ´©±¸
+8,tagloc tagorg tagname tagrank °Ë»ö
+8,tagloc tagorg tagname tagrank ¹øÈ£ °Ë»ö
+10,tagcompany tagrank Ã£
+10,tagcompany tagrank ¾Ë
+10,tagcompany tagrank °Ë»ö 
+10,tagcompany tagrank ´©±¸
+10,tagcompany tagrank ¾Ë·Á
+10,tagloc tagcompany tagrank Ã£
+10,tagloc tagcompany tagrank ¾Ë
+10,tagloc tagcompany tagrank °Ë»ö
+10,tagloc tagcompany tagrank ´©±¸
+10,tagloc tagcompany tagrank ¾Ë·Á
+10,tagcompany tagloc tagrank Ã£
+10,tagcompany tagloc tagrank ¾Ë
+10,tagcompany tagloc tagrank °Ë»ö
+10,tagcompany tagloc tagrank ´©±¸
+10,tagcompany tagloc tagrank ¾Ë·Á
