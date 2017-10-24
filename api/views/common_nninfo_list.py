@@ -64,7 +64,7 @@ class CommonNNInfoList(APIView):
 
             input_parm = request.data
             max_nnid = NNCommonManager().get_nn_id_max() + 1
-            if nnid == "":
+            if nnid == "new":
                 nnid = "nn" + str(max_nnid).zfill(8)
             else:
                 return_data = NNCommonManager().get_nn_id_info(nnid)

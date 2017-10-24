@@ -33,8 +33,16 @@ export default class FileUploadComponent extends React.Component {
     }
     
     componentDidMount() {
-        this.getFileData()
+    }
 
+    componentWillUpdate() {
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+    }
+
+    componentWillMount() {
+        this.getFileData()
     }
 
     _handleUploading(progress, mill){
@@ -95,7 +103,7 @@ export default class FileUploadComponent extends React.Component {
         let listFile = []
 
         this.fileOption.baseUrl = EnvConstants.getApiServerUrl()+this.state.fileurl
-        if(this.state.nn_node_name == "netconf_data" || this.state.nn_node_name == "eval_data"){ 
+        if(this.props.nn_node_name == "netconf_data" || this.props.nn_node_name == "eval_data"){ 
             this.fileOption.baseUrl += this.props.nn_id+'/ver/'+this.props.nn_wf_ver_id+'/dir/'+this.state.nn_node_name+'/type/'+this.props.nn_path_type+'/'
         }else{
             this.fileOption.baseUrl += this.props.nn_id+'/ver/'+this.props.nn_wf_ver_id+'/dir/'+this.props.nn_node_name+'/type/'+this.props.nn_path_type+'/'

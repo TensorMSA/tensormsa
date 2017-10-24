@@ -163,7 +163,7 @@ export default class NN_InfoNewComponent extends React.Component {
         let eval_data_name = ""
         if(re == true){
             // Make NN Info
-            this.props.reportRepository.postCommonNNInfo("", dparam).then((tableData) => {
+            this.props.reportRepository.postCommonNNInfo("new", dparam).then((tableData) => {
                 nn_id = tableData['nn_id']
                 this.setState({ nn_id : nn_id })
                 for(let i in tableData['graph']){
@@ -324,10 +324,10 @@ export default class NN_InfoNewComponent extends React.Component {
 
 
 
-        if(this.state.train_node_name != null && this.refs.trainfilesrc != null && this.state.eval_node_name != null && this.refs.evalfilesrc != null){
-            this.refs.trainfilesrc.getFileData(null, this.state.train_node_name)
-            this.refs.evalfilesrc.getFileData(null, this.state.eval_node_name)
-        }
+        // if(this.state.train_node_name != null && this.refs.trainfilesrc != null && this.state.eval_node_name != null && this.refs.evalfilesrc != null){
+        //     this.refs.trainfilesrc.getFileData(null, this.state.train_node_name)
+        //     this.refs.evalfilesrc.getFileData(null, this.state.eval_node_name)
+        // }
 
         return (
             <section>
