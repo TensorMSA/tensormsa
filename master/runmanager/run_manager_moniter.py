@@ -62,11 +62,12 @@ class RunManagerMoniter(RunManager):
         resp_data = json.loads(resp_data)
         for re in resp_data:
             re_data = {}
-            replace_data = resp_data[re]['args'].replace("'", '').replace("(", '').replace(")", '')
-            replace_data = replace_data.split(',')
             re_data['uuid'] = resp_data[re]['uuid']
-            re_data['nn_id'] = replace_data[0]
-            re_data['nn_wf_ver_id'] = replace_data[1]
+            if resp_data[re]['args'] != None:
+                replace_data = resp_data[re]['args'].replace("'", '').replace("(", '').replace(")", '')
+                replace_data = replace_data.split(',')
+                re_data['nn_id'] = replace_data[0]
+                re_data['nn_wf_ver_id'] = replace_data[1]
             re_data['clock'] = resp_data[re]['clock']
             re_data['name'] = resp_data[re]['name']
             re_data['failed'] = resp_data[re]['failed']

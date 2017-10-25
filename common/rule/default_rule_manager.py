@@ -691,8 +691,8 @@ def set_automl_rule() :
         # CNN net conf
         conf = {"auto": {
                     "netconf_node": {
-                        "param": {"traincnt": {"type": "int", "option": 2, "auto": False}
-                            , "epoch": {"type": "int", "option": 2, "auto": False}
+                        "param": {"traincnt": {"type": "int", "option": 3, "auto": False}
+                            , "epoch": {"type": "int", "option": 5, "auto": False}
                             , "batch_size": {"type": "int", "option": None, "auto": [100, 1000000, 100]}
                             , "predictcnt": {"type": "int", "option": 3, "auto": False}
                             , "predlog": {"type": "sel", "option": ["N", "Y"], "auto": False}
@@ -739,8 +739,8 @@ def set_automl_rule() :
                 },
                     "single": {
                         "netconf_node": {
-                            "param": {"traincnt": 2
-                                , "epoch": 2
+                            "param": {"traincnt": 3
+                                , "epoch": 5
                                 , "batch_size": 1000000
                                 , "predictcnt": 3
                                 , "predlog": "N"  # T:Ture, F:False, A:True&False, N:None
@@ -801,16 +801,16 @@ def set_automl_rule() :
         conf = {
             "auto": {
                 "netconf_node": {
-                    "param": {"traincnt": {"type": "int", "option": 2, "auto": False}
-                        , "epoch": {"type": "int", "option": 2, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [10, 1000, 10]}
-                        , "predictcnt": {"type": "int", "option": 1, "auto": False}
+                    "param": {"traincnt": {"type": "int", "option": 3, "auto": False}
+                        , "epoch": {"type": "int", "option": 5, "auto": False}
+                        , "batch_size": {"type": "int", "option": None, "auto": [10, 100, 10]}
+                        , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "Y"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
                               }
                     , "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
                         , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
-                        , "layeroutputs": {"type": "int", "option": 18, "auto": False}
+                        , "layeroutputs": {"type": "sel", "option": [18,34,50,101,152], "auto": False}
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
                                  }

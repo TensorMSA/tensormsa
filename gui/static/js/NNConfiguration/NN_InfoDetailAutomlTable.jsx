@@ -164,7 +164,7 @@ export default class NN_InfoDetailAutomlTable extends React.Component {
             <section>
             <div className="container paddingT10">
 
-            <h2> Auto ML Best</h2>
+            <h2> Auto ML Config</h2>
             <table className="table detail" ref= 'master1'  >
                     
                 {tdTable}

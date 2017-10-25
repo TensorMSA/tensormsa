@@ -27,6 +27,7 @@ export default class NN_InfoMonitering extends React.Component {
     }
 
     componentDidMount(){
+        this.props.setActiveItem('init', null, null, null, null, null, null, null);
         this.getTaskInfo("all");// 화면에 들어 올때 검색을 해준다.
     }
 
@@ -68,7 +69,8 @@ export default class NN_InfoMonitering extends React.Component {
     handleClick(row){// Table Cell Clcik and Call log
         // row["uuid"]
         // this.getTaskLogInfo('log.txt', this.state.line)
-        this.props.setActiveItem(row["uuid"], 'M', null, null, null, null, null, null);
+        let altuuid = row["nn_id"].trim()+'/'+row["nn_wf_ver_id"].trim()+'/'+row["uuid"]+'.log'
+        this.props.setActiveItem(altuuid, null, null, null, null, null, null, null);
         return this.props.getHeaderEvent(34); //call Net Info 
     }
 

@@ -126,7 +126,7 @@ export default class ReportRepository {
     }
 
     getCommonNNInfoBatch(params, wf_ver_id){
-        return this.api.get('/api/v1/type/common/target/nninfo/nnid/'+params+'/version/'+wf_ver_id+'/', "").then((data) => {
+        return this.api.get('/api/v1/type/common/target/nninfo/nnid/'+params+'/version/'+wf_ver_id+'/', false).then((data) => {
             data = JSON.parse(data);
             this.log("getCommonBatchInfo", data)
             return data;
@@ -151,7 +151,7 @@ export default class ReportRepository {
     }
 
     getCommonNNInfoWFNode(params, wf_ver_id, desc){
-        return this.api.get('/api/v1/type/wf/target/init/mode/simple/'+params+'/wfver/'+wf_ver_id+'/desc/'+desc+'/', "").then((data) => {
+        return this.api.get('/api/v1/type/wf/target/init/mode/simple/'+params+'/wfver/'+wf_ver_id+'/desc/'+desc+'/', false).then((data) => {
             data = JSON.parse(data);
             this.log("getCommonNNInfoWFNode", data)
             return data;

@@ -33,7 +33,6 @@ export default class NN_HeaderComponent extends React.Component {
             case 4:
             	return this.props.getHeaderEvent(4);
             case 5:
-            	msg.show("설정이 완료되지 않았습니다.")
             	return this.props.getHeaderEvent(5); 
 
         }

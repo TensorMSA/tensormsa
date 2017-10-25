@@ -8,17 +8,20 @@ import logging
 from logging import FileHandler
 from django.conf import settings
 import datetime
+from hoyai.celery import app
 
+# @shared_task
+@app.task(bind=True)
+def train(self, nn_id, wf_ver) :
 
-@shared_task
-def train(nn_id, wf_ver) :
+    log_home = "/hoya_log_root/"+nn_id+"/"+wf_ver+"/"
+    # _celery_log_dir = make_celery_dir_by_datetime(log_home)
+    celery_log_dir = make_and_exist_directory(log_home)
 
-    log_home = "/hoya_log_root"
-    _celery_log_dir = make_celery_dir_by_datetime(log_home)
-    celery_log_dir = make_and_exist_directory(_celery_log_dir)
+    # celery_log_file = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    celery_log_file = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    _filename = str(nn_id) +"_" +str(wf_ver) +"_" +  celery_log_file + ".log"
+    # _filename = str(nn_id) +"_" +str(wf_ver) +".log"
+    _filename = str(self.request.id) + ".log"
 
     celery_log_file = celery_log_dir + _filename
 
@@ -28,12 +31,15 @@ def train(nn_id, wf_ver) :
     logger.addHandler(task_handler)
     logging.info("=============================================================")
     logging.info("[Train Task] Start Celery Job {0} {1}".format(nn_id, wf_ver))
+    logging.info(self.request.id)
     logging.info("=============================================================")
     result = WorkFlowTrainTask()._exec_train(nn_id, wf_ver)
     logging.info("=============================================================")
     logging.info("[Train Task] Done Celery Job {0} {1} : {2}".format(nn_id, wf_ver, result))
     logging.info("=============================================================")
     return result
+
+
 
 def make_celery_dir_by_datetime(home_dir):
     """ 현재시간을 사용하여 디렉토리 이름 반환

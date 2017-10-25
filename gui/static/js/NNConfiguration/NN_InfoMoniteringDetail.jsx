@@ -13,7 +13,7 @@ export default class NN_InfoMoniteringDetail extends React.Component {
             tableData:null,
             NN_TableData:null,
             NN_TableDataLog:"",
-            line:5000,
+            line:0,
             nn_color:"#14c0f2",
             smove_flag : "N",
             on: false,

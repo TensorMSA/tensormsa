@@ -151,7 +151,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                    // New Version Train
                 let wfparam = {}
                 wfparam["nn_def_list_info_nn_id"] = ""
-                wfparam["nn_wf_ver_info"] = "init"
+                wfparam["nn_wf_ver_info"] = "single"
                 wfparam["condition"] = "1"
                 wfparam["active_flag"] = "N"
 
@@ -191,7 +191,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                     wfparam["nn_wf_ver_id"] = ver
                     wfparam["nn_def_list_info_nn_id"] = ""
                     wfparam["nn_wf_ver_info"] = "init"
-                    wfparam["condition"] = "1"
+                    // wfparam["condition"] = ""
                     wfparam["active_flag"] = "Y"
                     // Version Active 변경.
 
@@ -631,7 +631,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                                     onClick = {this.clickSeletVersion.bind(this)}
                                                                     style={{"textAlign":"center", "width":"100%"}} />  </td>)
             colData.push(<td key={k++} alt = {row["nn_wf_ver_id"]} 
-                                        onClick = {this.clickSeletVersion.bind(this)} > {row["nn_wf_ver_id"]} </td>)
+                                        onChange = {this.clickSeletVersion.bind(this)} > {row["nn_wf_ver_id"]} </td>)
               
             colData.push(<td key={k++} width="80" >
                                         <div>
