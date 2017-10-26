@@ -988,6 +988,8 @@ def set_automl_rule() :
         }
         AutoMlRule().set_graph_type_list('wdnn', conf)
 
+
+
         # set netconf for charcnn
         conf = {
             "auto": {
@@ -1091,19 +1093,20 @@ def set_automl_rule_etc():
         # set network description
         conf = {
             "cnn" : "CNN (convolutional neural network)은 딥러닝의 한 종류로 앞의 컨볼루셔널 계층을 통해서 입력 받은 특징(Feature)를 추출하게 되고, 이렇게 추출된 특징을 기반으로 기존의 뉴럴 네트워크를 이용하여 분류를 해내게 된다."
-            ,"resnet" : "ResNet Network Description"
-            ,"wdnn": "wdnn Network Description"
+            ,"resnet" : "망을 100 layer 이상으로 깊게하면서, 깊이에 따른 학습효과를 얻을 수 있는 Residual Learning을 적용한 network"
+            ,"wdnn": "기존에 기억된 결과로만 예측하는 와이드모델과 너무 일반화가 되서 엉뚱한 결과가 나올 수 있는 딥모델의 문제를 해결하기 위해 두 모델을 합친 Wide & Deep 모델"
             ,"wdnn_keras": "wdnn_keras Network Description"
             ,"word2vec": "word2vec Network Description"
             ,"word2vec_frame" : "word2vec_frame Network Description"
             ,"doc2vec" : "doc2vec Network Description"
-            ,"wcnn" : "WCNN Network Description"
+            ,"wcnn" : "컴퓨터 비전 분야에서 뛰어난 성능을 보인 CNN을 NLP 문제를 해결하는데 적용한 CharCNN"
             ,"seq2seq" : "seq2seq Network Description"
             ,"seq2seq_csv" : "seq2seq_csv Network Description"
             ,"autoencoder_img" : "autoencoder_img Network Description"
             ,"autoencoder_csv" : "autoencoder_csv Network Description"
             ,"bilstmcrf_iob" : "bilstmcrf_iob Network Description"
             ,"fasttext_txt" : "fasttext_txt Network Description"
+            ,"dnn" : "Multi Layer Perceptron이라고도 하며 가장 기본적인 Deep Neural Network"
         }
         AutoMlRule().update_graph_type_list('graph_flow_desc', conf)
 
@@ -1123,6 +1126,7 @@ def set_automl_rule_etc():
             ,"autoencoder_csv" : "3"
             ,"bilstmcrf_iob" : "3"
             ,"fasttext_txt" : "3"
+            
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 
@@ -1176,10 +1180,10 @@ def set_automl_rule_etc():
             , "word2vec_frame": "N"
             , "doc2vec": "N"
             , "wcnn": "Y"
-            , "seq2seq": "Y"
-            , "seq2seq_csv": "Y"
-            , "autoencoder_img": "Y"
-            , "autoencoder_csv": "Y"
+            , "seq2seq": "N"
+            , "seq2seq_csv": "N"
+            , "autoencoder_img": "N"
+            , "autoencoder_csv": "N"
             , "bilstmcrf_iob": "N"
             , "fasttext_txt": "N"
 
