@@ -22,6 +22,7 @@ export default class NN_InfoDetailComponent extends React.Component {
         this.state = {
             tableData: null,
             NN_TableData: null,
+            NN_TableGraph:null,
             NN_TableWFData: null,
             NN_TableWFDataAccLoss: null,
             NN_TableNodeData: null,
@@ -78,7 +79,8 @@ export default class NN_InfoDetailComponent extends React.Component {
             trainType:true, // true : auto, false : single
             batchImg :EnvConstants.getImgUrl()+"ico_menu05.png",
             memoImg : EnvConstants.getImgUrl()+"ico_menu06.png",
-            runTitle : "Run"
+            runTitle : "Run",
+            sourcecnt:0
         };
         this.closeModal = this.closeModal.bind(this);
         this.closeModalPredictAPI = this.closeModalPredictAPI.bind(this);
@@ -139,14 +141,21 @@ export default class NN_InfoDetailComponent extends React.Component {
     }
     
     addVersion(){//Version New를 생성해준다.
-        let re = confirm( "Are you create version?" )
+        let re = confirm( "Do you create version?" )
         if(re == true){
             
             if(this.state.trainType == true){
-                //Run AutoML
-                this.props.reportRepository.postCommonNNInfoAuto(this.state.nn_id).then((tableData) => {
-                
-                });
+                //File Check
+                this.props.reportRepository.getFileUpload(this.state.nn_id, 'common', '', 'runcheck').then((tableData) => {
+                    if(tableData[0]['filecnt'] == 0){
+                        alert( tableData[0]['type'] +" File does not exist." )
+                    }else{
+                       //Run AutoML
+                        this.props.reportRepository.postCommonNNInfoAuto(this.state.nn_id).then((tableData) => {
+                        
+                        }); 
+                    }
+                });     
             }else{
                    // New Version Train
                 let wfparam = {}
@@ -158,26 +167,31 @@ export default class NN_InfoDetailComponent extends React.Component {
                 // Make NN WF Node Info
                 let nodeparam = {}
                 nodeparam["type"] = this.state.netType
+                //File Check
+                this.props.reportRepository.getFileUpload(this.state.nn_id, 'common', '', 'runcheck').then((tableData) => {
+                    if(tableData[0]['filecnt'] == 0){
+                        alert( tableData[0]['type'] +" File does not exist." )
+                    }else{
+                        this.props.reportRepository.postCommonNNInfoWF(this.state.nn_id, wfparam).then((wf_ver_id) => {
+                            //node create
+                            this.props.reportRepository.postCommonNNInfoWFNode(this.state.nn_id, wf_ver_id, nodeparam).then((tableData) => {
+                                //node config input
+                                this.props.reportRepository.putCommonNNInfoWFNode(this.state.nn_id, wf_ver_id, '', nodeparam).then((tableData) => {
 
-                this.props.reportRepository.postCommonNNInfoWF(this.state.nn_id, wfparam).then((wf_ver_id) => {
-                    //node create
-                    this.props.reportRepository.postCommonNNInfoWFNode(this.state.nn_id, wf_ver_id, nodeparam).then((tableData) => {
-                        //node config input
-                        this.props.reportRepository.putCommonNNInfoWFNode(this.state.nn_id, wf_ver_id, '', nodeparam).then((tableData) => {
+                                });
 
-                        });
-
-                    });
-                }); 
+                            });
+                        }); 
+                    }
+                });
             }
 
             this.searchData()
-            
         }
     }
 
     saveData(){//Save
-        let re = confirm( "Are you Save?" )
+        let re = confirm( "Do you Save?" )
         if(re == true){
             //Version Active Flag Save
             let vbody = this.refs.master2.children[1].children
@@ -246,6 +260,7 @@ export default class NN_InfoDetailComponent extends React.Component {
 
                 let autokeys = Object.keys(tableData['fields'][0]["automl_parms"])
                 this.state.NN_TableData = tableData['fields'][0]
+                this.state.NN_TableGraph = tableData['graph']
                 if(autokeys.length == 0){
                     this.state.trainType = false
                     this.state.configEditFlag = "Y"
@@ -354,7 +369,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             value = selectedValue.target.attributes.alt.value
             
             //학습을 해준다.
-            let re = confirm( "Are you Train?" )
+            let re = confirm( "Do you Train?" )
             if(re == true){
                 // 기존에 실행 되고 있는 Train이 있으면 안돌게 해야 한다.
                 // 돌리려고 하는 Batch version 모델이 없으면 안된다.

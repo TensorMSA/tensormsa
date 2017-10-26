@@ -39,10 +39,12 @@ export default class FileUploadComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        console.log('componentDidUpdate')
     }
 
     componentWillMount() {
         this.getFileData()
+        console.log('componentWillMount')
     }
 
     _handleUploading(progress, mill){
@@ -90,7 +92,7 @@ export default class FileUploadComponent extends React.Component {
         let fparam = {}
         fparam["filename"] = value.target.alt
         fparam["type"] = this.props.nn_path_type
-        let re = confirm( "Are you delete?" )
+        let re = confirm( "Do you delete?" )
         if(re == true){
             this.props.reportRepository.deleteFileUpload(this.props.nn_id, this.props.nn_wf_ver_id, this.state.nn_node_name, fparam).then((tableData) => {
                                                     this.getFileData()

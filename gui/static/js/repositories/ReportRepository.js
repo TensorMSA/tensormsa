@@ -246,8 +246,8 @@ export default class ReportRepository {
     }
 
     //Monitering
-    getMoniteringInfo(params, id, line) {
-        return this.api.get('/api/v1/type/service/monitering/type/'+params+'/id/'+id+'/line/'+line, false).then((data) => {
+    getMoniteringInfo(params, id, line, spin) {
+        return this.api.get('/api/v1/type/service/monitering/type/'+params+'/id/'+id+'/line/'+line, spin).then((data) => {
             data = JSON.parse(data);
             this.log("getCommonMenuInfo", data)
            return data;

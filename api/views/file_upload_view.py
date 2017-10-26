@@ -8,6 +8,7 @@ import coreapi
 import time
 from rest_framework.parsers import FileUploadParser,MultiPartParser
 import shutil
+from master.network.nn_common_manager import NNCommonManager
 
 # from rest_framework import status
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
@@ -105,6 +106,31 @@ class FileUploadView(APIView):
                 if not os.path.isdir(tmpfilepath+mxcnt):
                     os.mkdir(tmpfilepath+mxcnt)
                 return_data = {"path":mxcnt}
+            elif type.find("runcheck") >= 0:
+                return_data = []
+                graph = NNCommonManager().get_nn_node_name(nnid)
+                for net in graph:
+                    if net['fields']['graph_node'] == 'netconf_data':
+                        netconf_data = net['fields']['graph_node_name']
+                    if net['fields']['graph_node'] == 'eval_data':
+                        eval_data = net['fields']['graph_node_name']
+                source_path_n = get_source_path(nnid, ver, netconf_data)
+                source_path_e = get_source_path(nnid, ver, eval_data)
+                store_path_n = get_store_path(nnid, ver, netconf_data)
+                store_path_e = get_store_path(nnid, ver, eval_data)
+                source_n_cnt = len(os.listdir(source_path_n))
+                source_e_cnt = len(os.listdir(source_path_e))
+                store_n_cnt = len(os.listdir(store_path_n))
+                store_e_cnt = len(os.listdir(store_path_e))
+
+                if source_n_cnt == 0 and store_n_cnt == 0:
+                    resub = {"filecnt":0, "type":"Source"}
+                elif source_e_cnt == 0 and store_e_cnt == 0:
+                    resub = {"filecnt":0, "type":"Eval"}
+                else:
+                    resub = {"filecnt":1}
+
+                return_data.append(resub)
             else:
                 return_data = []
                 tmpfilepath = get_source_path(nnid, ver, dir)

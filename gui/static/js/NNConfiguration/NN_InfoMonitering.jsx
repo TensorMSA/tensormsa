@@ -32,22 +32,10 @@ export default class NN_InfoMonitering extends React.Component {
     }
 
     getTaskInfo(params) {
-        this.props.reportRepository.getMoniteringInfo('all', 'all', 'all').then((tableData) => {
+        this.props.reportRepository.getMoniteringInfo('all', 'all', 'all', 'all').then((tableData) => {
             this.setState({ NN_TableData: tableData})//조회한 것을 화면에 반영한다.
         });   
     }
-
-    // getTaskLogInfo(file, line) {
-    //     this.props.reportRepository.getMoniteringInfo('log', file, line).then((tableData) => {
-    //         if(tableData[0] != undefined && ( tableData[0]['line'] == null || tableData[0]['line'] == undefined)){
-    //             this.state.line = 0
-    //         }else{
-    //             this.state.line = tableData[0]['line']
-    //         }
-    //         let log = this.state.NN_TableDataLog + tableData[0]['log']
-    //         this.setState({ NN_TableDataLog: log})//조회한 것을 화면에 반영한다.
-    //     });   
-    // }
 
     searchData() {
         this.getTaskInfo("all")

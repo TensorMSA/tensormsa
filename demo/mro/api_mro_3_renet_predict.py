@@ -12,7 +12,7 @@ import operator
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-nn_id = "nn00000003"
+nn_id = "nn00000012"
 
 files = {
         #  'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
@@ -26,8 +26,8 @@ files = {
         # ,'files000009':  open('/home/dev/hoyai/demo/data/motor/1motor.jpg','rb')
         # ,'files000010':  open('/home/dev/hoyai/demo/data/motor/2motor.jpg','rb')
 
-'files000001':  open('/hoya_src_root/bolt1.jpg','rb')
-    # ,'files000002':  open('/home/dev/hoyai/demo/data/airplane/2air.jpg','rb')
+# 'files000001':  open('/hoya_src_root/bolt1.jpg','rb')
+    'files000002':  open('/home/dev/tensormsa/demo/data/airplane/2air.jpg','rb')
 # ,'files000003':  open('/hoya_src_root/nn00004/21/personData/LSH/20170418_094624.jpg','rb')
 
  #  'files000004':  open('/hoya_src_root/nn00004/21/personDataTest/PSC/20170417_180614.jpg','rb')

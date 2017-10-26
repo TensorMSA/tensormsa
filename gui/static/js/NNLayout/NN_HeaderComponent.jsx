@@ -54,6 +54,7 @@ export default class NN_HeaderComponent extends React.Component {
     }
 
     render() {
+    	// <li className={this.isActive(5)}><a href="#" onClick={this.setFilter.bind(this, 5)}>Settings</a></li>
         return (   
 			<header className="mainHeader">
 				<div className="mainHeader_area">
@@ -72,7 +73,7 @@ export default class NN_HeaderComponent extends React.Component {
 						<li className={this.isActive(2)}><a href="#" onClick={this.setFilter.bind(this, 2)}>Net Create</a></li>  
 						<li className={this.isActive(3)}><a href="#" onClick={this.setFilter.bind(this, 3)}>Monitoring</a></li>
 						<li className={this.isActive(4)}><a href="#" onClick={this.setFilter.bind(this, 4)}>App List</a></li>
-						<li className={this.isActive(5)}><a href="#" onClick={this.setFilter.bind(this, 5)}>Settings</a></li>
+						
 					</ul>
 				</nav>
 					<dl className="utilMenu">

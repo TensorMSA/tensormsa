@@ -156,7 +156,7 @@ export default class NN_InfoNewComponent extends React.Component {
         //  "nn00000030"
         // let wf_ver_id = "1"
 
-        let re = confirm( "Are you create?" )
+        let re = confirm( "Do you create?" )
         let nn_id = ""
         let nn_node = ""
         let netconf_data_name = ""
@@ -267,10 +267,10 @@ export default class NN_InfoNewComponent extends React.Component {
 
         let nnInfoDefault = [];
         if (this.state.NN_TableMaster == null){
-            this.state.NN_TableMaster = [   {title:"Category"       , width:10    , input_data:"", ex:"ex) ERP, MES, SCM"}
-                                            ,{title:"SubCategory"    , width:10    , input_data:"", ex:"ex) MRO"}
-                                            ,{title:"Title"          , width:100    , input_data:"", ex:"ex) MRO Classification"}
-                                            ,{title:"Description"    , width:5000    , input_data:"", ex:"ex) MRO Classification Description"}
+            this.state.NN_TableMaster = [   {title:"Category"       , width:10    , input_data:"", ex:"ex) 업무구분(ERP, MES, SCM)"}
+                                            ,{title:"SubCategory"    , width:10    , input_data:"", ex:"ex) 재무, 구매, 판매 "}
+                                            ,{title:"Title"          , width:100    , input_data:"", ex:"ex) 자재 Image 분류 "}
+                                            ,{title:"Description"    , width:5000    , input_data:"", ex:"ex) 자재를 Image로 분석하여 자동으로 분류함 "}
                                          ];
         }
         nnInfoDefault = this.state.NN_TableMaster
@@ -298,9 +298,9 @@ export default class NN_InfoNewComponent extends React.Component {
 
         let nnInfoDefaultAuto = [];
         if (this.state.NN_TableMasterAuto == null){
-            this.state.NN_TableMasterAuto = [   {title:"Generation"   , input_data:"3", ex:"훈련 세대별 Count"}
+            this.state.NN_TableMasterAuto = [   {title:"Generation"   , input_data:"3", ex:"훈련 총 세대 Count"}
                                                ,{title:"Population"   , input_data:"3", ex:"훈련 세대별 Version Count"}
-                                               ,{title:"Survive"      , input_data:"2", ex:"훈련 세대별 진행 Count"}
+                                               ,{title:"Survive"      , input_data:"2", ex:"훈련 세대별 생존 Count"}
                                          ];
         }
         nnInfoDefaultAuto = this.state.NN_TableMasterAuto

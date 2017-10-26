@@ -63,6 +63,10 @@ class AutoMlRunManager :
                 networks = self.train_networks(networks, initial=initial)
                 # set each train set flag to fin
                 self.set_train_finish(ver_data_sets)
+                # network acc set
+                for net in networks:
+                    return_data = NNCommonManager().get_nn_batch_info(net['nn_id'], net['nn_wf_ver_id'])
+                    print(return_data)
                 # update traing progress
                 self.update_summary(networks, survive)
                 # sort & discard

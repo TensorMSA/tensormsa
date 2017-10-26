@@ -54,7 +54,7 @@ export default class NN_InfoListComponent extends React.Component {
 
     deleteCommonNNInfo(params) { 
         let nn_id = ''
-        let re = confirm( "Are you delete?" )
+        let re = confirm( "Do you delete?" )
         let table = this.refs.master2
         if(re == true){
             for(let i=1 ; i < table.rows.length ; i++){
@@ -89,7 +89,7 @@ export default class NN_InfoListComponent extends React.Component {
         let bc_sub = ''
         let bc_title = ''
         let bc_desc = ''
-        let re = confirm( "Are you update?" )
+        let re = confirm( "Do you update?" )
         let col = this.state.NN_TableColArr
         let table = this.refs.master2
         if(re == true){

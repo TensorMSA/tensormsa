@@ -25,7 +25,7 @@ export default class NN_InfoMoniteringDetail extends React.Component {
     }
 
     componentDidMount(){
-        this.getTaskLogInfo(this.props.nn_id);// 화면에 들어 올때 검색을 해준다.
+        this.getTaskLogInfo(this.props.nn_id, '');// 화면에 들어 올때 검색을 해준다.
     }
 
     componentDidUpdate(){
@@ -45,9 +45,9 @@ export default class NN_InfoMoniteringDetail extends React.Component {
         clearInterval(this.state.interval)
     }
 
-    getTaskLogInfo(file) {
+    getTaskLogInfo(file, spin) {
         // file = "log.txt"
-        this.props.reportRepository.getMoniteringInfo('log', file, this.state.line).then((tableData) => {
+        this.props.reportRepository.getMoniteringInfo('log', file, this.state.line, spin).then((tableData) => {
             if(tableData[0] != undefined){
                 if(tableData[0]['line'] == null || tableData[0]['line'] == undefined){
                     this.state.line = 0
@@ -61,7 +61,11 @@ export default class NN_InfoMoniteringDetail extends React.Component {
     }
 
     searchData() {
-        this.getTaskLogInfo(this.props.nn_id)  
+        this.getTaskLogInfo(this.props.nn_id, false)  
+    }
+
+    searchBtnData(){
+        this.getTaskLogInfo(this.props.nn_id, '');
     }
 
     findColInfo(col, idxType, idxName){
@@ -114,7 +118,7 @@ export default class NN_InfoMoniteringDetail extends React.Component {
                     <div className="tblBtnArea">
                         <button type="button" className="addnew" style={{"marginRight":"5px", "color":this.state.timerColor}} 
                                                 onClick={() => this.timerClick()}>{this.state.timerText}</button>
-                        <button type="button" className="addnew" onClick={() => this.searchData()} >Search</button>
+                        <button type="button" className="addnew" onClick={() => this.searchBtnData()} >Search</button>
                                       
                     
                 

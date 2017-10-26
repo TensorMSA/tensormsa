@@ -69,11 +69,16 @@ export default class NN_InfoDetailBarLine extends React.Component {
         let row = bygen[rows]
         let rowSort = sortData(row, "acc")
         let avg = 0
+        let avgcnt = 0
         let maxcnt =1
         subData['name'] = 'Gen'+pad(rows*1+1,3)
         for(let i=rowSort.length-1 ; i>=0 ; i--){
           subData[pad(maxcnt,2)] = (rowSort[i]['acc']*100).toFixed(2)*1
-          avg = avg + (rowSort[i]['acc']*100).toFixed(2)*1
+          if(rowSort[i]['survive'] === true){
+            avg = avg + (rowSort[i]['acc']*100).toFixed(2)*1
+            avgcnt += 1
+          }
+          
           if(this.state.NN_Labels.indexOf(pad(maxcnt,2)) == -1){
             this.state.NN_Labels.push(pad(maxcnt,2))
           }
@@ -83,8 +88,12 @@ export default class NN_InfoDetailBarLine extends React.Component {
           }
           maxcnt += 1
         }
-
-        subData['avg'] = (avg/row.length).toFixed(2)*1
+        if(avgcnt > 1){
+          subData['avg'] = (avg/avgcnt).toFixed(2)*1
+        }else{
+          subData['avg'] = 0
+        }
+        
         data.push(subData)
 
       }
