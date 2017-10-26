@@ -75,7 +75,7 @@ class ServiceManagerPredict(APIView):
                 elif (type == "cnn"):
                     return_data = PredictNetCnn().run(nnid, ver, request.FILES)
                 elif (type == "wdnn"):
-                    return_data = PredictNetWdnn().run(nnid, ver, request.FILES)
+                    return_data = PredictNetWdnn().run(nnid, ver, request)
                 elif (type == "seq2seq"):
                     # TO-DO : need predict function for specific  version
                     raise Exception("on developing now !")

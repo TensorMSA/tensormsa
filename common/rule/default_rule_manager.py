@@ -937,6 +937,52 @@ def set_automl_rule() :
                         "type": {"type": "sel", "option": ["category", "regression"], "auto": False}
                     }
             }, "single": {
+                "data_node":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": "test",
+                        "multi_node_flag": True,
+                        "preprocess": "null",
+                        "store_path": "test"
+
+                    }
+                , "dataconf_node":
+                    {
+                        "label": "TARGET",
+                        "Transformations": {},
+                        "cross_cell": {},
+                        "cell_feature": {},
+                        "extend_cell_feature": {},
+                        "label_values": [],
+                        "label_type": "CATEGORICAL"
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": "test",
+                        "hidden_layers": [50, 50, 50, 30],
+                        "activation_function": "Relu",
+                        "batch_size": 500,
+                        "epoch": 500,
+                        "model_type": "category",
+                        "train": True
+                    }
+                , "evaldata":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": "test",
+                        "multi_node_flag": False,
+                        "preprocess": "null",
+                        "store_path": "test"
+
+                    }
+                , "eval_node":
+                    {
+                        "type": "category",
+                    }
 
             }
         }
