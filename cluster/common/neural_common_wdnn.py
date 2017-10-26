@@ -150,7 +150,8 @@ class NeuralCommonWdnn():
 
                 m = tf.contrib.learn.DNNClassifier(model_dir=model_dir,
                                                        feature_columns=deep_columns,
-                                                       #n_classes = label_cnt, #0.11 bug
+                                                       n_classes = 2, #0.11 bug
+                                                       #fix_global_step_increment_bug=True,
                                                        hidden_units=hidden_layers_value)
 
 

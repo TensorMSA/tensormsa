@@ -38,7 +38,7 @@ SECRET_KEY = 'p8eici$0t2b!$=2xdb41o+bid)5qa^fs6ej-9&h8(n$x1(k^zf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 # Celery Flag True = On, False = Off
-CELERY_FLAG = True
+CELERY_FLAG = False
 # Rule init setup True = always setup, False = Once setup
 RULE_FLAG = True
 
