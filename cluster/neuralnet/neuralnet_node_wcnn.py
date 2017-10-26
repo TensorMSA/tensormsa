@@ -3,8 +3,8 @@ from common.utils import *
 from master.workflow.netconf.workflow_netconf_wcnn import WorkFlowNetConfWideCnn as WFConf
 import tensorflow as tf
 import io, logging
-from cluster.common.train_summary_info import TrainSummaryInfo
 from common.graph.nn_graph_manager import NeuralNetModel
+from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 import numpy as np
 
 class NeuralNetNodeWideCnn(NeuralNetNode):
@@ -242,6 +242,9 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
         try:
             return_arr = []
             g_total_cnt = 0
+            config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.wfver,
+                      "nn_batch_ver_id": self.get_eval_batch(self.node_id)}
+            result = TrainSummaryAccLossInfo(config)
             while (input_data.has_next()):
                 for i in range(0, input_data.data_size(), self.batchsize):
                     x_batch, y_batch  = input_data[i:i + self.batchsize]
@@ -249,7 +252,11 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                         i_global, _, i_cost, batch_acc = sess.run([self.global_step, self.optimizer, self.cost, self.accuracy],
                                                                   feed_dict={self.X: x_batch, self.Y: y_batch})
                         g_total_cnt += 1
+
                     if (g_total_cnt % 1 == 0) :
+                        result.loss_info["loss"].append(str(i_cost))
+                        result.acc_info["acc"].append(str(batch_acc))
+                        self.save_accloss_info(result)
                         logging.info("count : {0} , Cost : {1}, Acc : {2}".format(i_global, i_cost, batch_acc))
                 input_data.next()
             input_data.reset_pointer()
