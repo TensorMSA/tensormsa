@@ -122,6 +122,8 @@ class NeuralCommonWdnn():
 
             deep_columns.extend([embedTensor for key, embedTensor in featureDeepEmbedding.items()])
             #wide_columns = []
+
+            #embed_deep_columns = [embedTensor for key, embedTensor in featureDeepEmbedding.items()]
             if model_type == "category":
 
                 m = tf.contrib.learn.DNNLinearCombinedClassifier(
@@ -148,10 +150,14 @@ class NeuralCommonWdnn():
                                                       ,enable_centered_bias = True)
             elif model_type =="deep":
 
+                optimizer = tf.train.AdagradOptimizer(learning_rate=0.001)
+
                 m = tf.contrib.learn.DNNClassifier(model_dir=model_dir,
                                                        feature_columns=deep_columns,
-                                                       n_classes = 2, #0.11 bug
+                                                       optimizer=optimizer,
+                                                       #n_classes = 2, #0.11 bug
                                                        #fix_global_step_increment_bug=True,
+                                                       #optimizer="Adagrad",
                                                        hidden_units=hidden_layers_value)
 
 

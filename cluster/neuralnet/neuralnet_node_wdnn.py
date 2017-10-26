@@ -102,7 +102,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #multi Feeder modified
             multi_read_flag = self.multi_read_flag
 
-            validation_monitor = _LossCheckerHook(acc_result)
+            #validation_monitor = _LossCheckerHook(acc_result)
             train_cnt = 5
 
 
@@ -118,7 +118,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 for index in range(int(math.ceil(_num_tfrecords_files/_batch_size))):
                     for i in range(train_cnt):
                         logging.info("number of for loop " + str(index))
-                        train_result = wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=self.epoch, monitors=[validation_monitor])
+                        train_result = wdnn_model.fit(input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,_batch_size), steps=self.epoch)
                         #train_result = wdnn_model.fit(
                         #    input_fn=lambda: train_data_set.input_fn(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                         #                                             _batch_size), steps=self.epoch)
@@ -144,7 +144,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                                 eval_data_Set = data_set
                             train_result = wdnn_model.fit(
                                 input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
-                                                                          data_set,data_conf_info), steps=self.epoch,monitors=[validation_monitor])
+                                                                          data_set,data_conf_info), steps=self.epoch)
                             eval_result = wdnn_model.evaluate(
                                 input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                                                                           data_set, data_conf_info), steps=200)
