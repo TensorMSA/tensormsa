@@ -287,9 +287,9 @@ export default class JsonConfComponent extends React.Component {
                 let keyArray1 = jsonKeySort(data)//data를 기준으로 자식을 찾아 소팅해준다.
 
                 let dataType = Object.prototype.toString.call(data)
-                if(dataType == "[object Object]" && keyArray1.length == 0 && ppNode.key == "option"){
+                if(dataType == "[object Object]" && keyArray1.length == 0 ){ // && ppNode.key == "option"
                     ppNode.data = jsonData
-                }else if(dataType == "[object Array]" && keyArray1.length == 0 && ppNode.key == "option"){
+                }else if(dataType == "[object Array]" && keyArray1.length == 0 ){ // && ppNode.key == "option"
                     ppNode.data = arrayData
                 }
                 for(let key1 in keyArray1){
