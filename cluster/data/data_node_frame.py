@@ -365,14 +365,14 @@ class DataNodeFrame(DataNode):
         #todo fix
         #automl temparary method
         fp_list = utils.get_filepaths(data_path, file_type='h5')
-        for file_path in fp_list:
-            os.remove(file_path) #승우씨것
-
-        file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".h5"
-        output_path = os.path.join(data_path, file_name)
-        hdf = pd.HDFStore(output_path)
-        hdf.put('table1', dataframe, format='table', data_columns=True, encoding='UTF-8')
-        hdf.close()
+        #for file_path in fp_list:
+        #    os.remove(file_path) #승우씨것
+        if len(fp_list) == 0:
+            file_name = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".h5"
+            output_path = os.path.join(data_path, file_name)
+            hdf = pd.HDFStore(output_path)
+            hdf.put('table1', dataframe, format='table', data_columns=True, encoding='UTF-8')
+            hdf.close()
 
 
 
