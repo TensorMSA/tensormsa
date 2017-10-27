@@ -325,10 +325,9 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                       "nn_batch_ver_id": self.batch}
             acc_result = TrainSummaryAccLossInfo(config_acc)
 
-            # data_store_path = WorkFlowDataFrame(conf_data['nn_id']+"_"+conf_data['wf_ver']+"_"+ "data_node").step_store
             data_conf_info = self.data_conf
 
-            validation_monitor = _LossCheckerHook(acc_result)
+            #validation_monitor = _LossCheckerHook(acc_result)
 
             # make wide & deep modelnot
             wdnn = NeuralCommonWdnn()
@@ -379,14 +378,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                     for i in range(0, train_data_set.data_size(), self.batch_size):
 
                         data_set = train_data_set[i:i + self.batch_size]
-                        #if i == 0:
-                        #eval_data_Set = data_set
-                        # input_fn2(self, mode, data_file, df, nnid, dataconf):
 
-                        # model fitting
-                        #eval_result = wdnn_model.evaluate(
-                        #    input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
-                        #                                              data_set, data_conf_info), steps=200, monitors=[validation_monitor])
                         eval_result = wdnn_model.evaluate(
                            input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                                                                      data_set, data_conf_info), steps=200)
@@ -396,8 +388,6 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                         loss = eval_result['loss']
                         acc_result.loss_info["loss"].append(str(eval_result['loss']))
                         acc_result.acc_info["acc"].append(str(eval_result['accuracy']))
-                        #self.save_accloss_info(acc_result)
-
 
                         predict_value = wdnn_model.predict(
                             input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
@@ -413,7 +403,6 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                                 'eval data validation check error : dataframe and predict count is different(neuralnet_node_wdnn.eval)')
 
                         data_set['predict_label'] = predict_val_list #list(predict_value)
-                        #_predict = list(predict_value)
                         predict_y = list(data_set['predict_label'])
 
 
@@ -421,15 +410,9 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                         pre_list.extend(list(data_set['predict_label']))
 
                         # model fitting
-                        print(len(ori_list))
-                        print(len(pre_list))
-                        #logging.error("wdnn eval ori list  : {0}".format(ori_list) )
                         logging.info("wdnn eval ori list  : {0}".format(len(ori_list)) )
-                        #logging.info("wdnn eval ori list  : {0}".format('info'))
-                        #logging.debug("wdnn eval ori list  : {0}".format('debug'))
-                        #logging.critical("wdnn eval ori list  : {0}".format('critical'))
-                        #print("model fitting h5 " + str(data_set))
-                    # #Select Next file
+                        logging.info("wdnn eval pre list  : {0}".format(len(pre_list)) )
+
                     train_data_set.next()
 
                 #TODO : 앞으로 옮기자

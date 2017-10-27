@@ -1,7 +1,7 @@
 from master.workflow.data.workflow_data import WorkFlowData
 from master import models
 from common import utils
-
+import logging
 
 class WorkFlowDataFrame(WorkFlowData) :
     """
@@ -48,6 +48,10 @@ class WorkFlowDataFrame(WorkFlowData) :
         getter for source_path
         """
         #return self.get_step_source(self.key)['source_path']
+        #if self.conf['source_path'] == None:
+        #    logging.info("2")
+            #utils.get_source_path(nnid, wfver, node)
+
         return self.conf['source_path']
 
     @property

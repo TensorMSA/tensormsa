@@ -942,10 +942,11 @@ def set_automl_rule() :
                         "type": "csv",
                         "source_server": "local",
                         "source_sql": "all",
-                        "source_path": "test",
-                        "multi_node_flag": True,
+                        "source_path": None,
+                        "multi_node_flag": False,
                         "preprocess": "null",
-                        "store_path": "test"
+                        "store_path": None,
+                            "source_type": "local"
 
                     }
                 , "dataconf_node":
@@ -955,6 +956,7 @@ def set_automl_rule() :
                         "cross_cell": {},
                         "cell_feature": {},
                         "extend_cell_feature": {},
+                        "cell_feature_unique":{},
                         "label_values": [],
                         "label_type": "CATEGORICAL"
                     }
@@ -973,10 +975,11 @@ def set_automl_rule() :
                         "type": "csv",
                         "source_server": "local",
                         "source_sql": "all",
-                        "source_path": "test",
+                        "source_path": None,
                         "multi_node_flag": False,
                         "preprocess": "null",
-                        "store_path": "test"
+                        "store_path": None,
+                        "source_type": "local"
 
                     }
                 , "eval_node":
@@ -1059,10 +1062,11 @@ def set_automl_rule() :
                         "type": "csv",
                         "source_server": "local",
                         "source_sql": "all",
-                        "source_path": "test",
-                        "multi_node_flag": True,
+                        "source_path": None,
+                        "multi_node_flag": False,
                         "preprocess": "null",
-                        "store_path": "test"
+                        "store_path": None,
+                        "source_type": "local"
 
                     }
                 , "dataconf_node":
@@ -1090,10 +1094,11 @@ def set_automl_rule() :
                         "type": "csv",
                         "source_server": "local",
                         "source_sql": "all",
-                        "source_path": "test",
+                        "source_path": None,
                         "multi_node_flag": False,
                         "preprocess": "null",
-                        "store_path": "test"
+                        "store_path": None,
+                        "source_type": "local"
 
                     }
                 , "eval_node":

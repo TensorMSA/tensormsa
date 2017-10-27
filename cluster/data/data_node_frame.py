@@ -50,10 +50,12 @@ class DataNodeFrame(DataNode):
         Returns:
           None
         """
+        #ToDo 두줄 지워도 될듯
         eval_data_node = [_i  for _i, _k in conf_data.get('cls_pool').items() if 'evaldata' in _i]
         data_conf_node_id = [_i for _i, _k in conf_data.get('cls_pool').items() if 'dataconf' in _i]
         eval_data_cls = wf_data_frame(eval_data_node[0])
-        eval_source_path = eval_data_cls.source_path
+        #eval_source_path = eval_data_cls.source_path
+        eval_source_path = self.data_src_path
         fp_list = utils.get_filepaths(eval_source_path, file_type='csv')
         for file_path in fp_list:
             df_csv_read = self.load_csv_by_pandas(file_path)
@@ -570,11 +572,13 @@ class DataNodeFrame(DataNode):
             wf_data_frame = WorkFlowDataFrame(key)
             self.type = wf_data_frame.object_type
             self.data_sql_stmt = wf_data_frame.sql_stmt
-            self.data_src_path = wf_data_frame.source_path
+            #self.data_src_path = wf_data_frame.source_path
+            self.data_src_path = utils.get_source_path(self.net_id, self.net_ver, self.node_id)
             self.data_src_type = wf_data_frame.src_type
             self.data_server_type = wf_data_frame.src_server
             self.data_preprocess_type = wf_data_frame.step_preprocess
-            self.data_store_path = wf_data_frame.step_store
+            #self.data_store_path = wf_data_frame.step_store
+            self.data_store_path = utils.get_store_path(self.net_id, self.net_ver, self.node_id)
             self.sent_max_len = wf_data_frame.max_sentence_len
             self.multi_node_flag = wf_data_frame.multi_node_flag
             self.drop_duplicate = wf_data_frame.drop_duplicate

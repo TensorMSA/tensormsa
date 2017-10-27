@@ -124,6 +124,13 @@ class NeuralCommonWdnn():
             #wide_columns = []
 
             #embed_deep_columns = [embedTensor for key, embedTensor in featureDeepEmbedding.items()]
+
+            #Set Optimizer
+            optimizer_type = 'GD'
+            learning_rate  = 0.001
+            optimizer = self.set_optimizer(optimizer_type, learning_rate)
+
+
             if model_type == "category":
 
                 m = tf.contrib.learn.DNNLinearCombinedClassifier(
@@ -150,7 +157,7 @@ class NeuralCommonWdnn():
                                                       ,enable_centered_bias = True)
             elif model_type =="deep":
 
-                optimizer = tf.train.AdagradOptimizer(learning_rate=0.001)
+                #optimizer = tf.train.AdagradOptimizer(learning_rate=0.001)
 
                 m = tf.contrib.learn.DNNClassifier(model_dir=model_dir,
                                                        feature_columns=deep_columns,
@@ -165,6 +172,35 @@ class NeuralCommonWdnn():
         except Exception as e:
             print("Error Message : {0}".format(e))
             raise Exception(e)
+
+    def set_optimizer(self, optimizer_type, learning_rate):
+        """
+        tf.train.GradientDescentOptimizer
+        tf.train.AdadeltaOptimizer
+        tf.train.AdagradOptimizer
+        tf.train.AdagradDAOptimizer
+        tf.train.MomentumOptimizer
+        tf.train.AdamOptimizer
+        tf.train.FtrlOptimizer
+        tf.train.ProximalGradientDescentOptimizer
+        tf.train.ProximalAdagradOptimizer
+        tf.train.RMSPropOptimize """
+
+        _optimizer_type = optimizer_type
+        _learning_rate = learning_rate
+        if _optimizer_type == "GD":
+            optimizer = tf.train.GradientDescentOptimizer(learning_rate=_learning_rate)
+        elif _optimizer_type == "Adagrad":
+            optimizer = tf.train.AdagradOptimizer(learning_rate=_learning_rate)
+        elif _optimizer_type == "Adam":
+            optimizer = tf.train.AdamOptimizer(learning_rate=_learning_rate)
+        elif _optimizer_type == "PGD":
+            optimizer = tf.train.ProximalGradientDescentOptimizer(learning_rate=_learning_rate)
+        elif _optimizer_type == "RMS":
+            optimizer = tf.train.RMSPropOptimize(learning_rate=_learning_rate)
+        else:
+            optimizer = tf.train.AdamOptimizer(learning_rate=_learning_rate)
+        return optimizer
 
 
 
