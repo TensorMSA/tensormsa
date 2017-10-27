@@ -121,12 +121,14 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                     set_filepaths(path)
                     saver.restore(sess, path)
 
+                self.train_batch, self.batch = self.make_batch(self.node_id)
+
                 # train model feed data
                 for _ in range(self.epoch):
                     self._train_run(train_data_set, sess)
 
                 # save model and close session
-                path = ''.join([self.model_path, '/', self.make_batch(self.node_id)[1], '/'])
+                path = ''.join([self.model_path, '/', self.batch, '/'])
                 set_filepaths(path)
                 saver.save(sess, path)
             return ""
@@ -243,7 +245,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             return_arr = []
             g_total_cnt = 0
             config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.wfver,
-                      "nn_batch_ver_id": self.get_eval_batch(self.node_id)}
+                      "nn_batch_ver_id": self.batch}
             result = TrainSummaryAccLossInfo(config)
             while (input_data.has_next()):
                 for i in range(0, input_data.data_size(), self.batchsize):

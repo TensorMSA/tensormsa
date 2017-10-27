@@ -29,6 +29,7 @@ import Help_wdnn from './../help/Help_wdnn';
 import Help_wdnn_keras from './../help/Help_wdnn_keras';
 import Help_word2vec from './../help/Help_word2vec';
 import Help_word2vec_frame from './../help/Help_word2vec_frame';
+import Help_dnn from './../help/Help_dnn';
 
 export default class NN_InfoNewCompDetail1 extends React.Component {
     constructor(props, context) {
@@ -257,6 +258,8 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             helpData.push(<Help_word2vec key={k++} width={width} />)
         }else if(this.state.isViewImageDetail == "word2vec_frame"){
             helpData.push(<Help_word2vec_frame key={k++} width={width} />)
+        }else if(this.state.isViewImageDetail == "dnn"){
+            helpData.push(<Help_dnn key={k++} width={width} />)
         }
 
         return (

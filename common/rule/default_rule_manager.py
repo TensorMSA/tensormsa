@@ -1243,7 +1243,7 @@ def set_automl_rule_etc():
             ,"autoencoder_csv" : "3"
             ,"bilstmcrf_iob" : "3"
             ,"fasttext_txt" : "3"
-            
+
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 

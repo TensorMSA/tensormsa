@@ -64,9 +64,13 @@ class AutoMlRunManager :
                 # set each train set flag to fin
                 self.set_train_finish(ver_data_sets)
                 # network acc set
+                accArr = 0
                 for net in networks:
                     return_data = NNCommonManager().get_nn_batch_info(net['nn_id'], net['nn_wf_ver_id'])
-                    print(return_data)
+                    re_acc = return_data[0]['acc_info']['acc']
+                    networks[accArr]['acc'] = float(re_acc[len(re_acc)-1])
+                    accArr += 1
+                    # print(return_data)
                 # update traing progress
                 self.update_summary(networks, survive)
                 # sort & discard
@@ -85,10 +89,24 @@ class AutoMlRunManager :
         :return: dict type result info with extra flag 
         """
         networks = sorted(networks, key=lambda x: x.get('acc'), reverse=True)
-        result = list(map(lambda x : self.set_value(x, 'survive', True) , networks[0:survive]))
-        self.summary['best'] = result
-        result = result + list(map(lambda x : self.set_value(x, 'survive', False) , networks[survive:]))
+        # result = list(map(lambda x : self.set_value(x, 'survive', True) , networks[0:survive]))
+        # self.summary['best'] = result
+        # result = result + list(map(lambda x : self.set_value(x, 'survive', False) , networks[survive:]))
+        # self.summary['bygen'].append(result)
+        surcnt = 1
+        result = []
+        best = []
+        for net in networks:
+            if survive < surcnt:
+                net['survive'] = 'False'
+            else:
+                best.append(net)
+            if survive == surcnt:
+                self.summary['best'] = best
+            result.append(net)
+            surcnt += 1
         self.summary['bygen'].append(result)
+
         AutoMlCommon().update_stat_obj(self.nn_id, self.summary)
 
         # Set Best Active
