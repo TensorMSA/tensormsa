@@ -98,9 +98,9 @@ class AutoMlRunManager :
         best = []
         for net in networks:
             if survive < surcnt:
-                net['survive'] = 'False'
+                net['survive'] = False
             else:
-                net['survive'] = 'True'
+                net['survive'] = True
                 best.append(net)
             if survive == surcnt:
                 self.summary['best'] = best
