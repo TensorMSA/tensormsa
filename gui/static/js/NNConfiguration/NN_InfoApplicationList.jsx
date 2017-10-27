@@ -117,8 +117,8 @@ export default class NN_InfoApplicationList extends React.Component {
 
         bot_entity_list["cb_id"] = bot_def_list["cb_id"]
         //Entity에 대한 테이블 구성 필요(Slot내 항목 정의)
-        bot_entity_list["entity_list"] = {'key': [bot_entity_list["entity_list"]]}
-
+        //bot_entity_list["entity_list"] = {'key': bot_entity_list["entity_list"]}
+        bot_entity_list["entity_list"] = {'key':['tagdate', 'tagloc', 'tagmenu']}
         bot_intent_list["cb_id"] = bot_def_list["cb_id"]
         bot_intent_list["intent_id"] = bot_entity_list["intent_id"]
         bot_intent_list["intent_type"] = "model"
@@ -206,7 +206,7 @@ export default class NN_InfoApplicationList extends React.Component {
                                             ,{title:"Chatbot Category" , width:10 , input_data:"service", ex:"Category"}
                                             ,{title:"Chatbot SubCategory" , width:10 , input_data:"info_bot", ex:"Sub Category"}
                                             ,{title:"Tagging Type" , width:10  , input_data:"dict", ex:"Tagging Info"}
-                                            ,{title:"Proper Noun" , width:10 , input_data: "/home/dev/hoyai/demo/botbuilder", ex:"Proper Noun Path"}
+                                            ,{title:"Proper Noun" , width:10 , input_data: "/home/dev/tensormsa/demo/botbuilder", ex:"Proper Noun Path"}
                                          ];
         }
 
@@ -216,7 +216,7 @@ export default class NN_InfoApplicationList extends React.Component {
                                             {title:"Intent Model" , width:10 , input_data:"wcnntest02", ex:"Intent Model Name"}
                                             ,{title:"Intent ID" , width:10 , input_data:"1", ex:"Intent"}
                                             ,{title:"entity_type" , width:10 , input_data:"key", ex:"Key, extra"}
-                                            ,{title:"entity_list" , width:10 , input_data:'"tagdate", "tagloc", "tagmenu"', ex:"JSON Format"}
+                                            ,{title:"entity_list" , width:10 , input_data:"{'key':['tagdate', 'tagloc', 'tagmenu']}", ex:"JSON Format"}
                                          ];
         }
 
