@@ -9,7 +9,10 @@ export default class Help_wdnn extends React.Component {
         this.state = {
         	NN_TableData: null,
             url1:EnvConstants.getImgUrl()+"help_wdnn1.png",
-            url2:EnvConstants.getImgUrl()+"help_wdnn2.png"
+            url2:EnvConstants.getImgUrl()+"help_wdnn2.png",
+            url3:EnvConstants.getImgUrl()+"help_wdnn3.png",
+            url4:EnvConstants.getImgUrl()+"help_wdnn4.png",
+            url5:EnvConstants.getImgUrl()+"help_wdnn5.png"                        
         };
 
     }
@@ -23,46 +26,102 @@ export default class Help_wdnn extends React.Component {
         return (  
 
             <div>
-                <h1> Wdnn </h1>
-                
-                <div className="container tabBody">
-        <img src={this.state.url1} />
-                    <br />
+
+                <div className="container tabBody">           
                 <br />
-                <h3 >
-                구글 리서치 블로그에서 머신 러닝의 로지스틱 회귀(Regression)와 뉴럴 네트워크 모델을 조합하여 추천 시스템에 <br />
-                적용한 연구 내용을 올렸습니다. 두 모델을 조합하는 API는 TF learn에 위치해 있습니다. TF Learn은 이전에 독<br />
-                립된 레파지토리에 있다가 0.8 버전에서 합쳐진 scikit flow(skflow)를 다르게 부르는 것 같습니다.하지만 또 다<br />
-                른 서드파티 라이브러리 tflearn과 헷갈리게 됐습니다. 와이드앤 딥 러닝 모델은 검색이나 추천시스템, 랭킹 모델에서<br />
-                전체 트래픽은 많지만 매칭된 데이터는 드문 경우 모델이 너무 구체화(overfit)되거나 너무 일반화(underfit) 되는<br />
-                것을 적절히 안배하기 위하여 고안되었다고 합니다. 블로그에서는 음식 추천을 예로 들어 설명하고 있는데요. 로지스틱 <br />
-                회귀의 경우 주어진 검색어에 대해 어떤 음식이 추천되었을 때 주문이 일어날 가능성이 높은 순으로 추천이 일어나게 될<br />
-                것입니다. 이런 경우 추천시스템 쪽에서 이야기하는 세렌티피티(Serendipity)가 부족하다고 말합니다. 즉 사용자가 깜<br />
-                짝 놀랄 추천을 하지 못하고 판에박힌 아이템만 늘어놓게 되는 경우입니다. 임베딩 벡터를 사용한 딥 뉴럴 네트워크를 이<br />
-                용할 경우 프라이드 치킨을 검색한 사용자에게 햄버거를 추천할 수 있다고 합니다. 하지만 딥 러닝 모델은 아이스 라떼를<br />
-                요청한 사람에게 뜨거운 라떼를 추천할 수도 있기에 와이드한 것과 딥한 두 모델을 적절히 안배하는 것이 좋다고 합니다.<br />
-<br /><br />
-                와이드 모델과 딥 모델에 각각 어떤 피처(feature)를 사용할지 뉴럴 네트워크의 레이어를 어떻게 구성할지는 당연히 이<br />
-                용자의 몫입니다. 와이드앤 딥 러닝 모델을 위해 skflow에 추가된 API는 tf.contrib.learn.DNNLinearCombined<br />
-                Classifier 와 tf.contrib.learn.DNNLinearCombinedRegressor 입니다. 아마도 로지스틱 회귀를 위한 펼쳐진<br />
-                뉴런의 모습에서 와이드(wide)하다는 표현을 쓰는 것으로 보입니다. 텍스트 데이터 분석에 매우 유용하다 할 수 있습니다.
+                <br />
+                <br />
 
-</h3>
-<img src={this.state.url2} />
-<br />
-<br />
-<h3  >
+                    <table>
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"center", "width":"800px"}}>
+                    <h1> Wide and Deep Neural Network</h1>                    
+                    <br /><br />
 
-                Word2Vec 는 기본적으로 유사한 의미를 갖는 단어는 비슷한 문맥에서 등장한다는 이론을 바탕에 두고 있다. 예를들면 (음식)<br />
-                을 먹는다. 형태의 문맥이 있다고 하면 “사과를 먹는다. 포도를 먹는다. 밥을 먹는다. 모든 문장은 먹는다와 근처에서 발생하게 <br />
-                된다. 이러한 특징을 바탕으로 백터를 훈련하면 유사한 의미를 갖는 단어들은 유사한 백터 분포를 갖는다라고 말한다. Word Em<br />
-                bedding 기법은 모든 자연어 처리 알고리즘에 있어서 가장 중요한 전처리 작업으로 최근에는 전체 도큐먼트의 발생 빈도를 고려<br />
-                하는 Glove나 Ngram 방법을 접목한 FastText 등이 주로 사용되고 있으며, 순수한 Word2Vector 알고리즘 자체는 잘 사용하<br />
-                지 않는 추세이긴 하지만 매우 중요한 개념이라는 것은 변함 없다. 
+                    <h1> Monetization and Wide model (기억과 와이드 모델) </h1> </td>
+                    <td></td>
+                    </tr>
+                    <br />
 
-</h3>
-                </div>
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"left", "width":"800px"}}>                                  
+                    <h3>
+                    로지스틱 회귀 모델을 이용하여 추천 알고리즘을 작성하여 학습을 시킨 경우, 학습 데이타를 기반으로 상세화된 예측 결과를 리턴해준다.
+                    예를 들어 검색 키워드 (프라이드 치킨)으로 검색한 사용자가(치킨과 와플)을 주문한 기록이 많았다면,
+                    이 모델은 (프라이드 치킨)으로 검색한 사용자는 항상 (치킨과 와플)을 추천해주게 된다.
+                    즉 예전에 기억된 값 (Memorization된 값)을 통해서 예측을 하는데, 이러한 모델을 와이드 모델이라고 한다.</h3></td>
+                    <td></td>
+                    </tr>
+                    <br />
+
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"center", "width":"800px"}}> <img src={this.state.url3} /> <br />
+                    그림-와이드 모델 </td>
+                    <td></td>
+                    </tr>
+
+                    <br />
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"left", "width":"800px"}}> 
+                    <h3>그러나 (프라이드 치킨)으로 검색한 사용자에게 같은 패스트 푸드 종류인 햄버거나 프렌치프라이등을 추천해도
+                    잘 구매가 되지만 와이드 모델은 기존에 기억된 결과로만 추천을 하기 때문에 이러한 결과를 얻기가 어렵다.</h3></td>
+                    <td></td>
+                    </tr>
+
+                    <br /><br />
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"center", "width":"800px"}}> <tr />
+                    <h1> Generalization and Deep model (일반화와 딥모델) </h1><br /></td>
+                    <td></td>
+                    </tr>
+
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"left", "width":"800px"}}>                    
+                    <h3>
+                    뉴럴네트워크 모델의 경우 프라이드 치킨을 햄버거, 프랜치 프라이등을 일반화 시켜서 패스트 푸드로 분류하여 프라이드 치킨으로 검색을 해도 이와 같은 종류의 햄버거를 추천해도 사용자가 택할 가능성이 높다.
+                    </h3><br /></td>
+                    <td></td>
+                    </tr>
+
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"center", "width":"800px"}}> <img src={this.state.url4} /> <br />
+                    그림- 딥 모델 <br /> </td>
+                    <td></td>
+                    </tr>
+
+                    <br />
+
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"left", "width":"800px"}}>                     
+                    <h3>이러한 모델을 딥모델이라고 하는데, 딥 모델의 경우 문제점이, 너무 일반화가(under fitting)되서 엉뚱한 결과가 나올 수 있다는 것인데, 
+                    예를 들어서 따뜻한 아메리카노를 검색했는데, 커피라는 일반화 범주에서 아이스 라떼를 추천해줄 수 있다는 것이다. 
+                    즉 커피라는 일반화 범주에서 라떼는 맞는 추천일 수 있지만, 따뜻한 음료를 원하는 사람에게 차가운 음료를 추천하는 지나친 일반화가 발생할 수 있다.
+                    그래서 이런 문제를 해결하기 위해서 와이드 모델과 딥모델을 합친 “Wide & deep model”이라는 것을 구글이 개발하였고 이를 구글 플레이 스토어에 적용한 결과, 
+                    큰 효과를 얻었다고 한다. (https://arxiv.org/abs/1606.07792) 
+                    </h3>
+                    <br /></td>
+                    <td></td>
+                    </tr>
+
+                    <tr>
+                    <td></td>
+                    <td style={{"textAlign":"center", "width":"800px"}}> <img src={this.state.url5} /> <br /><br />
+                    그림- 와이드 앤 딥모델 <br /> </td>
+                    <td></td>
+                    </tr>
+                    </table>
+
+                    <br /><br />
             </div>
+        </div>
         )
     }
 }
