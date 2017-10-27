@@ -1249,24 +1249,45 @@ def set_automl_rule_etc():
 
         # set network sample file path
         conf = {
-            "cnn" : "cnn_sample.zip"
-            ,"resnet" : "resnet_sample.zip"
-            ,"wdnn" : "wdnn_sample.csv"
-            ,"dnn" : "wdnn_sample.csv"
-            ,"wdnn_keras" : "wdnn_keras_sample.csv"
-            ,"word2vec" : "word2vec_sample.zip"
-            ,"word2vec_frame" : "word2vec_frame_sample.zip"
-            ,"doc2vec" : "doc2vec_sample.zip"
-            ,"wcnn" : "wcnn_sample.csv"
-            ,"seq2seq" : "seq2seq_sample.csv"
-            ,"seq2seq_csv" : "seq2seq_csv_sample.csv"
+            "cnn" : "cnn_train.zip"
+            ,"resnet" : "resnet_train.zip"
+            ,"wdnn" : "wdnn_train.csv"
+            ,"dnn" : "wdnn_train.csv"
+            ,"wdnn_keras" : "wdnn_keras_train.csv"
+            ,"word2vec" : "word2vec_train.zip"
+            ,"word2vec_frame" : "word2vec_frame_train.zip"
+            ,"doc2vec" : "doc2vec_train.zip"
+            ,"wcnn" : "wcnn_train.csv"
+            ,"seq2seq" : "seq2seq_train.csv"
+            ,"seq2seq_csv" : "seq2seq_csv_train.csv"
             ,"autoencoder_img" : "autoencoder_imgsample.csv"
-            ,"autoencoder_csv" : "autoencoder_csv_sample.csv"
-            ,"bilstmcrf_iob" : "bilstmcrf_iob_sample.csv"
-            ,"fasttext_txt" : "fasttext_txt_sample.csv"
+            ,"autoencoder_csv" : "autoencoder_csv_train.csv"
+            ,"bilstmcrf_iob" : "bilstmcrf_iob_train.csv"
+            ,"fasttext_txt" : "fasttext_txt_train.csv"
 
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
+
+        # set network sample file path
+        conf = {
+            "cnn": "cnn_test.zip"
+            , "resnet": "resnet_test.zip"
+            , "wdnn": "wdnn_test.csv"
+            , "dnn": "wdnn_test.csv"
+            , "wdnn_keras": "wdnn_keras_test.csv"
+            , "word2vec": "word2vec_test.zip"
+            , "word2vec_frame": "word2vec_frame_test.zip"
+            , "doc2vec": "doc2vec_test.zip"
+            , "wcnn": "wcnn_test.csv"
+            , "seq2seq": "seq2seq_test.csv"
+            , "seq2seq_csv": "seq2seq_csv_test.csv"
+            , "autoencoder_img": "autoencoder_imgsample.csv"
+            , "autoencoder_csv": "autoencoder_csv_test.csv"
+            , "bilstmcrf_iob": "bilstmcrf_iob_test.csv"
+            , "fasttext_txt": "fasttext_txt_test.csv"
+
+        }
+        AutoMlRule().update_graph_type_list('eval_file_path', conf)
 
         # set network node alias name key
         conf = {
