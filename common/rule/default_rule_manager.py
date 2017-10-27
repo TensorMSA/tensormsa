@@ -937,10 +937,173 @@ def set_automl_rule() :
                         "type": {"type": "sel", "option": ["category", "regression"], "auto": False}
                     }
             }, "single": {
+                "data_node":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": "test",
+                        "multi_node_flag": True,
+                        "preprocess": "null",
+                        "store_path": "test"
+
+                    }
+                , "dataconf_node":
+                    {
+                        "label": "TARGET",
+                        "Transformations": {},
+                        "cross_cell": {},
+                        "cell_feature": {},
+                        "extend_cell_feature": {},
+                        "label_values": [],
+                        "label_type": "CATEGORICAL"
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": "test",
+                        "hidden_layers": [50, 50, 50, 30],
+                        "activation_function": "Relu",
+                        "batch_size": 500,
+                        "epoch": 500,
+                        "model_type": "category",
+                        "train": True
+                    }
+                , "evaldata":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": "test",
+                        "multi_node_flag": False,
+                        "preprocess": "null",
+                        "store_path": "test"
+
+                    }
+                , "eval_node":
+                    {
+                        "type": "category",
+                    }
 
             }
         }
         AutoMlRule().set_graph_type_list('wdnn', conf)
+
+        # set netconf for dnn
+        conf = {
+            "auto": {
+                "data_node":
+                    {
+                        "type": {"type": "sel", "option": ["csv"], "auto": False}
+                        , "preprocess": {"type": "sel",
+                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
+                                                    'robust_scale', 'normalize', 'maxabs_scale'],
+                                         "auto": False}
+                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                        , "store_path": {"type": "str", "option": None, "auto": False}
+                        , "source_path": {"type": "str", "option": None, "auto": False}
+                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                        , "predict_path": {"type": "str", "option": None, "auto": False}
+                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                    }
+                , "dataconf_node":
+                    {
+                        "label": {"type": "str", "option": "SUCCESSFUL_BID_PRICE", "auto": False}
+                        , "Transformations": {"type": "str", "option": {}, "auto": False}
+                        , "cross_cell": {"type": "str", "option": {}, "auto": False}
+                        , "cell_feature": {"type": "str", "option": {}, "auto": False}
+                        , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
+                        , "cell_feature_unique": {"type": "str", "option": [], "auto": False}
+                        , "label_values": {"type": "str", "option": [], "auto": False}
+                        , "label_type": {"type": "sel", "option": ["CATEGORYCAL", "CONTINUOUS"], "auto": False}
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": {"type": "str", "option": None, "auto": False}
+                        , "hidden_layers": {"type": "int", "option": None, "auto": [[1, 4, 1], [1, 100, 1]]}
+                        , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
+                        , "batch_size": {"type": "int", "option": 1000, "auto": False}
+                        , "epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
+                        , "model_type": {"type": "str", "option": "deep", "auto": False}
+                        , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
+                        , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
+                    }
+                , "evaldata":
+                    {
+                        "type": {"type": "sel", "option": ["csv"], "auto": False}
+                        , "preprocess": {"type": "sel",
+                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
+                                                    'robust_scale', 'normalize', 'maxabs_scale'],
+                                         "auto": False}
+                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                        , "store_path": {"type": "str", "option": None, "auto": False}
+                        , "source_path": {"type": "str", "option": None, "auto": False}
+                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                        , "predict_path": {"type": "str", "option": None, "auto": False}
+                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                    }
+                , "eval_node":
+                    {
+                        "type": {"type": "sel", "option": ["category", "regression"], "auto": False}
+                    }
+            }, "single": {
+                "data_node":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": "test",
+                        "multi_node_flag": True,
+                        "preprocess": "null",
+                        "store_path": "test"
+
+                    }
+                , "dataconf_node":
+                    {
+                        "label": "TARGET",
+                        "Transformations": {},
+                        "cross_cell": {},
+                        "cell_feature": {},
+                        "extend_cell_feature": {},
+                        "label_values": [],
+                        "label_type": "CATEGORICAL"
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": "test",
+                        "hidden_layers": [50, 50, 50, 30],
+                        "activation_function": "Relu",
+                        "batch_size": 500,
+                        "epoch": 500,
+                        "model_type": "category",
+                        "train": True
+                    }
+                , "evaldata":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": "test",
+                        "multi_node_flag": False,
+                        "preprocess": "null",
+                        "store_path": "test"
+
+                    }
+                , "eval_node":
+                    {
+                        "type": "category",
+                    }
+
+            }
+        }
+        AutoMlRule().set_graph_type_list('dnn', conf)
 
         # set netconf for charcnn
         conf = {
@@ -1031,6 +1194,7 @@ def set_automl_rule() :
         AutoMlRule().set_graph_type_list('autoencoder_csv', {})
         AutoMlRule().set_graph_type_list('bilstmcrf_iob', {})
         AutoMlRule().set_graph_type_list('fasttext_txt', {})
+        AutoMlRule().set_graph_type_list('dnn_keras', {})
 
         return {"automl_netconf" : True}
     except Exception as e:
@@ -1045,19 +1209,20 @@ def set_automl_rule_etc():
         # set network description
         conf = {
             "cnn" : "CNN (convolutional neural network)은 딥러닝의 한 종류로 앞의 컨볼루셔널 계층을 통해서 입력 받은 특징(Feature)를 추출하게 되고, 이렇게 추출된 특징을 기반으로 기존의 뉴럴 네트워크를 이용하여 분류를 해내게 된다."
-            ,"resnet" : "ResNet Network Description"
-            ,"wdnn": "wdnn Network Description"
+            ,"resnet" : "망을 100 layer 이상으로 깊게하면서, 깊이에 따른 학습효과를 얻을 수 있는 Residual Learning을 적용한 network"
+            ,"wdnn": "기존에 기억된 결과로만 예측하는 와이드모델과 너무 일반화가 되서 엉뚱한 결과가 나올 수 있는 딥모델의 문제를 해결하기 위해 두 모델을 합친 Wide & Deep 모델"
             ,"wdnn_keras": "wdnn_keras Network Description"
             ,"word2vec": "word2vec Network Description"
             ,"word2vec_frame" : "word2vec_frame Network Description"
             ,"doc2vec" : "doc2vec Network Description"
-            ,"wcnn" : "WCNN Network Description"
+            ,"wcnn" : "컴퓨터 비전 분야에서 뛰어난 성능을 보인 CNN을 NLP 문제를 해결하는데 적용한 CharCNN"
             ,"seq2seq" : "seq2seq Network Description"
             ,"seq2seq_csv" : "seq2seq_csv Network Description"
             ,"autoencoder_img" : "autoencoder_img Network Description"
             ,"autoencoder_csv" : "autoencoder_csv Network Description"
             ,"bilstmcrf_iob" : "bilstmcrf_iob Network Description"
             ,"fasttext_txt" : "fasttext_txt Network Description"
+            ,"dnn" : "Multi Layer Perceptron이라고도 하며 가장 기본적인 Deep Neural Network"
         }
         AutoMlRule().update_graph_type_list('graph_flow_desc', conf)
 
@@ -1066,6 +1231,7 @@ def set_automl_rule_etc():
             "cnn" : "2"
             ,"resnet" : "2"
             ,"wdnn": "1"
+            ,"dnn": "1"
             ,"wdnn_keras": "1"
             ,"word2vec" : "3"
             ,"word2vec_frame" : "3"
@@ -1077,34 +1243,58 @@ def set_automl_rule_etc():
             ,"autoencoder_csv" : "3"
             ,"bilstmcrf_iob" : "3"
             ,"fasttext_txt" : "3"
+
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 
         # set network sample file path
         conf = {
-            "cnn" : "cnn_sample.zip"
-            ,"resnet" : "resnet_sample.zip"
-            ,"wdnn" : "wdnn_sample.csv"
-            ,"wdnn_keras" : "wdnn_keras_sample.csv"
-            ,"word2vec" : "word2vec_sample.zip"
-            ,"word2vec_frame" : "word2vec_frame_sample.zip"
-            ,"doc2vec" : "doc2vec_sample.zip"
-            ,"wcnn" : "wcnn_sample.csv"
-            ,"seq2seq" : "seq2seq_sample.csv"
-            ,"seq2seq_csv" : "seq2seq_csv_sample.csv"
+            "cnn" : "cnn_train.zip"
+            ,"resnet" : "resnet_train.zip"
+            ,"wdnn" : "wdnn_train.csv"
+            ,"dnn" : "wdnn_train.csv"
+            ,"wdnn_keras" : "wdnn_keras_train.csv"
+            ,"word2vec" : "word2vec_train.zip"
+            ,"word2vec_frame" : "word2vec_frame_train.zip"
+            ,"doc2vec" : "doc2vec_train.zip"
+            ,"wcnn" : "wcnn_train.csv"
+            ,"seq2seq" : "seq2seq_train.csv"
+            ,"seq2seq_csv" : "seq2seq_csv_train.csv"
             ,"autoencoder_img" : "autoencoder_imgsample.csv"
-            ,"autoencoder_csv" : "autoencoder_csv_sample.csv"
-            ,"bilstmcrf_iob" : "bilstmcrf_iob_sample.csv"
-            ,"fasttext_txt" : "fasttext_txt_sample.csv"
+            ,"autoencoder_csv" : "autoencoder_csv_train.csv"
+            ,"bilstmcrf_iob" : "bilstmcrf_iob_train.csv"
+            ,"fasttext_txt" : "fasttext_txt_train.csv"
 
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
+
+        # set network sample file path
+        conf = {
+            "cnn": "cnn_test.zip"
+            , "resnet": "resnet_test.zip"
+            , "wdnn": "wdnn_test.csv"
+            , "dnn": "wdnn_test.csv"
+            , "wdnn_keras": "wdnn_keras_test.csv"
+            , "word2vec": "word2vec_test.zip"
+            , "word2vec_frame": "word2vec_frame_test.zip"
+            , "doc2vec": "doc2vec_test.zip"
+            , "wcnn": "wcnn_test.csv"
+            , "seq2seq": "seq2seq_test.csv"
+            , "seq2seq_csv": "seq2seq_csv_test.csv"
+            , "autoencoder_img": "autoencoder_imgsample.csv"
+            , "autoencoder_csv": "autoencoder_csv_test.csv"
+            , "bilstmcrf_iob": "bilstmcrf_iob_test.csv"
+            , "fasttext_txt": "fasttext_txt_test.csv"
+
+        }
+        AutoMlRule().update_graph_type_list('eval_file_path', conf)
 
         # set network node alias name key
         conf = {
             "cnn" : 1
             ,"resnet" : 1
             ,"wdnn": 2
+            ,"dnn" : 2
             ,"wdnn_keras" : 3
             ,"word2vec" : 4
             ,"word2vec_frame" : 5
@@ -1125,15 +1315,16 @@ def set_automl_rule_etc():
             "cnn": "Y"
             , "resnet": "Y"
             , "wdnn": "Y"
-            , "wdnn_keras": "N"
+            , "dnn": "Y"
+            , "dnn_keras": "N"
             , "word2vec": "N"
             , "word2vec_frame": "N"
             , "doc2vec": "N"
             , "wcnn": "Y"
-            , "seq2seq": "Y"
-            , "seq2seq_csv": "Y"
-            , "autoencoder_img": "Y"
-            , "autoencoder_csv": "Y"
+            , "seq2seq": "N"
+            , "seq2seq_csv": "N"
+            , "autoencoder_img": "N"
+            , "autoencoder_csv": "N"
             , "bilstmcrf_iob": "N"
             , "fasttext_txt": "N"
 

@@ -76,7 +76,7 @@ class WorkFlowSimpleManager :
             self._create_predefined_nodes_cnn(state_id)
         elif(type == 'resnet'):
             self._create_predefined_nodes_renet(state_id)
-        elif(type == 'frame' or type == "wdnn"):
+        elif(type == 'frame' or type == "wdnn" or type == "dnn"):
             self._create_predefined_nodes_frame(state_id)
         elif(type == 'keras_frame' or type == "wdnn_keras"):
             self._create_predefined_nodes_keras_frame(state_id)

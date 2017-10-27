@@ -74,10 +74,10 @@ class NeuralNetNodeReNet(NeuralNetNode):
         self.save_path = self.model_path + "/" + str(self.batch) + str(self.file_end)
         keras.models.save_model(self.model, self.save_path)
 
-        loss = round(self.loss * 100, 2)
-        accR = round(self.acc * 100, 2)
-        val_loss = round(self.val_loss * 100, 2)
-        val_acc = round(self.val_acc * 100, 2)
+        loss = round(self.loss, 2)
+        accR = round(self.acc, 2)
+        val_loss = round(self.val_loss, 2)
+        val_acc = round(self.val_acc, 2)
         msg = "Global Step: " + str(self.g_train_cnt)
         msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
         msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"

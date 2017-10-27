@@ -29,6 +29,7 @@ import Help_wdnn from './../help/Help_wdnn';
 import Help_wdnn_keras from './../help/Help_wdnn_keras';
 import Help_word2vec from './../help/Help_word2vec';
 import Help_word2vec_frame from './../help/Help_word2vec_frame';
+import Help_dnn from './../help/Help_dnn';
 
 export default class NN_InfoNewCompDetail1 extends React.Component {
     constructor(props, context) {
@@ -47,8 +48,9 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             NN_TableColArr1:[    {index:0,      id:"sel",                   name:"Sel"}
                                 ,{index:1,      id:"network",               name:"Network"}
                                 ,{index:2,      id:"description",           name:"Description"}
-                                ,{index:3,      id:"sample",                name:"SampleFile"}
-                                ,{index:4,      id:"help",                  name:"Help"}
+                                ,{index:3,      id:"sample",                name:"TrainSample"}
+                                ,{index:4,      id:"sample",                name:"EvalSample"}
+                                ,{index:5,      id:"help",                  name:"Help"}
 
                             ]
         };
@@ -145,13 +147,21 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
         }
     }
 
-    // fileDownloadFunc(selectedValue){
-    //     let path = selectedValue.target.alt
-    //     let url = this.state.url
-    //     url = url+path
-    //     // console.log(url)
-    //     // downloadFile(url);
-    // }
+    fileDownloadFunc(selectedValue){
+        let file = selectedValue.target.alt
+        let fileArr = file.split(',')
+
+        let tpath1 = EnvConstants.getSampleFileUrl()+fileArr[0]
+        let tpath2 = EnvConstants.getSampleFileUrl()+fileArr[1]
+        // window.location.assign(tpath1)
+        // window.location.assign(tpath2)
+
+        window.open(tpath1)
+        window.open(tpath2)
+
+        console.log(tpath1)
+        console.log(tpath2)
+    }
 
     render() {
         let k = 1
@@ -181,7 +191,8 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             for (var i in this.state.NN_TableData) {
                 nnInfoNewList[i] = {id:this.state.NN_TableData[i]["pk"]
                                     , desc:this.state.NN_TableData[i]["fields"]["graph_flow_desc"]
-                                    , path:this.state.NN_TableData[i]["fields"]["train_file_path"]
+                                    , tpath:this.state.NN_TableData[i]["fields"]["train_file_path"]
+                                    , epath:this.state.NN_TableData[i]["fields"]["eval_file_path"]
                                     };
             }
         }
@@ -211,12 +222,19 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             
             colDataSL.push(<td key={k++} value = {row["id"]} onClick={this.handleChangeRadio.bind(this)} > {row["id"]} </td>) 
             colDataSL.push(<td key={k++} value = {row["id"]} style={{"textAlign":"left"}} onClick={this.handleChangeRadio.bind(this)} > {row["desc"]} </td>) 
-            let path = EnvConstants.getSampleFileUrl()+row["path"]
-            colDataSL.push(<td key={k++} > <a href= {path} download ><img src={this.state.sampleFileUrl} /></a></td>)
-            
+            let tpath = EnvConstants.getSampleFileUrl()+row["tpath"]
+            let epath = EnvConstants.getSampleFileUrl()+row["epath"]
+            colDataSL.push(<td key={k++} > <a href= {tpath} download ><img src={this.state.sampleFileUrl} /></a></td>)
+            colDataSL.push(<td key={k++} > <a href= {epath} download ><img src={this.state.sampleFileUrl} /></a></td>)
+            // colDataSL.push(<td key={k++} > <img style ={{width:20, "cursor":"pointer"}} alt = {[row["tpath"],row["epath"]]}
+            //                                     onClick={this.fileDownloadFunc.bind(this)} 
+            //                                     src={this.state.sampleFileUrl} /> </td>)
             colDataSL.push(<td key={k++} > <img style ={{width:20, "cursor":"pointer"}} alt = {row["id"]}
                                                 onClick={this.viewNetImage.bind(this)} 
                                                 src={this.state.helpUrl} /></td>)
+
+            
+            
 
             tableDataSL.push(<tr key={k++}>{colDataSL}</tr>)
         }
@@ -257,6 +275,8 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
             helpData.push(<Help_word2vec key={k++} width={width} />)
         }else if(this.state.isViewImageDetail == "word2vec_frame"){
             helpData.push(<Help_word2vec_frame key={k++} width={width} />)
+        }else if(this.state.isViewImageDetail == "dnn"){
+            helpData.push(<Help_dnn key={k++} width={width} />)
         }
 
         return (

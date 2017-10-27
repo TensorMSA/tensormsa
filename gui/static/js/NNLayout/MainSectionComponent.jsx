@@ -17,7 +17,7 @@ export default class MainSectionComponent extends React.Component {
 					<div className="main_contents_area">
 						<div className="notice_area">
 							<div className="main_con_title">
-								NOTICE
+								Info
 								<a href="#none">+ more</a>
 							</div>
 							<div className="table_area">
@@ -32,18 +32,18 @@ export default class MainSectionComponent extends React.Component {
 									<tbody>
 										<tr>
 											<td>1</td>
-											<td><a href="#none">There are regular updates</a></td>
+											<td><a href="http://hugrypiggykim.com/">TensorMSA Home Page</a></td>
 											<td><span className="table_date">2017.09.29</span></td>
 										</tr>
 										<tr>
 											<td>2</td>
-											<td><a href="#none">There are regular updates</a></td>
-											<td><span className="table_date">2017.02.11</span></td>
+											<td><a href="https://github.com/seungwookim">Github Page</a></td>
+											<td><span className="table_date">-</span></td>
 										</tr>
 										<tr>
 											<td>3</td>
-											<td><a href="#none">HOYA is a Machine Intelligence Framework</a></td>
-											<td><span className="table_date">2016.11.21</span></td>
+											<td><a href="http://hugrypiggykim.com/about-hungry-piggy-kim/">About us</a></td>
+											<td><span className="table_date">-</span></td>
 										</tr>
 									</tbody>
 								</table>
@@ -65,15 +65,18 @@ export default class MainSectionComponent extends React.Component {
 									<tbody>
 										<tr>
 											<td>1</td>
-											<td><a href="#none">Net Info shortcut</a></td>
+											<td><a href="http://hugrypiggykim.com/2017/09/19/1237/">About TensorMSA</a></td>
+											<td><span className="table_date">-</span></td>
 										</tr>
 										<tr>
 											<td>2</td>
-											<td><a href="#none">Net Create shortcut</a></td>
+											<td><a href="http://hugrypiggykim.com/category/tensormsa-guide/development-environment/">Development Environment</a></td>
+											<td><span className="table_date">-</span></td>
 										</tr>
 										<tr>
 											<td>3</td>
-											<td><a href="#none">Chatbot shortcut</a></td>
+											<td><a href="http://hugrypiggykim.com/2017/09/20/tensormsa-guide-rule-set-up/">Setup Configuration</a></td>
+											<td><span className="table_date">-</span></td>
 										</tr>
 									</tbody>
 								</table>

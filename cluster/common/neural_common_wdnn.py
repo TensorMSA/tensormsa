@@ -67,7 +67,7 @@ class NeuralCommonWdnn():
 
 
             # Categorucal layer를 emdedding 해서 차원을 줄임
-            if _dememsion_auto_flag == False or _dememsion_auto_flag == None:
+            if _dememsion_auto_flag == "False" or _dememsion_auto_flag == None:
                 featureDeepEmbedding = {key:tf.contrib.layers.embedding_column(value, dimension=8) for key, value in featureColumnCategorical.items()}
             else:
                 #demension = n unique value , K = small conatraint , k * (n ** 1/4)
@@ -122,6 +122,8 @@ class NeuralCommonWdnn():
 
             deep_columns.extend([embedTensor for key, embedTensor in featureDeepEmbedding.items()])
             #wide_columns = []
+
+            #embed_deep_columns = [embedTensor for key, embedTensor in featureDeepEmbedding.items()]
             if model_type == "category":
 
                 m = tf.contrib.learn.DNNLinearCombinedClassifier(
@@ -148,9 +150,14 @@ class NeuralCommonWdnn():
                                                       ,enable_centered_bias = True)
             elif model_type =="deep":
 
+                optimizer = tf.train.AdagradOptimizer(learning_rate=0.001)
+
                 m = tf.contrib.learn.DNNClassifier(model_dir=model_dir,
                                                        feature_columns=deep_columns,
-                                                       #n_classes = label_cnt, #0.11 bug
+                                                       optimizer=optimizer,
+                                                       #n_classes = 2, #0.11 bug
+                                                       #fix_global_step_increment_bug=True,
+                                                       #optimizer="Adagrad",
                                                        hidden_units=hidden_layers_value)
 
 
@@ -158,6 +165,7 @@ class NeuralCommonWdnn():
         except Exception as e:
             print("Error Message : {0}".format(e))
             raise Exception(e)
+
 
 
     def df_validation(self, df, dataconf):

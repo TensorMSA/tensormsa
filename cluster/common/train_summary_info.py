@@ -29,7 +29,7 @@ class TrainSummaryInfo:
         """
         if self.type == 'regression':
             self.result_info = {"labels":[], "predicts":[]}
-        elif self.type == 'category':
+        elif self.type == 'category' or self.type == 'deep':
             predicts = [[0 for col in range(len(config["labels"]))] for row in range(len(config["labels"]))]
             for i in range(0, len(config["labels"]) - 1, 1):
                 for j in range(0, len(config["labels"]) - 1, 1):
@@ -70,7 +70,7 @@ class TrainSummaryInfo:
             predicts = self.result_info["predicts"]
             predicts.extend(predict)
             self.result_info["predicts"] = predicts
-        elif self.type == 'category':
+        elif (self.type == 'category' or self.type == 'deep'):
             i = self.labels.index(label)
             j = self.labels.index(predict)
             predicts = self.result_info["predicts"]
@@ -117,7 +117,7 @@ class TrainSummaryInfo:
                 predicts = float(predicts)
                 gab = gab + abs(labels - predicts)
             return -float(gab/len(self.result_info["labels"]))
-        elif self.type == 'category':
+        elif self.type == 'category' or self.type == 'deep':
             correct = 0
             sum = 0
             for fd, fd_val in enumerate(self.result_info["predicts"]):
