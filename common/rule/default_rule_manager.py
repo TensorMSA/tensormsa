@@ -1126,12 +1126,12 @@ def set_automl_rule() :
                     },
                 "netconf_node":
                     {
-                        "param": {"epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
+                        "param": {"epoch": {"type": "int", "option": None, "auto": [1, 20, 1]}
                             , "traincnt": {"type": "int", "option": None, "auto": [1, 10, 2]}
                             , "batch_size": {"type": "int", "option": None, "auto": [5, 100, 10]}
                             , "predictcnt": {"type": "int", "option": None, "auto": [5, 100, 10]}
                                   }
-                        , "config": {"num_classes": {"type": "int", "option": 15, "auto": False}
+                        , "config": {"num_classes": {"type": "int", "option": 6, "auto": False}
                         , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["AdamOptimizer"], "auto": False}
