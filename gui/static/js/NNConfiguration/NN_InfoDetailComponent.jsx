@@ -141,37 +141,42 @@ export default class NN_InfoDetailComponent extends React.Component {
     }
     
     addVersion(){//Version New를 생성해준다.
-        let re = confirm( "Do you create version?" )
-        if(re == true){
-            
-            if(this.state.trainType == true){
-                //File Check
-                this.props.reportRepository.getFileUpload(this.state.nn_id, 'common', '', 'runcheck').then((tableData) => {
-                    if(tableData[0]['filecnt'] == 0){
-                        alert( tableData[0]['type'] +" File does not exist." )
-                    }else{
-                       //Run AutoML
-                        this.props.reportRepository.postCommonNNInfoAuto(this.state.nn_id).then((tableData) => {
-                        
-                        }); 
-                    }
-                });     
-            }else{
-                   // New Version Train
-                let wfparam = {}
-                wfparam["nn_def_list_info_nn_id"] = ""
-                wfparam["nn_wf_ver_info"] = "single"
-                wfparam["condition"] = "1"
-                wfparam["active_flag"] = "N"
+        if(this.state.trainType == true){//Auto       
+            this.props.reportRepository.getFileUpload(this.state.nn_id, 'common', '', 'runcheck').then((tableData) => {//File Check
+                if(tableData[0]['filecnt'] == 0){
+                    alert( tableData[0]['type'] +" File does not exist." )
+                }else{
+                    this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', 'all').then((tableData) => {//Job Check
+                        if(tableData.length == 0){
+                            let re = confirm( "Do you run?" )
+                            if(re == true){
+                                this.props.reportRepository.postCommonNNInfoAuto(this.state.nn_id).then((tableData) => {//Run AutoML
+                                }); 
+                            }
+                        }else{
+                            alert( "Can not execute because a running job exists." )
+                        }
+                    }); 
+                }
+            });     
+        }else{//Single
+               // New Version Train
+            let wfparam = {}
+            wfparam["nn_def_list_info_nn_id"] = ""
+            wfparam["nn_wf_ver_info"] = "single"
+            wfparam["condition"] = "1"
+            wfparam["active_flag"] = "N"
 
-                // Make NN WF Node Info
-                let nodeparam = {}
-                nodeparam["type"] = this.state.netType
-                //File Check
-                this.props.reportRepository.getFileUpload(this.state.nn_id, 'common', '', 'runcheck').then((tableData) => {
-                    if(tableData[0]['filecnt'] == 0){
-                        alert( tableData[0]['type'] +" File does not exist." )
-                    }else{
+            // Make NN WF Node Info
+            let nodeparam = {}
+            nodeparam["type"] = this.state.netType
+            
+            this.props.reportRepository.getFileUpload(this.state.nn_id, 'common', '', 'runcheck').then((tableData) => {//File Check
+                if(tableData[0]['filecnt'] == 0){
+                    alert( tableData[0]['type'] +" File does not exist." )
+                }else{
+                    let re = confirm( "Do you create version?" )
+                    if(re == true){
                         this.props.reportRepository.postCommonNNInfoWF(this.state.nn_id, wfparam).then((wf_ver_id) => {
                             //node create
                             this.props.reportRepository.postCommonNNInfoWFNode(this.state.nn_id, wf_ver_id, nodeparam).then((tableData) => {
@@ -183,11 +188,12 @@ export default class NN_InfoDetailComponent extends React.Component {
                             });
                         }); 
                     }
-                });
-            }
-
-            this.searchData()
+                }
+            });
         }
+        
+        this.searchData()
+
     }
 
     saveData(){//Save
@@ -367,15 +373,20 @@ export default class NN_InfoDetailComponent extends React.Component {
         let value = selectedValue
         if(value.target != undefined){
             value = selectedValue.target.attributes.alt.value
-            
-            //학습을 해준다.
-            let re = confirm( "Do you Train?" )
-            if(re == true){
-                // 기존에 실행 되고 있는 Train이 있으면 안돌게 해야 한다.
-                // 돌리려고 하는 Batch version 모델이 없으면 안된다.
-                this.props.reportRepository.postTainRun(this.state.nn_id, value).then((tableData) => {
-                });
-            }
+            // 기존에 실행 되고 있는 Train이 있으면 안돌게 해야 한다.
+            this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', 'all').then((tableData) => {
+                if(tableData.length == 0){
+                    //학습을 해준다.
+                    let re = confirm( "Do you Train?" )
+                    if(re == true){
+                        this.props.reportRepository.postTainRun(this.state.nn_id, value).then((tableData) => {
+                        });
+                    }
+                }else{
+                        alert( "Can not execute because a running job exists." )
+                }
+            });
+
             this.clickChangeVersion(value)
         }        
     }
