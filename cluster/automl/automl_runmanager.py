@@ -100,6 +100,7 @@ class AutoMlRunManager :
             if survive < surcnt:
                 net['survive'] = 'False'
             else:
+                net['survive'] = 'True'
                 best.append(net)
             if survive == surcnt:
                 self.summary['best'] = best

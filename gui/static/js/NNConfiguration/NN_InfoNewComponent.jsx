@@ -131,6 +131,11 @@ export default class NN_InfoNewComponent extends React.Component {
                 // Validation Check Master2
                 if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
             }   
+
+            if(aparam['population'] <= aparam['survive']){
+                alert( 'Survive('+ aparam['survive'] +') can not be greater than Population('+aparam['population']+')' );
+                return; 
+            }
         }
         
         // Make NN WF Info
