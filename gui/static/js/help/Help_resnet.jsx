@@ -23,11 +23,12 @@ export default class Help_resnet extends React.Component {
         return (  
             <div>
             <div className="container tabBody">
+                <br/><br/><br/>            
 <table>
  <tr>
   <td></td>
   <td style={{"width":"60%"}}>
-   <h1> Residual Network </h1>
+   <h1> Residual Network </h1><br/><br/>
   </td>
   <td></td>
  </tr>
@@ -67,6 +68,7 @@ export default class Help_resnet extends React.Component {
   <td></td>
  </tr>
 </table>
+<br/><br/>
 </div>
             </div>
         )

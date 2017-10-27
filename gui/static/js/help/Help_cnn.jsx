@@ -32,12 +32,13 @@ export default class Help_cnn extends React.Component {
             <div>
                 
                 <div className="container tabBody">
+                <br/><br/><br/>                
         <table>
 <tr>
 <td></td>
 <td style={{"width":"60%"}}>
-<h1> Convolutional Neural Network </h1>
-<img src={this.state.url1} style={{"width":"100%"}}/>
+<h1> Convolutional Neural Network </h1><br/><br/>
+<img src={this.state.url1} style={{"width":"100%"}}/><br/>
 </td>
 <td></td>
 </tr>
@@ -77,6 +78,7 @@ CONV/FC 레이어의 모수 (parameter)들은 각 이미지에 대한 클래스 
 <td></td>
 </tr>
 </table>
+<br/><br/>
 
                 </div>
             </div>

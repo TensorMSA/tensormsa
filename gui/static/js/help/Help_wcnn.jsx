@@ -25,11 +25,12 @@ export default class Help_wcnn extends React.Component {
             <div>
                 
                 <div className="container tabBody">
+                <br/><br/><br/>
 <table>
 <tr>
 <td></td>
 <td style={{"width":"60%"}}>
-<h1> Char CNN </h1>
+<h1> Char CNN </h1><br/><br/>
 <img src={this.state.url2} />
 </td>
 <td></td>
@@ -38,6 +39,7 @@ export default class Help_wcnn extends React.Component {
 <td></td>
 <td style={{"textAlign":"left","width":"60%"}}>
 <h3>
+<br/>
                 워드 임베딩이 인기를 끌고 그 성능 또한 검증된 이후, 단어 결합이나 n-gram으로부터 높은 수준의 피처를 추출해내는
                 효율적인 함수의 필요성이 증대됐다. 이러한 추상화된 피처들은 감성분석, 요약, 기계번역, 질의응답(QA) 같은 다양한 NLP
                 문제에 사용될 수 있다.
@@ -60,6 +62,7 @@ export default class Help_wcnn extends React.Component {
 <td></td>
 </tr>
 </table>
+<br/>
                 </div>
             </div>
         )

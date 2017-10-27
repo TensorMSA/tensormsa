@@ -31,15 +31,15 @@ export default class Help_wdnn extends React.Component {
 <table>
 <tr>
 <td></td>
-<td style={{"width":"60%"}}>
-<h1> Deep Neural Network </h1>
+<td style={{"width":"50%"}}>
+<h1> Deep Neural Network </h1><br/><br/>
 <img src={this.state.url1} />
 </td>
 <td></td>
 </tr>
 <tr>
 <td></td>
-<td style={{"textAlign":"left","width":"60%"}}>
+<td style={{"textAlign":"left","width":"50%"}}><br />
 Multi-Layer Perceptron이라고도 하며 입력층과 출력층 사이에 하나 이상의 중간층이 존재하는 신경망으로 그림에 나타낸 것과 같은 계층
 구조를 갖는다. 이 때 입력층과 출력층 사이의 중간층을 은닉층 (hidden layer) 이라 부른다. 네트워크는 입력층, 은닉층, 출력층 방향으로
 연결되어 있으며, 각 층내의 연결과 출력층에서 입력층으로의 직접적인 연결은 존재하지 않는 전방향 (Feedforward) 네트워크이다.
