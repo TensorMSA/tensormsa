@@ -894,7 +894,7 @@ def set_automl_rule() :
                     }
                 , "dataconf_node":
                     {
-                        "label": {"type": "str", "option": "SUCCESSFUL_BID_PRICE", "auto": False}
+                        "label": {"type": "str", "option": "LABEL", "auto": False}
                         , "Transformations": {"type": "str", "option": {}, "auto": False}
                         , "cross_cell": {"type": "str", "option": {}, "auto": False}
                         , "cell_feature": {"type": "str", "option": {}, "auto": False}
@@ -950,7 +950,7 @@ def set_automl_rule() :
                     }
                 , "dataconf_node":
                     {
-                        "label": "TARGET",
+                        "label": "LABEL",
                         "Transformations": {},
                         "cross_cell": {},
                         "cell_feature": {},
@@ -1011,7 +1011,7 @@ def set_automl_rule() :
                     }
                 , "dataconf_node":
                     {
-                        "label": {"type": "str", "option": "SUCCESSFUL_BID_PRICE", "auto": False}
+                        "label": {"type": "str", "option": "LABEL", "auto": False}
                         , "Transformations": {"type": "str", "option": {}, "auto": False}
                         , "cross_cell": {"type": "str", "option": {}, "auto": False}
                         , "cell_feature": {"type": "str", "option": {}, "auto": False}
@@ -1067,7 +1067,7 @@ def set_automl_rule() :
                     }
                 , "dataconf_node":
                     {
-                        "label": "TARGET",
+                        "label": "LABEL",
                         "Transformations": {},
                         "cross_cell": {},
                         "cell_feature": {},
@@ -1315,6 +1315,7 @@ def set_automl_rule_etc():
             "cnn": "Y"
             , "resnet": "Y"
             , "wdnn": "Y"
+            , "wdnn_keras": "N"
             , "dnn": "Y"
             , "dnn_keras": "N"
             , "word2vec": "N"
