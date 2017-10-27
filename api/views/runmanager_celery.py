@@ -33,10 +33,10 @@ class RunManagerCelery(APIView):
         """
         try:
             return_data = ""
-            if type == 'all':
-                return_data = RunManagerMoniter().get_view_obj_list()
-            elif type == "log":
+            if type == "log":
                 return_data = RunManagerMoniter().get_view_obj_log(id, line)
+            else:
+                return_data = RunManagerMoniter().get_view_obj_list(type, id)
             return Response(json.dumps(return_data))
         except Exception as e:
             return_data = {"status": "404", "result": str(e)}

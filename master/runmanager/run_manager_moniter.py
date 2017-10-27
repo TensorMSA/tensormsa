@@ -47,7 +47,7 @@ class RunManagerMoniter(RunManager):
         ddtime = year + '-' + mon + '-' + day + ' ' + hour + ':' + min + ':' + sec
         return ddtime
 
-    def get_view_obj_list(self):
+    def get_view_obj_list(self, type, id):
         """
         get view data for net config
         :return:
@@ -62,12 +62,23 @@ class RunManagerMoniter(RunManager):
         resp_data = json.loads(resp_data)
         for re in resp_data:
             re_data = {}
-            re_data['uuid'] = resp_data[re]['uuid']
+            nn_id = ''
+            nn_wf_ver_id = ''
             if resp_data[re]['args'] != None:
                 replace_data = resp_data[re]['args'].replace("'", '').replace("(", '').replace(")", '')
                 replace_data = replace_data.split(',')
-                re_data['nn_id'] = replace_data[0]
-                re_data['nn_wf_ver_id'] = replace_data[1]
+                nn_id = replace_data[0]
+                nn_wf_ver_id = replace_data[1]
+
+            if type == 'run_check' :
+                if nn_id != id:
+                    continue
+                substate = resp_data[re]['state']
+                if substate == 'PENDING' or substate == 'SUCCESS' or substate == 'FAILURE' or substate == 'REVOKED' or substate == 'RETRY':
+                    continue
+            re_data['nn_id'] = nn_id
+            re_data['nn_wf_ver_id'] = nn_wf_ver_id
+            re_data['uuid'] = resp_data[re]['uuid']
             re_data['clock'] = resp_data[re]['clock']
             re_data['name'] = resp_data[re]['name']
             re_data['failed'] = resp_data[re]['failed']
