@@ -439,7 +439,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                     results['pre'] = pre_list
                     train.set_result_info(ori_list, pre_list)
 
-                if self.model_type == "category":
+                if (self.model_type == "category" or self.model_type == "deep"):
                     # tfrecord는 여기서 Label을 변경한다. 나중에 꺼낼때 답이 없음 Tensor 객체로 추출되기 때문에 그러나 H5는 feeder에서 변환해주자
                     le = LabelEncoder()
                     le.fit(self.label_values)
