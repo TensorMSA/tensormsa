@@ -730,11 +730,13 @@ def set_automl_rule() :
                     },
                     "eval_data": {
                         "type": {"type": "sel", "option": ["imgdata", "framedata", "textdata", "iobdata"], "auto": False}
-                        , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
+                        , "preprocess": {
+                              "x_size": {"type": "int", "option": 32, "auto": False}
                             , "y_size": {"type": "int", "option": 32, "auto": False}
                             , "channel": {"type": "int", "option": 3, "auto": False}
                             , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                            , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}}
+                            , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                        }
                     }
                 },
                     "single": {
@@ -991,7 +993,7 @@ def set_automl_rule() :
         }
         AutoMlRule().set_graph_type_list('wdnn', conf)
 
-        # set netconf for dnn
+        # set auton netconf for dnn
         conf = {
             "auto": {
                 "data_node":
@@ -1105,13 +1107,13 @@ def set_automl_rule() :
                     {
                         "type": "category",
                     }
-
             }
         }
         AutoMlRule().set_graph_type_list('dnn', conf)
 
-        # set netconf for charcnn
+        # set single netconf for charcnn
         conf = {
+
             "auto": {
                 "data_node":
                     {
@@ -1183,7 +1185,75 @@ def set_automl_rule() :
                     }
             },
             "single": {
-
+                "data_node":
+                    {
+                        "source_type": "local",
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "preprocess": "none",
+                    },
+                "test_data_node":
+                    {
+                        "source_type": "local",
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "preprocess": "none",
+                    },
+                "netconf_node":
+                    {
+                        "param": {"epoch": 30
+                            , "traincnt": 3
+                            , "batch_size": 50
+                            , "predictcnt": 5
+                                  }
+                        , "config": 6
+                        , "learnrate": 0.001
+                        , "eval_type": "category"
+                        , "optimizer": "AdamOptimizer"
+                    }
+                , "layers": {"active": "relu"
+                    , "cnnfilter": [2, 3, 4, 2, 3, 4]
+                    , "droprate": "0.5"
+                             }
+                , "out": {
+                    "active":
+                        {"type": "softmax",
+                         "padding": {"type": "SAME"}
+                         }
+                    , "labels": {"type": "str", "option": [], "auto": False}
+                },
+                "pre_feed_test":
+                    {
+                        "encode_column": 'encode',
+                        "decode_column": 'decode',
+                        "channel": 3,
+                        "encode_len": 10,
+                        "preprocess": 'mecab',
+                        "vocab_size": 100,
+                        "char_encode": 'False',
+                        "char_max_len": 5,
+                        "lable_size": 3,
+                        "embed_type": "onehot",
+                    },
+                "pre_feed_train":
+                    {
+                        "encode_column": 'encode',
+                        "decode_column": 'decode',
+                        "channel": 3,
+                        "encode_len": 10,
+                        "preprocess": 'mecab',
+                        "vocab_size": 100,
+                        "char_encode": 'False',
+                        "char_max_len": 5,
+                        "lable_size": 3,
+                        "embed_type": "onehot",
+                    },
+                "eval_node":
+                    {
+                        "type": "category"
+                    }
             }
         }
         AutoMlRule().set_graph_type_list('wcnn', conf)
@@ -1220,7 +1290,7 @@ def set_automl_rule_etc():
             ,"word2vec": "word2vec Network Description"
             ,"word2vec_frame" : "word2vec_frame Network Description"
             ,"doc2vec" : "doc2vec Network Description"
-            ,"wcnn" : "컴퓨터 비전 분야에서 뛰어난 성능을 보인 CNN을 NLP 문제를 해결하는데 적용한 CharCNN"
+            ,"wcnn" : "이미지 인식에 쓰이는 CNN을 Word단위로 Classification을 하기 위한 wcnn"
             ,"seq2seq" : "seq2seq Network Description"
             ,"seq2seq_csv" : "seq2seq_csv Network Description"
             ,"autoencoder_img" : "autoencoder_img Network Description"
