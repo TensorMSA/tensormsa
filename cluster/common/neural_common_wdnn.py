@@ -70,7 +70,7 @@ class NeuralCommonWdnn():
 
 
             # Categorucal layer를 emdedding 해서 차원을 줄임
-            if _dememsion_auto_flag == "False" or _dememsion_auto_flag == None:
+            if _dememsion_auto_flag == "False" or _dememsion_auto_flag == None or _dememsion_auto_flag == False:
                 featureDeepEmbedding = {key:tf.contrib.layers.embedding_column(value, dimension=8) for key, value in featureColumnCategorical.items()}
             else:
                 #demension = n unique value , K = small conatraint , k * (n ** 1/4)
