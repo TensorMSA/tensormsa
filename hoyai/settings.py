@@ -78,6 +78,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'hoyai.urls'
 
 TEMPLATES = [
@@ -250,3 +251,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 FLOWER_PORT = "5555"
 
+TENSOR_FLOW_LOG_LEVEL = 'WARN' #DEBUG, INFO, WARN, ERROR, or FATAL
