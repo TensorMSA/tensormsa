@@ -5,6 +5,7 @@ import tempfile
 from django.conf import settings
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+from common import utils
 
 
 flags = tf.app.flags
@@ -21,15 +22,16 @@ WDNN NETWORK COMMON CLASS
 class NeuralCommonWdnn():
 
 
-    def wdnn_build(self, model_type, nodeid, hidden_layers, activation_fn, dataconf, model_dir,  train=True, dememsion_auto_flag=False):
+    def wdnn_build(self, model_type, nodeid, hidden_layers, activation_fn, dataconf, model_dir,  train=True, dememsion_auto_flag=False, optimizer_type='Adam', learning_rates=0.01 ):
         """ wide & deep netowork builder
             :param nnid
             :param model_dir : directory of chkpoint of wdnn model
             :param train : train or predict
             :return: tensorflow network model """
         try:
+            _tensorflow_log_leval = utils.get_tensorflow_log_level()
 
-
+            tf.logging.set_verbosity(_tensorflow_log_leval)
             hidden_layers_value = hidden_layers
             json_object = dataconf #json.load(dataconf)
             data_conf_json = dataconf #json.loads(dataconf)
@@ -44,7 +46,8 @@ class NeuralCommonWdnn():
             j_feature = data_conf_json["cell_feature"]
             _label = data_conf_json['label']
             _cell_feature_unique = dataconf.get('cell_feature_unique')
-
+            _label_values = data_conf_json['label_values']
+            _label_cnt = len(_label_values)
             # one line expression change
             # Categorial columns을 Sparse Layer로 만듬 python처럼 한줄로 표시
             featureColumnCategorical = {cn:tf.contrib.layers.sparse_column_with_hash_bucket(cn, hash_bucket_size=1000)
@@ -126,9 +129,9 @@ class NeuralCommonWdnn():
             #embed_deep_columns = [embedTensor for key, embedTensor in featureDeepEmbedding.items()]
 
             #Set Optimizer
-            optimizer_type = 'GD'
-            learning_rate  = 0.001
-            optimizer = self.set_optimizer(optimizer_type, learning_rate)
+            _optimizer_type = optimizer_type
+            _learning_rates  = learning_rates
+            optimizer = self.set_optimizer(_optimizer_type, _learning_rates)
 
 
             if model_type == "category":
@@ -137,7 +140,8 @@ class NeuralCommonWdnn():
                     model_dir=model_dir,
                     linear_feature_columns=wide_columns,
                     dnn_feature_columns=deep_columns,
-                    #n_classes=2,  # 0.11 bug
+                    dnn_optimizer = optimizer,
+                    n_classes=_label_cnt,  # 0.11 bug
                     dnn_hidden_units=hidden_layers_value)
 
             elif model_type == "regression":
@@ -146,6 +150,7 @@ class NeuralCommonWdnn():
                     model_dir=model_dir,
                     linear_feature_columns=wide_columns,
                     dnn_feature_columns=deep_columns,
+                    dnn_optimizer=optimizer,
                     #n_classes=2,  # 0.11 bug
                     dnn_hidden_units=hidden_layers_value)
 
@@ -153,8 +158,9 @@ class NeuralCommonWdnn():
             elif model_type == "wide":
 
                 m = tf.contrib.learn.LinearClassifier(model_dir=model_dir,
-                                                      feature_columns=wide_columns
-                                                      ,enable_centered_bias = True)
+                                                      feature_columns=wide_columns,
+                                                      optimizer=optimizer,
+                                                      enable_centered_bias = True)
             elif model_type =="deep":
 
                 #optimizer = tf.train.AdagradOptimizer(learning_rate=0.001)
@@ -162,7 +168,7 @@ class NeuralCommonWdnn():
                 m = tf.contrib.learn.DNNClassifier(model_dir=model_dir,
                                                        feature_columns=deep_columns,
                                                        optimizer=optimizer,
-                                                       #n_classes = 2, #0.11 bug
+                                                       n_classes = _label_cnt, #0.11 bug
                                                        #fix_global_step_increment_bug=True,
                                                        #optimizer="Adagrad",
                                                        hidden_units=hidden_layers_value)
@@ -184,7 +190,9 @@ class NeuralCommonWdnn():
         tf.train.FtrlOptimizer
         tf.train.ProximalGradientDescentOptimizer
         tf.train.ProximalAdagradOptimizer
-        tf.train.RMSPropOptimize """
+        tf.train.RMSPropOptimize 
+        ["GD","Adagrad","Adam","PGD"]
+        """
 
         _optimizer_type = optimizer_type
         _learning_rate = learning_rate

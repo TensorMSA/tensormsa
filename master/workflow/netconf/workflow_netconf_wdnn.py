@@ -64,6 +64,20 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
         """
         return self.conf['auto_demension'] if ('auto_demension' in self.conf) else False
 
+    @property
+    def optimizer_type(self):
+        """
+        getter for optimizer_type
+        """
+        return self.conf['optimizer_type'] if ('optimizer_type' in self.conf) else 'Adam'
+
+    @property
+    def learning_rates(self):
+        """
+        getter for learning_rate
+        """
+        return self.conf['learning_rate'] if ('learning_rate' in self.conf) else 0.01
+
 
     def __init__(self, key = None):
         """
@@ -134,9 +148,11 @@ class WorkFlowNetConfWdnn(WorkFlowNetConf):
                 config_data['batch_size'] = input_data['batch_size']
                 config_data['epoch'] = input_data['epoch']
                 config_data['model_type'] = input_data['model_type']
-                config_data['train'] = input_data['train']
+                config_data['train'] = input_data['train']  if 'train' in input_data else True
                 config_data['auto_demension'] = input_data['auto_demension']  if 'auto_demension' in input_data else self.config_data_nvl_bool(config_data,
                                                                                                        'auto_demension')
+                config_data['optimizer_type'] = input_data['optimizer_type']  if 'optimizer_type' in input_data else 'Adam'
+                config_data['learning_rates'] = input_data['learning_rates']  if 'learning_rates' in input_data else 0.01
                 # config_data['source_parse_type'] = form
                 # config_data['source_server'] = input_data['source_server']
                 # config_data['source_sql'] = input_data['source_sql']

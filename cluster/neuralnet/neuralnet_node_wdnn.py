@@ -74,12 +74,18 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 dst =  self.model_train_path
                 utils.copy_all(src, dst)
 
+
+            #Optimizer and learning rate
+            #self._optimizer_type = self.optimizer_type
+            #self._learning_rates = self.learning_rate
             logging.info("model_path : {0} ".format(self.model_path))
             logging.info("hidden_layers : {0} ".format(self.hidden_layers))
             logging.info("activation_function : {0} ".format(self.activation_function))
             logging.info("batch_size : {0} ".format(self.batch_size))
             logging.info("epoch : {0} ".format(self.epoch))
             logging.info("model_type : {0} ".format(self.model_type))
+            logging.info("optimizer_type : {0} ".format(self.optimizer_type))
+            logging.info("learning_rates : {0} ".format(self.learning_rates))
 
 
             data_conf_info = self.data_conf
@@ -134,12 +140,17 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             else:
                 #Todo H5
                 # train per files in folder h5용
-                logging.info("Reading hdf5")
+                logging.info("Training Wide and Deep from Reading hdf5")
                 while(train_data_set.has_next()) :
 
-                    for i in range(0, train_data_set.data_size(), self.batch_size):
-                        for i in range(train_cnt):
-                            data_set = train_data_set[i:i + self.batch_size]
+                    for i in range(0, train_data_set.data_size(), self.batch_size): #크게 한번 도는거
+                        logging.info("Training WDNN Total Count {0} out of {1}".format(i+self.batch_size, train_data_set.data_size()))
+                        data_set = train_data_set[i:i + self.batch_size]
+
+                        for t_i in range(train_cnt):
+                            logging.info(
+                                "Training WDNN Train Count {0} out of {1}".format(t_i, train_cnt))
+                            #data_set = train_data_set[i:i + self.batch_size]
                             if i == 0:
                                 eval_data_Set = data_set
                             train_result = wdnn_model.fit(
@@ -148,7 +159,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                             eval_result = wdnn_model.evaluate(
                                 input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                                                                           data_set, data_conf_info), steps=200)
-                            print("model fitting h5 " + str(data_set))
+                            logging.info("wdnn training complete count from h5 : {0} ".format(len(data_set)))
 
                             acc = eval_result['accuracy']
                             loss = eval_result['loss']
@@ -268,6 +279,9 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         self.model_type = wf_net_conf.model_type
         self.train = wf_net_conf.train
         self.auto_demension = wf_net_conf.auto_demension
+        self.optimizer_type = wf_net_conf.optimizer_type
+        self.learning_rates = wf_net_conf.learning_rates
+
         #Todo 어떻게 꺼내는지 승우씨한테 물어볼것
         _wf_data_conf = wf_data_conf(key.split('_')[0]+'_'+key.split('_')[1]+'_'+'dataconf_node')
         self.data_conf = _wf_data_conf.conf
@@ -314,12 +328,12 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             #conf_data['cls_pool'].get('nn00001_1_pre_feed_fr2wdnn_test')
             logging.info("model_path : {0}".format(self.model_path))
-            print("hidden_layers : {0}".format(self.hidden_layers))
-            print("activation_function : {0}".format(self.activation_function))
-            print("batch_size : {0}".format(self.batch_size))
-            print("epoch : {0}".format(self.epoch))
-            print("model_type : {0}".format(self.model_type))
-            print("model_type : {0}".format(self.auto_demension))
+            logging.info("hidden_layers : {0}".format(self.hidden_layers))
+            logging.info("activation_function : {0}".format(self.activation_function))
+            logging.info("batch_size : {0}".format(self.batch_size))
+            logging.info("epoch : {0}".format(self.epoch))
+            logging.info("model_type : {0}".format(self.model_type))
+            logging.info("auto_demension : {0}".format(self.auto_demension))
 
             config_acc = {"nn_id": conf_data['node_id'], "nn_wf_ver_id": conf_data.get('wf_ver'),
                       "nn_batch_ver_id": self.batch}
@@ -362,7 +376,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                 pre_list = list()
 
                 while (train_data_set.has_next()):
-                    print("h5")
+                    logging.info("Wdnn eval process from h5")
                     # 파일이 하나 돌때마다
                     # for 배치사이즈와 파일의 총갯수를 가져다가 돌린다. -> 마지막에 뭐가 있을지 구분한다.
                     # 파일에 iter를 넣으면 배치만큼 가져오는 fn이 있음 그걸 __itemd에 넣고
@@ -382,7 +396,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                         eval_result = wdnn_model.evaluate(
                            input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                                                                      data_set, data_conf_info), steps=200)
-                        print("model fitting h5 " + str(data_set))
+                        #print("model fitting h5 " + str(data_set))
 
                         acc = eval_result['accuracy']
                         loss = eval_result['loss']
@@ -456,7 +470,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         Returns:
             none
 
-        Raises:
+        Raises:INFO
 
         Example
 

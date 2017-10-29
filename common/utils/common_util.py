@@ -7,6 +7,9 @@ from common.utils import *
 import datetime
 import operator
 import logging
+from django.conf import settings
+import tensorflow as tf
+
 
 gLogFloag = "Y"
 gUserId = "-1"
@@ -229,3 +232,39 @@ def make_and_exist_directory(directory):
         logging.error("Make Celery Logging Directory {0} : {1}".format(directory, e))
         raise Exception(e)
         return False
+
+
+def get_tensorflow_log_level():
+    """  
+        텐서플로 log레벨을 django setting.py에 의해서 가져오기
+        Get Tensorflow log level from django setting.py
+
+    Args:
+      params:
+
+    Returns:
+        tf.logging.ERROR
+
+    Raises:
+
+    Example
+        
+    """
+
+    try:
+        # "DEBUG, INFO, WARN, ERROR, or FATAL"
+        if settings.TENSOR_FLOW_LOG_LEVEL == 'DEBUG':
+            tf_log_vevel = tf.logging.DEBUG
+        elif settings.TENSOR_FLOW_LOG_LEVEL == 'INFO':
+            tf_log_vevel = tf.logging.INFO
+        elif settings.TENSOR_FLOW_LOG_LEVEL == 'WARN':
+            tf_log_vevel = tf.logging.WARN
+        elif settings.TENSOR_FLOW_LOG_LEVEL == 'ERROR':
+            tf_log_vevel = tf.logging.ERROR
+        elif settings.TENSOR_FLOW_LOG_LEVEL == 'FATAL':
+            tf_log_vevel = tf.logging.FATAL
+        return tf_log_vevel
+    except Exception as e:
+        logging.info("get_tensorflow_log_level Exception")
+        return tf.logging.DEBUG
+

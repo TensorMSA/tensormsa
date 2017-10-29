@@ -586,7 +586,7 @@ def set_node_alias_rule():
                  "graph_node_name": "data_encode_node"
              }
             ,{
-                 "graph_flow_info_id": 8, "graph_seq": 3, "graph_node": "netconf_data_decode",
+                 "graph_flow_info_id": 8, "graph_sdeq": 3, "graph_node": "netconf_data_decode",
                  "graph_node_name": "data_decode_node"
              }
             ,{
@@ -915,6 +915,11 @@ def set_automl_rule() :
                         , "model_type": {"type": "sel", "option": ["category", "regression"], "auto": False}
                         , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
                         , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "optimizer_type": {"type": "str", "option": "ramdomlist" , "auto": ["GD","Adagrad","Adam","PGD","RMS"]}
+                        , "learning_rates": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
+                        #, "learning_rates": {"type": "int", "option": None, "auto": [[1, 4, 1], [1, 100, 1]]}
+                        #optimizer_type
+                        #learning_rates
                     }
                 , "evaldata":
                     {
@@ -970,7 +975,9 @@ def set_automl_rule() :
                         "batch_size": 500,
                         "epoch": 500,
                         "model_type": "category",
-                        "train": True
+                        "train": True,
+                        "optimizer_type": "GD",
+                        "learning_rates": 0.01
                     }
                 , "evaldata":
                     {
@@ -1035,6 +1042,9 @@ def set_automl_rule() :
                         , "model_type": {"type": "str", "option": "deep", "auto": False}
                         , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
                         , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "optimizer_type": {"type": "str", "option": "ramdomlist",
+                                             "auto": ["GD", "Adagrad", "Adam", "PGD", "RMS"]}
+                        , "learning_rates": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
                     }
                 , "evaldata":
                     {
@@ -1078,6 +1088,7 @@ def set_automl_rule() :
                         "cross_cell": {},
                         "cell_feature": {},
                         "extend_cell_feature": {},
+                        "cell_feature_unique": {},
                         "label_values": [],
                         "label_type": "CATEGORICAL"
                     }
@@ -1089,7 +1100,9 @@ def set_automl_rule() :
                         "batch_size": 500,
                         "epoch": 500,
                         "model_type": "category",
-                        "train": True
+                        "train": True,
+                        "optimizer_type": "GD",
+                        "learning_rates": 0.01
                     }
                 , "evaldata":
                     {

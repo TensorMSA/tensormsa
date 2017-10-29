@@ -431,7 +431,13 @@ class AutoMlRunManager :
                         return True
                     if (auto_form.get('option') in ['false', 'False']):
                         return False
-                    return self.conv_type(auto_form.get('option'))
+                    result =  self.conv_type(auto_form.get('option'))
+                    if (auto_form.get('option') == 'ramdomlist'):
+                        _list = auto_form.get('auto')
+                        random.shuffle(_list)
+                        result = _list.pop()
+
+                    return result
                 else :
                     return self.conv_type(auto_form.get('option'))
         except Exception as e :
