@@ -275,7 +275,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                 this.state.NN_TableGraph = tableData['graph']
                 if(autokeys.length == 0){
                     this.state.trainType = false
-                    this.state.configEditFlag = "Y"
+                    // this.state.configEditFlag = "Y"
                 }
                 
                 this.props.reportRepository.getCommonNNInfoWF(this.state.nn_id).then((tableData) => {// Network Version Info
@@ -362,6 +362,11 @@ export default class NN_InfoDetailComponent extends React.Component {
             if(value == this.state.NN_TableWFData[i]["nn_wf_ver_id"]){
                 this.state.nn_batch_id = this.state.NN_TableWFData[i]["train_batch_ver_id"]
                 this.state.NN_TableWFDataAccLoss = this.state.NN_TableWFData[i]
+                if(this.state.NN_TableWFData[i]["active_flag"] == "Y"){
+                    this.state.configEditFlag = "Y"
+                }else{
+                    this.state.configEditFlag = "N"
+                }
             }
             
         }
