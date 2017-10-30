@@ -2,7 +2,7 @@
 html,body{overflow:hidden;margin:0;padding:0;webkit-text-size-adjust:none;}
 html{height:100%;} 
 body{height:100%;overflow-x:auto;font-family:Apple Gothic,'맑은 고딕',Malgun Gothic,'돋움',dotum,sans-serif;font-size:13px;line-height:1.39;color:#333;}
-table{width:97%;border-collapse:separate;border-spacing:0;font-size:1em;table-layout:fixed;}
+table{width:97%;border-collapse:collapse;border-spacing:0;font-size:1em;table-layout:fixed;}
 caption{display:none;}
 td{word-wrap:break-word;}
 a{color:#333;text-decoration:none;outline:none;}
@@ -65,7 +65,7 @@ main>section>.container:after{content:'';display:block;height:50px;}
 .table, .table2{table-layout:auto;border-top:1px solid #005dac;}
 .table{border-top-width:3px;}
 .table thead th, .table2 thead th{line-height:14px;color:#0068ad;background:#f1f1f1;}
-.table thead th, .table tbody td, .table2 thead th, .table2 tbody td{height:20px;padding:5px 10px;text-align:center;border-left:1px solid #dcdcdc;border-bottom:1px solid #dcdcdc;}
+.table thead th, .table tbody td, .table2 thead th, .table2 tbody td{border-collapse:collapse;height:20px;padding:5px 10px;text-align:center;border-left:1px solid #dcdcdc;border-bottom:1px solid #dcdcdc;border-right: 1px solid #dcdcdc}
 
 .table tbody td, .table2 tbody td{vertical-align:top;}
 .table button, .table2 button{height:20px;vertical-align:top;background:#6a7277;}
