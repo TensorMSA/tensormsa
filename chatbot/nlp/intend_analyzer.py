@@ -49,5 +49,5 @@ class IntendAnalyzer(ShareData):
         return share_data
 
     def get_intent_model(self, convert_data):
-        intent_model = "1"#str(self.wcnn_model.run(self.nn_id, {"input_data": convert_data, "num": 0, "clean_ans": False})[0])
+        intent_model = str(self.wcnn_model.run(self.nn_id, {"input_data": convert_data, "num": 0, "clean_ans": False})[0])
         return intent_model
