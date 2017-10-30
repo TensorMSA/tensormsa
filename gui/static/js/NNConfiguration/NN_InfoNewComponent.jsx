@@ -36,7 +36,9 @@ export default class NN_InfoNewComponent extends React.Component {
             NN_TableRowArr2:["generation","population","survive"],
             tabIndex:1,
             tabIndexAS:1,
-            autoMasterView:true
+            autoMasterView:true,
+            g_limit:100,
+            p_limit:100
         };
     }
 
@@ -134,6 +136,16 @@ export default class NN_InfoNewComponent extends React.Component {
 
             if(aparam['population'] <= aparam['survive']){
                 alert( 'Survive('+ aparam['survive'] +') can not be greater than Population('+aparam['population']+')' );
+                return; 
+            }
+
+            if(aparam['population'] > this.state.p_limit){
+                alert( 'Population('+ aparam['population'] +') can not be greater than Population('+this.state.p_limit+')' );
+                return; 
+            }
+
+            if(aparam['generation'] > this.state.g_limit){
+                alert( 'Generation('+ aparam['generation'] +') can not be greater than Generation('+this.state.g_limit+')' );
                 return; 
             }
         }

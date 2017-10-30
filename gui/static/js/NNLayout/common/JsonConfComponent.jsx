@@ -612,7 +612,7 @@ export default class JsonConfComponent extends React.Component {
                     }
                 }else{
                     if(row[cols].rspancnt > 0){
-                        colData.push(<td key={k++} style={{"borderLeft":"1px"}} 
+                        colData.push(<td key={k++} 
                                         rowSpan= {row[cols].rspancnt}> {row[cols].key} </td>) 
                         row[cols].rspancnt = 0
                     }   

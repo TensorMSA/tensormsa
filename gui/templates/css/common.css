@@ -66,7 +66,7 @@ main>section>.container:after{content:'';display:block;height:50px;}
 .table{border-top-width:3px;}
 .table thead th, .table2 thead th{line-height:14px;color:#0068ad;background:#f1f1f1;}
 .table thead th, .table tbody td, .table2 thead th, .table2 tbody td{height:20px;padding:5px 10px;text-align:center;border-left:1px solid #dcdcdc;border-bottom:1px solid #dcdcdc;}
-.table thead th:first-child, .table tbody td:first-child, .table2 thead th:first-child, .table2 tbody td:first-child{border-left:none;}
+
 .table tbody td, .table2 tbody td{vertical-align:top;}
 .table button, .table2 button{height:20px;vertical-align:top;background:#6a7277;}
 

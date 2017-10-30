@@ -44,6 +44,8 @@ export default class NN_InfoDetailMemoModal extends React.Component {
         // Version Active 변경.
         this.props.reportRepository.putCommonNNInfoWF(this.props.nn_id, wfparam).then((tableData) => {
         });
+
+        this.props.closeModal()
     }
 
     render() {
@@ -63,7 +65,7 @@ export default class NN_InfoDetailMemoModal extends React.Component {
         return (  
 
             <div>
-                <h1>Version Momo</h1>
+                <h1>Version Memo</h1>
                 
                 <div className="container tabBody">
                     <div id="tab1">
@@ -90,7 +92,7 @@ export default class NN_InfoDetailMemoModal extends React.Component {
                     </div>
                 </div>
                 <span className="modal-footer">
-                    <button onClick={this.saveMemo.bind(this)}>Save</button>
+                    <button style={{"marginRight":"5px"}} onClick={this.saveMemo.bind(this)}>Save</button>
                     <button onClick={this.props.closeModal}>Close</button>
                 </span>
             </div>
