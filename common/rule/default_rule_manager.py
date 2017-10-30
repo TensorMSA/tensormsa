@@ -880,8 +880,7 @@ def set_automl_rule() :
                     {
                         "type": {"type": "sel", "option": ["csv"], "auto": False}
                         , "preprocess": {"type": "sel",
-                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
-                                                    'robust_scale', 'normalize', 'maxabs_scale'],
+                                         "option": ["null"],
                                          "auto": False}
                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
                         , "store_path": {"type": "str", "option": None, "auto": False}
@@ -889,8 +888,8 @@ def set_automl_rule() :
                         , "source_type": {"type": "sel", "option": ["local"], "auto": False}
                         , "predict_path": {"type": "str", "option": None, "auto": False}
                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
-                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
                         , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
                         , "source_parse": {"type": "str", "option": "raw", "auto": False}
                     }
@@ -903,7 +902,7 @@ def set_automl_rule() :
                         , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
                         , "cell_feature_unique": {"type": "str", "option": [], "auto": False}
                         , "label_values": {"type": "str", "option": [], "auto": False}
-                        , "label_type": {"type": "sel", "option": ["CATEGORYCAL", "CONTINUOUS"], "auto": False}
+                        , "label_type": {"type": "sel", "option": ["CATEGORYCAL"], "auto": False}
                     }
                 , "netconf_node":
                     {
@@ -912,10 +911,10 @@ def set_automl_rule() :
                         , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
                         , "batch_size": {"type": "int", "option": 1000, "auto": False}
                         , "epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
-                        , "model_type": {"type": "sel", "option": ["category", "regression"], "auto": False}
+                        , "model_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
-                        , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
-                        , "optimizer_type": {"type": "str", "option": "ramdomlist" , "auto": ["GD","Adagrad","Adam","PGD","RMS"]}
+                        , "train": {"type": "sel", "option": ["True"], "auto": False}
+                        , "optimizer_type": {"type": "str", "option": [] , "auto": ["GD","Adagrad","Adam","PGD","RMS"]}
                         , "learning_rates": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
                         #, "learning_rates": {"type": "int", "option": None, "auto": [[1, 4, 1], [1, 100, 1]]}
                         #optimizer_type
@@ -925,8 +924,7 @@ def set_automl_rule() :
                     {
                         "type": {"type": "sel", "option": ["csv"], "auto": False}
                         , "preprocess": {"type": "sel",
-                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
-                                                    'robust_scale', 'normalize', 'maxabs_scale'],
+                                         "option": ["null"],
                                          "auto": False}
                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
                         , "store_path": {"type": "str", "option": None, "auto": False}
@@ -934,14 +932,14 @@ def set_automl_rule() :
                         , "source_type": {"type": "sel", "option": ["local"], "auto": False}
                         , "predict_path": {"type": "str", "option": None, "auto": False}
                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
-                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
                         , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
                         , "source_parse": {"type": "str", "option": "raw", "auto": False}
                     }
                 , "eval_node":
                     {
-                        "type": {"type": "sel", "option": ["category", "regression"], "auto": False}
+                        "type": {"type": "sel", "option": ["category"], "auto": False}
                     }
             }, "single": {
                 "data_node":
@@ -1007,8 +1005,7 @@ def set_automl_rule() :
                     {
                         "type": {"type": "sel", "option": ["csv"], "auto": False}
                         , "preprocess": {"type": "sel",
-                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
-                                                    'robust_scale', 'normalize', 'maxabs_scale'],
+                                         "option": ["null"],
                                          "auto": False}
                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
                         , "store_path": {"type": "str", "option": None, "auto": False}
@@ -1016,8 +1013,8 @@ def set_automl_rule() :
                         , "source_type": {"type": "sel", "option": ["local"], "auto": False}
                         , "predict_path": {"type": "str", "option": None, "auto": False}
                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
-                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
                         , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
                         , "source_parse": {"type": "str", "option": "raw", "auto": False}
                     }
@@ -1030,7 +1027,7 @@ def set_automl_rule() :
                         , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
                         , "cell_feature_unique": {"type": "str", "option": [], "auto": False}
                         , "label_values": {"type": "str", "option": [], "auto": False}
-                        , "label_type": {"type": "sel", "option": ["CATEGORYCAL", "CONTINUOUS"], "auto": False}
+                        , "label_type": {"type": "sel", "option": ["CATEGORYCAL"], "auto": False}
                     }
                 , "netconf_node":
                     {
@@ -1041,8 +1038,8 @@ def set_automl_rule() :
                         , "epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
                         , "model_type": {"type": "str", "option": "deep", "auto": False}
                         , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
-                        , "train": {"type": "sel", "option": ["True", "False"], "auto": False}
-                        , "optimizer_type": {"type": "str", "option": "ramdomlist",
+                        , "train": {"type": "sel", "option": ["True"], "auto": False}
+                        , "optimizer_type": {"type": "str", "option": [],
                                              "auto": ["GD", "Adagrad", "Adam", "PGD", "RMS"]}
                         , "learning_rates": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
                     }
@@ -1050,8 +1047,7 @@ def set_automl_rule() :
                     {
                         "type": {"type": "sel", "option": ["csv"], "auto": False}
                         , "preprocess": {"type": "sel",
-                                         "option": ["null", "maxabs_scale", 'scale', 'minmax_scale',
-                                                    'robust_scale', 'normalize', 'maxabs_scale'],
+                                         "option": ["null"],
                                          "auto": False}
                         , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
                         , "store_path": {"type": "str", "option": None, "auto": False}
@@ -1059,14 +1055,14 @@ def set_automl_rule() :
                         , "source_type": {"type": "sel", "option": ["local"], "auto": False}
                         , "predict_path": {"type": "str", "option": None, "auto": False}
                         , "source_server": {"type": "sel", "option": ["local"], "auto": False}
-                        , "drop_duplicate": {"type": "sel", "option": ["False", "True"], "auto": False}
-                        , "multi_node_flag": {"type": "sel", "option": ["True", "False"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
                         , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
                         , "source_parse": {"type": "str", "option": "raw", "auto": False}
                     }
                 , "eval_node":
                     {
-                        "type": {"type": "sel", "option": ["category", "regression"], "auto": False}
+                        "type": {"type": "sel", "option": ["category"   ], "auto": False}
                     }
             }, "single": {
                 "data_node":
@@ -1340,7 +1336,7 @@ def set_automl_rule_etc():
             "cnn" : "cnn_train.zip"
             ,"resnet" : "resnet_train.zip"
             ,"wdnn" : "wdnn_train.csv"
-            ,"dnn" : "wdnn_train.csv"
+            ,"dnn" : "dnn_train.csv"
             ,"wdnn_keras" : "wdnn_keras_train.csv"
             ,"word2vec" : "word2vec_train.zip"
             ,"word2vec_frame" : "word2vec_frame_train.zip"
@@ -1361,7 +1357,7 @@ def set_automl_rule_etc():
             "cnn": "cnn_test.zip"
             , "resnet": "resnet_test.zip"
             , "wdnn": "wdnn_test.csv"
-            , "dnn": "wdnn_test.csv"
+            , "dnn": "dnn_test.csv"
             , "wdnn_keras": "wdnn_keras_test.csv"
             , "word2vec": "word2vec_test.zip"
             , "word2vec_frame": "word2vec_frame_test.zip"

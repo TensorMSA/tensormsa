@@ -88,7 +88,7 @@ class AutoMlRunManager :
         :param survive: number of gene to survive 
         :return: dict type result info with extra flag 
         """
-        networks = sorted(networks, key=lambda x: x.get('acc'), reverse=True)
+        networksNew = copy.deepcopy(sorted(networks, key=lambda x: x.get('acc'), reverse=True))
         # result = list(map(lambda x : self.set_value(x, 'survive', True) , networks[0:survive]))
         # self.summary['best'] = result
         # result = result + list(map(lambda x : self.set_value(x, 'survive', False) , networks[survive:]))
@@ -96,7 +96,7 @@ class AutoMlRunManager :
         surcnt = 1
         result = []
         best = []
-        for net in networks:
+        for net in networksNew:
             if survive < surcnt:
                 net['survive'] = False
             else:
@@ -423,20 +423,15 @@ class AutoMlRunManager :
                         else :
                             return random.randrange(en, st, ir)
                 elif(type(auto_form.get('option')) == list) :
-                    st, en, ir = auto_form.get('auto')
-                    num =  random.randrange(st, en, ir)
-                    return self.conv_type(auto_form.get('option')[num])
+                    _list = auto_form.get('auto')
+                    random.shuffle(_list)
+                    return _list.pop()
                 elif (type(auto_form.get('option')) == str):
                     if(auto_form.get('option') in ['true', 'True']) :
                         return True
                     if (auto_form.get('option') in ['false', 'False']):
                         return False
                     result =  self.conv_type(auto_form.get('option'))
-                    if (auto_form.get('option') == 'ramdomlist'):
-                        _list = auto_form.get('auto')
-                        random.shuffle(_list)
-                        result = _list.pop()
-
                     return result
                 else :
                     return self.conv_type(auto_form.get('option'))
