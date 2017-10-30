@@ -168,7 +168,11 @@ export default class ReportRepository {
     }
 
     getFileUpload(params, wf_ver_id, dir, type){
-        return this.api.get('/api/v1/type/wf/state/data/detail/upload/file/nnid/'+params+'/ver/'+wf_ver_id+'/dir/'+dir+'/type/'+type+'/', '').then((data) => {
+        let spin = true
+        if(type == 'runcheck'){
+            spin = false
+        }
+        return this.api.get('/api/v1/type/wf/state/data/detail/upload/file/nnid/'+params+'/ver/'+wf_ver_id+'/dir/'+dir+'/type/'+type+'/', spin).then((data) => {
             data = JSON.parse(data);
             this.log("getFileUploadPath:", data)
             return data;

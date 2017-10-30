@@ -146,7 +146,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                 if(tableData[0]['filecnt'] == 0){
                     alert( tableData[0]['type'] +" File does not exist." )
                 }else{
-                    this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', 'all').then((tableData) => {//Job Check
+                    this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', false).then((tableData) => {//Job Check
                         if(tableData.length == 0){
                             let re = confirm( "Do you run?" )
                             if(re == true){
@@ -186,67 +186,73 @@ export default class NN_InfoDetailComponent extends React.Component {
                                 });
 
                             });
-                        }); 
+                        });
+                        this.searchData()
                     }
                 }
             });
         }
         
-        this.searchData()
+        
 
     }
 
     saveData(){//Save
-        let re = confirm( "Do you Save?" )
-        if(re == true){
-            //Version Active Flag Save
-            let vbody = this.refs.master2.children[1].children
-            for(let i=0 ; i < vbody.length; i++){
-                let col = vbody[i].children
-                let ver = col[this.findColInfo("1", "id", "nn_wf_ver_id").index].attributes.alt.value // version id key column
-                let active = col[this.findColInfo("1", "id", "active_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
+        this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', false).then((tableData) => {
+            if(tableData.length == 0){
+                let re = confirm( "Do you Save?" )
+                if(re == true){
+                    //Version Active Flag Save
+                    let vbody = this.refs.master2.children[1].children
+                    for(let i=0 ; i < vbody.length; i++){
+                        let col = vbody[i].children
+                        let ver = col[this.findColInfo("1", "id", "nn_wf_ver_id").index].attributes.alt.value // version id key column
+                        let active = col[this.findColInfo("1", "id", "active_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
 
-                if(active == "Y"){
+                        if(active == "Y"){
+                            let wfparam = {}
+                            wfparam["nn_wf_ver_id"] = ver
+                            wfparam["nn_def_list_info_nn_id"] = ""
+                            wfparam["nn_wf_ver_info"] = "init"
+                            // wfparam["condition"] = ""
+                            wfparam["active_flag"] = "Y"
+                            // Version Active 변경.
+
+                            this.props.reportRepository.putCommonNNInfoWF(this.state.nn_id, wfparam).then((tableData) => {
+                                this.getCommonNNInfoWF(this.state.nn_id)
+                            });
+                        }
+                    }
+
                     let wfparam = {}
-                    wfparam["nn_wf_ver_id"] = ver
-                    wfparam["nn_def_list_info_nn_id"] = ""
-                    wfparam["nn_wf_ver_info"] = "init"
-                    // wfparam["condition"] = ""
-                    wfparam["active_flag"] = "Y"
-                    // Version Active 변경.
+                    
+                    for(let i in this.state.NN_TableBTData){
+                        wfparam["nn_batch_ver_id"] = this.state.NN_TableBTData[i]['nn_batch_ver_id']
+                        wfparam["eval_flag"] = this.state.NN_TableBTData[i]['eval_flag']
+                        wfparam["active_flag"] = this.state.NN_TableBTData[i]['active_flag']
 
-                    this.props.reportRepository.putCommonNNInfoWF(this.state.nn_id, wfparam).then((tableData) => {
-                        this.getCommonNNInfoWF(this.state.nn_id)
-                    });
+                        if(this.state.NN_TableBTData[i]['eval_flag'] == "Y" || this.state.NN_TableBTData[i]['active_flag'] == "Y"){
+                            this.props.reportRepository.putCommonNNInfoBatch(this.state.nn_id, this.state.nn_wf_ver_id, wfparam).then((tableData) => {
+                            });
+                        }
+                    }
+                    
+                    //Single Config Save
+                    if(this.state.trainType == false){
+                        let conf = this.refs.netconfig
+                        if(conf != undefined){
+                            let params = conf.getConfigData()
+                        
+                            this.props.reportRepository.putCommonNNInfoWFNode(this.state.nn_id, this.state.nn_wf_ver_id, this.state.nodeType, params).then((tableData) => {
+
+                            });
+                        }
+                    }
                 }
+            }else{
+                    alert( "Can not execute because a running job exists." )
             }
-
-            let wfparam = {}
-            
-            for(let i in this.state.NN_TableBTData){
-                wfparam["nn_batch_ver_id"] = this.state.NN_TableBTData[i]['nn_batch_ver_id']
-                wfparam["eval_flag"] = this.state.NN_TableBTData[i]['eval_flag']
-                wfparam["active_flag"] = this.state.NN_TableBTData[i]['active_flag']
-
-                if(this.state.NN_TableBTData[i]['eval_flag'] == "Y" || this.state.NN_TableBTData[i]['active_flag'] == "Y"){
-                    this.props.reportRepository.putCommonNNInfoBatch(this.state.nn_id, this.state.nn_wf_ver_id, wfparam).then((tableData) => {
-                    });
-                }
-            }
-            
-            //Single Config Save
-            if(this.state.trainType == false){
-                let conf = this.refs.netconfig
-                if(conf != undefined){
-                    let params = conf.getConfigData()
-                
-                    this.props.reportRepository.putCommonNNInfoWFNode(this.state.nn_id, this.state.nn_wf_ver_id, this.state.nodeType, params).then((tableData) => {
-
-                    });
-                }
-            }
-
-        }
+        });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +380,7 @@ export default class NN_InfoDetailComponent extends React.Component {
         if(value.target != undefined){
             value = selectedValue.target.attributes.alt.value
             // 기존에 실행 되고 있는 Train이 있으면 안돌게 해야 한다.
-            this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', 'all').then((tableData) => {
+            this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', false).then((tableData) => {
                 if(tableData.length == 0){
                     //학습을 해준다.
                     let re = confirm( "Do you Train?" )
