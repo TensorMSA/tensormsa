@@ -112,7 +112,26 @@ export default class NN_InfoDetailComponent extends React.Component {
     /////////////////////////////////////////////////////////////////////////////////////////
     searchData(){
         this.getCommonNNInfoWF()
+        
+        // select box의 경우 강제 변경을 해주어야 한다.
+        for(let i in this.state.NN_TableWFData){
+            let vatf = this.state.NN_TableWFData[i]["active_flag"]
+            let vat = this.refs.master2.rows[i*1+1].children[this.findColInfo("1", "id", "active_flag").index].children[0].children[0]
+            vat.value = vatf
+        }
 
+        let batch = this.refs.batch
+        if(batch != undefined){
+            for(let i in this.state.NN_TableBTData){
+                let vatef = this.state.NN_TableBTData[i]["eval_flag"]
+                let vataf = this.state.NN_TableBTData[i]["active_flag"]
+                let vate = this.refs.batch.rows[i*1+1].children[this.findColInfo("2", "id", "eval_flag").index].children[0].children[0]
+                let vata = this.refs.batch.rows[i*1+1].children[this.findColInfo("2", "id", "active_flag").index].children[0].children[0]
+                vate.value = vatef
+                vata.value = vataf
+            }
+        }
+        
         if(this.refs.barline != undefined){
             this.refs.barline.getCommonNodeInfoView()
         }
@@ -339,7 +358,15 @@ export default class NN_InfoDetailComponent extends React.Component {
     }
     /////////////////////////////////////////////////////////////////////////////////////////
     // Version Table Action
-    /////////////////////////////////////////////////////////////////////////////////////////   
+    /////////////////////////////////////////////////////////////////////////////////////////  
+    clickSeletVersion(selectedValue){//Version을 선택하면 새로 조회 한다.   
+        let value = selectedValue
+        if(value.target != undefined){
+            value = selectedValue.target.attributes.alt.value   
+        }
+        this.clickChangeVersion(value)
+    }
+
     clickChangeVersion(value){//Version 이 변경 되면 해당 버전을 Check 해주고 Batch Node를 새로 조회 한다.
         let table = this.refs.master2
         for(let i=1 ; i < table.rows.length ; i++){
@@ -362,6 +389,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             if(value == this.state.NN_TableWFData[i]["nn_wf_ver_id"]){
                 this.state.nn_batch_id = this.state.NN_TableWFData[i]["train_batch_ver_id"]
                 this.state.NN_TableWFDataAccLoss = this.state.NN_TableWFData[i]
+                //active version만 수정할 수 있다.
                 if(this.state.NN_TableWFData[i]["active_flag"] == "Y"){
                     this.state.configEditFlag = "Y"
                 }else{
@@ -370,14 +398,6 @@ export default class NN_InfoDetailComponent extends React.Component {
             }
             
         }
-    }
-
-    clickSeletVersion(selectedValue){//Version을 선택하면 새로 조회 한다.   
-        let value = selectedValue
-        if(value.target != undefined){
-            value = selectedValue.target.attributes.alt.value   
-        }
-        this.clickChangeVersion(value)
     }
 
     clickTrainVersion(selectedValue){//Version Train을 선택했을때 훈련을 하고 재 조회 해준다. ..
@@ -504,9 +524,9 @@ export default class NN_InfoDetailComponent extends React.Component {
                 let changvalue = table.rows[i].children[this.findColInfo("2", "id", "eval_flag").index].children[0].children[0]
                 if(key != changekey){// Y로 변경한 Cell 이 아니라면 
                     changvalue.value = "N"//N으로 변경을 해준다.
-                    this.state.NN_TableBTData[i-1]['eval_flag'] = "N"
+                    // this.state.NN_TableBTData[i-1]['eval_flag'] = "N"
                 }else{
-                    this.state.NN_TableBTData[i-1]['eval_flag'] = "Y"
+                    // this.state.NN_TableBTData[i-1]['eval_flag'] = "Y"
                 }
             }
         }
@@ -522,9 +542,9 @@ export default class NN_InfoDetailComponent extends React.Component {
                 let changvalue = table.rows[i].children[this.findColInfo("2", "id", "active_flag").index].children[0].children[0]
                 if(key != changekey){// Y로 변경한 Cell 이 아니라면 
                     changvalue.value = "N"//N으로 변경을 해준다.
-                    this.state.NN_TableBTData[i-1]['active_flag'] = "N"
+                    // this.state.NN_TableBTData[i-1]['active_flag'] = "N"
                 }else{
-                    this.state.NN_TableBTData[i-1]['active_flag'] = "Y"
+                    // this.state.NN_TableBTData[i-1]['active_flag'] = "Y"
                 }
             }
         }
