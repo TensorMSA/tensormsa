@@ -2,13 +2,14 @@ import React from 'react'
 import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
 import EnvConstants from './../constants/EnvConstants';
-
+import ReactJson from 'react-json-view'
 
 export default class NN_InfoDetailPredictAPIModal extends React.Component {
     constructor(props, context) {
         super(props);
         this.state = {
-        	NN_TableData: null
+        	NN_TableData: null,
+            NN_TableResult:{'result':'Empty'}
         };
 
     }
@@ -26,10 +27,23 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
         this.state.NN_TableData = url
     }
 
-    handleClickAPIView(row){
+    uploadData(){
+        function pad(n, width) {
+          n = n + '';
+          return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+        }
 
-        
-        console.log(url)
+        let selectedFile = document.getElementById('file').files
+
+        let files = new FormData()
+        for(let i=0 ; i < selectedFile.length ; i++){
+            let key = selectedFile[i]
+            files.append("file"+pad(i, 5), key)
+        }
+
+        this.props.reportRepository.postPredictNnFiles(this.props.nn_net_type, this.props.nn_id, this.props.nn_wf_ver_id, files).then((tableData) => {
+            this.setState({ NN_TableResult: tableData })
+            });
     }
 
     render() {
@@ -47,32 +61,45 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
         }else{
             data.push(<tr key={k++}><td key={k++}><h3>  resp = requests.post(url) </h3></td></tr>)
         }
+        data.push(<hr />)
+        if(this.props.nn_net_type != "wcnn"){
+            data.push(<form key={k++} style={{"marginLeft":"15px"}} method="post">
+                        <label htmlFor="file"><h3>Choose file to upload</h3></label>
+                        <input type="file" id="file" name="file" multiple />
+                        <div><br/>
+                        <button type="button" onClick={() => this.uploadData()} >Submit</button><br/>
+                        </div>
+                        </form>)
+
+            data.push(<div key={k++} style={{ "overflow":"auto", "height":300}}> 
+                <ReactJson key={k++} src={this.state.NN_TableResult} collapsed = {true} />
+                </div>)
+        }
         
-
         return (  
-
             <div>
                 <h1> Predict API </h1>
-                
-                <div className="container tabBody">
+                <div className="container paddingT10">
                     <div id="tab1">
                         <article>
                             <table key={k++} className="form-table align-left">
                                 <tbody key={k++}>
-                                <pre key={k++}>
-
+                                <pre>
                                 {data}
                                 </pre>
                                 </tbody>
                             </table>
-                            
                         </article>
                     </div>
                 </div>
+
+
+
                 <span className="modal-footer">
                     <button key={k++} onClick={this.props.closeModalPredictAPI}>Close</button>
                 </span>
             </div>
+
         )
     }
 }

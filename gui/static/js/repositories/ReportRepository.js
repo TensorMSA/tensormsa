@@ -258,6 +258,22 @@ export default class ReportRepository {
         });
     }
 
+    //Predict
+    postPredictNnFiles(type, nn_id, wf_ver_id, files) {
+        return this.api.postfiles('/api/v1/type/service/state/predict/type/'+type+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/', files).then((data) => {
+            // data = JSON.parse(data);
+            return data;
+        });
+
+    }
+
+    postPredictNn(nn_id, wf_ver_id, params) {
+        return this.api.post('/api/v1/type/service/state/predict/type/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/', params).then((data) => {
+            data = JSON.parse(data);
+            return data;
+        });
+    }
+
 
 
 

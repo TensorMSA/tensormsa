@@ -12,7 +12,7 @@ import operator
 # celery -A hoyai worker -l info
 # ./manage.py runserver [HOST]:8000
 url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-nn_id = "nn00000012"
+nn_id = "nn00000049"
 
 files = {
         #  'files000001':  open('/home/dev/hoyai/demo/data/airplane/1air.jpg','rb')
@@ -28,7 +28,7 @@ files = {
 
 # 'files000001':  open('/hoya_src_root/bolt1.jpg','rb')
     'files000002':  open('/home/dev/tensormsa/demo/data/airplane/2air.jpg','rb')
-# ,'files000003':  open('/hoya_src_root/nn00004/21/personData/LSH/20170418_094624.jpg','rb')
+,'files000003':  open('/home/dev/tensormsa/demo/data/airplane/1air.jpg','rb')
 
  #  'files000004':  open('/hoya_src_root/nn00004/21/personDataTest/PSC/20170417_180614.jpg','rb')
  # ,'files000005':  open('/hoya_src_root/nn00004/21/personDataTest/PJH/20170417_180225(0).jpg','rb')
@@ -36,7 +36,7 @@ files = {
 
         }
 
-restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/resnet/nnid/'+nn_id+'/ver/5/'
+restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/resnet/nnid/'+nn_id+'/ver/1/'
 
 resp = requests.post(restURL
                      , files=files
@@ -45,7 +45,7 @@ resp = requests.post(restURL
                         }
                      )
 # data = json.loads(resp.json())
-# print(data)
+print(resp.json())
 # try:
 #     if data["status"] == "404":
 #         print(data["result"])

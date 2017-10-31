@@ -72,6 +72,24 @@ export default class Api {
         });
     };
 
+    postfiles(url, files) {
+        console.log(EnvConstants.getApiServerUrl());
+        this.setLoading(true);
+        return fetch(
+            EnvConstants.getApiServerUrl() + url,
+            {
+                method: 'POST',
+                body: files
+            }             
+        ).then(function(response) {
+            return response.json();
+        }).then(function(json) {
+            return json;
+        }).then(this.setLoading(false)).catch(function(e) {
+            console.log("An Error has occurred :" +e);
+        });
+    };
+
     put(url, params) {
         console.log(EnvConstants.getApiServerUrl()+ url);
         console.log(params);

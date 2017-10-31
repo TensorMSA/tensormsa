@@ -201,12 +201,12 @@ export default class NN_InfoDetailComponent extends React.Component {
                             this.props.reportRepository.postCommonNNInfoWFNode(this.state.nn_id, wf_ver_id, nodeparam).then((tableData) => {
                                 //node config input
                                 this.props.reportRepository.putCommonNNInfoWFNode(this.state.nn_id, wf_ver_id, '', nodeparam).then((tableData) => {
-
+                                    this.searchData()
                                 });
 
                             });
                         });
-                        this.searchData()
+                        
                     }
                 }
             });
