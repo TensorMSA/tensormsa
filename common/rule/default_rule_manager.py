@@ -1212,51 +1212,51 @@ def set_automl_rule() :
                     },
                 "netconf_node":
                     {
-                        "param": {"epoch": 30
-                            , "traincnt": 3
-                            , "batch_size": 50
-                            , "predictcnt": 5
+                        "param": {"epoch": 50
+                            , "traincnt": 1
+                            , "batch_size": 64
+                            , "predictcnt": 10
                                   }
-                        , "config": 6
-                        , "learnrate": 0.001
-                        , "eval_type": "category"
-                        , "optimizer": "AdamOptimizer"
-                    }
-                , "layers": {"active": "relu"
-                    , "cnnfilter": [2, 3, 4, 2, 3, 4]
-                    , "droprate": "0.5"
-                             }
+                        , "config": { "num_classes": 6
+                                    , "learnrate": 0.001
+                                    , "eval_type": "category"
+                                    , "optimizer": "AdamOptimizer"
+                        }
+                        , "layers": {
+                            "active": "relu"
+                            , "cnnfilter": [2, 3, 4, 2, 3, 4]
+                            , "droprate": "0.5"
+                                     }
                 , "out": {
-                    "active":
-                        {"type": "softmax",
-                         "padding": {"type": "SAME"}
+                    "active": "softmax",
+                         "padding": "SAME"
                          }
-                    , "labels": {"type": "str", "option": [], "auto": False}
+                    , "labels": []
                 },
                 "pre_feed_test":
                     {
                         "encode_column": 'encode',
                         "decode_column": 'decode',
                         "channel": 3,
-                        "encode_len": 10,
-                        "preprocess": 'mecab',
+                        "encode_len": 15,
+                        "preprocess": "",
                         "vocab_size": 100,
-                        "char_encode": 'False',
+                        "char_encode": False,
                         "char_max_len": 5,
-                        "lable_size": 3,
+                        "lable_size": 6,
                         "embed_type": "onehot",
                     },
                 "pre_feed_train":
                     {
                         "encode_column": 'encode',
                         "decode_column": 'decode',
-                        "channel": 3,
-                        "encode_len": 10,
-                        "preprocess": 'mecab',
+                        "channel": 1,
+                        "encode_len": 15,
+                        "preprocess": "",
                         "vocab_size": 100,
-                        "char_encode": 'False',
+                        "char_encode": False,
                         "char_max_len": 5,
-                        "lable_size": 3,
+                        "lable_size": 6,
                         "embed_type": "onehot",
                     },
                 "eval_node":
