@@ -327,6 +327,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             # set init params
             self.node_id = node_id
             self._init_node_parm(self.node_id)
+            self.model_path = get_model_path(self.node_id.split('_')[0], self.node_id.split('_')[1], "netconf_node")
 
             # prepare net conf
             tf.reset_default_graph()
@@ -339,7 +340,7 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                 self.get_model(self.netconf, "P")
                 graph = tf.get_default_graph()
 
-            if (NeuralNetModel.sess.get(unique_key) == None):
+            if(NeuralNetModel.sess.get(unique_key) == None):
                 sess = tf.Session(graph=graph)
                 batch_ver_name = self.get_eval_batch(self.node_id)
 
@@ -347,10 +348,10 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
                     self.saver.restore(sess, ''.join([self.model_path, '/', batch_ver_name, '/']))
                     NeuralNetModel.set_dict(unique_key, self)
                     NeuralNetModel.set_graph(unique_key, graph)
-                    NeuralNetModel.set_sess(unique_key,sess)
+                    NeuralNetModel.set_sess(unique_key, sess)
                 else:
                     raise Exception("error : no pretrained model exist")
-            else :
+            else:
                 sess = NeuralNetModel.sess.get(unique_key)
 
             return self._run_predict(sess,
