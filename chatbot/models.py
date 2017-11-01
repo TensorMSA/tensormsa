@@ -25,6 +25,8 @@ class CB_INTENT_LIST_INFO(models.Model):
     nn_type = models.CharField(max_length=10, blank=True)
 
 class CB_STORYBOARD_LIST_INFO(models.Model):
+    class Meta:
+        unique_together = (('intent_id', 'story_id'),)
     intent_id = models.ForeignKey(CB_INTENT_LIST_INFO, on_delete=models.CASCADE)
     story_id = models.CharField(max_length=10, blank=False, primary_key=True)
     story_type = models.CharField(max_length=10, blank=True)
@@ -39,6 +41,8 @@ class CB_ENTITY_LIST_INFO(models.Model):
     entity_list = JSONField()
 
 class CB_MODEL_LIST_INFO(models.Model):
+    class Meta:
+        unique_together = (('cb_id', 'nn_purpose'),)
     cb_id = models.ForeignKey(CB_DEF_LIST_INFO, on_delete=models.CASCADE)
     nn_id = models.CharField(max_length=50, blank=True)
     nn_purpose = models.CharField(max_length=10, blank=True)

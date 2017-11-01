@@ -13,7 +13,7 @@ var myBotApp = {
     fileTranferImageUploadApiPath: "/",
     langMap: {
         headerTitle: "AI 테스트봇",
-        startMsg : "안녕하세요, 테스트봇입니다.<br>무엇을 도와드릴까요?",
+        startMsg : "안녕하세요, 테스트봇입니다. 무엇을 도와드릴까요? <br>현재는 Char-CNN을 활용한 의도 분석만 가능합니다",
         textNotUnderstandMsg : "무슨 말씀인지 이해할 수 없어요.",
         imageNotUnderstandMsg : "무슨 사진인지 이해할 수 없어요.",
         apiCallErrorMsg : "서버 요청에 실패했어요. ㅠㅠ",
