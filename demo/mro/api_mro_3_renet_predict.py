@@ -28,7 +28,7 @@ files = {
 
 # 'files000001':  open('/hoya_src_root/bolt1.jpg','rb')
     'files000002':  open('/home/dev/tensormsa/demo/data/airplane/2air.jpg','rb')
-,'files000003':  open('/home/dev/tensormsa/demo/data/airplane/1air.jpg','rb')
+# ,'files000003':  open('/hoya_src_root/nn00004/21/personData/LSH/20170418_094624.jpg','rb')
 
  #  'files000004':  open('/hoya_src_root/nn00004/21/personDataTest/PSC/20170417_180614.jpg','rb')
  # ,'files000005':  open('/hoya_src_root/nn00004/21/personDataTest/PJH/20170417_180225(0).jpg','rb')
