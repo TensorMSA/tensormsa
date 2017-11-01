@@ -38,7 +38,6 @@ export default class NN_InfoDetailMemoModal extends React.Component {
         wfparam["nn_wf_ver_id"] = this.props.nn_wf_ver_id
         wfparam["nn_def_list_info_nn_id"] = ""
         wfparam["nn_wf_ver_info"] = "init"
-        wfparam["condition"] = "1"
         wfparam["active_flag"] = this.state.NN_TableWFData["active_flag"]
         wfparam["nn_wf_ver_desc"] = memo
         // Version Active 변경.

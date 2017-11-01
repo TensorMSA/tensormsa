@@ -538,22 +538,24 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.load_batch = self.get_active_batch(self.node_id)
         unique_key = '_'.join([node_id, self.load_batch])
 
-        self.get_model_cnn("P")
+
 
         # prepare net conf
         tf.reset_default_graph()
 
-        # ## create tensorflow graph
-        # if (NeuralNetModel.dict.get(unique_key)):
-        #     self = NeuralNetModel.dict.get(unique_key)
-        #     graph = NeuralNetModel.graph.get(unique_key)
-        #
-        #     with tf.Session(graph=graph) as sess:
-        #         self._run_predict(sess, filelist)
-        # else:
-        with tf.Session() as sess:
-            # sess = self.get_saver_model(sess)
-            self._run_predict(sess, filelist)
+        self.get_model_cnn("P")
+
+        ## create tensorflow graph
+        if (NeuralNetModel.dict.get(unique_key)):
+            self = NeuralNetModel.dict.get(unique_key)
+            graph = NeuralNetModel.graph.get(unique_key)
+
+            with tf.Session(graph=graph) as sess:
+                self._run_predict(sess, filelist)
+        else:
+            with tf.Session() as sess:
+                # sess = self.get_saver_model(sess)
+                self._run_predict(sess, filelist)
 
         NeuralNetModel.dict[unique_key] = self
         NeuralNetModel.graph[unique_key] = tf.get_default_graph()

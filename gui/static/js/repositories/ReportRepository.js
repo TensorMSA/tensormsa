@@ -276,6 +276,14 @@ export default class ReportRepository {
 
     }
 
+    postPredictNn(type, nn_id, wf_ver_id, params) {
+        return this.api.post('/api/v1/type/service/state/predict/type/'+type+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/', params).then((data) => {
+            this.api.setLoading(false)
+            return data;
+        });
+
+    }
+
 
 
 

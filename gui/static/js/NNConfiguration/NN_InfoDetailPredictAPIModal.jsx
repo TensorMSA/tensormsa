@@ -28,7 +28,7 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
         this.state.NN_TableData = url
     }
 
-    uploadData(){
+    uploadDataFiles(){
         function pad(n, width) {
           n = n + '';
           return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
@@ -43,6 +43,16 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
         }
 
         this.props.reportRepository.postPredictNnFiles(this.props.nn_net_type, this.props.nn_id, this.props.nn_wf_ver_id, files).then((tableData) => {
+            this.setState({ NN_TableResult: tableData })
+            });
+    }
+
+    uploadData(){
+        let selectedFile = document.getElementById('text1').value
+        let jsonParam = {}
+        jsonParam["input_data"] = selectedFile
+
+        this.props.reportRepository.postPredictNn(this.props.nn_net_type, this.props.nn_id, 'active', jsonParam).then((tableData) => {
             this.setState({ NN_TableResult: tableData })
             });
     }
@@ -65,17 +75,30 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
         data.push(<hr />)
         if(this.props.nn_net_type != "wcnn"){
             data.push(<form key={k++} style={{"marginLeft":"15px"}} method="post">
-                        <label key={k++} htmlFor="file"><h3>Choose file to upload</h3></label>
+                        <label key={k++} htmlFor="file"><h3>Choose file to upload(최초 Loading시 Cach에 저장으로 인해 오래걸림.)</h3></label>
                         <input key={k++} type="file" id="file" name="file" multiple />
                         <div><br/>
-                        <button key={k++} type="button" onClick={() => this.uploadData()} >Submit</button><br/>
+                        <button key={k++} type="button" onClick={() => this.uploadDataFiles()} >Submit</button><br/>
                         </div>
                         </form>)
 
-            data.push(<div key={k++} style={{ "overflow":"auto", "height":300}}> 
-                <ReactJson key={k++} src={this.state.NN_TableResult} collapsed = {true} />
-                </div>)
+            
+        }else{
+            data.push(<form key={k++} style={{"marginLeft":"15px"}} >
+                <label key={k++} style={{"marginLeft":"15px"}}><h3>Choose file to upload(최초 Loading시 Cach에 저장으로 인해 오래걸림.)</h3></label>
+                        Input Data : <input type="text" id="text1" name = "text1" style={{"width":"400"}} />
+                        <div><br/>
+                        <button key={k++} type="button" onClick={() => this.uploadData()} >Submit</button><br/>
+                        </div>
+                        </form>
+                        )
+
+           
         }
+
+        data.push(<div key={k++} style={{ "overflow":"auto", "height":300}}> 
+                <ReactJson style={{"marginLeft":"15px"}} key={k++} src={this.state.NN_TableResult} collapsed = {true} />
+                </div>)
         
         return (  
             <div>

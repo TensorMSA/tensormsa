@@ -38,7 +38,12 @@ export default class NN_InfoNewComponent extends React.Component {
             tabIndexAS:1,
             autoMasterView:true,
             g_limit:100,
-            p_limit:100
+            p_limit:100,
+            tVerCnt:5,
+            tVerDesc:"최초:"+"3"+"Ver를 생성하며 "+"3"+"세대별 "+"2"+"Ver이 생존한다." ,
+            g_cnt:3,
+            p_cnt:3,
+            s_cnt:2
         };
     }
 
@@ -61,7 +66,7 @@ export default class NN_InfoNewComponent extends React.Component {
         }
     }
 
-    findColInfo(col, idxType, idxName){
+    findColInfo(col, idxType, idxName){s
         let fItem = ""
         if(idxType == "index"){
             fItem = col.find(data => { return data.index == idxName})
@@ -256,7 +261,28 @@ export default class NN_InfoNewComponent extends React.Component {
         this.setState({ tabIndex: value })
     }
 
-
+    handleChange(selectedValue){
+        let value = selectedValue.target.value //radio button cell
+        let table = this.refs.master2
+        if(value != undefined){// key, desc cell
+            let g_cnt = table.rows[0].cells[1].children[0].value*1
+            let p_cnt = table.rows[1].cells[1].children[0].value*1
+            let s_cnt = table.rows[2].cells[1].children[0].value*1
+            let t_cnt = 0
+            let t_desc = ""
+            for(let i=0;i < g_cnt ; i++){
+                if(i == 0){
+                    t_cnt += p_cnt
+                    
+                }else{
+                    t_cnt += p_cnt-s_cnt
+                }
+            }
+            t_desc += "최초: "+p_cnt+"Ver를 생성하며 "+g_cnt+"세대별 "+s_cnt+"Ver이 생존한다." 
+            this.setState({ tVerCnt: t_cnt })
+            this.setState({ tVerDesc: t_desc })
+        }
+    }
 
     render() {
         let k = 1
@@ -308,15 +334,25 @@ export default class NN_InfoNewComponent extends React.Component {
         masterListTable.push(<thead ref='thead' key={k++} className="center">{tableHeader}</thead>)
         masterListTable.push(<tbody ref='tbody' key={k++} className="center" >{tableData}</tbody>)
         /////////////////////////////////////////////////////////////////////////////////////////
+        // Total Auto ML Default
+        /////////////////////////////////////////////////////////////////////////////////////////
+        let colDataAutoTotal = [];
+        colDataAutoTotal.push(<td key={k++} style={{ "width":"20%", "fontWeight":"bold"}} > {"Auto Total Version"} </td>)
+        colDataAutoTotal.push(<td key={k++} style={{ "width":"50%", "fontWeight":"bold"}}> {"Total Version Count : "+this.state.tVerCnt} </td>)
+        colDataAutoTotal.push(<td key={k++} style={{ "width":"30%", "fontWeight":"bold", "textAlign":"left"}} > {this.state.tVerDesc} </td>)
+
+        let masterListTableAutoTotal = []
+        masterListTableAutoTotal.push(<tbody ref='tbody' key={k++} className="center" >{colDataAutoTotal}</tbody>)
+        /////////////////////////////////////////////////////////////////////////////////////////
         // Second Auto ML Default
         /////////////////////////////////////////////////////////////////////////////////////////
-        let tableHeaderAuto = makeHeader(this.state.NN_TableColArr2)
+        // let tableHeaderAuto = makeHeader(this.state.NN_TableColArr2)
 
         let nnInfoDefaultAuto = [];
         if (this.state.NN_TableMasterAuto == null){
-            this.state.NN_TableMasterAuto = [   {title:"Generation"   , input_data:"3", ex:"훈련 총 세대 Count"}
-                                               ,{title:"Population"   , input_data:"3", ex:"훈련 세대별 Version Count"}
-                                               ,{title:"Survive"      , input_data:"2", ex:"훈련 세대별 생존 Count"}
+            this.state.NN_TableMasterAuto = [   {title:"Generation"   , input_data:this.state.g_cnt, ex:"훈련 총 세대 Count"}
+                                               ,{title:"Population"   , input_data:this.state.p_cnt, ex:"훈련 세대별 Version Count"}
+                                               ,{title:"Survive"      , input_data:this.state.s_cnt, ex:"훈련 세대별 생존 Count"}
                                          ];
         }
         nnInfoDefaultAuto = this.state.NN_TableMasterAuto
@@ -328,7 +364,8 @@ export default class NN_InfoNewComponent extends React.Component {
             colDataAuto.push(<td key={k++} style={{ "width":"20%"}}> {row["title"]} </td>)
             colDataAuto.push(<td key={k++} > < input type = {"number"} style={{"textAlign":"center", "width":"100%"}} 
                                                         defaultValue = {row["input_data"]}
-                                                        maxLength = {row["width"]}  />  </td>)
+                                                        maxLength = {row["width"]} 
+                                                        onChange = {this.handleChange.bind(this)} />  </td>)
             colDataAuto.push(<td key={k++} style={{"textAlign":"left", "width":"30%"}} > {row["ex"]} </td>)
 
             tableDataAuto.push(<tr key={k++}>{colDataAuto}</tr>)
@@ -376,7 +413,10 @@ export default class NN_InfoNewComponent extends React.Component {
 
                         {this.state.autoMasterView ?
                             <div>
-                                <table className="table detail" ref= 'master2' >
+                                <table className="table detail" ref= 'autoTotal' >
+                                    {masterListTableAutoTotal}
+                                </table>
+                                <table className="table detail" ref= 'master2' style={{"border-top":"1px"}} >
                                     {masterListTableAuto}
                                 </table>
                             </div>

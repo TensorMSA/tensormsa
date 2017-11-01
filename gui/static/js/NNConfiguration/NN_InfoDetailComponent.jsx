@@ -392,7 +392,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                 this.state.nn_batch_id = this.state.NN_TableWFData[i]["train_batch_ver_id"]
                 this.state.NN_TableWFDataAccLoss = this.state.NN_TableWFData[i]
                 //active version만 수정할 수 있다.
-                if(this.state.NN_TableWFData[i]["active_flag"] == "Y"){
+                if(this.state.NN_TableWFData[i]["active_flag"] == "Y" && this.state.trainType == false){
                     this.state.configEditFlag = "Y"
                 }else{
                     this.state.configEditFlag = "N"
@@ -878,12 +878,17 @@ export default class NN_InfoDetailComponent extends React.Component {
                 }else{
                     config = "N"
                 }
+
                 if(config == "N"){
                     colData.push(<td key={k++} alt={this.state.NN_TableColArr3[i]["name"]} > {config} </td>)
-                }else{
+                }else if(this.state.nodeType == this.state.NN_TableColArr3[i]["name"]){
                     colData.push(<td key={k++} alt={this.state.NN_TableColArr3[i]["name"]} 
                                      onClick = {this.clickNodeConfig.bind(this)}
                                      style={{"color":this.state.active_color, "fontWeight":"bold", "cursor":"pointer"}}> {config} </td>)
+                }else{
+                    colData.push(<td key={k++} alt={this.state.NN_TableColArr3[i]["name"]} 
+                                     onClick = {this.clickNodeConfig.bind(this)}
+                                     style={{"color":this.state.active_color, "cursor":"pointer"}}> {config} </td>)
                 }
                 
             }
