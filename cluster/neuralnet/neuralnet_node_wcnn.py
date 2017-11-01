@@ -98,6 +98,8 @@ class NeuralNetNodeWideCnn(NeuralNetNode):
             self.nn_id = conf_data['nn_id']
             self.wfver = conf_data['wf_ver']
 
+            self.model_path = get_model_path(self.nn_id, self.wfver, "netconf_node")
+
             # get prev node for load data
             train_data_set = self.get_linked_prev_node_with_grp('preprocess')[0]
 
