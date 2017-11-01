@@ -39,8 +39,8 @@ export default class NN_InfoNewComponent extends React.Component {
             autoMasterView:true,
             g_limit:100,
             p_limit:100,
-            tVerCnt:5,
-            tVerDesc:"최초:"+"3"+"Ver를 생성하며 "+"3"+"세대별 "+"2"+"Ver이 생존한다." ,
+            tVerCnt:0,
+            tVerDesc:"",
             g_cnt:3,
             p_cnt:3,
             s_cnt:2
@@ -64,9 +64,11 @@ export default class NN_InfoNewComponent extends React.Component {
                 this.setState({ eval_node_name: tableData["path"] })
             });
         }
+
+        this.handleChange()
     }
 
-    findColInfo(col, idxType, idxName){s
+    findColInfo(col, idxType, idxName){
         let fItem = ""
         if(idxType == "index"){
             fItem = col.find(data => { return data.index == idxName})
@@ -262,26 +264,33 @@ export default class NN_InfoNewComponent extends React.Component {
     }
 
     handleChange(selectedValue){
-        let value = selectedValue.target.value //radio button cell
+         
         let table = this.refs.master2
-        if(value != undefined){// key, desc cell
-            let g_cnt = table.rows[0].cells[1].children[0].value*1
-            let p_cnt = table.rows[1].cells[1].children[0].value*1
-            let s_cnt = table.rows[2].cells[1].children[0].value*1
-            let t_cnt = 0
-            let t_desc = ""
-            for(let i=0;i < g_cnt ; i++){
-                if(i == 0){
-                    t_cnt += p_cnt
-                    
-                }else{
-                    t_cnt += p_cnt-s_cnt
-                }
-            }
-            t_desc += "최초: "+p_cnt+"Ver를 생성하며 "+g_cnt+"세대별 "+s_cnt+"Ver이 생존한다." 
-            this.setState({ tVerCnt: t_cnt })
-            this.setState({ tVerDesc: t_desc })
+        let g_cnt = this.state.g_cnt
+        let p_cnt = this.state.p_cnt
+        let s_cnt = this.state.s_cnt
+
+        if(selectedValue != undefined){// key, desc cell
+            let value = selectedValue.target.value
+            g_cnt = table.rows[0].cells[1].children[0].value*1
+            p_cnt = table.rows[1].cells[1].children[0].value*1
+            s_cnt = table.rows[2].cells[1].children[0].value*1
         }
+
+        let t_cnt = 0
+        let t_desc = ""
+        for(let i=0;i < g_cnt ; i++){
+            if(i == 0){
+                t_cnt += p_cnt
+                
+            }else{
+                t_cnt += p_cnt-s_cnt
+            }
+        }
+
+        t_desc += "최초 "+p_cnt+"Ver를 생성하며 나머지 세대별 "+(p_cnt-s_cnt)+"Ver 생성." 
+        this.setState({ tVerCnt: t_cnt })
+        this.setState({ tVerDesc: t_desc })
     }
 
     render() {
