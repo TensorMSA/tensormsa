@@ -1142,19 +1142,19 @@ def set_automl_rule() :
                     },
                 "netconf_node":
                     {
-                        "param": {"epoch": {"type": "int", "option": None, "auto": [1, 20, 1]}
-                            , "traincnt": {"type": "int", "option": None, "auto": [1, 10, 2]}
-                            , "batch_size": {"type": "int", "option": None, "auto": [5, 100, 10]}
-                            , "predictcnt": {"type": "int", "option": None, "auto": [5, 100, 10]}
+                        "param": {"epoch": {"type": "int", "option": None, "auto": [200, 200, 1]}
+                            , "traincnt": {"type": "int", "option": None, "auto": [1, 1, 1]}
+                            , "batch_size": {"type": "int", "option": None, "auto": [64, 64, 10]}
+                            , "predictcnt": {"type": "int", "option": None, "auto": [10, 10, 10]}
                                   }
                         , "config": {"num_classes": {"type": "int", "option": 6, "auto": False}
-                        , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
+                        , "learnrate": {"type": "int", "option": None, "auto": [0.001, 0.001, 0.001]}
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["AdamOptimizer"], "auto": False}
                                      }
                         , "layers": {"active": {"type": "sel", "option": ["relu"], "auto": False},
-                                     "cnnfilter": {"type": "int", "option": None, "auto": [[1, 10, 1], [1, 3, 1]]},
-                                     "droprate": {"type": "int", "option": None, "auto": [0.0, 1.0, 0.1]}
+                                     "cnnfilter": {"type": "int", "option": [2, 3, 4, 2, 3, 4,5,2, 3, 4, 2, 3, 4,5,2, 3, 4, 2, 3, 4,5], "auto": False},
+                                     "droprate": {"type": "int", "option": None, "auto": [0.5, 0.5, 0.1]}
                                      }
                         , "out": {
                         "active": {"type": "sel", "option": ["softmax"], "auto": False},
@@ -1166,11 +1166,11 @@ def set_automl_rule() :
                     {
                         "encode_column": {"type": "str", "option": 'encode', "auto": False},
                         "decode_column": {"type": "str", "option": 'decode', "auto": False},
-                        "channel": {"type": "sel", "option": [1, 2, 3], "auto": False},
+                        "channel": {"type": "sel", "option": 1, "auto": False},
                         "encode_len": {"type": "int", "option": 10, "auto": False},
-                        "preprocess": {"type": "sel", "option": ['none', 'mecab'], "auto": False},
+                        "preprocess": {"type": "sel", "option": ['none'], "auto": False},
                         "vocab_size": {"type": "int", "option": 100, "auto": False},
-                        "char_encode": {"type": "sel", "option": ['True', 'False'], "auto": [0, 1, 1]},
+                        "char_encode": {"type": "sel", "option": False, "auto": [0, 1, 1]},
                         "char_max_len": {"type": "int", "option": 5, "auto": False},
                         "lable_size": {"type": "int", "option": 15, "auto": False},
                         "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
@@ -1179,11 +1179,11 @@ def set_automl_rule() :
                     {
                         "encode_column": {"type": "str", "option": 'encode', "auto": False},
                         "decode_column": {"type": "str", "option": 'decode', "auto": False},
-                        "channel": {"type": "sel", "option": [1, 2, 3], "auto": False},
+                        "channel": {"type": "sel", "option": 1, "auto": False},
                         "encode_len": {"type": "int", "option": 10, "auto": False},
                         "preprocess": {"type": "sel", "option": ['none', 'mecab'], "auto": False},
                         "vocab_size": {"type": "int", "option": 100, "auto": False},
-                        "char_encode": {"type": "sel", "option": ['True', 'False'], "auto": [0, 1, 1]},
+                        "char_encode": {"type": "sel", "option": False, "auto": [0, 1, 1]},
                         "char_max_len": {"type": "int", "option": 5, "auto": False},
                         "lable_size": {"type": "int", "option": 15, "auto": False},
                         "embed_type": {"type": "sel", "option": ["onehot"], "auto": False},
@@ -1212,7 +1212,7 @@ def set_automl_rule() :
                     },
                 "netconf_node":
                     {
-                        "param": {"epoch": 50
+                        "param": {"epoch": 200
                             , "traincnt": 1
                             , "batch_size": 64
                             , "predictcnt": 10
@@ -1224,7 +1224,7 @@ def set_automl_rule() :
                         }
                         , "layers": {
                             "active": "relu"
-                            , "cnnfilter": [2, 3, 4, 2, 3, 4]
+                            , "cnnfilter": [2, 3, 4, 2, 3, 4,5,2, 3, 4, 2, 3, 4,5,2, 3, 4, 2, 3, 4, 5]
                             , "droprate": "0.5"
                                      }
                 , "out": {
@@ -1237,7 +1237,7 @@ def set_automl_rule() :
                     {
                         "encode_column": 'encode',
                         "decode_column": 'decode',
-                        "channel": 3,
+                        "channel": 1,
                         "encode_len": 15,
                         "preprocess": "",
                         "vocab_size": 100,
