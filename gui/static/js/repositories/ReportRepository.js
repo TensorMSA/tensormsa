@@ -26,6 +26,7 @@ export default class ReportRepository {
 
     getCommonNNInfo(params) {
         return this.api.get('/api/v1/type/common/target/nninfo/nnid/'+params+'/', '').then((data) => {
+            this.api.setLoading(false)
             if(data != undefined){
                 data = JSON.parse(data);
             }
@@ -102,6 +103,7 @@ export default class ReportRepository {
 
     getCommonNNInfoWF(params) {
         return this.api.get('/api/v1/type/common/target/nninfo/nnid/'+params+'/version/', '').then((data) => {
+            this.api.setLoading(false)  
             data = JSON.parse(data);
             this.log("getCommonNNInfoWF", data)
             return data;
@@ -127,6 +129,7 @@ export default class ReportRepository {
 
     getCommonNNInfoBatch(params, wf_ver_id){
         return this.api.get('/api/v1/type/common/target/nninfo/nnid/'+params+'/version/'+wf_ver_id+'/', false).then((data) => {
+            this.api.setLoading(false) 
             data = JSON.parse(data);
             this.log("getCommonBatchInfo", data)
             return data;
@@ -152,6 +155,7 @@ export default class ReportRepository {
 
     getCommonNNInfoWFNode(params, wf_ver_id, desc){
         return this.api.get('/api/v1/type/wf/target/init/mode/simple/'+params+'/wfver/'+wf_ver_id+'/desc/'+desc+'/', false).then((data) => {
+            this.api.setLoading(false) 
             data = JSON.parse(data);
             this.log("getCommonNNInfoWFNode", data)
             return data;
@@ -173,6 +177,7 @@ export default class ReportRepository {
             spin = false
         }
         return this.api.get('/api/v1/type/wf/state/data/detail/upload/file/nnid/'+params+'/ver/'+wf_ver_id+'/dir/'+dir+'/type/'+type+'/', spin).then((data) => {
+            this.api.setLoading(false) 
             data = JSON.parse(data);
             this.log("getFileUploadPath:", data)
             return data;
@@ -190,6 +195,7 @@ export default class ReportRepository {
     //Auto Ml Info
     getCommonNNInfoAuto(params) {
         return this.api.get('/api/v1/type/automl/state/rule/graph_id/'+params+'/', '').then((data) => {
+            this.api.setLoading(false) 
             data = JSON.parse(data);
             this.log("getCommonNNInfoAuto", data)
            return data;
@@ -226,6 +232,7 @@ export default class ReportRepository {
     //View
     getCommonNodeInfoView(params) {
         return this.api.get('/api/v1/type/automl/state/stat/nnid/'+params+'/', '').then((data) => {
+            this.api.setLoading(false) 
             data = JSON.parse(data);
             this.log("getCommonNodeInfoView", data)
            return data;
@@ -235,6 +242,7 @@ export default class ReportRepository {
     //Menu
     getCommonMenuInfo(params) {
         return this.api.get('/api/v1/type/wf/target/menu/'+params+'/', '').then((data) => {
+            this.api.setLoading(false) 
             data = JSON.parse(data);
             this.log("getCommonMenuInfo", data)
            return data;
@@ -252,6 +260,7 @@ export default class ReportRepository {
     //Monitering
     getMoniteringInfo(params, id, line, spin) {
         return this.api.get('/api/v1/type/service/monitering/type/'+params+'/id/'+id+'/line/'+line, spin).then((data) => {
+            this.api.setLoading(false) 
             data = JSON.parse(data);
             this.log("getCommonMenuInfo", data)
            return data;
@@ -261,18 +270,13 @@ export default class ReportRepository {
     //Predict
     postPredictNnFiles(type, nn_id, wf_ver_id, files) {
         return this.api.postfiles('/api/v1/type/service/state/predict/type/'+type+'/nnid/'+nn_id+'/ver/'+wf_ver_id+'/', files).then((data) => {
-            // data = JSON.parse(data);
+            this.api.setLoading(false)
             return data;
         });
 
     }
 
-    postPredictNn(nn_id, wf_ver_id, params) {
-        return this.api.post('/api/v1/type/service/state/predict/type/resnet/nnid/'+nn_id+'/ver/'+wf_ver_id+'/', params).then((data) => {
-            data = JSON.parse(data);
-            return data;
-        });
-    }
+
 
 
 
@@ -515,7 +519,7 @@ export default class ReportRepository {
             console.log(data);
            return data;
         });
-    }
+    }SpinnerComponent
     postWdnnConf(opt_url, params) {
         let key_set = Object.keys(params)
         for(let key of key_set){

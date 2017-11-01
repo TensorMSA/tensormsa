@@ -44,7 +44,7 @@ export default class Api {
             return response.json();
         }).then(function(json) {
             return json;
-        }).then(this.setLoading(false)).catch(function(e) {
+        }).then().catch(function(e) {
             console.log("An Error has occurred" + e);
         });
     };
@@ -85,8 +85,6 @@ export default class Api {
             return response.json();
         }).then(function(json) {
             return json;
-        }).then(this.setLoading(false)).catch(function(e) {
-            console.log("An Error has occurred :" +e);
         });
     };
 

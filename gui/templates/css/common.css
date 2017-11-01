@@ -67,7 +67,7 @@ main>section>.container:after{content:'';display:block;height:50px;}
 .table thead th, .table2 thead th{line-height:14px;color:#0068ad;background:#f1f1f1;}
 .table thead th, .table tbody td, .table2 thead th, .table2 tbody td{border-collapse:collapse;height:20px;padding:5px 10px;text-align:center;border-left:1px solid #dcdcdc;border-bottom:1px solid #dcdcdc;border-right: 1px solid #dcdcdc}
 
-.table tbody td, .table2 tbody td{vertical-align:top;}
+.table tbody td, .table2 tbody td{vertical-align:middle;}
 .table button, .table2 button{height:20px;vertical-align:top;background:#6a7277;}
 
 table.chart{border-top:3px solid #005dac;border-bottom:1px solid #dcdcdc;}

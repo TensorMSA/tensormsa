@@ -19,7 +19,10 @@ class PredictNetCnn(PredictNet):
         :return:
         """
         logging.info("2. PredictNetCnn Start : {0}".format(parm))
-        return NeuralNetNodeCnn().predict(self._find_netconf_node_id(nn_id, ver), parm)
+        if (ver == 'active'):
+            return NeuralNetNodeCnn().predict(self._find_netconf_node_id(nn_id), parm)
+        else:
+            return NeuralNetNodeCnn().predict(self._find_netconf_node_id(nn_id, ver), parm)
 
     def _valid_check(self, parm):
         return True

@@ -118,10 +118,9 @@ export default class NN_InfoNewComponent extends React.Component {
 
         // Make NNAuto Info
         let aparam = {}
-
+        dparam["automl_parms"] = params
+        
         if(this.state.tabIndexAS == 1){
-            dparam["automl_parms"] = params
-
             let tableAuto = this.refs.master2
             let colAuto = this.state.NN_TableColArr2
 

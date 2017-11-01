@@ -227,7 +227,7 @@ export default class NN_InfoListComponent extends React.Component {
         for(let rows in this.state.NN_TableData){
             let colData = [];
             let row = this.state.NN_TableData[rows]
-            let autokeys = Object.keys(row["automl_parms"])
+            let autokeys = Object.keys(row["automl_runtime"])
 
             colData.push(<td key={k++} > < input type = "checkbox" name="rd1"
                                                                     alt = {row["nn_id"]}

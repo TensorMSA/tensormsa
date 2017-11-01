@@ -242,17 +242,19 @@ export default class NN_InfoDetailComponent extends React.Component {
                             });
                         }
                     }
+                    if(this.refs.batch != undefined){
+                        let wfparam = {}
+                        let bbody = this.refs.batch.children[1].children
+                        for(let i=0 ; i < bbody.length; i++){
+                            let colbatch = bbody[i].children
+                            wfparam["nn_batch_ver_id"] = colbatch[this.findColInfo("2", "id", "nn_batch_ver_id").index].attributes.alt.value // version id key column
+                            wfparam["eval_flag"] = colbatch[this.findColInfo("2", "id", "eval_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
+                            wfparam["active_flag"] = colbatch[this.findColInfo("2", "id", "active_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
 
-                    let wfparam = {}
-                    
-                    for(let i in this.state.NN_TableBTData){
-                        wfparam["nn_batch_ver_id"] = this.state.NN_TableBTData[i]['nn_batch_ver_id']
-                        wfparam["eval_flag"] = this.state.NN_TableBTData[i]['eval_flag']
-                        wfparam["active_flag"] = this.state.NN_TableBTData[i]['active_flag']
-
-                        if(this.state.NN_TableBTData[i]['eval_flag'] == "Y" || this.state.NN_TableBTData[i]['active_flag'] == "Y"){
-                            this.props.reportRepository.putCommonNNInfoBatch(this.state.nn_id, this.state.nn_wf_ver_id, wfparam).then((tableData) => {
-                            });
+                            if(wfparam["eval_flag"] == "Y" || wfparam["active_flag"] == "Y"){
+                                this.props.reportRepository.putCommonNNInfoBatch(this.state.nn_id, this.state.nn_wf_ver_id, wfparam).then((tableData) => {
+                                });
+                            }
                         }
                     }
                     
@@ -289,7 +291,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                 this.state.nn_title = tableData['fields'][0]["nn_title"]+" (Net ID : "+this.state.nn_id+")"
                 this.state.netType = tableData['fields'][0]["dir"]
 
-                let autokeys = Object.keys(tableData['fields'][0]["automl_parms"])
+                let autokeys = Object.keys(tableData['fields'][0]["automl_runtime"])
                 this.state.NN_TableData = tableData['fields'][0]
                 this.state.NN_TableGraph = tableData['graph']
                 if(autokeys.length == 0){
@@ -1085,7 +1087,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                         </div>
                     </TabPanel> 
                     <TabPanel>
-                        <div>
+                        <div style={{ "overflow":"auto", "height":330}}>
                             <h2> Network Batch Info (Version : {this.state.nn_wf_ver_id}) </h2>
                             <table className="table detail" ref= 'batch' >
                                 {batchInfoListTable}

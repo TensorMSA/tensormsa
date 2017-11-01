@@ -459,12 +459,21 @@ class NeuralNetNodeReNet(NeuralNetNode):
             NeuralNetModel.dict[unique_key] = self
             NeuralNetModel.graph[unique_key] = tf.get_default_graph()
             graph = tf.get_default_graph()
+
         pred_return_data = {}
         for i in range(len(filename_arr)):
             file_name = filename_arr[i]
             file_data = filedata_arr[i]
 
-            logits = self.model.predict(file_data)
+            try:
+                logits = self.model.predict(file_data)
+            except Exception as e:
+                self.get_model_resnet()
+
+                NeuralNetModel.dict[unique_key] = self
+                NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+                graph = tf.get_default_graph()
+                logits = self.model.predict(file_data)
 
             labels = self.netconf["labels"]
             pred_cnt = self.netconf["param"]["predictcnt"]

@@ -3,6 +3,7 @@ import ReportRepository from './../repositories/ReportRepository'
 import Api from './../utils/Api'
 import EnvConstants from './../constants/EnvConstants';
 import ReactJson from 'react-json-view'
+import SpinnerComponent from './../NNLayout/common/SpinnerComponent'
 
 export default class NN_InfoDetailPredictAPIModal extends React.Component {
     constructor(props, context) {
@@ -64,10 +65,10 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
         data.push(<hr />)
         if(this.props.nn_net_type != "wcnn"){
             data.push(<form key={k++} style={{"marginLeft":"15px"}} method="post">
-                        <label htmlFor="file"><h3>Choose file to upload</h3></label>
-                        <input type="file" id="file" name="file" multiple />
+                        <label key={k++} htmlFor="file"><h3>Choose file to upload</h3></label>
+                        <input key={k++} type="file" id="file" name="file" multiple />
                         <div><br/>
-                        <button type="button" onClick={() => this.uploadData()} >Submit</button><br/>
+                        <button key={k++} type="button" onClick={() => this.uploadData()} >Submit</button><br/>
                         </div>
                         </form>)
 

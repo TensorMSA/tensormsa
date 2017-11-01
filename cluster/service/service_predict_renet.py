@@ -12,7 +12,10 @@ class PredictNetRenet(PredictNet):
         :return:
         """
         if(self._valid_check(parm)) :
-            return NeuralNetNodeReNet().predict(self._find_netconf_node_id(nn_id), parm)
+            if (ver == 'active'):
+                return NeuralNetNodeReNet().predict(self._find_netconf_node_id(nn_id), parm)
+            else:
+                return NeuralNetNodeReNet().predict(self._find_netconf_node_id(nn_id, ver), parm)
 
     def _valid_check(self, parm):
         return True

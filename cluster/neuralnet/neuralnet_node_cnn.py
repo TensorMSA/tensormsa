@@ -10,6 +10,7 @@ import datetime, logging
 from cluster.common.train_summary_info import TrainSummaryInfo
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 from common.graph.nn_graph_manager import NeuralNetModel
+import keras
 
 class NeuralNetNodeCnn(NeuralNetNode):
 
@@ -83,20 +84,18 @@ class NeuralNetNodeCnn(NeuralNetNode):
         '''
         self.model_path = self.netconf["modelpath"]
         self.modelname = self.netconf["modelname"]
-        last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
+        # last_chk_path = tf.train.latest_checkpoint(checkpoint_dir=self.model_path)
+        last_chk_path = self.model_path + "/" + str(self.load_batch)
 
-        saver = None
+        self.saver = None
+
         try:
-            step = last_chk_path.split("-")
-            # self.step_gap = int(step[1]) + 1
-            saver = tf.train.Saver()
-            saver.restore(sess, save_path=last_chk_path)
+            self.saver = tf.train.import_meta_graph(last_chk_path+".meta")
+            self.saver.restore(sess, save_path=last_chk_path)
             logging.info("Train Restored checkpoint from:" + last_chk_path)
-        except:
-            # self.step_gap = 1
-            logging.info("None to restore checkpoint. Initializing variables instead.")
+        except Exception as e:
 
-        # self.save_path = self.model_path + "/" + self.modelname + "-" + str(self.step_gap)
+            logging.info("None to restore checkpoint. Initializing variables instead.")
 
         return sess
 
@@ -107,8 +106,9 @@ class NeuralNetNodeCnn(NeuralNetNode):
         :return: 
         '''
         self.save_path = self.model_path + "/" + str(self.batch)
-        saver = tf.train.Saver()
-        saver.save(sess, save_path=self.save_path)
+        if self.saver == None:
+            self.saver = tf.train.Saver()
+        self.saver.save(sess, save_path=self.save_path)
 
         batch_accR = round(self.batch_acc, 2)
         msg = "Global Step:  Training Batch Accuracy: " + str(
@@ -478,7 +478,6 @@ class NeuralNetNodeCnn(NeuralNetNode):
         test_data, dataconf = self.get_input_data(self.feed_node, self.cls_pool, self.eval_feed_name)
 
         with tf.Session() as sess:
-            sess = self.get_saver_model(sess)
             sess.run(tf.global_variables_initializer())
 
             self.eval_run(sess, test_data)
@@ -497,20 +496,22 @@ class NeuralNetNodeCnn(NeuralNetNode):
 
         # data shape change MultiValuDict -> nd array
         filename_arr, filedata_arr = self.change_predict_fileList(filelist, self.dataconf)
+        try:
+            for i in range(len(filename_arr)):
+                file_name = filename_arr[i]
+                file_data = filedata_arr[i]
 
-        for i in range(len(filename_arr)):
-            file_name = filename_arr[i]
-            file_data = filedata_arr[i]
+                logits = sess.run([self.model], feed_dict={self.X: file_data})
+                logits = logits[0]
 
-            logits = sess.run([self.model], feed_dict={self.X: file_data})
-            logits = logits[0]
-
-            labels = self.netconf["labels"]
-            pred_cnt = self.netconf["param"]["predictcnt"]
-            retrun_data = self.set_predict_return_cnn_img(labels, logits, pred_cnt)
-            self.pred_return_data[file_name] = retrun_data
-            logging.info("Return Data.......................................")
-            logging.info(self.pred_return_data)
+                labels = self.netconf["labels"]
+                pred_cnt = self.netconf["param"]["predictcnt"]
+                retrun_data = self.set_predict_return_cnn_img(labels, logits, pred_cnt)
+                self.pred_return_data[file_name] = retrun_data
+                logging.info("Return Data.......................................")
+                logging.info(self.pred_return_data)
+        except Exception as e:
+            logging.info(e)
 
     def predict(self, node_id, filelist):
         '''
@@ -526,31 +527,39 @@ class NeuralNetNodeCnn(NeuralNetNode):
         # net, data config setup
         data_node_name = self._get_backward_node_with_type(node_id, 'data')
         dataconf = WorkFlowNetConfCNN().get_view_obj(data_node_name[0])
+
+        netconf = WorkFlowNetConfCNN().get_view_obj(self.node_id)
+        self.netconf = netconf
+
         self._set_netconf_parm()
         self._set_dataconf_parm(dataconf)
-        self.net_type = self.netconf["config"]["net_type"]
 
         # get unique key
-        unique_key = '_'.join([node_id, self.get_eval_batch(node_id)])
+        self.load_batch = self.get_active_batch(self.node_id)
+        unique_key = '_'.join([node_id, self.load_batch])
+
+        self.get_model_cnn("P")
 
         # prepare net conf
         tf.reset_default_graph()
 
-        ## create tensorflow graph
-        if (NeuralNetModel.dict.get(unique_key)):
-            self = NeuralNetModel.dict.get(unique_key)
-            graph = NeuralNetModel.graph.get(unique_key)
+        # ## create tensorflow graph
+        # if (NeuralNetModel.dict.get(unique_key)):
+        #     self = NeuralNetModel.dict.get(unique_key)
+        #     graph = NeuralNetModel.graph.get(unique_key)
+        #
+        #     with tf.Session(graph=graph) as sess:
+        #         self._run_predict(sess, filelist)
+        # else:
+        with tf.Session() as sess:
+            # sess = self.get_saver_model(sess)
+            self._run_predict(sess, filelist)
 
-            with tf.Session(graph=graph) as sess:
-                self._run_predict(sess, filelist)
-        else:
-            self.get_model_cnn("P")
-            NeuralNetModel.dict[unique_key] = self
-            NeuralNetModel.graph[unique_key] = tf.get_default_graph()
-            graph = tf.get_default_graph()
+        NeuralNetModel.dict[unique_key] = self
+        NeuralNetModel.graph[unique_key] = tf.get_default_graph()
+        graph = tf.get_default_graph()
 
-            with tf.Session() as sess:
-                self._run_predict(sess, filelist)
+
 
         return self.pred_return_data
 
