@@ -14,6 +14,7 @@ export default class NN_InfoApplicationList extends React.Component {
         super(props);
         this.state = {
             tableData: null,
+            NN_TableNet:null,
             NN_TableMaster: null,
             NN_TableData: null,
             NN_TableDataDetail : null,
@@ -28,10 +29,27 @@ export default class NN_InfoApplicationList extends React.Component {
                                 ,{index:1,      id:"input_data",            name:"Input Data"}
                                 ,{index:2,      id:"example",               name:"Example"}
                             ],
-            tabIndex:1
+            tabIndex:1,
+            color : "#14c0f2"
         };
     }
 
+    componentDidMount(){
+        this.getCommonNNInfo("all");// 화면에 들어 올때 검색을 해준다.
+    }
+
+    getCommonNNInfo(params) {
+        this.props.reportRepository.getCommonNNInfo(params).then((tableData) => {
+            this.setState({ NN_TableNet: null })//조회시 한번 Reset을 해주어야 테이블이 새로고침 된다.
+            let wcnnData = []
+            for(let i in tableData['fields']){
+                if(tableData['fields'][i]['dir'] == 'wcnn'){
+                    wcnnData.push(tableData['fields'][i])
+                }
+            }
+            this.setState({ NN_TableNet: wcnnData })//조회한 것을 화면에 반영한다.
+        });   
+    }
 
     findColInfo(col, idxType, idxName){
         let fItem = ""
@@ -102,6 +120,9 @@ export default class NN_InfoApplicationList extends React.Component {
         for (let i=1 ; i < table2.rows.length ; i++) {
             title = table2.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
             input_data = table2.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            if(input_data == undefined){
+                input_data = table2.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].children[0].value
+            }
             if(input_data == null || input_data == ""){ alert( title + " is not exist." );return; flag = "F"; break;}
         }
         
@@ -111,6 +132,9 @@ export default class NN_InfoApplicationList extends React.Component {
         for (let i=1 ; i < 5 ; i++) {
             title = table2.rows[i].cells[this.findColInfo(col, "id", "title").index].innerText
             input_data = table2.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].value
+            if(input_data == undefined){
+                input_data = table2.rows[i].cells[this.findColInfo(col, "id", "input_data").index].children[0].children[0].value
+            }
             bot_entity_list[inDefault2[i]] = input_data
         }
         console.log(bot_entity_list)
@@ -255,14 +279,38 @@ export default class NN_InfoApplicationList extends React.Component {
             tableData.push(<tr key={k++}>{colData}</tr>)
         }
 
+
         let tableData2 = []
         for(let rows in this.state.NN_TableMaster2){
             let colData = [];
             let row = this.state.NN_TableMaster2[rows]
+
+            let rowNet = this.state.NN_TableNet
+
             colData.push(<td key={k++} style={{ "width":"20%"}}> {row["title"]} </td>)
-            colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} 
+
+            if(rows == 0){
+                let option = []
+                for(let op in rowNet){
+                    option.push(<option key={k++} value={rowNet[op]["nn_id"]}>{rowNet[op]["nn_id"]}</option>)
+                }   
+                colData.push(<td key={k++}>
+                                            <div>
+                                            <select ref={"sel"+k} 
+                                                   id={k} 
+
+                                                   style={{ "textAlign":"center", "width":"100%", "fontWeight":"bold", "color":this.state.color}}
+                                                   rowSpan={1}>
+                                               {option}
+                                            </select>
+                                            </div>
+                                        </td>)
+            }else{
+                colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} 
                                                         defaultValue = {row["input_data"]}
                                                         maxLength = {row["width"]}  />  </td>)
+            }
+            
             colData.push(<td key={k++} style={{"textAlign":"left", "width":"30%"}} > {row["ex"]} </td>)
             tableData2.push(<tr key={k++}>{colData}</tr>)
         }
