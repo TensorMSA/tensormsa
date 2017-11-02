@@ -692,13 +692,13 @@ def set_automl_rule() :
         conf = {"auto": {
                     "netconf_node": {
                         "param": {"traincnt": {"type": "int", "option": 3, "auto": False}
-                            , "epoch": {"type": "int", "option": 5, "auto": False}
-                            , "batch_size": {"type": "int", "option": None, "auto": [100, 1000000, 100]}
+                            , "epoch": {"type": "int", "option": 10, "auto": False}
+                            , "batch_size": {"type": "int", "option": 50000, "auto": False}
                             , "predictcnt": {"type": "int", "option": 3, "auto": False}
                             , "predlog": {"type": "sel", "option": ["N", "Y"], "auto": False}
                                   },
                         "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
-                            , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
+                            , "learnrate": {"type": "int", "option": None, "auto": [0.001, 0.005, 0.001]}
                             , "layeroutputs": {"type": "int", "option": None, "auto": [5, 100, 3]}
                             , "net_type": {"type": "sel", "option": ["cnn"], "auto": False}
                             , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
@@ -710,7 +710,7 @@ def set_automl_rule() :
                                      "maxpoolmatrix": {"type": "int", "option": [2, 2], "auto": False},
                                      "maxpoolstride": {"type": "int", "option": [2, 2], "auto": False},
                                      "padding": {"type": "sel", "option": ["SAME", "NONE"], "auto": False},
-                                     "droprate": {"type": "int", "option": None, "auto": [0.0, 1.0, 0.1]},
+                                     "droprate": {"type": "int", "option": None, "auto": [0.6, 1.0, 0.1]},
                                      "layercnt": {"type": "int", "option": None, "auto": [1, 6, 1]}
                                      }
                         ,
@@ -741,9 +741,9 @@ def set_automl_rule() :
                 },
                     "single": {
                         "netconf_node": {
-                            "param": {"traincnt": 3
-                                , "epoch": 5
-                                , "batch_size": 1000000
+                            "param": {"traincnt": 5
+                                , "epoch": 10
+                                , "batch_size": 50000
                                 , "predictcnt": 3
                                 , "predlog": "N"  # T:Ture, F:False, A:True&False, N:None
                                       },
@@ -803,16 +803,16 @@ def set_automl_rule() :
         conf = {
             "auto": {
                 "netconf_node": {
-                    "param": {"traincnt": {"type": "int", "option": 3, "auto": False}
-                        , "epoch": {"type": "int", "option": 5, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [10, 100, 10]}
+                    "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
+                        , "epoch": {"type": "int", "option": 10, "auto": False}
+                        , "batch_size": {"type": "int", "option": None, "auto": [30, 100, 10]}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "Y"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
                               }
                     , "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
-                        , "learnrate": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
-                        , "layeroutputs": {"type": "sel", "option": [18,34,50,101,152], "auto": False}
+                        , "learnrate": {"type": "int", "option": None, "auto": [0.001, 0.003, 0.001]}
+                        , "layeroutputs": {"type": "sel", "option": None, "auto": [18,34,50]} #[18,34,50,101,152]
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
                                  }
@@ -838,9 +838,9 @@ def set_automl_rule() :
             },
             "single": {
                 "netconf_node": {
-                    "param": {"traincnt": 2
-                        , "epoch": 2
-                        , "batch_size": 100
+                    "param": {"traincnt": 5
+                        , "epoch": 10
+                        , "batch_size": 30
                         , "predictcnt": 2
                         , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                         , "augmentation": "N"
