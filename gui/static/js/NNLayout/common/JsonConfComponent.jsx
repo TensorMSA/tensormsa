@@ -132,7 +132,7 @@ export default class JsonConfComponent extends React.Component {
 
                 if(vlast == "last"){// 마지막 값인경
                     let dataType = Object.prototype.toString.call(data)
-                    if(vdata*1 >= 0){
+                    if(vdata*1 >= 0 && vdata != ""){
                         vdata *= 1
                     }
                     if(dataType == "[object Array]"){
