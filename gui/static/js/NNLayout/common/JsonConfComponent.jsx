@@ -395,7 +395,7 @@ export default class JsonConfComponent extends React.Component {
 
         // 최종 데이터를 표현하는 Type은 표시하지 않는다. 또한 해당 값은 Option의 Type에 넣어 Numver, String을 판단한다.
         // Auto 값이 false인 경우 표현 하지 않는다. 
-        function makeTableData(node){
+        function makeTableData(node, tabIndexAS){
             // Data Make Array
             let outcnt = 0
             let k = 1
@@ -455,7 +455,7 @@ export default class JsonConfComponent extends React.Component {
                     let keydata = redata[redata.length-1]
                     let datatype = Object.prototype.toString.call(keydata.data)
 
-                    if(keydata.key == "type"){ // 마지막에 위치한 Type은 화면에 표시 하지 않는다.
+                    if(keydata.key == "type" && tabIndexAS == 1){ // 마지막에 위치한 Type은 화면에 표시 하지 않는다. Auto인 경우만 적용 
                         vflag = "N"
                     }else if(keydata.key == "auto" && keydata.data == false){// 마지막에 위치한 auto false는 표기하지 않음.
                         vflag = "N"
@@ -509,7 +509,7 @@ export default class JsonConfComponent extends React.Component {
         // Network List Detail Node를 만들고 Data를 넣어준다.
         let rNode = makeNode(this.props.NN_TableDataDetail)
         // Table에 넣어주는 구조로 Data를 만들어준다.
-        let nnInfoNewListDetail = makeTableData(rNode)
+        let nnInfoNewListDetail = makeTableData(rNode, this.props.tabIndexAS)
         // Table을 만들기 위해 span을 계산해 넣어준다.
         nnInfoNewListDetail = setRspanCount(nnInfoNewListDetail, rNode.colcnt)
 
