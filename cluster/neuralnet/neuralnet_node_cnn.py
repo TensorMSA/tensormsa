@@ -546,15 +546,19 @@ class NeuralNetNodeCnn(NeuralNetNode):
         self.get_model_cnn("P")
 
         ## create tensorflow graph
-        if (NeuralNetModel.dict.get(unique_key)):
-            self = NeuralNetModel.dict.get(unique_key)
-            graph = NeuralNetModel.graph.get(unique_key)
+        try:
+            if (NeuralNetModel.dict.get(unique_key)):
+                self = NeuralNetModel.dict.get(unique_key)
+                graph = NeuralNetModel.graph.get(unique_key)
 
-            with tf.Session(graph=graph) as sess:
-                self._run_predict(sess, filelist)
-        else:
+                with tf.Session(graph=graph) as sess:
+                    self._run_predict(sess, filelist)
+            else:
+                with tf.Session() as sess:
+                    self._run_predict(sess, filelist)
+        except Exception as e:
+            self.get_model_cnn("P")
             with tf.Session() as sess:
-                # sess = self.get_saver_model(sess)
                 self._run_predict(sess, filelist)
 
         NeuralNetModel.dict[unique_key] = self
