@@ -114,8 +114,8 @@ class AutoMlRunManager :
         nnCommonManager = NNCommonManager()
         input_data = {}
         input_data['active_flag'] = "Y"
-        input_data['nn_wf_ver_id'] = networks[0].get('nn_wf_ver_id')
-        nnCommonManager.update_nn_wf_info(networks[0].get('nn_id'), input_data)
+        input_data['nn_wf_ver_id'] = networksNew[0].get('nn_wf_ver_id')
+        nnCommonManager.update_nn_wf_info(networksNew[0].get('nn_id'), input_data)
 
     def set_value(self, data_set, key, value):
         data_set[key] = value
