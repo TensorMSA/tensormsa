@@ -145,7 +145,12 @@ export default class JsonConfComponent extends React.Component {
                         }else if(vdata == "null"){
                             param[data] = null
                         }else{
-                            param[data] = vdata
+                            if(vdata == "false"){
+                                param[data] = false
+                            }else{
+                                param[data] = vdata
+                            }
+                            
                         }
                         
 
