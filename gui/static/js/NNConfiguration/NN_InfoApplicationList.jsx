@@ -34,7 +34,7 @@ export default class NN_InfoApplicationList extends React.Component {
         };
     }
 
-    componentDidMount(){
+    componentWillMount(){
         this.getCommonNNInfo("all");// 화면에 들어 올때 검색을 해준다.
     }
 
