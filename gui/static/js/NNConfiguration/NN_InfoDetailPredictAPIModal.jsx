@@ -61,44 +61,52 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
         let k = 10000
         this.getPredictAPI()
         let data = []
-        data.push(<tr key={k++}><td key={k++}><h3>  import request </h3></td></tr>)
-        data.push(<tr key={k++}><td key={k++}><h3>  url={"'"+this.state.NN_TableData+"'"} </h3></td></tr>)
+        data.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}} >  import request </td></tr>)
+        data.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}} >  url={"'"+this.state.NN_TableData+"'"} </td></tr>)
         
 
-        if(this.props.nn_net_type == "resnet"){      
+        if(this.props.nn_net_type == "resnet" || this.props.nn_net_type == "cnn"){      
             let imgStr = "file = {'files000001':open('/hoya_src_root/test.jpg','rb')}"
-            data.push(<tr key={k++}><td key={k++}><h3>  {imgStr}  </h3></td></tr>)
-            data.push(<tr key={k++}><td key={k++}><h3>  resp = requests.post(url, files=file) </h3></td></tr>)
+            data.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}} > {imgStr}  </td></tr>)
+            data.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}} >  resp = requests.post(url, files=file) </td></tr>)
         }else{
-            data.push(<tr key={k++}><td key={k++}><h3>  resp = requests.post(url) </h3></td></tr>)
+            data.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}} >   resp = requests.post(url) </td></tr>)
         }
-        data.push(<hr />)
+        data.push(<br />)
+
+        let datadetail = []
         if(this.props.nn_net_type != "wcnn"){
-            data.push(<form key={k++} style={{"marginLeft":"15px"}} method="post">
-                        <label key={k++} htmlFor="file"><h3>Choose file to upload(최초 Loading시 Cach에 저장으로 인해 오래걸림.)</h3></label>
+            datadetail.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}} >
+                        <form key={k++} style={{"marginLeft":"15px"}} method="post">
+                        <label key={k++} htmlFor="file">Choose file to upload(최초 Loading시 Cach에 저장으로 인해 오래걸림.)</label>
+                        <br />
                         <input key={k++} type="file" id="file" name="file" multiple />
                         <div><br/>
                         <button key={k++} type="button" onClick={() => this.uploadDataFiles()} >Submit</button><br/>
                         </div>
-                        </form>)
+                        </form></td></tr>)
 
             
         }else{
-            data.push(<form key={k++} style={{"marginLeft":"15px"}} >
-                <label key={k++} style={{"marginLeft":"15px"}}><h3>Choose file to upload(최초 Loading시 Cach에 저장으로 인해 오래걸림.)</h3></label>
+            datadetail.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}} >
+                        <form key={k++} style={{"marginLeft":"15px"}} >
+                        <label key={k++} >Choose file to upload(최초 Loading시 Cach에 저장으로 인해 오래걸림.)</label>
+                        <br/>
                         Input Data : <input type="text" id="text1" name = "text1" style={{"width":"400"}} />
                         <div><br/>
                         <button key={k++} type="button" onClick={() => this.uploadData()} >Submit</button><br/>
                         </div>
-                        </form>
+                        </form></td></tr>
                         )
 
            
         }
 
-        data.push(<div key={k++} style={{ "overflow":"auto", "height":300}}> 
+        let datadetailjson = []
+        datadetailjson.push(<tr key={k++}><td key={k++} style={{"textAlign":"left", "fontWeight":"bold"}}>
+                <div key={k++} style={{ "overflow":"auto", "height":300}}> 
                 <ReactJson style={{"marginLeft":"15px"}} key={k++} src={this.state.NN_TableResult} collapsed = {true} />
-                </div>)
+                </div></td></tr>)
         
         return (  
             <div>
@@ -106,11 +114,20 @@ export default class NN_InfoDetailPredictAPIModal extends React.Component {
                 <div className="container paddingT10">
                     <div id="tab1">
                         <article>
-                            <table key={k++} className="form-table align-left">
+                            <table key={k++} className="table detail" style={{"marginLeft":"13px"}}>
                                 <tbody key={k++}>
-                                <pre>
                                 {data}
-                                </pre>
+                                </tbody>
+                            </table>
+                            <table key={k++} className="table detail" style={{"marginLeft":"13px"}}>
+                                <tbody key={k++}>
+                                {datadetail}
+                                </tbody>
+                            </table>
+                            <br />
+                            <table key={k++} className="table detail" style={{"marginLeft":"13px"}} >
+                                <tbody key={k++}>
+                                {datadetailjson}
                                 </tbody>
                             </table>
                         </article>
