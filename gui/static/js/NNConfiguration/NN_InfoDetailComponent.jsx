@@ -110,16 +110,7 @@ export default class NN_InfoDetailComponent extends React.Component {
     /////////////////////////////////////////////////////////////////////////////////////////
     // Top Button Function
     /////////////////////////////////////////////////////////////////////////////////////////
-    searchData(){
-        this.getCommonNNInfoWF()
-        
-        // select box의 경우 강제 변경을 해주어야 한다.
-        for(let i in this.state.NN_TableWFData){
-            let vatf = this.state.NN_TableWFData[i]["active_flag"]
-            let vat = this.refs.master2.rows[i*1+1].children[this.findColInfo("1", "id", "active_flag").index].children[0].children[0]
-            vat.value = vatf
-        }
-
+    setBatchFlagYN(){
         let batch = this.refs.batch
         if(batch != undefined){
             for(let i in this.state.NN_TableBTData){
@@ -131,6 +122,20 @@ export default class NN_InfoDetailComponent extends React.Component {
                 vata.value = vataf
             }
         }
+    }
+
+    searchData(){
+        this.getCommonNNInfoWF()
+        
+        // select box의 경우 강제 변경을 해주어야 한다.
+        if(this.state.NN_TableWFData[0]["ver_no_data"] == undefined){
+            for(let i in this.state.NN_TableWFData){
+                let vatf = this.state.NN_TableWFData[i]["active_flag"]
+                let vat = this.refs.master2.rows[i*1+1].children[this.findColInfo("1", "id", "active_flag").index].children[0].children[0]
+                vat.value = vatf
+            }
+        }
+        // this.setBatchFlagYN()
         
         if(this.refs.barline != undefined){
             this.refs.barline.getCommonNodeInfoView()
@@ -217,33 +222,71 @@ export default class NN_InfoDetailComponent extends React.Component {
     }
 
     saveData(){//Save
+        if(this.state.NN_TableWFData[0]["ver_no_data"] != undefined){
+            alert("Create Version")
+            return
+        }
         this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', false).then((tableData) => {
             if(tableData.length == 0){
-                let re = confirm( "Do you Save?" )
-                if(re == true){
-                    //Version Active Flag Save
-                    let vbody = this.refs.master2.children[1].children
-                    for(let i=0 ; i < vbody.length; i++){
-                        let col = vbody[i].children
-                        let ver = col[this.findColInfo("1", "id", "nn_wf_ver_id").index].attributes.alt.value // version id key column
-                        let active = col[this.findColInfo("1", "id", "active_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
+                //Version Active Flag Save Validation
+                let wfparam = {}
+                let vSaveFlag = "N" //한개라도 Y인 Version이 있어야 한다.
+                let vbody = this.refs.master2.children[1].children
+                for(let i=0 ; i < vbody.length; i++){
+                    let col = vbody[i].children
+                    let ver = col[this.findColInfo("1", "id", "nn_wf_ver_id").index].attributes.alt.value // version id key column
+                    let active = col[this.findColInfo("1", "id", "active_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
 
-                        if(active == "Y"){
-                            let wfparam = {}
-                            wfparam["nn_wf_ver_id"] = ver
-                            wfparam["nn_def_list_info_nn_id"] = ""
-                            wfparam["nn_wf_ver_info"] = "init"
-                            // wfparam["condition"] = ""
-                            wfparam["active_flag"] = "Y"
-                            // Version Active 변경.
+                    if(active == "Y"){                    
+                        wfparam["nn_wf_ver_id"] = ver
+                        wfparam["nn_def_list_info_nn_id"] = ""
+                        wfparam["nn_wf_ver_info"] = "init"
+                        // wfparam["condition"] = ""
+                        wfparam["active_flag"] = "Y"
+                        // Version Active 변경.
+                        vSaveFlag = "Y"
+                    }
+                }
 
-                            this.props.reportRepository.putCommonNNInfoWF(this.state.nn_id, wfparam).then((tableData) => {
-                                this.getCommonNNInfoWF(this.state.nn_id)
-                            });
+                if(vSaveFlag == "N"){
+                    alert( "Select a Active Version.") 
+                    return
+                }
+
+                //batch Validation
+                if(this.refs.batch != undefined){
+                    let beSaveFlag = "N" //한개라도 Y인 batcch 있어야 한다.
+                    let baSaveFlag = "N" //한개라도 Y인 batcch 있어야 한다.
+                    let bbody = this.refs.batch.children[1].children
+                    for(let i=0 ; i < bbody.length; i++){
+                        let colbatchv = bbody[i].children
+                        let e_flag = colbatchv[this.findColInfo("2", "id", "eval_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
+                        let a_flag = colbatchv[this.findColInfo("2", "id", "active_flag").index].childNodes[0].childNodes[0].selectedOptions[0].value // Active column
+
+                        if(e_flag == "Y"){
+                            beSaveFlag = "Y"
+                        }
+
+                        if(a_flag == "Y"){
+                            baSaveFlag = "Y"
                         }
                     }
+                    if (beSaveFlag == "N"){
+                        alert( "Select a Batch(Train Active).") 
+                        return
+                    }else if(baSaveFlag == "N"){
+                        alert( "Select a Batch(Predict Active).") 
+                        return
+                    }
+                }
+
+                let re = confirm( "Do you Save?" )
+                if(re == true){
+                     this.props.reportRepository.putCommonNNInfoWF(this.state.nn_id, wfparam).then((tableData) => {
+                        this.getCommonNNInfoWF(this.state.nn_id)
+                    });
+
                     if(this.refs.batch != undefined){
-                        let wfparam = {}
                         let bbody = this.refs.batch.children[1].children
                         for(let i=0 ; i < bbody.length; i++){
                             let colbatch = bbody[i].children
@@ -288,18 +331,29 @@ export default class NN_InfoDetailComponent extends React.Component {
             this.setState({ nn_title: "Please, Check Network" })
         }else{
             this.props.reportRepository.getCommonNNInfo(this.state.nn_id).then((tableData) => {// Network Info
-                this.state.nn_title = tableData['fields'][0]["nn_title"]+" (Net ID : "+this.state.nn_id+")"
                 this.state.netType = tableData['fields'][0]["dir"]
 
                 let autokeys = Object.keys(tableData['fields'][0]["automl_runtime"])
                 this.state.NN_TableData = tableData['fields'][0]
                 this.state.NN_TableGraph = tableData['graph']
+                let tas = "Auto"
                 if(autokeys.length == 0){
                     this.state.trainType = false
+                    tas = "Single"
                     // this.state.configEditFlag = "Y"
                 }
+
+                this.state.nn_title = tableData['fields'][0]["nn_title"]+" ("+this.state.netType+" "+tas+" NetID : "+this.state.nn_id+")"
                 
                 this.props.reportRepository.getCommonNNInfoWF(this.state.nn_id).then((tableData) => {// Network Version Info
+                    if(tableData.length == 0){
+                        if(this.state.trainType == true){
+                            tableData.push({"ver_no_data":"Click the Run button to create a Version"})
+                        }else{
+                            tableData.push({"ver_no_data":"Click the Add Ver button to create a Version"})
+                        }
+                        
+                    }
                     this.setState({ NN_TableWFData: tableData })
                     this.setBatchLineChartData(tableData)
                     let active_flag = "N"
@@ -327,29 +381,31 @@ export default class NN_InfoDetailComponent extends React.Component {
           n = n + '';
           return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
         }
-
-        this.props.reportRepository.getCommonNNInfoBatch(this.state.nn_id, ver).then((tableData) => {// Network Batch Info
-            //Batch Sort ID를 만들어주어야 한다.nn000000001_1_1
-            for(let i in tableData){
-                if(tableData[i]["nn_batch_ver_id"] != null){
-                    let split1 = ""
-                    let split2 = ""
-                    let splitData = tableData[i]["nn_batch_ver_id"].split("_")
-                    let split0 = splitData[0]
-                    if(splitData[1] != null && isNaN(splitData[1]) == false){
-                        split1 = pad(splitData[1], 10)
-                        split0 += "_"+split1
+        if(ver != undefined){
+            this.props.reportRepository.getCommonNNInfoBatch(this.state.nn_id, ver).then((tableData) => {// Network Batch Info
+                //Batch Sort ID를 만들어주어야 한다.nn000000001_1_1
+                for(let i in tableData){
+                    if(tableData[i]["nn_batch_ver_id"] != null){
+                        let split1 = ""
+                        let split2 = ""
+                        let splitData = tableData[i]["nn_batch_ver_id"].split("_")
+                        let split0 = splitData[0]
+                        if(splitData[1] != null && isNaN(splitData[1]) == false){
+                            split1 = pad(splitData[1], 10)
+                            split0 += "_"+split1
+                        }
+                        if(splitData[2] != null && isNaN(splitData[2]) == false){
+                            split2 = pad(splitData[2], 10)
+                            split0 += "_"+split2
+                        }
+                        tableData[i]["nn_batch_ver_id_sort"] = split0
                     }
-                    if(splitData[2] != null && isNaN(splitData[2]) == false){
-                        split2 = pad(splitData[2], 10)
-                        split0 += "_"+split2
-                    }
-                    tableData[i]["nn_batch_ver_id_sort"] = split0
+                    
                 }
-                
-            }
-            this.setState({ NN_TableBTData: tableData })
-        });
+                this.setState({ NN_TableBTData: tableData })
+                this.setBatchFlagYN()
+            });
+        }
     }
 
     getCommonNodeInfo(ver) {
@@ -363,7 +419,7 @@ export default class NN_InfoDetailComponent extends React.Component {
     /////////////////////////////////////////////////////////////////////////////////////////  
     clickSeletVersion(selectedValue){//Version을 선택하면 새로 조회 한다.   
         let value = selectedValue
-        if(value.target != undefined){
+        if(value != undefined && value.target != undefined){
             value = selectedValue.target.attributes.alt.value   
         }
         this.clickChangeVersion(value)
@@ -373,7 +429,7 @@ export default class NN_InfoDetailComponent extends React.Component {
         let table = this.refs.master2
         for(let i=1 ; i < table.rows.length ; i++){
             let key = table.rows[i].children[0].children.rd1
-            if(key.alt == value){
+            if(key != undefined && key.alt == value){
                 key.checked = true
             }
         }
@@ -651,6 +707,13 @@ export default class NN_InfoDetailComponent extends React.Component {
             let predloss = ""
             let status = ""
             let statusName = ""
+
+            if(row["ver_no_data"] != undefined){
+                colData.push(<td key={k++} style={{"textAlign":"center", "width":"100%", "fontWeight":"bold", "color":this.state.active_color}} 
+                                colSpan ={this.state.NN_TableColArr1.length}> {row["ver_no_data"]} </td>)
+                tableData.push(<tr key={k++}>{colData}</tr>)
+                continue
+            }
 
             if(row["train_acc_info"] != null){
                 trainacc = row["train_acc_info"].acc[row["train_acc_info"].acc.length-1]

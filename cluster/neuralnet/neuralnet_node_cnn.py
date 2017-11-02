@@ -110,7 +110,7 @@ class NeuralNetNodeCnn(NeuralNetNode):
             self.saver = tf.train.Saver()
         self.saver.save(sess, save_path=self.save_path)
 
-        batch_accR = round(self.batch_acc, 2)
+        batch_accR = self.batch_acc
         msg = "Global Step:  Training Batch Accuracy: " + str(
             batch_accR) + "%" + ", Cost: " + str(self.i_cost)
         logging.info(msg)
