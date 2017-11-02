@@ -967,7 +967,7 @@ def set_automl_rule() :
                     }
                 , "netconf_node":
                     {
-                        "model_path": "test",
+                        "model_path": None,
                         "hidden_layers": [50, 50, 50, 30],
                         "activation_function": "Relu",
                         "batch_size": 500,

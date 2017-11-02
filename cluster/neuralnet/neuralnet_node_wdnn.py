@@ -24,6 +24,7 @@ from cluster.data.data_node_frame import DataNodeFrame
 from common import utils
 from time import gmtime, strftime
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
+from master.network.nn_common_manager import NNCommonManager
 
 
 class NeuralNetNodeWdnn(NeuralNetNode):
@@ -46,6 +47,14 @@ class NeuralNetNodeWdnn(NeuralNetNode):
 
             if self.train == False: #Train Value 가 False면 훈련 안함
                  return None
+
+            graph = NNCommonManager().get_nn_node_name(conf_data['nn_id'])
+            for net in graph:
+                if net['fields']['graph_node'] == 'netconf_node':
+                    netconf_node = net['fields']['graph_node_name']
+            self.model_path = utils.get_model_path(conf_data['nn_id'], conf_data['wf_ver'], netconf_node)
+            #Model Path
+            #self.model_path = utils.get_model_path(nnid, ver, netconf_node)
             #Set Data Feeder
             self.cls_pool = conf_data['cls_pool'] # Data feeder
 
@@ -271,6 +280,7 @@ class NeuralNetNodeWdnn(NeuralNetNode):
         """
         #key = conf_data.
         wf_net_conf = WorkFlowNetConfWdnn(key)
+        #self.model_path = utils.get_model_path(nnid, ver, netconf_node)
         self.model_path = wf_net_conf.model_path
         self.hidden_layers = wf_net_conf.hidden_layers
         self.activation_function = wf_net_conf.activation_function
@@ -310,6 +320,13 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             #self._init_node_parm(conf_data['node_id'])
             self._init_node_parm(conf_data.get('nn_id') + "_" + conf_data.get('wf_ver')+ "_" + "netconf_node")
             self.cls_pool_all = conf_data['cls_pool']  # Data feeder
+
+
+            graph = NNCommonManager().get_nn_node_name(conf_data['nn_id'])
+            for net in graph:
+                if net['fields']['graph_node'] == 'netconf_node':
+                    netconf_node = net['fields']['graph_node_name']
+            self.model_path = utils.get_model_path(conf_data['nn_id'], conf_data['wf_ver'], netconf_node)
 
             config = {"type": self.model_type, "labels": self.label_values, "nn_id":conf_data.get('nn_id'), "nn_wf_ver_id":conf_data.get('wf_ver')}
             train = TrainSummaryInfo(conf=config)
@@ -488,6 +505,13 @@ class NeuralNetNodeWdnn(NeuralNetNode):
             _node_id = node_id + "_" + wf_ver+ "_" + "netconf_node"
             _data_conf_id = node_id + "_" + wf_ver + "_dataconf_node"
             self._init_node_parm(_node_id)
+
+
+            graph = NNCommonManager().get_nn_node_name(node_id)
+            for net in graph:
+                if net['fields']['graph_node'] == 'netconf_node':
+                    netconf_node = net['fields']['graph_node_name']
+            self.model_path = utils.get_model_path(node_id, wf_ver, netconf_node)
 
             config = {"type": self.model_type, "labels": self.label_values, "nn_id":node_id, "nn_wf_ver_id":ver}
             #train = TrainSummaryInfo(conf=config)
