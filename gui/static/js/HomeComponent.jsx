@@ -157,7 +157,9 @@ export default class HomeComponent extends React.Component {
     getNetInfoDetail(){
        this.setState({NN_InfoList: <NN_InfoDetailComponent getHeaderEvent={this.getHeaderEvent} 
                                                             nn_id={this.state.NN_ID}
-                                                            nn_type = {this.state.NN_TYPE}/> });  
+                                                            nn_type = {this.state.NN_TYPE}
+                                                            autoParam = {this.state.NN_DATAVALID}
+                                                            /> });  
     }
     
 

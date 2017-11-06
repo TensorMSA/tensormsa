@@ -29,7 +29,8 @@ export default class NN_InfoListComponent extends React.Component {
             nextpageInit:"init",
             nn_color:"#14c0f2",
             NN_TableAPI:null,
-            moniterUrl : EnvConstants.getImgUrl()+"ic_state_alive.png"
+            moniterUrl : EnvConstants.getImgUrl()+"ic_state_alive.png",
+            moniterState : ["S"]
         };
     }
 
@@ -41,8 +42,31 @@ export default class NN_InfoListComponent extends React.Component {
     getCommonNNInfo(params) {
         this.props.reportRepository.getCommonNNInfo(params).then((tableData) => {
             this.setState({ NN_TableData: null })//조회시 한번 Reset을 해주어야 테이블이 새로고침 된다.
-            this.setState({ NN_TableData: tableData['fields'] })//조회한 것을 화면에 반영한다.
-            this.state.NN_TableDataFilter = tableData['fields']//Filter Search할때 기준이 되는 데이터를 넘겨준다.
+            let net = tableData['fields']
+            this.props.reportRepository.getMoniteringInfo('all', 'all', 'all', 'all').then((tableData) => {
+                let monitering = {}
+                for(let i in tableData){
+                    let nnid = tableData[i]['nn_id']
+                    let state = tableData[i]['state']
+                    if(state == 'RECEIVED' || state == 'STARTED' || state == 'RETRY'){
+                        monitering[nnid] = "2"
+                    }
+                }
+
+                for(let j in net){
+                    if(monitering[net[j]['nn_id']] != undefined){
+                        net[j]['m_state'] = "state_action"
+                        net[j]['m_stateName'] = "Action"
+                    }else{
+                        net[j]['m_state'] = "state_close"
+                        net[j]['m_stateName'] = "Close"
+                    }
+                }
+
+                this.setState({ NN_TableData: net })//조회한 것을 화면에 반영한다.
+                this.state.NN_TableDataFilter = net//Filter Search할때 기준이 되는 데이터를 넘겨준다.
+            });  
+            
         });   
     }
 
@@ -148,7 +172,14 @@ export default class NN_InfoListComponent extends React.Component {
     }
 
     handleClick(row){// Table Cell Clcik and Call Net Detail
-        this.props.setActiveItem(row["nn_id"], 'U', null, null, null, null, null, null);
+        let autokeys = Object.keys(row["automl_runtime"])
+        let autoParam = ""
+        if(autokeys.length == 0){
+            autoParam = "Single"
+        }else{
+            autoParam = "Auto"
+        }
+        this.props.setActiveItem(row["nn_id"], 'U', autoParam, null, null, null, null, null);
         return this.props.getHeaderEvent(6); //call Net Info 
     }
 
@@ -263,10 +294,11 @@ export default class NN_InfoListComponent extends React.Component {
                                 style ={{"color":this.state.nn_color, "cursor":"pointer", "fontWeight":"bold"}}
                                 onClick={() => this.handleClick(row) } > {row["nn_id"]} </td>) 
             colData.push(<td key={k++} alt = {row["nn_id"]} > {row["nn_wf_ver_id"]} </td>)
-            colData.push(<td key={k++} > <img style ={{width:15,heigth:15, "cursor":"pointer"}} alt = {row["nn_id"]}
-                                                onClick={this.viewMonitering.bind(this)} 
-                                                src={this.state.moniterUrl} /></td>)
-
+            // colData.push(<td key={k++} > <img style ={{width:15,heigth:15, "cursor":"pointer"}} alt = {row["nn_id"]}
+            //                                     onClick={this.viewMonitering.bind(this)} 
+            //                                     src={this.state.moniterUrl} /></td>)
+            colData.push(<td key={k++} width="50"  ><span className={row["m_state"]}  alt = {row["nn_wf_ver_id"]} 
+                                        onClick = {this.viewMonitering.bind(this)} > {row["m_stateName"]} </span> </td>)
             tableData.push(<tr key={k++}>{colData}</tr>)
         }
 
@@ -290,6 +322,7 @@ export default class NN_InfoListComponent extends React.Component {
                 <h1 className="hidden">tensor MSA main table</h1>
                 <div className="container paddingT10">
                     <div className="tblBtnArea">
+                        <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.getCommonNNInfo("all")} >Search</button>
                         <button type="button" className="addnew" 
                                 style={{"marginRight":"5px"}}
                                 onClick={() => this.addCommonNNInfo() } >Add Net</button>

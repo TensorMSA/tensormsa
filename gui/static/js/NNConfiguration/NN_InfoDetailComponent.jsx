@@ -76,6 +76,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             file_wf_ver_id : 'common',
             active_color : "#14c0f2",
             configEditFlag:"N",
+            autoParam:null, //Single, Auto
             trainType:true, // true : auto, false : single
             batchImg :EnvConstants.getImgUrl()+"ico_menu05.png",
             memoImg : EnvConstants.getImgUrl()+"ico_menu06.png",
@@ -165,7 +166,7 @@ export default class NN_InfoDetailComponent extends React.Component {
     }
     
     addVersion(){//Version New를 생성해준다.
-        if(this.state.trainType == true){//Auto       
+        if(this.state.autoParam == "Auto"){//Auto       
             this.props.reportRepository.getFileUpload(this.state.nn_id, 'common', '', 'runcheck').then((tableData) => {//File Check
                 if(tableData[0]['filecnt'] == 0){
                     alert( tableData[0]['type'] +" File does not exist." )
@@ -302,7 +303,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                     }
                     
                     //Single Config Save
-                    if(this.state.trainType == false){
+                    if(this.state.autoParam == "Single"){
                         let conf = this.refs.netconfig
                         if(conf != undefined){
                             let params = conf.getConfigData()
@@ -336,18 +337,12 @@ export default class NN_InfoDetailComponent extends React.Component {
                 let autokeys = Object.keys(tableData['fields'][0]["automl_runtime"])
                 this.state.NN_TableData = tableData['fields'][0]
                 this.state.NN_TableGraph = tableData['graph']
-                let tas = "Auto"
-                if(autokeys.length == 0){
-                    this.state.trainType = false
-                    tas = "Single"
-                    // this.state.configEditFlag = "Y"
-                }
 
-                this.state.nn_title = tableData['fields'][0]["nn_title"]+" ("+this.state.netType+" "+tas+" NetID : "+this.state.nn_id+")"
+                this.state.nn_title = tableData['fields'][0]["nn_title"]+" ("+this.state.netType+" "+this.state.autoParam+" NetID : "+this.state.nn_id+")"
                 
                 this.props.reportRepository.getCommonNNInfoWF(this.state.nn_id).then((tableData) => {// Network Version Info
                     if(tableData.length == 0){
-                        if(this.state.trainType == true){
+                        if(this.state.autoParam == "Auto"){
                             tableData.push({"ver_no_data":"Click the Run button to create a Version"})
                         }else{
                             tableData.push({"ver_no_data":"Click the Add Ver button to create a Version"})
@@ -448,7 +443,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                 this.state.nn_batch_id = this.state.NN_TableWFData[i]["train_batch_ver_id"]
                 this.state.NN_TableWFDataAccLoss = this.state.NN_TableWFData[i]
                 //active version만 수정할 수 있다.
-                if(this.state.NN_TableWFData[i]["active_flag"] == "Y" && this.state.trainType == false){
+                if(this.state.NN_TableWFData[i]["active_flag"] == "Y" && this.state.autoParam == "Single"){
                     this.state.configEditFlag = "Y"
                 }else{
                     this.state.configEditFlag = "N"
@@ -646,11 +641,14 @@ export default class NN_InfoDetailComponent extends React.Component {
 
     render() {
         this.state.nn_id = this.props.nn_id
+        this.state.autoParam = this.props.autoParam
 
-        if(this.state.trainType == false){
+        if(this.state.autoParam == "Single"){
             this.state.runTitle = "Add Ver"
+            this.state.trainType = false
         }else{
             this.state.runTitle = "Run"
+            this.state.trainType = true
         }
         /////////////////////////////////////////////////////////////////////////////////////////
         // Common Function

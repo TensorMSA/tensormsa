@@ -35,7 +35,7 @@ export default class NN_InfoNewComponent extends React.Component {
                             ],
             NN_TableRowArr2:["generation","population","survive"],
             tabIndex:1,
-            tabIndexAS:1,
+            tabIndexAS:1, //1 : Auto, 2 :Single
             autoMasterView:true,
             g_limit:100,
             p_limit:100,
@@ -227,7 +227,13 @@ export default class NN_InfoNewComponent extends React.Component {
                         });
                     });
                 }
-                this.props.setActiveItem(nn_id, "C", null, null, null, null, null, null)
+                let autoParam = ""
+                if(this.state.tabIndexAS == 1){
+                    autoParam = "Auto"
+                }else{
+                    autoParam = "Single"
+                }
+                this.props.setActiveItem(nn_id, "C", autoParam, null, null, null, null, null)
                 return this.props.getHeaderEvent(6);
             });
 
