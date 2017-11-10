@@ -172,7 +172,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                     alert( tableData[0]['type'] +" File does not exist." )
                 }else{
                     this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', false).then((tableData) => {//Job Check
-                        if(tableData.length == 0){
+                        if(tableData.length == undefined || tableData.length == 0){
                             let re = confirm( "Do you run?" )
                             if(re == true){
                                 this.props.reportRepository.postCommonNNInfoAuto(this.state.nn_id).then((tableData) => {//Run AutoML

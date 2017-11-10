@@ -51,7 +51,7 @@ export default class FileUploadComponent extends React.Component {
         this.state.lineview = true
         let per = Math.round(progress.loaded/progress.total * 100)
         this.setState({ percent : per})
-        if(progress.total == 0){
+        if(per == 100 || per == Infinity){
             this.state.lineview = false
         }
     }
