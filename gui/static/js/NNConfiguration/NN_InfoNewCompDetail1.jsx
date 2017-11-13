@@ -108,8 +108,8 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
         this.state.isViewImage = false
         let netSelectTable = this.refs.master2
         let value = selectedValue.target.value //radio button cell
-        if(value == undefined && selectedValue.target.attributes[0] != undefined){// key, desc cell
-            value = selectedValue.target.attributes [0].value
+        if(value == undefined && selectedValue.target.attributes['value'] != undefined){// key, desc cell
+            value = selectedValue.target.attributes['value'].value
             for(let i=1 ; i < netSelectTable.rows.length ; i++){
                 let key = netSelectTable.rows[i].children[0].children.rd1
                 if(key.value == value && key.checked == false){

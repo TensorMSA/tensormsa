@@ -459,7 +459,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             value = selectedValue.target.attributes.alt.value
             // 기존에 실행 되고 있는 Train이 있으면 안돌게 해야 한다.
             this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', false).then((tableData) => {
-                if(tableData.length == 0){
+                if(tableData.length == undefined || tableData.length == 0){
                     //학습을 해준다.
                     let re = confirm( "Do you Train?" )
                     if(re == true){

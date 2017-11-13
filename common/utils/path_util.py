@@ -47,7 +47,7 @@ def get_model_path(nn_id, wf_ver, name) :
     return path
 
 def get_yolo_path() :
-    path = "/home/dev/hoyai/third_party/yolo/models/pretrain"
+    path = "/home/dev/tensormsa/third_party/yolo/models/pretrain"
     set_filepaths(path)
     return path
 
