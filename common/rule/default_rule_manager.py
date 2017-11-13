@@ -695,7 +695,7 @@ def set_automl_rule() :
                             , "epoch": {"type": "int", "option": 10, "auto": False}
                             , "batch_size": {"type": "int", "option": 50000, "auto": False}
                             , "predictcnt": {"type": "int", "option": 3, "auto": False}
-                            , "predlog": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                            , "predlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                                   },
                         "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
                             , "learnrate": {"type": "int", "option": None, "auto": [0.001, 0.005, 0.001]}
