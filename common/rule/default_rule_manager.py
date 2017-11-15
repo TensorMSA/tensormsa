@@ -807,7 +807,7 @@ def set_automl_rule() :
                         , "epoch": {"type": "int", "option": 10, "auto": False}
                         , "batch_size": {"type": "int", "option": None, "auto": [30, 100, 10]}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
-                        , "predictlog": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                        , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
                               }
                     , "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
