@@ -78,6 +78,8 @@ class WorkFlowSimpleManager :
             self._create_predefined_nodes_renet(state_id)
         elif(type == 'frame' or type == "wdnn" or type == "dnn"):
             self._create_predefined_nodes_frame(state_id)
+        elif (type == 'ml'):
+            self._create_predefined_nodes_ml(state_id)
         elif(type == 'keras_frame' or type == "wdnn_keras"):
             self._create_predefined_nodes_keras_frame(state_id)
         elif(type == 'word2vec'):
@@ -243,6 +245,36 @@ class WorkFlowSimpleManager :
             # eval info
             self._set_nn_wf_node_info( wf_state_id, self.eval_data, 'data_frame')
             self._set_nn_wf_node_info( wf_state_id, self.eval_feed, 'pre_feed_fr2wdnn')
+            self._set_nn_wf_node_info( wf_state_id, self.eval_node, 'eval_extra')
+
+            # netconf relation
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_data_conf)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data_conf, self.netconf_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_feed, self.netconf_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_feed, self.eval_node)
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
+
+    def _create_predefined_nodes_ml(self, wf_state_id):
+        """
+
+        :return:
+        """
+        try:
+            # netconf info
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data, 'data_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data_conf, 'data_dfconf')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_fr2ml')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_node, 'nf_ml')
+
+            # eval info
+            self._set_nn_wf_node_info( wf_state_id, self.eval_data, 'data_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.eval_feed, 'pre_feed_fr2ml')
             self._set_nn_wf_node_info( wf_state_id, self.eval_node, 'eval_extra')
 
             # netconf relation
