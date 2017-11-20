@@ -284,6 +284,7 @@ class WorkFlowSimpleManager :
             self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
             self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_feed)
             self._set_nn_wf_node_relation(wf_state_id, self.eval_feed, self.eval_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_feed, self.netconf_node)
 
         except Exception as e:
             raise Exception(e)
