@@ -6,7 +6,8 @@
 |-----------------|---------------------|
 | [![Build Status](https://ci.tensorflow.org/buildStatus/icon?job=tensorflow-master-cpu)](https://ci.tensorflow.org/job/tensorflow-master-cpu) | [![Build Status](https://ci.tensorflow.org/buildStatus/icon?job=tensorflow-master-linux-gpu)](https://ci.tensorflow.org/job/tensorflow-master-linux-gpu) |
 
-## [TensorMSA](http://hugrypiggykim.com) : Tensorflow Micro Service Architecture
+# [TensorMSA](http://hugrypiggykim.com) : Tensorflow Micro Service Architecture
+## [OSS World Challenge 2017 - The Second Prize](https://www.slideshare.net/healess/11sw-tensormsa) 
 **TensorMSA** is a framework for machine learning and deep learning. Main purpose of developing this framework is to provide automated pipe lines (data extraction > data preprocessing > train model > evaluate model > service model). Use of effective pipeline is really important when we proceed real project. There are so many hard tasks which has to be done to build data driven model. 
 
 **Problems**
