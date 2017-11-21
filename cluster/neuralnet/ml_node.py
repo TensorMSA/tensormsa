@@ -140,15 +140,17 @@ class MLNode(NeuralNetNode):
                             iris = load_iris()
                             keys = list(data_conf_info['cell_feature'].keys())
                             keys.remove(data_conf_info['label'])
+                            feature_names = keys
                             keys = np.asarray(keys)
                             data = data_set[keys].values
                             test_data = data_set_test[keys].values
                             label = data_set[data_conf_info['label']].values
                             test_label = data_set_test[data_conf_info['label']].values
                             clf = clf.fit(data,label)
+                            target_names = np.asarray(self.label_values)
                             dot_data = tree.export_graphviz(clf,out_file=None,
-                                                            feature_names=iris.feature_names,
-                                                            class_names=iris.target_names,
+                                                            feature_names=feature_names,
+                                                            class_names=target_names,
                                                             filled=True, rounded=True,
                                                             special_characters=True)
                             graph1 = graphviz.Source(dot_data)
@@ -345,6 +347,7 @@ class MLNode(NeuralNetNode):
                         predict_val_list = list()
 
                         for row in data :
+                            row = [row]
                             predict_value = clf.predict(row)
                             predict_val_list.append(predict_value)
 
