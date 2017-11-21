@@ -98,7 +98,7 @@ class MLNode(NeuralNetNode):
             #multi Feeder modified
             multi_read_flag = False
 
-            train_cnt = 5
+            train_cnt = 1
 
             if multi_read_flag == True:
                 logging.info("Reading tfrecord")
