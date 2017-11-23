@@ -95,9 +95,11 @@ class AutoMlRule:
                 obj.save()
             else:
                 for i in input_data:
-                    obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=i)
-                    setattr(obj, graph_flow_id, input_data[i])
-                    obj.save()
+                    exists = models.AUTO_ML_RULE.objects.filter(graph_flow_id=i).count()
+                    if (exists > 0):
+                        obj = models.AUTO_ML_RULE.objects.get(graph_flow_id=i)
+                        setattr(obj, graph_flow_id, input_data[i])
+                        obj.save()
 
             return input_data
         except Exception as e:

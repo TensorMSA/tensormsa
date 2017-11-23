@@ -1,5 +1,6 @@
 from cluster.common.common_node import WorkFlowCommonNode
 from master.workflow.common.workflow_common import WorkFlowCommon
+from master.network.nn_common_manager import NNCommonManager
 from master import models
 from master import serializers
 import numpy as np
@@ -23,17 +24,42 @@ class NeuralNetNode(WorkFlowCommonNode):
         """
         pass
 
-    def _init_node_parm(self, node_id):
+    def _init_node_parm(self, pself, conf_data):
         """
         call on init parms from db
         :param node_id:
         :return:
         """
-        pass
+        # get initial value
+        pself.conf_data = conf_data
+        pself.cls_pool = conf_data["cls_pool"]
+        pself.nn_id = conf_data["nn_id"]
+        pself.wf_ver = conf_data["wf_ver"]
+        pself.node_id = conf_data["node_id"]
+
+        # net type
+        nninfo = NNCommonManager().get_nn_id_info(conf_data["nn_id"])
+        pself.net_type = nninfo[0]['fields']['dir']
+        graph = NNCommonManager().get_nn_node_name(conf_data["nn_id"])
+        for net in graph:
+            if net['fields']['graph_node'] == 'netconf_node':
+                pself.netconf_node = net['fields']['graph_node_name']
+            if net['fields']['graph_node'] == 'netconf_feed':
+                pself.train_feed_name = pself.nn_id + "_" + pself.wf_ver + "_" + net['fields']['graph_node_name']
+            if net['fields']['graph_node'] == 'eval_feed':
+                pself.eval_feed_name = pself.nn_id + "_" + pself.wf_ver + "_" + net['fields']['graph_node_name']
+
+        pself.feed_node = pself.get_prev_node()
+
+        # set batch
+        pself.load_batch = self.get_eval_batch(pself.node_id)
+        _, pself.train_batch = self.make_batch(pself.node_id)
+
+        return pself
 
     def _set_progress_state(self):
         """
-        set node progress info and etc
+        set node progress info and etcs
         :return:
         """
         pass

@@ -6,7 +6,7 @@ class WorkFlowCommon:
     """
     parent class for all workflow classes
     """
-    def get_view_obj(self, node_id):
+    def get_view_obj(self, node_id, type=None):
         """
         get view data for net config
         :return:
@@ -16,6 +16,13 @@ class WorkFlowCommon:
         try:
             obj = models.NN_WF_NODE_INFO.objects.get(nn_wf_node_id=node_id)
             data_set = getattr(obj, "node_config_data")
+            if type == 'netconf_node':
+                nn_id = getattr(obj, "nn_id_id")
+                nn_wf_ver_id = getattr(obj, "nn_wf_ver_id_id")
+                nn_node_name = getattr(obj, "nn_wf_node_name")
+                data_set["modelpath"] = get_model_path(nn_id, nn_wf_ver_id, nn_node_name)
+                data_set["modelname"] = nn_id + "_" + str(nn_wf_ver_id)
+
             return data_set
         except Exception as e:
             raise Exception(e)

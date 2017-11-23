@@ -163,6 +163,8 @@ class NN_WF_NODE_INFO(models.Model):
     last_update_date = models.DateTimeField(auto_now=True)
     created_by = models.IntegerField(default=0)
     last_updated_by = models.IntegerField(default=0)
+    nn_id = models.ForeignKey(NN_DEF_LIST_INFO, on_delete=models.CASCADE)
+    nn_wf_ver_id = models.ForeignKey(NN_VER_WFLIST_INFO, on_delete=models.CASCADE)
 
 class WF_TASK_REALATION_RULE(models.Model):
     key = models.IntegerField(primary_key=True)

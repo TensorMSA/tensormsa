@@ -34,7 +34,7 @@ class NN_WF_NODE_INFO_Serializer(serializers.ModelSerializer):
     class Meta:
         model = models.NN_WF_NODE_INFO
         fields = ('nn_wf_node_id', 'nn_wf_node_name', 'wf_state_id', 'wf_task_submenu_id', 'wf_node_status',
-                  'node_config_data', 'node_draw_x', 'node_draw_y', 'nn_wf_node_desc')
+                  'node_config_data', 'node_draw_x', 'node_draw_y', 'nn_wf_node_desc','nn_id','nn_wf_ver_id')
 
 class NN_WF_STATE_INFO_Serializer(serializers.ModelSerializer):
     """

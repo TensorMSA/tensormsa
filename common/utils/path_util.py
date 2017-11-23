@@ -41,7 +41,7 @@ def get_model_path(nn_id, wf_ver, name) :
     :param name:
     :return:
     """
-    path = ''.join(["/hoya_model_root", "/", nn_id, "/", wf_ver, "/", name])
+    path = ''.join(["/hoya_model_root", "/", nn_id, "/", str(wf_ver), "/", name])
     #path = ''.join([cache.get("model_root") , "/" , str(nn_id) , "/" , str(wf_ver) , "/" , str(name)])
     set_filepaths(path)
     return path

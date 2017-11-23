@@ -25,6 +25,8 @@ class WorkFlowSimpleManager :
         self.eval_node = ""
         self.eval_data = ""
         self.eval_feed = ""
+        self.nn_id = ""
+        self.nn_wf_ver_id = ""
 
     def set_node_name(self, net_node):
         graph_id = net_node[0]['fields']["graph_flow_info_id"]
@@ -51,6 +53,8 @@ class WorkFlowSimpleManager :
             if net['fields']['graph_node'] == 'eval_feed':
                 self.eval_feed = net['fields']['graph_node_name']
 
+        self.group_id = net_node[0]['fields']["graph_flow_group_id"]
+
     def create_workflow(self, nn_id, wf_ver, type):
         """
         create workflow base node info
@@ -62,6 +66,8 @@ class WorkFlowSimpleManager :
         input_data['nn_id'] = str(nn_id)
         input_data['nn_wf_ver_id'] = str(wf_ver)
         input_data['wf_state_id'] = str(nn_id) + "_" + str(wf_ver)
+        self.nn_id = str(nn_id)
+        self.nn_wf_ver_id = str(wf_ver)
         state_id = self._create_workflow_state(input_data)
 
         #todo 나중에 꼭 지울것!!!!!!!! 임시방편 it is temporary solution
@@ -77,7 +83,7 @@ class WorkFlowSimpleManager :
         elif(type == 'resnet'):
             self._create_predefined_nodes_renet(state_id)
         elif(type == 'frame' or type == "wdnn" or type == "dnn"):
-            self._create_predefined_nodes_frame(state_id)
+            self._create_predefined_nodes_wdnn(state_id)
         elif (type == 'ml'):
             self._create_predefined_nodes_ml(state_id)
         elif(type == 'keras_frame' or type == "wdnn_keras"):
@@ -103,7 +109,14 @@ class WorkFlowSimpleManager :
         elif (type == 'fasttext_txt'):
             self._create_predefined_nodes_fasttext_txt(state_id)
         else :
-            raise Exception ("Error : Not defined type ("+type+")")
+            if self.group_id == '1': #Frame
+                self._create_predefined_nodes_frame(state_id)
+            elif self.group_id == '2': #Image
+                self._create_predefined_nodes_image(state_id)
+            elif self.group_id == '3': #NLP
+                self._create_predefined_nodes_nlp(state_id)
+            else:
+                raise Exception ("Error : Not defined type ("+type+")")
 
         return type
 
@@ -163,6 +176,8 @@ class WorkFlowSimpleManager :
         input_data['node_config_data'] = {}
         input_data['node_draw_x'] = 0
         input_data['node_draw_y'] = 0
+        input_data['nn_id'] = str(self.nn_id)
+        input_data['nn_wf_ver_id'] = str(self.nn_wf_ver_id)
         self.__put_nn_wf_node_info(input_data)
 
     def _set_nn_wf_node_relation(self, wf_state_id, node1, node2):
@@ -171,6 +186,91 @@ class WorkFlowSimpleManager :
         input_data['nn_wf_node_id_1'] = str(wf_state_id) + '_' + node1
         input_data['nn_wf_node_id_2'] = str(wf_state_id) + '_' + node2
         self.__put_nn_wf_node_relation(input_data)
+
+    def _create_predefined_nodes_frame(self, wf_state_id):
+        """
+        :return:
+        """
+        try:
+            # netconf info
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data, 'data_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data_conf, 'data_dfconf')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_node, 'nf_frame')
+
+            # eval info
+            self._set_nn_wf_node_info( wf_state_id, self.eval_data, 'data_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.eval_feed, 'pre_feed_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.eval_node, 'eval_extra')
+
+            # netconf relation
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_data_conf)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data_conf, self.netconf_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_feed, self.netconf_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_feed, self.eval_node)
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
+
+    def _create_predefined_nodes_image(self, wf_state_id):
+        """
+        :return:
+        """
+        try:
+            # netconf info
+            self._set_nn_wf_node_info(wf_state_id, self.netconf_data, 'data_image')
+            self._set_nn_wf_node_info(wf_state_id, self.netconf_feed, 'pre_feed_image')
+            self._set_nn_wf_node_info(wf_state_id, self.netconf_node, 'nf_image')
+
+            # eval info
+            self._set_nn_wf_node_info(wf_state_id, self.eval_data, 'data_image')
+            self._set_nn_wf_node_info(wf_state_id, self.eval_feed, 'pre_feed_image')
+            self._set_nn_wf_node_info(wf_state_id, self.eval_node, 'eval_extra')
+
+            # netconf relation
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_feed, self.netconf_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_feed, self.eval_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_feed, self.netconf_node)
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
+
+    def _create_predefined_nodes_nlp(self, wf_state_id):
+        """
+
+        :return:
+        """
+        try:
+            # netconf info
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data, 'data_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_nlp')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_node, 'nf_nlp')
+
+            # eval info
+            self._set_nn_wf_node_info( wf_state_id, self.eval_data, 'data_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.eval_feed, 'pre_feed_nlp')
+            self._set_nn_wf_node_info( wf_state_id, self.eval_node, 'eval_extra')
+
+            # netconf relation
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_feed, self.netconf_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_feed)
+            self._set_nn_wf_node_relation(wf_state_id, self.eval_feed, self.eval_node)
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
 
     def _create_predefined_nodes_cnn(self, wf_state_id):
         """
@@ -230,7 +330,7 @@ class WorkFlowSimpleManager :
         finally:
             return True
 
-    def _create_predefined_nodes_frame(self, wf_state_id):
+    def _create_predefined_nodes_wdnn(self, wf_state_id):
         """
 
         :return:
