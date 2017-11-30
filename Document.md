@@ -52,14 +52,16 @@ $ git stash pop
 Run -> Edit Configurations -> Python (+)
 ```sh
 Name : django
-Scripts : /home/dev/hoyai/manage.py
+Scripts : /home/dev/tensormsa/manage.py
 Scripts Parameter : runserver HOSTNAME:8000 (ex:HOSTNAME - Docker Container ID)
 ```
 
-### HOYAI Drop Table and Create Table Again
+### TensorMSA Drop Table and Create Table Again
 delete /master/migrations/*.py (except __init__.py)
 ```sh
-drop table master_NN_DEF_LIST_INFO ,
+drop table master_GRAPH_FLOW_INFO,
+master_NN_DEF_LIST_INFO,
+master_NN_DEF_LIST_ID_INFO,
 master_NN_VER_WFLIST_INFO, 
 master_NN_VER_BATCHLIST_INFO, 
 master_TRAIN_SUMMARY_RESULT_INFO, 
@@ -71,7 +73,7 @@ master_NN_WF_NODE_RELATION,
 master_WF_TASK_MENU_RULE, 
 master_WF_TASK_SUBMENU_RULE, 
 master_NN_WF_NODE_INFO, 
-master_WF_TASK_REALATION_RULE
+master_WF_TASK_REALATION_RULE,
 master_AUTO_ML_RULE
 ```
 make migrations
@@ -107,7 +109,7 @@ make migrations
 ```
 ### Sync Table
 ```sh
-./manage.py migrate --fake (Model.py before add something ex)zero)
+./manage.py migrate --fake appName zero
 ./manage.py makemigrations chatbot
 ./manage.py migrate chatbot
 ```
