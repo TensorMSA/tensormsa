@@ -80,8 +80,8 @@ class WorkFlowSimpleManager :
 
         if(type == 'cnn'):
             self._create_predefined_nodes_cnn(state_id)
-        elif(type == 'resnet'):
-            self._create_predefined_nodes_renet(state_id)
+        # elif(type == 'resnet'):
+        #     self._create_predefined_nodes_renet(state_id)
         elif(type == 'frame' or type == "wdnn" or type == "dnn"):
             self._create_predefined_nodes_wdnn(state_id)
         elif (type == 'ml'):

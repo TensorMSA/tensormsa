@@ -11,7 +11,7 @@ from cluster.common.train_summary_info import TrainSummaryInfo
 import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
-from cluster.neuralnet import resnet
+from cluster.neuralnet_model import resnet
 from common.graph.nn_graph_manager import NeuralNetModel
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 

@@ -10,6 +10,9 @@ import io
 import os
 import datetime
 from common.utils import *
+from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
+
+import logging
 
 class NeuralNetNode(WorkFlowCommonNode):
     """
@@ -30,11 +33,11 @@ class NeuralNetNode(WorkFlowCommonNode):
         :param node_id:
         :return:
         """
-        # get initial value
+        # set initial value
         pself.conf_data = conf_data
         pself.cls_pool = conf_data["cls_pool"]
         pself.nn_id = conf_data["nn_id"]
-        pself.wf_ver = conf_data["wf_ver"]
+        pself.nn_wf_ver_id = conf_data["wf_ver"]
         pself.node_id = conf_data["node_id"]
 
         # net type
@@ -45,15 +48,26 @@ class NeuralNetNode(WorkFlowCommonNode):
             if net['fields']['graph_node'] == 'netconf_node':
                 pself.netconf_node = net['fields']['graph_node_name']
             if net['fields']['graph_node'] == 'netconf_feed':
-                pself.train_feed_name = pself.nn_id + "_" + pself.wf_ver + "_" + net['fields']['graph_node_name']
+                pself.train_feed_name = pself.nn_id + "_" + pself.nn_wf_ver_id + "_" + net['fields']['graph_node_name']
             if net['fields']['graph_node'] == 'eval_feed':
-                pself.eval_feed_name = pself.nn_id + "_" + pself.wf_ver + "_" + net['fields']['graph_node_name']
+                pself.eval_feed_name = pself.nn_id + "_" + pself.nn_wf_ver_id + "_" + net['fields']['graph_node_name']
 
         pself.feed_node = pself.get_prev_node()
 
         # set batch
         pself.load_batch = self.get_eval_batch(pself.node_id)
         _, pself.train_batch = self.make_batch(pself.node_id)
+
+        # model check
+        pself.model_path = get_model_path(pself.nn_id, pself.nn_wf_ver_id, pself.netconf_node)
+        pself.model_name = pself.nn_id + "_" + str(pself.nn_wf_ver_id)
+        pself.file_end = '.bin'
+        pself.last_chk_path = pself.model_path + "/" + str(pself.load_batch) + pself.file_end
+        pself.save_path = pself.model_path + "/" + str(pself.train_batch) + pself.file_end
+
+        # Acc & Loss Init
+        config = {"nn_id": pself.nn_id, "nn_wf_ver_id": pself.nn_wf_ver_id, "nn_batch_ver_id": pself.train_batch}
+        pself.acc_loss_result = TrainSummaryAccLossInfo(config)
 
         return pself
 
@@ -210,8 +224,8 @@ class NeuralNetNode(WorkFlowCommonNode):
                 obj = models.TRAIN_SUMMARY_ACCLOSS_INFO.objects.get(nn_batch_ver_id=str(input_data['nn_batch_ver_id']))
                 data_set1 = getattr(obj, "acc_info")
                 data_set2 = getattr(obj, "loss_info")
-                data_set1['acc'].append(result.acc_info['acc'][0])
-                data_set2['loss'].append(result.loss_info['loss'][0])
+                data_set1['acc'].append(result.acc_info['acc'][len(result.acc_info['acc'])-1])
+                data_set2['loss'].append(result.loss_info['loss'][len(result.loss_info['loss'])-1])
 
                 setattr(obj, "acc_info", data_set1)
                 setattr(obj, "loss_info", data_set2)
@@ -445,3 +459,164 @@ class NeuralNetNode(WorkFlowCommonNode):
 
         WorkFlowCommon().set_view_obj(self.node_id, self.netconf)
         return labels
+
+    def _get_netconf_labels(self, input_data, label_row):
+        '''
+        
+        :param input_data: 
+        :param label_row: HDF label row
+        :return: 
+        '''
+        labels = []
+        while (input_data.has_next()):
+            data_set = input_data[0:input_data.data_size()]
+            label_data_batch = data_set[label_row]
+            for j in label_data_batch:
+                j = j.decode('UTF-8')
+                try:
+                    idx = labels.index(j)
+                except:
+                    labels.append(j)
+
+            input_data.next()
+        input_data.reset_pointer()
+
+        WorkFlowCommon().set_view_obj(self.node_id, self.netconf)
+        return labels, len(labels)
+
+    def get_convert_img_x(self, img_data_batch, x_size, y_size, channel):
+        '''
+        
+        :param img_data_batch: 
+        :param x_size: 
+        :param y_size: 
+        :param channel: 
+        :return: 
+        '''
+        r = 0
+        x_batch = np.zeros((len(img_data_batch), len(img_data_batch[0])))
+        for j in img_data_batch:
+            j = j.tolist()
+            x_batch[r] = j
+            r += 1
+
+        x_batch = np.reshape(x_batch, (-1, x_size, y_size, channel))
+
+        # logging.info("Image  ////////////////////////////////////////////////")
+        # logging.info(x_batch)
+        # logging.info("Image /////////////////////////////////////////////////")
+
+        return x_batch
+
+    def get_convert_img_y(self, label_data_batch, labels, labels_cnt):
+        '''
+        
+        :param label_data_batch: 
+        :param labels: 
+        :param labels_cnt: 
+        :return: 
+        '''
+        r = 0
+        y_batch = np.zeros((len(label_data_batch), labels_cnt))
+        labelsHot = np.zeros((labels_cnt, labels_cnt))
+        for j in label_data_batch:
+            j = j.decode('UTF-8')
+            k = labels.index(j)
+            y_batch[r] = labelsHot[k]
+            r += 1
+
+        # logging.info("Image Label ////////////////////////////////////////////////")
+        # logging.info(y_batch)
+        # logging.info("Image /////////////////////////////////////////////////")
+
+        return y_batch
+
+    def get_convert_img_y_eval(self, label_data_batch):
+        '''
+
+        :param label_data_batch: 
+        :return: 
+        '''
+        y_batch = []
+        for j in label_data_batch:
+            j = j.decode('UTF-8')
+            y_batch.append(j)
+
+        # logging.info("Image Label ////////////////////////////////////////////////")
+        # logging.info(y_batch)
+        # logging.info("Image /////////////////////////////////////////////////")
+
+        return y_batch
+
+    def set_acc_loss_result(self, result, loss, acc, val_loss, val_acc):
+        '''
+        :param result: Result
+        :param loss: Train loss
+        :param acc: Train Acc
+        :param val_loss: Test loss
+        :param val_acc:  Test acc
+        :return: 
+        '''
+        loss = round(loss, 4)
+        accR = round(acc, 4)
+        val_loss = round(val_loss, 4)
+        val_acc = round(val_acc, 4)
+        result.cnt = result.cnt + 1
+        msg = "Global Step: " + str(result.cnt)
+        msg += ", Training Loss: " + str(loss) + "%" + ", Training Accuracy: " + str(accR) + "%"
+        msg += ", Test Loss: " + str(val_loss) + "%" + ", Test Accuracy: " + str(val_acc) + "%"
+        logging.info(msg)
+
+        result.loss_info["loss"].append(str(val_loss))
+        result.acc_info["acc"].append(str(val_acc))
+        self.save_accloss_info(result)
+
+        # self.model_file_delete(self.model_path, self.modelname)
+
+        # self.train_return_arr.append(result)
+
+    def eval_print(self, eval_data):
+        logging.info(
+            "####################################################################################################")
+        result = []
+        strResult = "['Eval ......................................................']"
+        result.append(strResult)
+        totCnt = 0
+        tCnt = 0
+        fCnt = 0
+        labels = eval_data.result_info['labels']
+        predicts = eval_data.result_info['predicts']
+        for i in range(len(labels)):
+            truecnt = 0
+            falsecnt = 0
+
+            for j in range(len(predicts)):
+                if i == j:
+                    truecnt = int(predicts[i][j])
+                else:
+                    falsecnt += int(predicts[i][j])
+
+            strResult = "Category : " + self.spaceprint(labels[i], 15) + " "
+            strResult += "TotalCnt=" + self.spaceprint(str(truecnt + falsecnt), 8) + " "
+            strResult += "TrueCnt=" + self.spaceprint(str(truecnt), 8) + " "
+            strResult += "FalseCnt=" + self.spaceprint(str(falsecnt), 8) + " "
+            if truecnt + falsecnt != 0:
+                strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(
+                    round(truecnt / (truecnt + falsecnt) * 100)) + "%"
+            totCnt += truecnt + falsecnt
+            tCnt += truecnt
+            fCnt += falsecnt
+            logging.info(strResult)
+            result.append(strResult)
+        strResult = "---------------------------------------------------------------------------------------------------"
+        logging.info(strResult)
+        strResult = "Total Category=" + self.spaceprint(str(len(labels)), 11) + " "
+        strResult += "TotalCnt=" + self.spaceprint(str(totCnt), 8) + " "
+        strResult += "TrueCnt=" + self.spaceprint(str(tCnt), 8) + " "
+        strResult += "FalseCnt=" + self.spaceprint(str(fCnt), 8) + " "
+        if totCnt != 0:
+            strResult += "True Percent(TrueCnt/TotalCnt*100)=" + str(round(tCnt / totCnt * 100)) + "%"
+        logging.info(strResult)
+        result.append(strResult)
+        logging.info(
+            "###################################################################################################")

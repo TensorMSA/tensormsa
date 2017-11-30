@@ -1,19 +1,7 @@
+import logging
+
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
-from common.utils import *
-from master.workflow.netconf.workflow_netconf_cnn import WorkFlowNetConfCNN
-from master.network.nn_common_manager import NNCommonManager
-import tensorflow as tf
-import numpy as np
-import os
-import operator
-import datetime, logging
-from cluster.common.train_summary_info import TrainSummaryInfo
-import keras
-from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
-from cluster.neuralnet import resnet
-from common.graph.nn_graph_manager import NeuralNetModel
-from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
+
 
 class NeuralNetNodeNlp(NeuralNetNode):
     def run(self, conf_data):

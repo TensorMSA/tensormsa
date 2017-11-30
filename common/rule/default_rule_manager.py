@@ -912,29 +912,26 @@ def set_automl_rule() :
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
                               }
-                    , "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
-                        , "learnrate": {"type": "int", "option": None, "auto": [0.001, 0.003, 0.001]}
-                        , "layeroutputs": {"type": "sel", "option": None, "auto": [18,34,50]} #[18,34,50,101,152]
+                    , "config": {"layeroutputs": {"type": "sel", "option": [18,34,50,101,152], "auto": False} #[18,34,50,101,152]
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
                 }
                 , "netconf_data": {
-                    "type": {"type": "sel", "option": ["imgdata", "framedata", "textdata", "iobdata"], "auto": False}
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False} # ["imgdata", "framedata", "textdata", "iobdata"]
                     , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
                         , "y_size": {"type": "int", "option": 32, "auto": False}
                         , "channel": {"type": "int", "option": 3, "auto": False}
                         , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                        , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}}
+                        }
                 }
                 , "eval_data": {
-                    "type": {"type": "sel", "option": ["imgdata", "framedata", "textdata", "iobdata"], "auto": False}
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False}# ["imgdata", "framedata", "textdata", "iobdata"]
                     , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
                         , "y_size": {"type": "int", "option": 32, "auto": False}
                         , "channel": {"type": "int", "option": 3, "auto": False}
                         , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                        , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}
                                      }
                 }
             },
@@ -947,9 +944,7 @@ def set_automl_rule() :
                         , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                         , "augmentation": "N"
                               },
-                    "config": {"num_classes": 1,
-                               "learnrate": 0.001,
-                               "layeroutputs": 18,  # 18, 34, 50, 101, 152, 200
+                    "config": {"layeroutputs": 18,  # 18, 34, 50, 101, 152, 200
                                "optimizer": "adam",  #
                                "eval_type": "category"
                                }
@@ -959,23 +954,22 @@ def set_automl_rule() :
                     "preprocess": {"x_size": 32,
                                    "y_size": 32,
                                    "channel": 3,
-                                   "filesize": 1000000,
-                                   "yolo": "n"
+                                   "filesize": 1000000
                                    }
                 }
                 , "eval_data": {
                     "preprocess": {"x_size": 32,
                                    "y_size": 32,
                                    "channel": 3,
-                                   "filesize": 1000000,
-                                   "yolo": "n"}
+                                   "filesize": 1000000
+                                   }
                 }
 
             }
         }
         AutoMlRule().set_graph_type_list('resnet', conf)
 
-        # set netconf for resnet
+        # set netconf for inceptionv4
         conf = {
             "auto": {
                 "netconf_node": {
@@ -986,29 +980,28 @@ def set_automl_rule() :
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
                               }
-                    , "config": {"num_classes": {"type": "int", "option": 1, "auto": False}
-                        , "learnrate": {"type": "int", "option": None, "auto": [0.001, 0.003, 0.001]}
-                        , "layeroutputs": {"type": "sel", "option": None, "auto": [18, 34, 50]}  # [18,34,50,101,152]
-                        , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
-                        , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
+                    , "config": {"layeroutputs": {"type": "sel", "option": [18,34,50,101,152], "auto": False}  # [18,34,50,101,152]
+                                , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
+                                , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
                 }
                 , "netconf_data": {
-                    "type": {"type": "sel", "option": ["imgdata", "framedata", "textdata", "iobdata"], "auto": False}
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False} #["imgdata", "framedata", "textdata", "iobdata"]
                     , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
                         , "y_size": {"type": "int", "option": 32, "auto": False}
                         , "channel": {"type": "int", "option": 3, "auto": False}
                         , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                        , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}}
+                        # , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                                     }
                 }
                 , "eval_data": {
-                    "type": {"type": "sel", "option": ["imgdata", "framedata", "textdata", "iobdata"], "auto": False}
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False} #["imgdata", "framedata", "textdata", "iobdata"]
                     , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
                         , "y_size": {"type": "int", "option": 32, "auto": False}
                         , "channel": {"type": "int", "option": 3, "auto": False}
                         , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                        , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                        # , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}
                                      }
                 }
             },
@@ -1021,9 +1014,7 @@ def set_automl_rule() :
                         , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                         , "augmentation": "N"
                               },
-                    "config": {"num_classes": 1,
-                               "learnrate": 0.001,
-                               "layeroutputs": 18,  # 18, 34, 50, 101, 152, 200
+                    "config": {"layeroutputs": 18,  # 18, 34, 50, 101, 152, 200
                                "optimizer": "adam",  #
                                "eval_type": "category"
                                }
@@ -1033,16 +1024,15 @@ def set_automl_rule() :
                     "preprocess": {"x_size": 32,
                                    "y_size": 32,
                                    "channel": 3,
-                                   "filesize": 1000000,
-                                   "yolo": "n"
+                                   "filesize": 1000000
                                    }
                 }
                 , "eval_data": {
                     "preprocess": {"x_size": 32,
                                    "y_size": 32,
                                    "channel": 3,
-                                   "filesize": 1000000,
-                                   "yolo": "n"}
+                                   "filesize": 1000000
+                                   }
                 }
 
             }

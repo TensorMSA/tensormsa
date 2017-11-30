@@ -9,6 +9,7 @@ class TrainSummaryAccLossInfo:
         self.nn_batch_ver_id = ''
         self.acc_info = {"acc":[]}
         self.loss_info = {"loss":[]}
+        self.cnt = 0
         if(conf) :
             self.nn_id = conf.get('nn_id')
             self.nn_wf_ver_id = conf.get('nn_wf_ver_id')
