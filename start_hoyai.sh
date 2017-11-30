@@ -31,9 +31,9 @@ if [ "$type" = "1" ]; then
   
 
 
-   python /home/dev/hoyai/manage.py makemigrations 
-   python /home/dev/hoyai/manage.py migrate 
-   python /home/dev/hoyai/manage.py runserver $HOSTNAME:8000 &
+   python /home/dev/tensormsa/manage.py makemigrations
+   python /home/dev/tensormsa/manage.py migrate
+   python /home/dev/tensormsa/manage.py runserver $HOSTNAME:8000 &
 fi
 if [ "$type" = "2" ]; then
   echo "Starting postgres"
@@ -59,9 +59,9 @@ if [ "$type" = "6" ]; then
   pkill uwsgi -9
   pkill nginx 
 
-  uwsgi /home/dev/uwsgi/hoyai.ini --emperor /home/dev/hoyai 2>&1 | tee /root/hoyai.out &
+  uwsgi /home/dev/uwsgi/hoyai.ini --emperor /home/dev/tensormsa 2>&1 | tee /root/tensormsa.out &
   /usr/sbin/nginx
-  sudo chmod 777 /home/dev/hoyai/hoyai.sock
+  sudo chmod 777 /home/dev/tensormsa/hoyai.sock
   kill $(ps aux | grep 'manage.py'|grep -v grep| awk '{print $2}')
 fi
 if [ "$type" = "7" ]; then
