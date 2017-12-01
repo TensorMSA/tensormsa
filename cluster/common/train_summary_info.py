@@ -10,6 +10,7 @@ class TrainSummaryInfo:
         self.nn_id = ''
         self.nn_wf_ver_id = ''
         self.nn_batch_ver_id = ''
+        self.pred_log = 'N'
 
         if(type) :
             self.type = type
@@ -20,6 +21,10 @@ class TrainSummaryInfo:
             self.nn_id = conf.get('nn_id')
             self.nn_wf_ver_id = conf.get('nn_wf_ver_id')
             self.nn_batch_ver_id = conf.get('nn_batch_ver_id')
+            self.file_name = []
+            self.true_name = []
+            self.pred_name = []
+            self.pred_value = []
 
     def set_result_data_format(self, config):
         """
@@ -83,6 +88,12 @@ class TrainSummaryInfo:
             self.result_info['answer'].append(label)
             self.result_info['predict'].append(predict)
             self.result_info['accuracy'].append(acc)
+
+    def set_tf_log(self, file_name, true_name, pred_name, pred_value):
+        self.file_name.append(file_name)
+        self.true_name.append(true_name)
+        self.pred_name.append(pred_name)
+        self.pred_value.append(pred_value)
 
     def save_result_info(self, result):
         input_data = {}

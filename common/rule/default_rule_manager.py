@@ -906,8 +906,8 @@ def set_automl_rule() :
             "auto": {
                 "netconf_node": {
                     "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
-                        , "epoch": {"type": "int", "option": 10, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [30, 100, 10]}
+                        , "epoch": {"type": "int", "option": 5, "auto": False}
+                        , "batch_size": {"type": "int", "option": None, "auto": [60, 300, 10]}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
@@ -938,8 +938,8 @@ def set_automl_rule() :
             "single": {
                 "netconf_node": {
                     "param": {"traincnt": 5
-                        , "epoch": 10
-                        , "batch_size": 30
+                        , "epoch": 5
+                        , "batch_size": 80
                         , "predictcnt": 2
                         , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                         , "augmentation": "N"
@@ -974,62 +974,58 @@ def set_automl_rule() :
             "auto": {
                 "netconf_node": {
                     "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
-                        , "epoch": {"type": "int", "option": 10, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [30, 100, 10]}
+                        , "epoch": {"type": "int", "option": 5, "auto": False}
+                        , "batch_size": {"type": "int", "option": None, "auto": [60, 300, 10]}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
                               }
-                    , "config": {"layeroutputs": {"type": "sel", "option": [18,34,50,101,152], "auto": False}  # [18,34,50,101,152]
-                                , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
+                    , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
                                 , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
                 }
                 , "netconf_data": {
                     "type": {"type": "sel", "option": ["imgdata"], "auto": False} #["imgdata", "framedata", "textdata", "iobdata"]
-                    , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
-                        , "y_size": {"type": "int", "option": 32, "auto": False}
+                    , "preprocess": {"x_size": {"type": "int", "option": 299, "auto": False}
+                        , "y_size": {"type": "int", "option": 299, "auto": False}
                         , "channel": {"type": "int", "option": 3, "auto": False}
                         , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                        # , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}
                                      }
                 }
                 , "eval_data": {
                     "type": {"type": "sel", "option": ["imgdata"], "auto": False} #["imgdata", "framedata", "textdata", "iobdata"]
-                    , "preprocess": {"x_size": {"type": "int", "option": 32, "auto": False}
-                        , "y_size": {"type": "int", "option": 32, "auto": False}
+                    , "preprocess": {"x_size": {"type": "int", "option": 299, "auto": False}
+                        , "y_size": {"type": "int", "option": 299, "auto": False}
                         , "channel": {"type": "int", "option": 3, "auto": False}
                         , "filesize": {"type": "int", "option": 1000000, "auto": False}
-                        # , "yolo": {"type": "sel", "option": ["N", "Y"], "auto": False}
                                      }
                 }
             },
             "single": {
                 "netconf_node": {
                     "param": {"traincnt": 5
-                        , "epoch": 10
-                        , "batch_size": 30
+                        , "epoch": 5
+                        , "batch_size": 80
                         , "predictcnt": 2
                         , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                         , "augmentation": "N"
                               },
-                    "config": {"layeroutputs": 18,  # 18, 34, 50, 101, 152, 200
-                               "optimizer": "adam",  #
+                    "config": {"optimizer": "adam",  #
                                "eval_type": "category"
                                }
                     # , "labels": []
                 }
                 , "netconf_data": {
-                    "preprocess": {"x_size": 32,
-                                   "y_size": 32,
+                    "preprocess": {"x_size": 299,
+                                   "y_size": 299,
                                    "channel": 3,
                                    "filesize": 1000000
                                    }
                 }
                 , "eval_data": {
-                    "preprocess": {"x_size": 32,
-                                   "y_size": 32,
+                    "preprocess": {"x_size": 299,
+                                   "y_size": 299,
                                    "channel": 3,
                                    "filesize": 1000000
                                    }
@@ -1038,6 +1034,74 @@ def set_automl_rule() :
             }
         }
         AutoMlRule().set_graph_type_list('inceptionv4', conf)
+
+        # set netconf for inception_resnet_v2
+        conf = {
+            "auto": {
+                "netconf_node": {
+                    "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
+                        , "epoch": {"type": "int", "option": 5, "auto": False}
+                        , "batch_size": {"type": "int", "option": None, "auto": [60, 300, 10]}
+                        , "predictcnt": {"type": "int", "option": 2, "auto": False}
+                        , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
+                        , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                              }
+                    , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
+                        , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
+                                 }
+                    , "labels": {"type": "str", "option": [], "auto": False}
+                }
+                , "netconf_data": {
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False}
+                # ["imgdata", "framedata", "textdata", "iobdata"]
+                    , "preprocess": {"x_size": {"type": "int", "option": 299, "auto": False}
+                        , "y_size": {"type": "int", "option": 299, "auto": False}
+                        , "channel": {"type": "int", "option": 3, "auto": False}
+                        , "filesize": {"type": "int", "option": 1000000, "auto": False}
+                                     }
+                }
+                , "eval_data": {
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False}
+                # ["imgdata", "framedata", "textdata", "iobdata"]
+                    , "preprocess": {"x_size": {"type": "int", "option": 299, "auto": False}
+                        , "y_size": {"type": "int", "option": 299, "auto": False}
+                        , "channel": {"type": "int", "option": 3, "auto": False}
+                        , "filesize": {"type": "int", "option": 1000000, "auto": False}
+                                     }
+                }
+            },
+            "single": {
+                "netconf_node": {
+                    "param": {"traincnt": 5
+                        , "epoch": 5
+                        , "batch_size": 80
+                        , "predictcnt": 2
+                        , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
+                        , "augmentation": "N"
+                              },
+                    "config": {"optimizer": "adam",  #
+                               "eval_type": "category"
+                               }
+                    # , "labels": []
+                }
+                , "netconf_data": {
+                    "preprocess": {"x_size": 299,
+                                   "y_size": 299,
+                                   "channel": 3,
+                                   "filesize": 1000000
+                                   }
+                }
+                , "eval_data": {
+                    "preprocess": {"x_size": 299,
+                                   "y_size": 299,
+                                   "channel": 3,
+                                   "filesize": 1000000
+                                   }
+                }
+
+            }
+        }
+        AutoMlRule().set_graph_type_list('inception_resnet_v2', conf)
 
         # set netconf for wdnn
         conf = {
@@ -1593,6 +1657,7 @@ def set_automl_rule_etc():
             ,"dnn" : "Multi Layer Perceptron이라고도 하며 가장 기본적인 Deep Neural Network"
             ,"ml" : "Machine Learning"
             ,"inceptionv4":"inceptionv4 Network Description"
+            ,"inception_resnet_v2": "inception_resnet_v2 Network Description"
         }
         AutoMlRule().update_graph_type_list('graph_flow_desc', conf)
 
@@ -1615,7 +1680,7 @@ def set_automl_rule_etc():
             ,"bilstmcrf_iob" : "3"
             ,"fasttext_txt" : "3"
             ,"inceptionv4" : "2"
-
+            ,"inception_resnet_v2": "2"
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 
@@ -1637,7 +1702,8 @@ def set_automl_rule_etc():
             ,"autoencoder_csv" : "autoencoder_csv_train.csv"
             ,"bilstmcrf_iob" : "bilstmcrf_iob_train.csv"
             ,"fasttext_txt" : "fasttext_txt_train.csv"
-            ,"inceptionv4":"inceptionv4_train.zip"
+            ,"inceptionv4" : "inceptionv4_train.zip"
+            ,"inception_resnet_v2" : "inception_resnet_v2_train.zip"
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
 
@@ -1660,7 +1726,7 @@ def set_automl_rule_etc():
             , "bilstmcrf_iob": "bilstmcrf_iob_test.csv"
             , "fasttext_txt": "fasttext_txt_test.csv"
             , "inceptionv4":"inceptionv4_test.zip"
-
+            , "inception_resnet_v2": "inception_resnet_v2_test.zip"
         }
         AutoMlRule().update_graph_type_list('eval_file_path', conf)
 
@@ -1683,6 +1749,7 @@ def set_automl_rule_etc():
             ,"bilstmcrf_iob" : 7
             ,"fasttext_txt" : 7
             ,"inceptionv4" :1
+            ,"inception_resnet_v2": 1
         }
         AutoMlRule().update_graph_type_list('graph_flow_info_id', conf)
 
@@ -1705,7 +1772,8 @@ def set_automl_rule_etc():
             , "autoencoder_csv": "N"
             , "bilstmcrf_iob": "N"
             , "fasttext_txt": "N"
-            , "inceptionv4" :"Y"
+            , "inceptionv4" : "Y"
+            , "inception_resnet_v2": "Y"
         }
         AutoMlRule().update_graph_type_list('active_flag', conf)
 

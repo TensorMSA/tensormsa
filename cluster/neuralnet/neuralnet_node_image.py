@@ -4,8 +4,7 @@ import keras
 
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from cluster.neuralnet_model import resnet
-from cluster.neuralnet_model.inception_resnet_v1 import create_inception_resnet_v1
-from cluster.neuralnet_model.inception_resnet_v2 import create_inception_resnet_v2
+from cluster.neuralnet_model.inception_resnet_v2 import InceptionResNetV2
 from cluster.neuralnet_model.inception_v4 import create_inception_v4
 from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
 from keras.preprocessing.image import ImageDataGenerator
@@ -27,11 +26,18 @@ class NeuralNetNodeImage(NeuralNetNode):
             logging.info("None to restore checkpoint. Initializing variables instead." + self.last_chk_path)
             logging.info(e)
             if self.net_type == 'inceptionv4':
-                self.model = create_inception_v4()
-            elif self.net_type == 'inception_resnet_v1':
-                self.model = create_inception_resnet_v1()
+                self.labels_cnt = 1001
+                self.model = create_inception_v4(nb_classes=self.labels_cnt, load_weights=True)
             elif self.net_type == 'inception_resnet_v2':
-                self.model = create_inception_resnet_v2()
+                self.labels_cnt = 1000
+                self.model = InceptionResNetV2(include_top=True,
+                                                  weights='imagenet',
+                                                  input_tensor=None,
+                                                  input_shape=None,
+                                                  pooling=None,
+                                                  classes=self.labels_cnt,
+                                                  dropout_keep_prob=0.8)
+
             elif self.net_type == 'resnet':
                 numoutputs = self.netconf["config"]["layeroutputs"]
 
@@ -167,6 +173,14 @@ class NeuralNetNodeImage(NeuralNetNode):
             # Train
             self.train_cnt = self.netconf["param"]["traincnt"]
             self.batch_size = self.netconf["param"]["batch_size"]
+            self.predlog = self.netconf["param"]["predictlog"]
+
+            #test
+            self.inception_test(input_data, test_data)
+
+
+
+
             for i in range(self.train_cnt):
                 # Train
                 self.train_run(input_data, test_data)
@@ -181,7 +195,15 @@ class NeuralNetNodeImage(NeuralNetNode):
                 self.eval(self.node_id, self.conf_data, test_data, None)
 
                 # Eval Result Print
-                self.eval_print(self.eval_data)
+                self.eval_result_print(self.eval_data, self.predlog)
+
+            if self.train_cnt == 0:
+                # Eval & Result Save
+                self.eval(self.node_id, self.conf_data, test_data, None)
+
+                # Eval Result Print
+                self.eval_result_print(self.eval_data, self.predlog)
+
             return None
         except Exception as e :
             logging.info("===Error on Train  : {0}".format(e))
@@ -219,6 +241,7 @@ class NeuralNetNodeImage(NeuralNetNode):
                 logits = self.model.predict(x_batch)
 
                 y_batch = self.get_convert_img_y_eval(data_set[1])
+                n_batch = self.get_convert_img_y_eval(data_set[2]) # File Name
 
                 for i in range(len(logits)):
                     true_name = y_batch[i]
@@ -227,19 +250,25 @@ class NeuralNetNodeImage(NeuralNetNode):
                     logit.append(logits[i])
                     retrun_data = self.set_predict_return_cnn_img(self.labels, logit, pred_cnt)
                     pred_name = retrun_data["key"]
+                    pred_value = retrun_data["val"]
                     #예측값이 배열로 넘어온다 한개라도 맞으면참
                     t_pred_name = pred_name[0]
-                    for i in pred_name:
-                        if i == true_name:
-                            t_pred_name = i
+                    for pred in pred_name:
+                        if pred == true_name:
+                            t_pred_name = pred
 
                     # eval result
                     self.eval_data.set_result_info(true_name, t_pred_name)
 
+                    # Row log를 찍기위해서 호출한다.
+                    file_name = n_batch[i]
+                    self.eval_data.set_tf_log(file_name, true_name, pred_name, pred_value)
+
                 data.next()
 
             # eval result
-            TrainSummaryInfo.save_result_info(self, self.eval_data)
+            if self.train_cnt != 0:
+                TrainSummaryInfo.save_result_info(self, self.eval_data)
 
             return self.eval_data
 
@@ -308,3 +337,7 @@ class NeuralNetNodeImage(NeuralNetNode):
             logging.info(pred_return_data)
 
         return pred_return_data
+
+    ####################################################################################################################
+    def inception_test(self, input_data, test_data):
+        print('a')

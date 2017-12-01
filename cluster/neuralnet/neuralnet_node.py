@@ -575,7 +575,7 @@ class NeuralNetNode(WorkFlowCommonNode):
 
         # self.train_return_arr.append(result)
 
-    def eval_print(self, eval_data):
+    def eval_result_print(self, eval_data, pred_log = None):
         logging.info(
             "####################################################################################################")
         result = []
@@ -586,6 +586,25 @@ class NeuralNetNode(WorkFlowCommonNode):
         fCnt = 0
         labels = eval_data.result_info['labels']
         predicts = eval_data.result_info['predicts']
+
+        if pred_log !=None and pred_log != 'N' and pred_log != 'n':
+            for plog in range(len(eval_data.true_name)):
+                strLog = ''
+                if eval_data.true_name[plog] == eval_data.pred_name[plog][0]:
+                    strLog = 'True'
+                else:
+                    strLog = 'False'
+
+                if pred_log == 'A':
+                    logging.info(strLog + " FileName=" + eval_data.file_name[plog] )
+                    logging.info(eval_data.true_name[plog] + ' || ' + eval_data.pred_name[plog] + '(' + eval_data.pred_value[plog] + ')')
+                elif pred_log == 'T' and strLog == 'True':
+                    logging.info(strLog + " FileName=" + eval_data.file_name[plog] + eval_data.true_name[plog])
+                    logging.info(eval_data.true_name[plog] + ' || ' + eval_data.pred_name[plog] + '(' + eval_data.pred_value[plog] + ')')
+                elif pred_log == 'F' and strLog == 'False':
+                    logging.info(strLog + " FileName=" + eval_data.file_name[plog] + eval_data.true_name[plog])
+                    logging.info(eval_data.true_name[plog] + ' || ' + eval_data.pred_name[plog] + '(' + eval_data.pred_value[plog] + ')')
+
         for i in range(len(labels)):
             truecnt = 0
             falsecnt = 0
