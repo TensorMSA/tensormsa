@@ -1,23 +1,20 @@
-from unittest import TestCase
-#from django.utils import unittest
-import unitCase
+import unittest
+from tests import unit_case_example
 
-TestMethod = unitCase.TestMethod()
+TestMethod = unit_case_example.UnitCaseExample()
 
-class testUnitCase(TestCase):
+class RunUnitCaseExample(unittest.TestCase):
 
     def setUp(self):
-        print('Start HOYA AI test 1')
+        print('Start TensorMSA')
 
     def tearDown(self):
-        print('Finish HOYA AI test 2')
+        print('Finish TensorMSA')
 
     def test_returnValue(self):
-        print('Finish HOYA AI test 3')
         self.assertEqual(TestMethod.returnString(), 'successful')
 
     def test_upper(self):
-        print('Finish HOYA AI test 4')
         test = 'test'
         self.assertEqual(TestMethod.returnUpper(test), 'TEST')
 
@@ -27,7 +24,11 @@ class testUnitCase(TestCase):
         #self.assertFalse(TestMethod.checkUpper(test))
 
     def test_split(self):
-        test = 'HOYAAI Test'
+        test = 'TensorMSA Test'
         # check that s.split fails when the separator is not a string
         self.assertRaises(TypeError, TestMethod.splitString(test))
-        self.assertEqual(TestMethod.splitString(test), ['HOYAAI', 'Test'])
+        self.assertEqual(TestMethod.splitString(test), ['TensorMSA', 'Test'])
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,4 +1,4 @@
-class TestMethod():
+class UnitCaseExample():
     def returnString(param):
     	return 'successful'
 
