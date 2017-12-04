@@ -1097,7 +1097,7 @@ def set_automl_rule() :
                 }
                 , "eval_data": {
                     "preprocess": {"x_size": 299,
-                                   "y_size": 299,
+                                       "y_size": 299,
                                    "channel": 3,
                                    "filesize": 1000000
                                    }
@@ -1618,6 +1618,122 @@ def set_automl_rule() :
         }
         AutoMlRule().set_graph_type_list('wcnn', conf)
 
+        # set single netconf for seq2seq_csv
+        conf = {
+
+            "auto": {
+                "data_node":
+                    {
+                        "source_type": {"type": "sel", "option": ['local'], "auto": False},
+                        "type": {"type": "sel", "option": ['csv'], "auto": False},
+                        "source_server": {"type": "sel", "option": ["local"], "auto": False},
+                        "source_sql": {"type": "sel", "option": ["all"], "auto": False},
+                        "preprocess": {"type": "sel", "option": ["none"], "auto": False},
+                    },
+                "test_data_node":
+                    {
+                        "source_type": {"type": "sel", "option": ['local'], "auto": False},
+                        "type": {"type": "sel", "option": ['csv'], "auto": False},
+                        "source_server": {"type": "sel", "option": ["local"], "auto": False},
+                        "source_sql": {"type": "sel", "option": ["all"], "auto": False},
+                        "preprocess": {"type": "sel", "option": ["none"], "auto": False},
+                    },
+                "netconf_node":
+                    {
+                        "encode_len": {"type": "int", "option": 10, "auto": False},
+                        "encode_len": {"type": "int", "option": 10, "auto": False},
+                        "encoder_depth": {"type": "int", "option": 2, "auto": False},
+                        "decoder_depth": {"type": "int", "option": 2, "auto": False},
+                        "encode_column": {"type": "str", "option": 'lstm', "auto": False},
+                        "cell_size": {"type": "int", "option": 500, "auto": False},
+                        "drop_out": {"type": "int", "option": 0.8, "auto": False},
+                        "word_embed_type": {"type": "str", "option": 'onehot', "auto": False},
+                        "word_embed_id": {"type": "str", "option": '', "auto": False},
+                        "vocab_size": {"type": "int", "option": 100, "auto": False},
+                        "batch_size": {"type": "int", "option": 5, "auto": False},
+                        "iter": {"type": "int", "option": 100, "auto": False},
+                        "early_stop": {"type": "int", "option": 0.9, "auto": False},
+                    },
+                "pre_feed_test":
+                    {
+                        "encode_column": {"type": "str", "option": 'encode', "auto": False},
+                        "decode_column": {"type": "str", "option": 'decode', "auto": False},
+                        "encode_len": {"type": "int", "option": 10, "auto": False},
+                        "dncode_len": {"type": "int", "option": 10, "auto": False},
+                        "preprocess": {"type": "sel", "option": ['none', 'mecab'], "auto": False},
+                    },
+                "pre_feed_train":
+                    {
+                        "encode_column": {"type": "str", "option": 'encode', "auto": False},
+                        "decode_column": {"type": "str", "option": 'decode', "auto": False},
+                        "encode_len": {"type": "int", "option": 10, "auto": False},
+                        "dncode_len": {"type": "int", "option": 10, "auto": False},
+                        "preprocess": {"type": "sel", "option": ['none', 'mecab'], "auto": False},
+                    },
+                "eval_node":
+                    {
+                        "type": {"type": "sel", "option": ["seq2seq"], "auto": False}
+                    }
+            },
+            "single": {
+                "data_node":
+                    {
+                        "source_type": "local",
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "preprocess": "none",
+                    },
+                "test_data_node":
+                    {
+                        "source_type": "local",
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "preprocess": "none",
+                    },
+                "netconf_node":
+                    {
+                        "encode_len": 10,
+                        "decode_len": 10,
+                        "encoder_depth" : 2,
+                        "decoder_depth" : 2,
+                        "cell_type" : "lstm",
+                        "cell_size" : 500,
+                        "drop_out" : 0.8,
+                        "word_embed_type" : "onehot",
+                        "word_embed_id" : "",
+                        "vocab_size" : 100,
+                        "batch_size" : 5,
+                        "iter" : 100,
+                        "early_stop" : 0.9,
+                        "learning_rate" : 0.001,
+                    },
+                "pre_feed_test":
+                    {
+                        "encode_column": 'encode',
+                        "decode_column": 'decode',
+                        "encode_len": 10,
+                        "decode_len": 10,
+                        "preprocess": "mecab",
+                    },
+                "pre_feed_train":
+                    {
+                        "encode_column": 'encode',
+                        "decode_column": 'decode',
+                        "encode_len": 10,
+                        "decode_len": 10,
+                        "preprocess": "mecab",
+                    },
+                "eval_node":
+                    {
+                        "type": "seq2seq"
+                    }
+            }
+        }
+        AutoMlRule().set_graph_type_list('seq2seq_csv', conf)
+
+
         # # not yet implemented
         # AutoMlRule().set_graph_type_list('wdnn_keras', {})
         # AutoMlRule().set_graph_type_list('word2vec', {})
@@ -1771,7 +1887,7 @@ def set_automl_rule_etc():
             , "doc2vec": "N"
             , "wcnn": "Y"
             , "seq2seq": "N"
-            , "seq2seq_csv": "N"
+            , "seq2seq_csv": "Y"
             , "autoencoder_img": "N"
             , "autoencoder_csv": "N"
             , "bilstmcrf_iob": "N"
