@@ -84,50 +84,57 @@ class NeuralNetNodeImage(NeuralNetNode):
             x_tbatch = self.get_convert_img_x(test_set[0], self.x_size, self.y_size, self.channel) # img_data_batch
             y_tbatch = self.get_convert_img_y(test_set[1], self.labels, self.labels_cnt) # label_data_batch
 
+            max_size = 1000
             while (input_data.has_next()):
-                input_set = input_data[0:input_data.data_size()]
-                x_batch = self.get_convert_img_x(input_set[0], self.x_size, self.y_size, self.channel)  # img_data_batch
-                y_batch = self.get_convert_img_y(input_set[1], self.labels, self.labels_cnt)  # label_data_batch
+                run_size = 0
+                while( run_size < input_data.data_size()):
+                    if run_size + max_size > input_data.data_size():
+                        input_set = input_data[run_size:input_data.data_size()]
+                    else:
+                        input_set = input_data[run_size:run_size + max_size]
+                        run_size += max_size + 1
+                    x_batch = self.get_convert_img_x(input_set[0], self.x_size, self.y_size, self.channel)  # img_data_batch
+                    y_batch = self.get_convert_img_y(input_set[1], self.labels, self.labels_cnt)  # label_data_batch
 
-                if self.data_augmentation == "N" or self.data_augmentation == "n":
-                    history = self.model.fit(x_batch, y_batch,
-                                             batch_size=self.batch_size,
-                                             epochs=self.epoch,
-                                             validation_data=(x_tbatch, y_tbatch),
-                                             shuffle=True,
-                                             callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
-                else:
-                    # This will do preprocessing and realtime data augmentation:
-                    datagen = ImageDataGenerator(
-                        featurewise_center=False,  # set input mean to 0 over the dataset
-                        samplewise_center=False,  # set each sample mean to 0
-                        featurewise_std_normalization=False,  # divide inputs by std of the dataset
-                        samplewise_std_normalization=False,  # divide each input by its std
-                        zca_whitening=False,  # apply ZCA whitening
-                        rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-                        width_shift_range=0.1, # randomly shift images horizontally (fraction of total width)
-                        height_shift_range=0.1, # randomly shift images vertically (fraction of total height)
-                        horizontal_flip=True,  # randomly flip images
-                        vertical_flip=False)  # randomly flip images
+                    if self.data_augmentation == "N" or self.data_augmentation == "n":
+                        history = self.model.fit(x_batch, y_batch,
+                                                 batch_size=self.batch_size,
+                                                 epochs=self.epoch,
+                                                 validation_data=(x_tbatch, y_tbatch),
+                                                 shuffle=True,
+                                                 callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+                    else:
+                        # This will do preprocessing and realtime data augmentation:
+                        datagen = ImageDataGenerator(
+                            featurewise_center=False,  # set input mean to 0 over the dataset
+                            samplewise_center=False,  # set each sample mean to 0
+                            featurewise_std_normalization=False,  # divide inputs by std of the dataset
+                            samplewise_std_normalization=False,  # divide each input by its std
+                            zca_whitening=False,  # apply ZCA whitening
+                            rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+                            width_shift_range=0.1, # randomly shift images horizontally (fraction of total width)
+                            height_shift_range=0.1, # randomly shift images vertically (fraction of total height)
+                            horizontal_flip=True,  # randomly flip images
+                            vertical_flip=False)  # randomly flip images
 
-                    # Compute quantities required for featurewise normalization
-                    # (std, mean, and principal components if ZCA whitening is applied).
-                    datagen.fit(x_batch)
+                        # Compute quantities required for featurewise normalization
+                        # (std, mean, and principal components if ZCA whitening is applied).
+                        datagen.fit(x_batch)
 
-                    # Fit the model on the batches generated by datagen.flow().
-                    history = self.model.fit_generator(
-                        datagen.flow(x_batch, y_batch, batch_size=self.batch_size),
-                        steps_per_epoch=x_batch.shape[0] // self.batch_size,
-                        validation_data=(x_tbatch, y_tbatch),
-                        epochs=self.epoch, verbose=1, max_q_size=100,
-                        callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+                        # Fit the model on the batches generated by datagen.flow().
+                        history = self.model.fit_generator(
+                            datagen.flow(x_batch, y_batch, batch_size=self.batch_size),
+                            steps_per_epoch=x_batch.shape[0] // self.batch_size,
+                            validation_data=(x_tbatch, y_tbatch),
+                            epochs=self.epoch, verbose=1, max_q_size=100,
+                            callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
 
-                self.loss += history.history["loss"][len(history.history["loss"])-1]
-                self.acc += history.history["acc"][len(history.history["acc"])-1]
-                self.val_loss += history.history["val_loss"][len(history.history["val_loss"])-1]
-                self.val_acc += history.history["val_acc"][len(history.history["val_acc"])-1]
+                    self.loss += history.history["loss"][len(history.history["loss"])-1]
+                    self.acc += history.history["acc"][len(history.history["acc"])-1]
+                    self.val_loss += history.history["val_loss"][len(history.history["val_loss"])-1]
+                    self.val_acc += history.history["val_acc"][len(history.history["val_acc"])-1]
 
-                while_cnt += 1
+                    while_cnt += 1
                 input_data.next()
 
             if while_cnt > 0:
