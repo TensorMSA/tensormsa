@@ -52,3 +52,4 @@ class api_test_chatbot(TestCase):
                                       })
             print(resp.json()['test_intent_id'])
             self.assertEqual(resp.json()['test_intent_id'], [i], msg="Intent " + i + " is wrong")
+
