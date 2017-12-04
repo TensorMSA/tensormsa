@@ -65,6 +65,10 @@ class NeuralNetNodeImage(NeuralNetNode):
         '''
         self.epoch = self.netconf["param"]["epoch"]
         self.data_augmentation = self.netconf["param"]["augmentation"]
+        try:
+            self.fit_size = self.netconf["param"]["fit_size"]
+        except:
+            self.fit_size = 9999999999
 
         self.lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
         self.early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
@@ -84,15 +88,14 @@ class NeuralNetNodeImage(NeuralNetNode):
             x_tbatch = self.get_convert_img_x(test_set[0], self.x_size, self.y_size, self.channel) # img_data_batch
             y_tbatch = self.get_convert_img_y(test_set[1], self.labels, self.labels_cnt) # label_data_batch
 
-            max_size = 1000
             while (input_data.has_next()):
                 run_size = 0
                 while( run_size < input_data.data_size()):
-                    if run_size + max_size > input_data.data_size():
+                    if run_size + self.fit_size > input_data.data_size():
                         input_set = input_data[run_size:input_data.data_size()]
                     else:
-                        input_set = input_data[run_size:run_size + max_size]
-                        run_size += max_size + 1
+                        input_set = input_data[run_size:run_size + self.fit_size]
+                    run_size += self.fit_size + 1
                     x_batch = self.get_convert_img_x(input_set[0], self.x_size, self.y_size, self.channel)  # img_data_batch
                     y_batch = self.get_convert_img_y(input_set[1], self.labels, self.labels_cnt)  # label_data_batch
 

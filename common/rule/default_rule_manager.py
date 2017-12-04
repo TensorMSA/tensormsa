@@ -979,6 +979,7 @@ def set_automl_rule() :
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                        , "fit_size": {"type": "int", "option": 1000, "auto": False}
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
                                 , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
@@ -1010,6 +1011,7 @@ def set_automl_rule() :
                         , "predictcnt": 2
                         , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                         , "augmentation": "N"
+                        , "fit_size": 1000
                               },
                     "config": {"optimizer": "adam",  #
                                "eval_type": "category"
@@ -1045,6 +1047,7 @@ def set_automl_rule() :
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                        , "fit_size": {"type": "int", "option": 1000, "auto": False}
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
@@ -1078,6 +1081,7 @@ def set_automl_rule() :
                         , "predictcnt": 2
                         , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
                         , "augmentation": "N"
+                        , "fit_size": 1000
                               },
                     "config": {"optimizer": "adam",  #
                                "eval_type": "category"
