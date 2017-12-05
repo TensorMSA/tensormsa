@@ -1644,7 +1644,7 @@ def set_automl_rule() :
                         "encode_len": {"type": "int", "option": 10, "auto": False},
                         "encoder_depth": {"type": "int", "option": 2, "auto": False},
                         "decoder_depth": {"type": "int", "option": 2, "auto": False},
-                        "encode_column": {"type": "str", "option": 'lstm', "auto": False},
+                        "cell_type": {"type": "str", "option": 'lstm', "auto": False},
                         "cell_size": {"type": "int", "option": 500, "auto": False},
                         "drop_out": {"type": "int", "option": 0.8, "auto": False},
                         "word_embed_type": {"type": "str", "option": 'onehot', "auto": False},
@@ -1653,7 +1653,8 @@ def set_automl_rule() :
                         "batch_size": {"type": "int", "option": 5, "auto": False},
                         "iter": {"type": "int", "option": 100, "auto": False},
                         "early_stop": {"type": "int", "option": 0.9, "auto": False},
-                    },
+                        "learnrate": {"type": "int", "option": None, "auto": [0.001, 0.001, 0.001]},
+            },
                 "pre_feed_test":
                     {
                         "encode_column": {"type": "str", "option": 'encode', "auto": False},
