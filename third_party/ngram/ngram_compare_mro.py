@@ -1,32 +1,27 @@
 import ngram
-
-# import requests,os
-# url = "{0}:{1}".format(os.environ['HOSTNAME'] , "8989")
-# restURL = 'http://' + url + '/api/v1/type/service/state/predict/type/ngram/nnid/mro_compare/ver/active/'
-#
-# jsonStr = {'list':[], 'standard': 0.95}
-#
-# jsonStr['list'].append({'item_code':'Q2172233', 'item_leaf': 'Power/Control Cable', 'item_desc': 'KIV,450/750V,70Cel,Color:SELECT(BK-WH-RD-YL-GN-BL),185MM2x1C,Conductor:ANNEALED COPPER WIRE,Sheath:NO SHEATH,Inst:PVC,KSC IEC 60227-3 '})
-# jsonStr['list'].append({'item_code':'Q2174258', 'item_leaf': 'Power/Control Cable', 'item_desc': 'KIV,450/750V,70Cel,Color:SELECT(BK-WH-RD-YL-GN-BL),1.5MM2x1C,Conductor:ANNEALED COPPER WIRE,Sheath:NO SHEATH,Inst:PVC,KSC IEC 60227-3 '})
-# jsonStr['list'].append({'item_code':'Q2174259', 'item_leaf': 'Power/Control Cable', 'item_desc': 'KIV,450/750V,70Cel,Color:SELECT(BK-WH-RD-YL-GN-BL),10MM2x1C,Conductor:ANNEALED COPPER WIRE,Sheath:NO SHEATH,Inst:PVC,KSC IEC 60227-3 '})
-# jsonStr['list'].append({'item_code':'Q2174261', 'item_leaf': 'Power/Control Cable', 'item_desc': 'KIV,450/750V,70Cel,Color:SELECT(BK-WH-RD-YL-GN-BL),16MM2x1C,Conductor:ANNEALED COPPER WIRE,Sheath:NO SHEATH,Inst:PVC,KSC IEC 60227-3 '})
-# jsonStr['list'].append({'item_code':'Q2174263', 'item_leaf': 'Power/Control Cable', 'item_desc': 'KIV,450/750V,70Cel,Color:SELECT(BK-WH-RD-YL-GN-BL),2.5MM2x1C,Conductor:ANNEALED COPPER WIRE,Sheath:NO SHEATH,Inst:PVC,KSC IEC 60227-3 '})
-#
-#
-# resp = requests.post(restURL
-#                      , json=jsonStr
-#                      )
+import pandas as pd
 
 class ThirdPartyNgram():
     def predict(self, node_id, param):
-        item = []
+        '''
+        
+        :param node_id: 
+        :param param: param['list'] = 1(seq), q1(item_code), q1group(item_group), q1desc(item_description) tsv file
+        :return: 
+        '''
+        file_path = param['filepath']
+        df = pd.DataFrame.from_csv(file_path, sep='\t')
 
-        sParam = sorted(param['list'], key=lambda x: x['item_code'])
-        for val in sParam:
+        for dfdata in df.values:
+            param['list'].append({'item_code': dfdata[0], 'item_leaf': dfdata[1], 'item_desc': dfdata[2]})
+
+        item = []
+        for val in param['list']:
             item_tuple = (val['item_code'].strip(), val['item_leaf'].strip(), val['item_desc'].strip())
             item.append(item_tuple)
 
         dataset = ngram.NGram(item, key=lambda x: x[2])
+        dataset = sorted(dataset, key=lambda x: x[0])
         findset = ngram.NGram(item, key=lambda x: x[2])
 
         return_data = {}
