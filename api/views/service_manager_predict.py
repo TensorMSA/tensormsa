@@ -11,6 +11,7 @@ from cluster.service.service_predict_autoencoder import PredictNetAutoEncoder
 from cluster.service.service_predict_anomaly import PredictNetAnomaly
 from cluster.service.service_predict_wcnn import PredictNetWcnn
 from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
+from cluster.service.service_predict_ngram import PredictNetNgram
 from common.utils import *
 import coreapi
 
@@ -63,6 +64,8 @@ class ServiceManagerPredict(APIView):
                     return_data = PredictNetWcnn().run(nnid, request.data)
                 elif (type == "bilstmcrf"):
                     return_data = PredictNetBiLstmCrf().run(nnid, request.data)
+                elif (type == "ngram"):
+                    return_data = PredictNetNgram().run(nnid, request.data)
                 else :
                     raise Exception ("Not defined type error")
             else :

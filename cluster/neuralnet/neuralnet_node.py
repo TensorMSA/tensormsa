@@ -519,6 +519,11 @@ class NeuralNetNode(WorkFlowCommonNode):
         r = 0
         y_batch = np.zeros((len(label_data_batch), labels_cnt))
         labelsHot = np.zeros((labels_cnt, labels_cnt))
+        for i in range(labels_cnt):
+            for j in range(labels_cnt):
+                if i == j:
+                    labelsHot[i][j] = 1
+
         for j in label_data_batch:
             j = j.decode('UTF-8')
             k = labels.index(j)

@@ -228,7 +228,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             return
         }
         this.props.reportRepository.getMoniteringInfo('run_check', this.state.nn_id, 'all', false).then((tableData) => {
-            if(tableData.length == 0){
+            if(tableData.length == undefined || tableData.length == 0){
                 //Version Active Flag Save Validation
                 let wfparam = {}
                 let vSaveFlag = "N" //한개라도 Y인 Version이 있어야 한다.
