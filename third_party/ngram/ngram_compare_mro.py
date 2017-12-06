@@ -31,11 +31,10 @@ class ThirdPartyNgram():
         return_data = {}
         for data in dataset:
             findset.remove(data)
-            result = findset.search(data[2])
+            result = findset.search(data[2], param['standard'])
             for r in range(len(result)):
-                if result[r][1] > param['standard']:
-                    if return_data.get(data[0]) == None:
-                        return_data[data[0]] = {}
-                    return_data[data[0]][result[r][0][0]] = {'item_desc': result[r][0][2], 'item_perc': result[r][1]}
+                if return_data.get(data[0]) == None:
+                    return_data[data[0]] = {}
+                return_data[data[0]][result[r][0][0]] = {'item_desc': result[r][0][2], 'item_perc': result[r][1]}
 
         return return_data
