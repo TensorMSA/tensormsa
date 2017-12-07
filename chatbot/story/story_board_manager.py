@@ -12,6 +12,7 @@ class StoryBoardManager(ShareData):
                 share_data = ResponseGenerator(self.response_story).select_response(share_data)
             else:
                 share_data.set_output_data(self.response_story[0]['fields']['output_data'])
+                share_data.initialize_story()
             return share_data
         except Exception as e:
             raise Exception(e)

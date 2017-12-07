@@ -8,7 +8,7 @@ class RuleIntentAnalyzer(ShareData):
     def parse(self, share_data):
         rule_exist = False
         if (share_data.get_intent_id() != ""):
-            logging.info("■■■■■■■■■■ 의도 존재  : " + share_data.get_intent_id())
+            logging.info("■■■■■■■■■■ 의도 존재  : {0}".format(share_data.get_intent_id()))
         else :
             intent_rule = self.get_rule_intent(share_data.get_request_data(), share_data)
             logging.info("■■■■■■■■■■ 의도 분석 결과(Rule) : " + str(intent_rule))
