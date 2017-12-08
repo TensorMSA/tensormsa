@@ -60,7 +60,7 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
     // 최초 1회 실행하여 Network Config List를 가져온다.
     componentDidMount(){
         this.getCommonNNInfoAuto(this.props.tabIndex);
-        
+        this.props.fileUpladView(false, false)
     }
 
     // get Network List ex)wdnn, resnet, charcnn_csv    
@@ -123,6 +123,22 @@ export default class NN_InfoNewCompDetail1 extends React.Component {
         this.state.netType = value
 
         this.getCommonNNInfoAutoDetail(value)
+
+        if(value != ""){
+            let trainflag = false
+            let testflag = false
+            if(this.state.NN_TableData[0]['fields']['train_file_path'] != ""){
+                trainflag = true
+            }
+
+            if(this.state.NN_TableData[0]['fields']['eval_file_path'] != ""){
+                testflag = true
+            }
+
+            this.props.fileUpladView(trainflag, testflag)
+        }else{
+            this.props.fileUpladView(false, false)
+        }
     }
 
     setConfigData(){

@@ -25,6 +25,7 @@ export default class NN_InfoDetailComponent extends React.Component {
             NN_TableGraph:null,
             NN_TableWFData: null,
             NN_TableWFDataAccLoss: null,
+            NN_TableDataAuto:null,
             NN_TableNodeData: null,
             NN_TableNodeDataSort: null,
             NN_TableColArr1:[    {index:0,      id:"sel"                , name:"Sel"}
@@ -81,7 +82,9 @@ export default class NN_InfoDetailComponent extends React.Component {
             batchImg :EnvConstants.getImgUrl()+"ico_menu05.png",
             memoImg : EnvConstants.getImgUrl()+"ico_menu06.png",
             runTitle : "Run",
-            sourcecnt:0
+            sourcecnt:0,
+            trainUploadView:false,
+            testUploadView:false
         };
         this.closeModal = this.closeModal.bind(this);
         this.closeModalPredictAPI = this.closeModalPredictAPI.bind(this);
@@ -363,11 +366,26 @@ export default class NN_InfoDetailComponent extends React.Component {
                     }
                 });
 
+                this.props.reportRepository.getCommonNNInfoAuto(this.state.netType).then((tableData) => {
+                    this.setState({ NN_TableDataAuto: tableData })
+
+                    let trainflag = false
+                    let testflag = false
+                    if(tableData[0]['fields']['train_file_path'] != ''){
+                        trainflag = true
+                    }
+
+                    if(tableData[0]['fields']['eval_file_path'] != ''){
+                        testflag = true
+                    }
+
+                    this.setState({trainUploadView: trainflag})
+                    this.setState({testUploadView: testflag})
+                });
+
                 // this.getCommonNodeInfoView()
 
             });
-            
-
         }   
     }
 
@@ -1023,6 +1041,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                         <div>
                             <table className="partition_half">
                                 <tr>
+                                {this.state.trainUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="trainfilesrc" 
                                                             title= "Network Train Source File Upload"
@@ -1033,7 +1052,10 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
                                     </td>
-
+                                    :
+                                    <td></td>
+                                    }
+                                {this.state.testUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="evalfilesrc" 
                                                             title= "Network Eval Source File Upload"
@@ -1044,6 +1066,9 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
                                     </td>
+                                    :
+                                    <td></td>
+                                    }
                                 </tr>
                             </table>
                         </div>
@@ -1051,6 +1076,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                          <div>
                              <table className="partition_half">
                                 <tr>
+                                {this.state.trainUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="trainfilestr" 
                                                             title="Network Train Store File Upload"
@@ -1061,6 +1087,10 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
                                     </td>
+                                :
+                                    <td></td>
+                                    }
+                                {this.state.testUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="evalfilestr" 
                                                             title="Network Eval Store File Upload"
@@ -1071,6 +1101,9 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
                                     </td>
+                                :
+                                    <td></td>
+                                    }
                                 </tr>
                             </table>
                         </div>
@@ -1080,6 +1113,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                     <div>
                             <table className="partition_half">
                                 <tr>
+                                {this.state.trainUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="trainfilesrc" 
                                                             title= "Network Train Source File Upload"
@@ -1090,7 +1124,10 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
                                     </td>
-
+                                :
+                                    <td></td>
+                                    }
+                                {this.state.testUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="evalfilesrc" 
                                                             title= "Network Eval Source File Upload"
@@ -1101,11 +1138,15 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={true} 
                                                             deletebtnflag={true} />
                                     </td>
+                                :
+                                    <td></td>
+                                    }
                                 </tr>
                             </table>
         
                              <table className="partition_half">
                                 <tr>
+                                {this.state.trainUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="trainfilestr" 
                                                             title="Network Train Store File Upload"
@@ -1116,6 +1157,10 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
                                     </td>
+                                :
+                                    <td></td>
+                                    }
+                                {this.state.testUploadView ?
                                     <td style={{"verticalAlign":"top"}}>
                                         <FileUploadComponent ref="evalfilestr" 
                                                             title="Network Eval Store File Upload"
@@ -1126,6 +1171,9 @@ export default class NN_InfoDetailComponent extends React.Component {
                                                             uploadbtnflag={false} 
                                                             deletebtnflag={true} />
                                     </td>
+                                :
+                                    <td></td>
+                                    }
                                 </tr>
                             </table>
                         </div>

@@ -106,8 +106,10 @@ class WorkFlowSimpleManager :
             self._create_predefined_nodes_autoencoder_csv(state_id)
         elif(type == 'bilstmcrf_iob') :
             self._create_predefined_nodes_bilstmcrf_iob(state_id)
-        elif (type == 'fasttext_txt'):
+        elif(type == 'fasttext_txt'):
             self._create_predefined_nodes_fasttext_txt(state_id)
+        elif(type == 'ngram_mro'):
+            self._create_predefined_nodes_frame(state_id)
         else :
             if self.group_id == '1': #Frame
                 self._create_predefined_nodes_frame(state_id)

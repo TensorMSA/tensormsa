@@ -1734,6 +1734,21 @@ def set_automl_rule() :
         }
         AutoMlRule().set_graph_type_list('seq2seq_csv', conf)
 
+        # set single netconf for ngram_mro
+        conf = {
+            "auto": {
+                "netconf_node":
+                    {
+                        "standard": {"type": "int", "option": None, "auto": [0.90, 0.99, 0.01]}
+                    }
+            }, "single": {
+                "netconf_node":
+                    {
+                        'standard': 0.95
+                    }
+            }
+        }
+        AutoMlRule().set_graph_type_list('ngram_mro', conf)
 
         # # not yet implemented
         # AutoMlRule().set_graph_type_list('wdnn_keras', {})
@@ -1779,6 +1794,7 @@ def set_automl_rule_etc():
             ,"ml" : "Machine Learning"
             ,"inceptionv4":"inceptionv4 Network Description"
             ,"inception_resnet_v2": "inception_resnet_v2 Network Description"
+            ,"ngram_mro":"ngram mro custom"
         }
         AutoMlRule().update_graph_type_list('graph_flow_desc', conf)
 
@@ -1802,29 +1818,31 @@ def set_automl_rule_etc():
             ,"fasttext_txt" : "3"
             ,"inceptionv4" : "2"
             ,"inception_resnet_v2": "2"
+            ,"ngram_mro": "4"
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 
         # set network sample file path
         conf = {
             "cnn" : "cnn_train.zip"
-            ,"resnet" : "resnet_train.zip"
-            ,"wdnn" : "wdnn_train.csv"
-            ,"dnn" : "dnn_train.csv"
-            ,"ml" : "ml_train.csv"
-            ,"wdnn_keras" : "wdnn_keras_train.csv"
-            ,"word2vec" : "word2vec_train.zip"
-            ,"word2vec_frame" : "word2vec_frame_train.zip"
-            ,"doc2vec" : "doc2vec_train.zip"
-            ,"wcnn" : "wcnn_train.csv"
-            ,"seq2seq" : "seq2seq_train.csv"
-            ,"seq2seq_csv" : "seq2seq_csv_train.csv"
-            ,"autoencoder_img" : "autoencoder_imgsample.csv"
-            ,"autoencoder_csv" : "autoencoder_csv_train.csv"
-            ,"bilstmcrf_iob" : "bilstmcrf_iob_train.csv"
-            ,"fasttext_txt" : "fasttext_txt_train.csv"
-            ,"inceptionv4" : "inceptionv4_train.zip"
-            ,"inception_resnet_v2" : "inception_resnet_v2_train.zip"
+            , "resnet" : "resnet_train.zip"
+            , "wdnn" : "wdnn_train.csv"
+            , "dnn" : "dnn_train.csv"
+            , "ml" : "ml_train.csv"
+            , "wdnn_keras" : "wdnn_keras_train.csv"
+            , "word2vec" : "word2vec_train.zip"
+            , "word2vec_frame" : "word2vec_frame_train.zip"
+            , "doc2vec" : "doc2vec_train.zip"
+            , "wcnn" : "wcnn_train.csv"
+            , "seq2seq" : "seq2seq_train.csv"
+            , "seq2seq_csv" : "seq2seq_csv_train.csv"
+            , "autoencoder_img" : "autoencoder_imgsample.csv"
+            , "autoencoder_csv" : "autoencoder_csv_train.csv"
+            , "bilstmcrf_iob" : "bilstmcrf_iob_train.csv"
+            , "fasttext_txt" : "fasttext_txt_train.csv"
+            , "inceptionv4" : "inceptionv4_train.zip"
+            , "inception_resnet_v2" : "inception_resnet_v2_train.zip"
+            , "ngram_mro": "ngram_mro_train.zip"
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
 
@@ -1854,23 +1872,24 @@ def set_automl_rule_etc():
         # set network node alias name key
         conf = {
             "cnn" : 1
-            ,"resnet" : 1
-            ,"wdnn": 2
-            ,"dnn" : 2
-            ,"ml" : 12
-            ,"wdnn_keras" : 3
-            ,"word2vec" : 4
-            ,"word2vec_frame" : 5
-            ,"doc2vec" : 6
-            ,"wcnn" : 7
-            ,"seq2seq" : 8
-            ,"seq2seq_csv" : 9
-            ,"autoencoder_img" : 10
-            ,"autoencoder_csv" : 11
-            ,"bilstmcrf_iob" : 7
-            ,"fasttext_txt" : 7
-            ,"inceptionv4" :1
-            ,"inception_resnet_v2": 1
+            , "resnet" : 1
+            , "wdnn": 2
+            , "dnn" : 2
+            , "ml" : 12
+            , "wdnn_keras" : 3
+            , "word2vec" : 4
+            , "word2vec_frame" : 5
+            , "doc2vec" : 6
+            , "wcnn" : 7
+            , "seq2seq" : 8
+            , "seq2seq_csv" : 9
+            , "autoencoder_img" : 10
+            , "autoencoder_csv" : 11
+            , "bilstmcrf_iob" : 7
+            , "fasttext_txt" : 7
+            , "inceptionv4" :1
+            , "inception_resnet_v2": 1
+            , "ngram_mro": 2
         }
         AutoMlRule().update_graph_type_list('graph_flow_info_id', conf)
 
@@ -1895,6 +1914,7 @@ def set_automl_rule_etc():
             , "fasttext_txt": "N"
             , "inceptionv4" : "Y"
             , "inception_resnet_v2": "Y"
+            , "ngram_mro": "Y"
         }
         AutoMlRule().update_graph_type_list('active_flag', conf)
 

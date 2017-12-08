@@ -2,7 +2,7 @@ from cluster.service.service_predict import PredictNet
 from third_party.ngram.ngram_compare_mro import ThirdPartyNgram
 
 class PredictNetNgram(PredictNet):
-    def run(self, nn_id, parm):
+    def run(self, type, nn_id, ver, parm):
         """
         run predict service
         1. get node id
@@ -12,10 +12,7 @@ class PredictNetNgram(PredictNet):
         :return:
         """
         if(self._valid_check(parm)) :
-            if (nn_id == 'mro_compare'):
-                return ThirdPartyNgram().predict(nn_id, parm)
-            else:
-                None
+            return ThirdPartyNgram().predict(type, nn_id, ver, parm)
 
     def _valid_check(self, parm):
         return True

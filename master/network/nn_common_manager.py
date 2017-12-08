@@ -324,7 +324,7 @@ class NNCommonManager :
             if(desc != None and desc == "all"):
                 query_set = models.NN_WF_NODE_INFO.objects.filter(wf_state_id=state_id)
             else:
-                query_set = models.NN_WF_NODE_INFO.objects.filter(wf_state_id=state_id, nn_wf_node_desc=desc )
+                query_set = models.NN_WF_NODE_INFO.objects.filter(wf_state_id=state_id, nn_wf_node_name=desc )
             query_set = serial.serialize("json", query_set)
             return json.loads(query_set)
         except Exception as e:

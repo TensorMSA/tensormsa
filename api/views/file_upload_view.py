@@ -9,6 +9,7 @@ import time
 from rest_framework.parsers import FileUploadParser,MultiPartParser
 import shutil
 from master.network.nn_common_manager import NNCommonManager
+from master.automl.automl_rule import AutoMlRule
 
 # from rest_framework import status
 from master.workflow.data.workflow_data_image import WorkFlowDataImage
@@ -123,9 +124,14 @@ class FileUploadView(APIView):
                 store_n_cnt = len(os.listdir(store_path_n))
                 store_e_cnt = len(os.listdir(store_path_e))
 
-                if source_n_cnt == 0 and store_n_cnt == 0:
+                condition = {}
+                condition['nn_id'] = nnid
+                dir = NNCommonManager().get_nn_info(condition)[0]['dir']
+                auto = AutoMlRule().get_graph_info(dir)
+
+                if auto[0]['fields']['train_file_path'] != '' and source_n_cnt == 0 and store_n_cnt == 0:
                     resub = {"filecnt":0, "type":"Source"}
-                elif source_e_cnt == 0 and store_e_cnt == 0:
+                elif auto[0]['fields']['eval_file_path'] != '' and source_e_cnt == 0 and store_e_cnt == 0:
                     resub = {"filecnt":0, "type":"Eval"}
                 else:
                     resub = {"filecnt":1}

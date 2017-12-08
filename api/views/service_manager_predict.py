@@ -64,8 +64,8 @@ class ServiceManagerPredict(APIView):
                     return_data = PredictNetWcnn().run(nnid, request.data)
                 elif (type == "bilstmcrf"):
                     return_data = PredictNetBiLstmCrf().run(nnid, request.data)
-                elif (type == "ngram"):
-                    return_data = PredictNetNgram().run(nnid, request.data)
+                elif (type == "ngram_mro"):
+                    return_data = PredictNetNgram().run(type, nnid, ver, request.data)
                 else :
                     raise Exception ("Not defined type error")
             else :
@@ -84,6 +84,8 @@ class ServiceManagerPredict(APIView):
                     raise Exception("on developing now !")
                 elif (type == "resnet"):
                     return_data = PredictNetRenet().run(nnid, ver, request.FILES)
+                elif (type == "ngram_mro"):
+                    return_data = PredictNetNgram().run(type, nnid, ver, request.data)
                 else:
                     raise Exception("Not defined type error")
 

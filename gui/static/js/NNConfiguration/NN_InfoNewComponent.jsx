@@ -43,8 +43,11 @@ export default class NN_InfoNewComponent extends React.Component {
             tVerDesc:"",
             g_cnt:3,
             p_cnt:3,
-            s_cnt:2
+            s_cnt:2,
+            trainUploadView:false,
+            testUploadView:false
         };
+        this.fileUpladView = this.fileUpladView.bind(this);
     }
 
     // 최초 1회 실행하여 Network Config List를 가져온다.
@@ -95,6 +98,8 @@ export default class NN_InfoNewComponent extends React.Component {
             refsTab = this.refs.netDetail2
         }else if(this.state.tabIndex == 3){
             refsTab = this.refs.netDetail3
+        }else if(this.state.tabIndex == 4){
+            refsTab = this.refs.netDetail4
         }
 
         let netType = refsTab.state.netType
@@ -257,6 +262,9 @@ export default class NN_InfoNewComponent extends React.Component {
             refsTab = this.refs.netDetail2
             if(refsTab == undefined){
                 refsTab = this.refs.netDetail3
+                if(refsTab == undefined){
+                    refsTab = this.refs.netDetail4
+                }
             }
         }
 
@@ -297,6 +305,11 @@ export default class NN_InfoNewComponent extends React.Component {
         t_desc += "최초 "+p_cnt+"Ver를 생성하며 나머지 세대별 "+(p_cnt-s_cnt)+"Ver 생성." 
         this.setState({ tVerCnt: t_cnt })
         this.setState({ tVerDesc: t_desc })
+    }
+
+    fileUpladView(trainflag, testflag) { 
+        this.setState({trainUploadView: trainflag})
+        this.setState({testUploadView: testflag})
     }
 
     render() {
@@ -449,24 +462,34 @@ export default class NN_InfoNewComponent extends React.Component {
                           <Tab key={k++}>Frame</Tab>
                           <Tab key={k++}>Image</Tab>
                           <Tab key={k++}>NLP</Tab>
+                          <Tab key={k++}>Custom</Tab>
                         </TabList>
 
                             <TabPanel key={k++}>
                                 <NN_InfoNewCompDetail1 ref="netDetail1" tabIndex={this.state.tabIndex}
-                                                        tabIndexAS={this.state.tabIndexAS} />
+                                                        tabIndexAS={this.state.tabIndexAS}
+                                                        fileUpladView={this.fileUpladView} />
                             </TabPanel>
                             <TabPanel key={k++}>
                                 <NN_InfoNewCompDetail1 ref="netDetail2" tabIndex={this.state.tabIndex} 
-                                                        tabIndexAS={this.state.tabIndexAS} />
+                                                        tabIndexAS={this.state.tabIndexAS}
+                                                        fileUpladView={this.fileUpladView} />
                             </TabPanel> 
                             <TabPanel key={k++}>
                                 <NN_InfoNewCompDetail1 ref="netDetail3" tabIndex={this.state.tabIndex} 
-                                                        tabIndexAS={this.state.tabIndexAS} />
+                                                        tabIndexAS={this.state.tabIndexAS}
+                                                        fileUpladView={this.fileUpladView} />
+                            </TabPanel>
+                            <TabPanel key={k++}>
+                                <NN_InfoNewCompDetail1 ref="netDetail4" tabIndex={this.state.tabIndex} 
+                                                        tabIndexAS={this.state.tabIndexAS}
+                                                        fileUpladView={this.fileUpladView} />
                             </TabPanel>
                         </Tabs>
                    
                     <table className="table detail">
                     <tr>
+                    {this.state.trainUploadView ?
                     <td style={{"verticalAlign":"top"}}>
 
                         <FileUploadComponent ref="trainfilesrc" 
@@ -478,7 +501,10 @@ export default class NN_InfoNewComponent extends React.Component {
                                                 uploadbtnflag={true} 
                                                 deletebtnflag={true} />
                     </td>
-
+                    :
+                    <td></td>
+                    }
+                    {this.state.testUploadView ?
                     <td style={{"verticalAlign":"top"}}>
 
                         <FileUploadComponent ref="evalfilesrc" 
@@ -490,7 +516,9 @@ export default class NN_InfoNewComponent extends React.Component {
                                                 uploadbtnflag={true} 
                                                 deletebtnflag={true} />
                         </td>
-
+                        :
+                        <td></td>
+                    }
                     </tr>
                     </table>
                     
