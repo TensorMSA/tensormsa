@@ -1842,7 +1842,7 @@ def set_automl_rule_etc():
             , "fasttext_txt" : "fasttext_txt_train.csv"
             , "inceptionv4" : "inceptionv4_train.zip"
             , "inception_resnet_v2" : "inception_resnet_v2_train.zip"
-            , "ngram_mro": "ngram_mro_train.zip"
+            , "ngram_mro": "ngram_mro_train.tsv"
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
 

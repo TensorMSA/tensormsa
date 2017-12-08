@@ -50,6 +50,9 @@ class ThirdPartyNgram():
                     return_data[data[0]]['desc'] = data[2]
                 return_data[data[0]][result[r][0][0]] = {'item_desc': result[r][0][2], 'item_perc': result[r][1]}
 
+        logging.info('================================================================================================')
+        logging.info(return_data)
+
         return return_data
 
     def predict(self, type, nn_id, ver):
