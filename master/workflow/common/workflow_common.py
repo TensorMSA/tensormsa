@@ -21,6 +21,21 @@ class WorkFlowCommon:
         except Exception as e:
             raise Exception(e)
 
+    def get_node_info(self, nn_id, ver, node_name):
+        """
+        get view data for net config
+        :return:
+        """
+        # node_id = input_data["key"]["node_id"]
+
+        try:
+            obj = models.NN_WF_NODE_INFO.objects.get(nn_id=nn_id, nn_wf_ver_id=ver, nn_wf_node_name=node_name)
+            data_set = getattr(obj, "node_config_data")
+
+            return data_set
+        except Exception as e:
+            raise Exception(e)
+
     def set_view_obj(self, node_id, input_data):
         """
         set net config data edited on view

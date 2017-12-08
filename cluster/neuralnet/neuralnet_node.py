@@ -46,7 +46,7 @@ class NeuralNetNode(WorkFlowCommonNode):
         graph = NNCommonManager().get_nn_node_name(conf_data["nn_id"])
         for net in graph:
             if net['fields']['graph_node'] == 'netconf_node':
-                pself.netconf_node = net['fields']['graph_node_name']
+                pself.netconf_name = net['fields']['graph_node_name']
             if net['fields']['graph_node'] == 'netconf_feed':
                 pself.train_feed_name = pself.nn_id + "_" + pself.nn_wf_ver_id + "_" + net['fields']['graph_node_name']
             if net['fields']['graph_node'] == 'eval_feed':
@@ -59,7 +59,7 @@ class NeuralNetNode(WorkFlowCommonNode):
         _, pself.train_batch = self.make_batch(pself.node_id)
 
         # model check
-        pself.model_path = get_model_path(pself.nn_id, pself.nn_wf_ver_id, pself.netconf_node)
+        pself.model_path = get_model_path(pself.nn_id, str(pself.nn_wf_ver_id), pself.netconf_name)
         pself.model_name = pself.nn_id + "_" + str(pself.nn_wf_ver_id)
         pself.file_end = '.bin'
         pself.last_chk_path = pself.model_path + "/" + str(pself.load_batch) + pself.file_end
@@ -68,6 +68,31 @@ class NeuralNetNode(WorkFlowCommonNode):
         # Acc & Loss Init
         config = {"nn_id": pself.nn_id, "nn_wf_ver_id": pself.nn_wf_ver_id, "nn_batch_ver_id": pself.train_batch}
         pself.acc_loss_result = TrainSummaryAccLossInfo(config)
+
+        return pself
+
+    def _init_pred_parm(self, pself, nn_id, ver):
+        pself.nn_id = nn_id
+        pself.nn_wf_ver_id = ver
+        # net type
+        nninfo = NNCommonManager().get_nn_id_info(nn_id)
+        pself.net_type = nninfo[0]['fields']['dir']
+        graph = NNCommonManager().get_nn_node_name(nn_id)
+        for net in graph:
+            if net['fields']['graph_node'] == 'netconf_node':
+                pself.netconf_name = net['fields']['graph_node_name']
+            elif net['fields']['graph_node'] == 'netconf_data':
+                pself.dataconf_name = net['fields']['graph_node_name']
+
+        # set batch
+        pself.node_id = nn_id + "_" + str(ver)+ "_" +str(pself.netconf_name)
+        pself.load_batch = self.get_active_batch(pself.node_id)
+
+        # model check
+        pself.model_path = get_model_path(pself.nn_id, pself.nn_wf_ver_id, pself.netconf_name)
+        pself.model_name = pself.nn_id + "_" + str(pself.nn_wf_ver_id)
+        pself.file_end = '.bin'
+        pself.last_chk_path = pself.model_path + "/" + str(pself.load_batch) + pself.file_end
 
         return pself
 
@@ -460,7 +485,7 @@ class NeuralNetNode(WorkFlowCommonNode):
         WorkFlowCommon().set_view_obj(self.node_id, self.netconf)
         return labels
 
-    def _get_netconf_labels(self, input_data, label_row):
+    def _get_netconf_labels(self, netconf, input_data, label_row):
         '''
         
         :param input_data: 
@@ -481,7 +506,9 @@ class NeuralNetNode(WorkFlowCommonNode):
             input_data.next()
         input_data.reset_pointer()
 
-        WorkFlowCommon().set_view_obj(self.node_id, self.netconf)
+        netconf['labels'] = labels
+
+        WorkFlowCommon().set_view_obj(self.node_id, netconf)
         return labels, len(labels)
 
     def get_convert_img_x(self, img_data_batch, x_size, y_size, channel):
@@ -607,8 +634,26 @@ class NeuralNetNode(WorkFlowCommonNode):
                     logging.info(strLog + " FileName=" + eval_data.file_name[plog] + eval_data.true_name[plog])
                     logging.info(eval_data.true_name[plog] + ' || ' + eval_data.pred_name[plog] + '(' + eval_data.pred_value[plog] + ')')
                 elif pred_log == 'F' and strLog == 'False':
-                    logging.info(strLog + " FileName=" + eval_data.file_name[plog] + eval_data.true_name[plog])
-                    logging.info(eval_data.true_name[plog] + ' || ' + eval_data.pred_name[plog] + '(' + eval_data.pred_value[plog] + ')')
+                    pname_list = ''
+                    for pname in range(len(eval_data.pred_name[plog])):
+                        if pname_list == '':
+                            pname_list = '['+str(eval_data.pred_name[plog][pname])
+                        else:
+                            pname_list += ', '+str(eval_data.pred_name[plog][pname])
+                    if pname_list != '':
+                        pname_list += ']'
+
+                    pvalu_list = ''
+                    for pvalu in range(len(eval_data.pred_value[plog])):
+                        if pvalu_list == '':
+                            pvalu_list = '['+str(eval_data.pred_value[plog][pvalu])
+                        else:
+                            pvalu_list += ', '+str(eval_data.pred_value[plog][pvalu])
+                    if pvalu_list != '':
+                        pvalu_list += ']'
+
+                    logging.info(strLog + " File:" + str(eval_data.file_name[plog]) +
+                                 ' True:'+str(eval_data.true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
 
         for i in range(len(labels)):
             truecnt = 0

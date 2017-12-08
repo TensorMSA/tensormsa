@@ -1,9 +1,9 @@
 from cluster.service.service_predict import PredictNet
-from third_party.ngram.ngram_compare_mro import ThirdPartyNgram
+from cluster.neuralnet.neuralnet_node_image import NeuralNetNodeImage
 from master.network.nn_common_manager import NNCommonManager
 
-class PredictNetNgram(PredictNet):
-    def run(self, type, nn_id, ver, parm):
+class PredictNetImage(PredictNet):
+    def run(self, nn_id, ver, parm):
         """
         run predict service
         1. get node id
@@ -17,7 +17,7 @@ class PredictNetNgram(PredictNet):
                 condition = {'nn_id': nn_id}
                 ver = NNCommonManager().get_nn_info(condition)[0]['nn_wf_ver_id']
 
-            return ThirdPartyNgram().predict(type, nn_id, ver)
+            return NeuralNetNodeImage().predict(nn_id, ver, parm)
 
     def _valid_check(self, parm):
         return True

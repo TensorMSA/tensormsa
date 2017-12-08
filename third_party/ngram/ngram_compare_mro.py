@@ -52,17 +52,13 @@ class ThirdPartyNgram():
 
         return return_data
 
-    def predict(self, type, nn_id, ver, param):
+    def predict(self, type, nn_id, ver):
         '''
         
         :param node_id: 
         :param param: param['list'] = 1(seq), q1(item_code), q1group(item_group), q1desc(item_description) tsv file
         :return: 
         '''
-        if ver == 'active':
-            condition = {'nn_id':nn_id}
-            ver = NNCommonManager().get_nn_info(condition)[0]['nn_wf_ver_id']
-
         if type == 'ngram_mro':
             return self.ngram_mro(nn_id, ver)
 

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from cluster.service.service_predict_d2v import PredictNetD2V
 from cluster.service.service_predict_w2v import PredictNetW2V
 from cluster.service.service_predict_cnn import PredictNetCnn
-from cluster.service.service_predict_renet import PredictNetRenet
+from cluster.service.service_predict_image import PredictNetImage
 from cluster.service.service_predict_wdnn import PredictNetWdnn
 from cluster.service.service_predict_seq2seq import PredictNetSeq2Seq
 from cluster.service.service_predict_autoencoder import PredictNetAutoEncoder
@@ -54,10 +54,7 @@ class ServiceManagerPredict(APIView):
                 elif(type == "autoencoder"):
                     return_data = PredictNetAutoEncoder().run(nnid, request.data)
                 elif (type == "resnet"):
-                    #return_data = PredictNetRenet().run(nnid, ver, request.FILES)
-                    # TO-DO : need to create PredictNetRenet class first
-                    return_data = PredictNetRenet().run(nnid, ver, request.FILES)
-                    raise Exception("on developing now !")
+                    return_data = PredictNetImage().run(nnid, ver, request.FILES)
                 elif (type == "anomaly"):
                     return_data = PredictNetAnomaly().run(nnid, request.data)
                 elif (type == "wcnn"):
@@ -83,7 +80,7 @@ class ServiceManagerPredict(APIView):
                     # TO-DO : need predict function for specific  version
                     raise Exception("on developing now !")
                 elif (type == "resnet"):
-                    return_data = PredictNetRenet().run(nnid, ver, request.FILES)
+                    return_data = PredictNetImage().run(nnid, ver, request.FILES)
                 elif (type == "ngram_mro"):
                     return_data = PredictNetNgram().run(type, nnid, ver, request.data)
                 else:
