@@ -19,8 +19,7 @@ class ThirdPartyNgram():
 
         param = {}
         param['list'] = []
-        param['standard'] = 0.95
-        standard = NNCommonManager().get_nn_node_info(nn_id, str(ver), net_node)[0]['fields']['node_config_data']['standard']
+        param['standard'] = float(NNCommonManager().get_nn_node_info(nn_id, str(ver), net_node)[0]['fields']['node_config_data']['standard'])
 
         for file in file_list:
             df = pd.DataFrame.from_csv(file_path+'/'+file, sep='\t', encoding='ISO-8859-1')
@@ -40,18 +39,19 @@ class ThirdPartyNgram():
         dataset = sorted(dataset, key=lambda x: x[0])
         findset = ngram.NGram(item, key=lambda x: x[2])
 
+        logging.info('================================================================================================')
         return_data = {}
         for data in dataset:
             findset.remove(data)
             result = findset.search(data[2], param['standard'])
+
             for r in range(len(result)):
                 if return_data.get(data[0]) == None:
                     return_data[data[0]] = {}
                     return_data[data[0]]['desc'] = data[2]
+                    logging.info(str(data[0]) + ':' + str(data[2]))
                 return_data[data[0]][result[r][0][0]] = {'item_desc': result[r][0][2], 'item_perc': result[r][1]}
-
-        logging.info('================================================================================================')
-        logging.info(return_data)
+                logging.info(' - '+str(result[r][0][0])+'('+str(result[r][1])+')' + ':' + str(result[r][0][2]))
 
         return return_data
 
