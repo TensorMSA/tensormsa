@@ -1,12 +1,14 @@
 from chatbot.common.chat_conf_manager import ChatBotConfManager
 import json
 
+
 class ShareData(ChatBotConfManager):
     """
-    share data class is data component which includes json2object and object2json maethod
-    the purpose of this class is mainly on keep conversation data on thread
-    beacuse this api works on rest api we need some info like cookie that where we were on
-    the last convrsation
+    share data class is data component which includes
+    json2object and object2json maethod the purpose of
+    this class is mainly on keep conversation data on thread
+    beacuse this api works on rest api we need some info like
+    cookie that where we were on the last convrsation
     """
     def __init__(self):
         """
@@ -18,8 +20,8 @@ class ShareData(ChatBotConfManager):
         self.input_data = None            # prediction requested data
         self.convert_data = None          # convert data
         self.output_data = None           # output data
-        self.edit_history = []            # data change history (preprocess -> tag -> NER)
-        self.intent_history = []          # intent change history (changes on intent model)
+        self.edit_history = []            # data change history
+        self.intent_history = []          # intent change history
         self.request_type = ""            # text, image, voice
         self.intent_id = ""               # current intent id
         # self.intent_name = ""           # current intent name
@@ -29,12 +31,13 @@ class ShareData(ChatBotConfManager):
         self.story_slot_entity = {}       # key : val
         self.story_ner_entity = {}        # key : val
         self.morphed_data = []
-        self.convert_dict_data =[]
+        self.convert_dict_data = []
         self.pattern_intent_id = ""
         self.test_intent_id = ""
         self.test_slot_entity = {}
 
-        # self.opt_sel_list = {}          # intent option list when intent anl result is not clear
+        # intent option list when intent anl result is not clear
+        # self.opt_sel_list = {}
         # self.ontology_id = ""           # current working ontology id
         # self.ontology_req_parms = {}    # key : val
         # self.ontology_set_parms = {}    # key : val
@@ -64,18 +67,19 @@ class ShareData(ChatBotConfManager):
         """
         # Check Essential Input
         for key in ['input_data', 'intent_id']:
-            if key not in object :
-                raise Exception (''.join([key, ' not exist!']))
-        #복수개의 Intent가 출력될 경우를 대비 Intent가 결정되었을 경우엔 하나의 Story만 타야함
+            if key not in object:
+                raise Exception(''.join([key, ' not exist!']))
+        # 복수개의 Intent가 출력될 경우를 대비 Intent가 결정되었을 경우엔 하나의 Story만 타야함
         if (len(object.get("intent_id")) > 0):
             object["intent_id"] = object["intent_id"][0]
 
-            #Check Length of String
+            # Check Length of String
         self._check_string_length(object.get("input_data"))
-        #if there is no intent Reset chatbot initialize value
+        # if there is no intent Reset chatbot initialize value
         if(object.get("intent_id") == ''):
-            for key in ['story_slot_entity', 'story_ner_entity', 'test_slot_entity'] :
-                if key in list(object.keys()) :
+            for key in ['story_slot_entity', 'story_ner_entity',
+                        'test_slot_entity']:
+                if key in list(object.keys()):
                     object[key] = {}
         return object
 
@@ -396,7 +400,7 @@ class ShareData(ChatBotConfManager):
 
     def replace_story_slot_entity(self, obj):
         """
-        manage result of ner(bilstmcrf algoritm) result 
+        manage result of ner(bilstmcrf algoritm) result
         :param data:
         :return:
         """
@@ -408,18 +412,18 @@ class ShareData(ChatBotConfManager):
         :param data:
         :return:
         """
-        if(key not in list(self.story_slot_entity.keys())) :
+        if(key not in list(self.story_slot_entity.keys())):
             self.story_slot_entity[key] = val
 
-    def get_story_slot_entity(self, key = None):
+    def get_story_slot_entity(self, key=None):
         """
 
         :param data:
         :return:
         """
-        if(key) :
+        if(key):
             return self.story_slot_entity.get(key)
-        else :
+        else:
             return self.story_slot_entity
 
     def initialize_story_entity(self):
@@ -435,7 +439,7 @@ class ShareData(ChatBotConfManager):
 
     def get_story_ner_entity(self):
         """
-        manage result of ner(bilstmcrf algoritm) result 
+        manage result of ner(bilstmcrf algoritm) result
         :param data:
         :return:
         """
@@ -443,7 +447,7 @@ class ShareData(ChatBotConfManager):
 
     def set_story_ner_entity(self, key, val):
         """
-        manage result of ner(bilstmcrf algoritm) result 
+        manage result of ner(bilstmcrf algoritm) result
         :param data:
         :return:
         """
@@ -451,41 +455,44 @@ class ShareData(ChatBotConfManager):
 
     def replace_story_ner_entity(self, obj):
         """
-        manage result of ner(bilstmcrf algoritm) result 
+        manage result of ner(bilstmcrf algoritm) result
         :param data:
         :return:
         """
         self.story_ner_entity = obj
 
-
     def add_extra_client_data(self):
         """
-        add extra data for client 
-        :return: 
+        add extra data for client
+        :return:
         """
-        self.story_slot_entity = self.convert_to_list_shape(self.story_slot_entity)
-        self.story_ner_entity = self.convert_to_list_shape(self.story_ner_entity)
-        self.test_slot_entity = self.convert_to_list_shape(self.test_slot_entity)
+        self.story_slot_entity = \
+            self.convert_to_list_shape(self.story_slot_entity)
+        self.story_ner_entity = \
+            self.convert_to_list_shape(self.story_ner_entity)
+        self.test_slot_entity = \
+            self.convert_to_list_shape(self.test_slot_entity)
         return self
 
     def add_test_client_data(self):
         """
         add unchanged info for client test
-        :return: 
+        :return:
         """
 
-        self.intent_id = list(set(self.intent_id)) if isinstance(self.intent_id, (list,)) else [self.intent_id]
+        self.intent_id = list(set(self.intent_id)) \
+            if isinstance(self.intent_id, (list,)) else [self.intent_id]
         self.test_intent_id = self.intent_id.copy()
         self.test_slot_entity = self.story_slot_entity.copy()
         return self
 
     def convert_to_list_shape(self, input):
         """
-        convert dict to list-dict (client developer request) 
-        :param input: 
-        :return: 
+        convert dict to list-dict (client developer request)
+        :param input:
+        :return:
         """
         buffer = []
-        for key in input.keys() :
-            buffer.append({"key" : key, "val" :input[key]})
+        for key in input.keys():
+            buffer.append({"key": key, "val": input[key]})
         return buffer
