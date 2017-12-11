@@ -915,6 +915,7 @@ def set_automl_rule() :
                     , "config": {"layeroutputs": {"type": "sel", "option": [18,34,50,101,152], "auto": False} #[18,34,50,101,152]
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
+                        , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
                 }
@@ -946,7 +947,8 @@ def set_automl_rule() :
                               },
                     "config": {"layeroutputs": 18,  # 18, 34, 50, 101, 152, 200
                                "optimizer": "adam",  #
-                               "eval_type": "category"
+                               "eval_type": "category",
+                               "pre_train": "Y"
                                }
                     # , "labels": []
                 }
@@ -983,6 +985,7 @@ def set_automl_rule() :
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
                                 , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
+                                , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
                 }
@@ -1014,7 +1017,8 @@ def set_automl_rule() :
                         , "fit_size": 1000
                               },
                     "config": {"optimizer": "adam",  #
-                               "eval_type": "category"
+                               "eval_type": "category",
+                               "pre_train":"Y"
                                }
                     # , "labels": []
                 }
@@ -1051,6 +1055,7 @@ def set_automl_rule() :
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
+                        , "pre_train": {"type": "sel", "option": ["Y","N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
                 }
@@ -1084,7 +1089,8 @@ def set_automl_rule() :
                         , "fit_size": 1000
                               },
                     "config": {"optimizer": "adam",  #
-                               "eval_type": "category"
+                               "eval_type": "category",
+                               "pre_train": "Y"
                                }
                     # , "labels": []
                 }
