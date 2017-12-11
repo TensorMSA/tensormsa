@@ -50,6 +50,12 @@ class NNCommonManager :
             # make query string (use raw query only when cate is too complicated)
             query_list = []
             query_list.append("SELECT * ")
+            query_list.append(",case when (select count(*) from master_NN_VER_WFLIST_INFO WFs ")
+            query_list.append("            where NL.nn_id = WFs.nn_id_id ")
+            query_list.append("            and wfs.condition in( '2' ) ")
+            query_list.append("          ) in (0) then 'Close' ")
+            query_list.append("        else 'Action' ")
+            query_list.append("   end m_state ")
             query_list.append("FROM  master_NN_DEF_LIST_INFO NL LEFT OUTER JOIN master_NN_VER_WFLIST_INFO WF ")
             query_list.append("      ON NL.nn_id = WF.nn_id_id AND WF.active_flag = 'Y' ")
             query_list.append("      LEFT OUTER JOIN master_NN_VER_BATCHLIST_INFO BT ")
