@@ -43,30 +43,30 @@ export default class NN_InfoListComponent extends React.Component {
         this.props.reportRepository.getCommonNNInfo(params).then((tableData) => {
             this.setState({ NN_TableData: null })//조회시 한번 Reset을 해주어야 테이블이 새로고침 된다.
             let net = tableData['fields']
-            this.props.reportRepository.getMoniteringInfo('all', 'all', 'all', 'all').then((tableData) => {
-                let monitering = {}
-                for(let i in tableData){
-                    let nnid = tableData[i]['nn_id']
-                    let state = tableData[i]['state']
-                    if(state == 'RECEIVED' || state == 'STARTED' || state == 'RETRY'){
-                        monitering[nnid] = "2"
-                    }
-                }
+            // this.props.reportRepository.getMoniteringInfo('all', 'all', 'all', 'all').then((tableData) => {
+            //     let monitering = {}
+            //     for(let i in tableData){
+            //         let nnid = tableData[i]['nn_id']
+            //         let state = tableData[i]['state']
+            //         if(state == 'RECEIVED' || state == 'STARTED' || state == 'RETRY'){
+            //             monitering[nnid] = "2"
+            //         }
+            //     }
 
-                for(let j in net){
-                    if(monitering[net[j]['nn_id']] != undefined){
-                        net[j]['m_state'] = "state_action"
-                        net[j]['m_stateName'] = "Action"
-                    }else{
-                        net[j]['m_state'] = "state_close"
-                        net[j]['m_stateName'] = "Close"
-                    }
-                }
+            //     for(let j in net){
+            //         if(monitering[net[j]['nn_id']] != undefined){
+            //             net[j]['m_state'] = "state_action"
+            //             net[j]['m_stateName'] = "Action"
+            //         }else{
+            //             net[j]['m_state'] = "state_close"
+            //             net[j]['m_stateName'] = "Close"
+            //         }
+            //     }
 
                 this.setState({ NN_TableData: net })//조회한 것을 화면에 반영한다.
                 this.state.NN_TableDataFilter = net//Filter Search할때 기준이 되는 데이터를 넘겨준다.
-            });  
-            
+            // });
+
         });   
     }
 
@@ -297,8 +297,14 @@ export default class NN_InfoListComponent extends React.Component {
             // colData.push(<td key={k++} > <img style ={{width:15,heigth:15, "cursor":"pointer"}} alt = {row["nn_id"]}
             //                                     onClick={this.viewMonitering.bind(this)} 
             //                                     src={this.state.moniterUrl} /></td>)
-            colData.push(<td key={k++} width="50"  ><span className={row["m_state"]}  alt = {row["nn_wf_ver_id"]} 
-                                        onClick = {this.viewMonitering.bind(this)} > {row["m_stateName"]} </span> </td>)
+
+            let m_stateClsss = "state_close"
+            if (row["m_state"] == "Action"){
+                m_stateClsss = "state_action" 
+            }
+            colData.push(<td key={k++} width="50"  ><span className={m_stateClsss}  alt = {row["nn_wf_ver_id"]} 
+                                        style ={{"cursor":"pointer"}}
+                                        onClick = {this.viewMonitering.bind(this)} > {row["m_state"]} </span> </td>)
             tableData.push(<tr key={k++}>{colData}</tr>)
         }
 
