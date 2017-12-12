@@ -1,250 +1,274 @@
-from keras.layers import Input, merge, Dropout, Dense, Flatten, Activation
-from keras.layers.convolutional import MaxPooling2D, Convolution2D, AveragePooling2D
+# -*- coding: utf-8 -*-
+
+from keras.models import Sequential
+from keras.optimizers import SGD
+from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation, Conv2D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
-
 from keras import backend as K
+from keras import regularizers
+from keras import initializers
+from keras.layers.merge import concatenate
 from keras.utils.data_utils import get_file
 
-"""
-Implementation of Inception Network v4 [Inception Network v4 Paper](http://arxiv.org/pdf/1602.07261v1.pdf) in Keras.
-"""
+from sklearn.metrics import log_loss
 
-TH_BACKEND_TH_DIM_ORDERING = "https://github.com/titu1994/Inception-v4/releases/download/v1.2/inception_v4_weights_th_dim_ordering_th_kernels.h5"
-TH_BACKEND_TF_DIM_ORDERING = "https://github.com/titu1994/Inception-v4/releases/download/v1.2/inception_v4_weights_tf_dim_ordering_th_kernels.h5"
-TF_BACKEND_TF_DIM_ORDERING = "https://github.com/titu1994/Inception-v4/releases/download/v1.2/inception_v4_weights_tf_dim_ordering_tf_kernels.h5"
-TF_BACKEND_TH_DIM_ORDERING = "https://github.com/titu1994/Inception-v4/releases/download/v1.2/inception_v4_weights_th_dim_ordering_tf_kernels.h5"
+def conv2d_bn(x, nb_filter, num_row, num_col,
+              padding='same', strides=(1, 1), use_bias=False):
+    """
+    Utility function to apply conv + BN. 
+    (Slightly modified from https://github.com/fchollet/keras/blob/master/keras/applications/inception_v3.py)
+    """
+    if K.image_data_format() == 'channels_first':
+        channel_axis = 1
+    else:
+        channel_axis = -1
+    x = Convolution2D(nb_filter, (num_row, num_col),
+                      strides=strides,
+                      padding=padding,
+                      use_bias=use_bias,
+                      kernel_regularizer=regularizers.l2(0.00004),
+                      kernel_initializer=initializers.VarianceScaling(scale=2.0, mode='fan_in', distribution='normal',
+                                                                      seed=None))(x)
+    x = BatchNormalization(axis=channel_axis, momentum=0.9997, scale=False)(x)
+    x = Activation('relu')(x)
+    return x
 
-
-def conv_block(x, nb_filter, nb_row, nb_col, border_mode='same', subsample=(1, 1), bias=False):
-    if K.image_dim_ordering() == "th":
+def block_inception_a(input):
+    if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
         channel_axis = -1
 
-    x = Convolution2D(nb_filter, nb_row, nb_col, subsample=subsample, border_mode=border_mode, bias=bias)(x)
-    x = BatchNormalization(axis=channel_axis)(x)
-    x = Activation('relu')(x)
+    branch_0 = conv2d_bn(input, 96, 1, 1)
+
+    branch_1 = conv2d_bn(input, 64, 1, 1)
+    branch_1 = conv2d_bn(branch_1, 96, 3, 3)
+
+    branch_2 = conv2d_bn(input, 64, 1, 1)
+    branch_2 = conv2d_bn(branch_2, 96, 3, 3)
+    branch_2 = conv2d_bn(branch_2, 96, 3, 3)
+
+    branch_3 = AveragePooling2D((3, 3), strides=(1, 1), padding='same')(input)
+    branch_3 = conv2d_bn(branch_3, 96, 1, 1)
+
+    x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
     return x
 
 
-def inception_stem(input):
-    if K.image_dim_ordering() == "th":
+def block_reduction_a(input):
+    if K.image_data_format() == 'channels_first':
+        channel_axis = 1
+    else:
+        channel_axis = -1
+
+    branch_0 = conv2d_bn(input, 384, 3, 3, strides=(2, 2), padding='valid')
+
+    branch_1 = conv2d_bn(input, 192, 1, 1)
+    branch_1 = conv2d_bn(branch_1, 224, 3, 3)
+    branch_1 = conv2d_bn(branch_1, 256, 3, 3, strides=(2, 2), padding='valid')
+
+    branch_2 = MaxPooling2D((3, 3), strides=(2, 2), padding='valid')(input)
+
+    x = concatenate([branch_0, branch_1, branch_2], axis=channel_axis)
+    return x
+
+
+def block_inception_b(input):
+    if K.image_data_format() == 'channels_first':
+        channel_axis = 1
+    else:
+        channel_axis = -1
+
+    branch_0 = conv2d_bn(input, 384, 1, 1)
+
+    branch_1 = conv2d_bn(input, 192, 1, 1)
+    branch_1 = conv2d_bn(branch_1, 224, 1, 7)
+    branch_1 = conv2d_bn(branch_1, 256, 7, 1)
+
+    branch_2 = conv2d_bn(input, 192, 1, 1)
+    branch_2 = conv2d_bn(branch_2, 192, 7, 1)
+    branch_2 = conv2d_bn(branch_2, 224, 1, 7)
+    branch_2 = conv2d_bn(branch_2, 224, 7, 1)
+    branch_2 = conv2d_bn(branch_2, 256, 1, 7)
+
+    branch_3 = AveragePooling2D((3, 3), strides=(1, 1), padding='same')(input)
+    branch_3 = conv2d_bn(branch_3, 128, 1, 1)
+
+    x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
+    return x
+
+
+def block_reduction_b(input):
+    if K.image_data_format() == 'channels_first':
+        channel_axis = 1
+    else:
+        channel_axis = -1
+
+    branch_0 = conv2d_bn(input, 192, 1, 1)
+    branch_0 = conv2d_bn(branch_0, 192, 3, 3, strides=(2, 2), padding='valid')
+
+    branch_1 = conv2d_bn(input, 256, 1, 1)
+    branch_1 = conv2d_bn(branch_1, 256, 1, 7)
+    branch_1 = conv2d_bn(branch_1, 320, 7, 1)
+    branch_1 = conv2d_bn(branch_1, 320, 3, 3, strides=(2, 2), padding='valid')
+
+    branch_2 = MaxPooling2D((3, 3), strides=(2, 2), padding='valid')(input)
+
+    x = concatenate([branch_0, branch_1, branch_2], axis=channel_axis)
+    return x
+
+
+def block_inception_c(input):
+    if K.image_data_format() == 'channels_first':
+        channel_axis = 1
+    else:
+        channel_axis = -1
+
+    branch_0 = conv2d_bn(input, 256, 1, 1)
+
+    branch_1 = conv2d_bn(input, 384, 1, 1)
+    branch_10 = conv2d_bn(branch_1, 256, 1, 3)
+    branch_11 = conv2d_bn(branch_1, 256, 3, 1)
+    branch_1 = concatenate([branch_10, branch_11], axis=channel_axis)
+
+    branch_2 = conv2d_bn(input, 384, 1, 1)
+    branch_2 = conv2d_bn(branch_2, 448, 3, 1)
+    branch_2 = conv2d_bn(branch_2, 512, 1, 3)
+    branch_20 = conv2d_bn(branch_2, 256, 1, 3)
+    branch_21 = conv2d_bn(branch_2, 256, 3, 1)
+    branch_2 = concatenate([branch_20, branch_21], axis=channel_axis)
+
+    branch_3 = AveragePooling2D((3, 3), strides=(1, 1), padding='same')(input)
+    branch_3 = conv2d_bn(branch_3, 256, 1, 1)
+
+    x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
+    return x
+
+
+def inception_v4_base(input):
+    if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
         channel_axis = -1
 
     # Input Shape is 299 x 299 x 3 (th) or 3 x 299 x 299 (th)
-    x = conv_block(input, 32, 3, 3, subsample=(2, 2), border_mode='valid')
-    x = conv_block(x, 32, 3, 3, border_mode='valid')
-    x = conv_block(x, 64, 3, 3)
+    net = conv2d_bn(input, 32, 3, 3, strides=(2, 2), padding='valid')
+    net = conv2d_bn(net, 32, 3, 3, padding='valid')
+    net = conv2d_bn(net, 64, 3, 3)
 
-    x1 = MaxPooling2D((3, 3), strides=(2, 2), border_mode='valid')(x)
-    x2 = conv_block(x, 96, 3, 3, subsample=(2, 2), border_mode='valid')
+    branch_0 = MaxPooling2D((3, 3), strides=(2, 2), padding='valid')(net)
 
-    x = merge([x1, x2], mode='concat', concat_axis=channel_axis)
+    branch_1 = conv2d_bn(net, 96, 3, 3, strides=(2, 2), padding='valid')
 
-    x1 = conv_block(x, 64, 1, 1)
-    x1 = conv_block(x1, 96, 3, 3, border_mode='valid')
+    net = concatenate([branch_0, branch_1], axis=channel_axis)
 
-    x2 = conv_block(x, 64, 1, 1)
-    x2 = conv_block(x2, 64, 1, 7)
-    x2 = conv_block(x2, 64, 7, 1)
-    x2 = conv_block(x2, 96, 3, 3, border_mode='valid')
+    branch_0 = conv2d_bn(net, 64, 1, 1)
+    branch_0 = conv2d_bn(branch_0, 96, 3, 3, padding='valid')
 
-    x = merge([x1, x2], mode='concat', concat_axis=channel_axis)
+    branch_1 = conv2d_bn(net, 64, 1, 1)
+    branch_1 = conv2d_bn(branch_1, 64, 1, 7)
+    branch_1 = conv2d_bn(branch_1, 64, 7, 1)
+    branch_1 = conv2d_bn(branch_1, 96, 3, 3, padding='valid')
 
-    x1 = conv_block(x, 192, 3, 3, subsample=(2, 2), border_mode='valid')
-    x2 = MaxPooling2D((3, 3), strides=(2, 2), border_mode='valid')(x)
+    net = concatenate([branch_0, branch_1], axis=channel_axis)
 
-    x = merge([x1, x2], mode='concat', concat_axis=channel_axis)
-    return x
+    branch_0 = conv2d_bn(net, 192, 3, 3, strides=(2, 2), padding='valid')
+    branch_1 = MaxPooling2D((3, 3), strides=(2, 2), padding='valid')(net)
 
+    net = concatenate([branch_0, branch_1], axis=channel_axis)
 
-def inception_A(input):
-    if K.image_dim_ordering() == "th":
-        channel_axis = 1
-    else:
-        channel_axis = -1
+    # 35 x 35 x 384
+    # 4 x Inception-A blocks
+    for idx in range(4):
+        net = block_inception_a(net)
 
-    a1 = conv_block(input, 96, 1, 1)
+    # 35 x 35 x 384
+    # Reduction-A block
+    net = block_reduction_a(net)
 
-    a2 = conv_block(input, 64, 1, 1)
-    a2 = conv_block(a2, 96, 3, 3)
+    # 17 x 17 x 1024
+    # 7 x Inception-B blocks
+    for idx in range(7):
+        net = block_inception_b(net)
 
-    a3 = conv_block(input, 64, 1, 1)
-    a3 = conv_block(a3, 96, 3, 3)
-    a3 = conv_block(a3, 96, 3, 3)
+    # 17 x 17 x 1024
+    # Reduction-B block
+    net = block_reduction_b(net)
 
-    a4 = AveragePooling2D((3, 3), strides=(1, 1), border_mode='same')(input)
-    a4 = conv_block(a4, 96, 1, 1)
+    # 8 x 8 x 1536
+    # 3 x Inception-C blocks
+    for idx in range(3):
+        net = block_inception_c(net)
 
-    m = merge([a1, a2, a3, a4], mode='concat', concat_axis=channel_axis)
-    return m
-
-
-def inception_B(input):
-    if K.image_dim_ordering() == "th":
-        channel_axis = 1
-    else:
-        channel_axis = -1
-
-    b1 = conv_block(input, 384, 1, 1)
-
-    b2 = conv_block(input, 192, 1, 1)
-    b2 = conv_block(b2, 224, 1, 7)
-    b2 = conv_block(b2, 256, 7, 1)
-
-    b3 = conv_block(input, 192, 1, 1)
-    b3 = conv_block(b3, 192, 7, 1)
-    b3 = conv_block(b3, 224, 1, 7)
-    b3 = conv_block(b3, 224, 7, 1)
-    b3 = conv_block(b3, 256, 1, 7)
-
-    b4 = AveragePooling2D((3, 3), strides=(1, 1), border_mode='same')(input)
-    b4 = conv_block(b4, 128, 1, 1)
-
-    m = merge([b1, b2, b3, b4], mode='concat', concat_axis=channel_axis)
-    return m
+    return net
 
 
-def inception_C(input):
-    if K.image_dim_ordering() == "th":
-        channel_axis = 1
-    else:
-        channel_axis = -1
-
-    c1 = conv_block(input, 256, 1, 1)
-
-    c2 = conv_block(input, 384, 1, 1)
-    c2_1 = conv_block(c2, 256, 1, 3)
-    c2_2 = conv_block(c2, 256, 3, 1)
-    c2 = merge([c2_1, c2_2], mode='concat', concat_axis=channel_axis)
-
-    c3 = conv_block(input, 384, 1, 1)
-    c3 = conv_block(c3, 448, 3, 1)
-    c3 = conv_block(c3, 512, 1, 3)
-    c3_1 = conv_block(c3, 256, 1, 3)
-    c3_2 = conv_block(c3, 256, 3, 1)
-    c3 = merge([c3_1, c3_2], mode='concat', concat_axis=channel_axis)
-
-    c4 = AveragePooling2D((3, 3), strides=(1, 1), border_mode='same')(input)
-    c4 = conv_block(c4, 256, 1, 1)
-
-    m = merge([c1, c2, c3, c4], mode='concat', concat_axis=channel_axis)
-    return m
-
-
-def reduction_A(input):
-    if K.image_dim_ordering() == "th":
-        channel_axis = 1
-    else:
-        channel_axis = -1
-
-    r1 = conv_block(input, 384, 3, 3, subsample=(2, 2), border_mode='valid')
-
-    r2 = conv_block(input, 192, 1, 1)
-    r2 = conv_block(r2, 224, 3, 3)
-    r2 = conv_block(r2, 256, 3, 3, subsample=(2, 2), border_mode='valid')
-
-    r3 = MaxPooling2D((3, 3), strides=(2, 2), border_mode='valid')(input)
-
-    m = merge([r1, r2, r3], mode='concat', concat_axis=channel_axis)
-    return m
-
-
-def reduction_B(input):
-    if K.image_dim_ordering() == "th":
-        channel_axis = 1
-    else:
-        channel_axis = -1
-
-    r1 = conv_block(input, 192, 1, 1)
-    r1 = conv_block(r1, 192, 3, 3, subsample=(2, 2), border_mode='valid')
-
-    r2 = conv_block(input, 256, 1, 1)
-    r2 = conv_block(r2, 256, 1, 7)
-    r2 = conv_block(r2, 320, 7, 1)
-    r2 = conv_block(r2, 320, 3, 3, subsample=(2, 2), border_mode='valid')
-
-    r3 = MaxPooling2D((3, 3), strides=(2, 2), border_mode='valid')(input)
-
-    m = merge([r1, r2, r3], mode='concat', concat_axis=channel_axis)
-    return m
-
-
-def create_inception_v4(nb_classes=1001, load_weights=True):
+def inception_v4_model(img_rows, img_cols, color_type=1, num_classes=None, dropout_keep_prob=0.2):
     '''
-    Creates a inception v4 network
+    Inception V4 Model for Keras
 
-    :param nb_classes: number of classes.txt
-    :return: Keras Model with 1 input and 1 output
+    Model Schema is based on
+    https://github.com/kentsommer/keras-inceptionV4
+
+    ImageNet Pretrained Weights 
+    Theano: https://github.com/kentsommer/keras-inceptionV4/releases/download/2.0/inception-v4_weights_th_dim_ordering_th_kernels.h5
+    TensorFlow: https://github.com/kentsommer/keras-inceptionV4/releases/download/2.0/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
+
+    Parameters:
+      img_rows, img_cols - resolution of inputs
+      channel - 1 for grayscale, 3 for color 
+      num_classes - number of class labels for our classification task
     '''
-
-    if K.image_dim_ordering() == 'th':
-        init = Input((3, 299, 299))
-    else:
-        init = Input((299, 299, 3))
 
     # Input Shape is 299 x 299 x 3 (tf) or 3 x 299 x 299 (th)
-    x = inception_stem(init)
+    if K.image_data_format() == 'channels_first':
+        inputs = Input((3, 299, 299))
+    else:
+        inputs = Input((299, 299, 3))
 
-    # 4 x Inception A
-    for i in range(4):
-        x = inception_A(x)
+    # Make inception base
+    net = inception_v4_base(inputs)
 
-    # Reduction A
-    x = reduction_A(x)
 
-    # 7 x Inception B
-    for i in range(7):
-        x = inception_B(x)
+    # Final pooling and prediction
 
-    # Reduction B
-    x = reduction_B(x)
+    # 8 x 8 x 1536
+    net = AveragePooling2D((8, 8), padding='valid')(net)
 
-    # 3 x Inception C
-    for i in range(3):
-        x = inception_C(x)
+    # 1 x 1 x 1536
+    net_old = Dropout(dropout_keep_prob)(net)
+    net_old = Flatten()(net_old)
 
-    # Average Pooling
-    x = AveragePooling2D((8, 8))(x)
+    # 1536
+    net_old = Dense(units=1001, activation='softmax')(net_old)
 
-    # Dropout
-    x = Dropout(0.8)(x)
-    x = Flatten()(x)
+    model = Model(inputs, net_old, name='inception_v4')
 
-    # Output
-    out = Dense(output_dim=nb_classes, activation='softmax')(x)
+    WEIGHTS_PATH = 'https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-v4_weights_tf_dim_ordering_tf_kernels.h5'
 
-    model = Model(init, out, name='Inception-v4')
+    weights_path = get_file(
+        'inception-v4_weights_tf_dim_ordering_tf_kernels.h5',
+        WEIGHTS_PATH,
+        cache_subdir='models',
+        md5_hash='9fe79d77f793fe874470d84ca6ba4a3b')
 
-    if load_weights:
-        if K.backend() == "theano":
-            if K.image_dim_ordering() == "th":
-                weights = get_file('inception_v4_weights_th_dim_ordering_th_kernels.h5', TH_BACKEND_TH_DIM_ORDERING,
-                                   cache_subdir='models')
-            else:
-                weights = get_file('inception_v4_weights_tf_dim_ordering_th_kernels.h5', TH_BACKEND_TF_DIM_ORDERING,
-                                   cache_subdir='models')
-        else:
-            if K.image_dim_ordering() == "th":
-                weights = get_file('inception_v4_weights_th_dim_ordering_tf_kernels.h5', TF_BACKEND_TH_DIM_ORDERING,
-                                   cache_subdir='models')
-            else:
-                weights = get_file('inception_v4_weights_tf_dim_ordering_tf_kernels.h5', TH_BACKEND_TF_DIM_ORDERING,
-                                   cache_subdir='models')
+    model.load_weights(weights_path, by_name=True)
 
-        model.load_weights(weights)
-        print("Model weights loaded.")
+    # Truncate and replace softmax layer for transfer learning
+    # Cannot use model.layers.pop() since model is not of Sequential() type
+    # The method below works since pre-trained weights are stored in layers but not in the model
+    net_ft = Dropout(dropout_keep_prob)(net)
+    net_ft = Flatten()(net_ft)
+    net_ft = Dense(units=num_classes, activation='softmax')(net_ft)
+
+    model = Model(inputs, net_ft, name='inception_v4')
+
+    # Learning rate is changed to 0.001
+    sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+    model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
 
 
-if __name__ == "__main__":
-    # from keras.utils.visualize_util import plot
 
-    inception_v4 = create_inception_v4(load_weights=True)
-    # inception_v4.summary()
-
-    # plot(inception_v4, to_file="Inception-v4.png", show_shapes=True)
