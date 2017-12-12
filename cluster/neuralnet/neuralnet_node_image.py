@@ -5,8 +5,8 @@ import sys,resource
 
 from cluster.neuralnet.neuralnet_node import NeuralNetNode
 from cluster.neuralnet_model import resnet
-from cluster.neuralnet_model.inception_resnet_v2 import InceptionResNetV2
-from cluster.neuralnet_model.inception_v4 import create_inception_v4
+# from cluster.neuralnet_model.inception_resnet_v2 import InceptionResNetV2
+from cluster.neuralnet_model.inception_v4 import inception_v4_model
 from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
@@ -15,11 +15,10 @@ import tensorflow as tf
 import numpy as np
 from cluster.common.train_summary_info import TrainSummaryInfo
 
+# from third_party.slim.train_image_classifier import TrainImageClassifier
 
 class NeuralNetNodeImage(NeuralNetNode):
     def keras_get_model(self):
-        self.optimizer = self.netconf["config"]["optimizer"]
-
         keras.backend.tensorflow_backend.clear_session()
 
         # config = tf.ConfigProto()
@@ -37,17 +36,17 @@ class NeuralNetNodeImage(NeuralNetNode):
             logging.info("None to restore checkpoint. Initializing variables instead." + self.last_chk_path)
             logging.info(e)
             if self.net_type == 'inceptionv4':
-                self.labels_cnt = 1001
-                self.model = create_inception_v4(nb_classes=self.labels_cnt, load_weights=True)
-            elif self.net_type == 'inception_resnet_v2':
-                self.labels_cnt = 1000
-                self.model = InceptionResNetV2(include_top=True,
-                                                  weights='imagenet',
-                                                  input_tensor=None,
-                                                  input_shape=None,
-                                                  pooling=None,
-                                                  classes=self.labels_cnt,
-                                                  dropout_keep_prob=0.8)
+                # self.labels_cnt = 1001
+                self.model = inception_v4_model(self.x_size, self.y_size, self.channel, self.labels_cnt, dropout_keep_prob=0.2)
+            # elif self.net_type == 'inception_resnet_v2':
+            #     self.labels_cnt = 1000
+            #     self.model = InceptionResNetV2(include_top=True,
+            #                                       weights='imagenet',
+            #                                       input_tensor=None,
+            #                                       input_shape=None,
+            #                                       pooling=None,
+            #                                       classes=self.labels_cnt,
+            #                                       dropout_keep_prob=0.8)
 
             elif self.net_type == 'resnet':
                 numoutputs = self.netconf["config"]["layeroutputs"]
@@ -161,6 +160,10 @@ class NeuralNetNodeImage(NeuralNetNode):
             logging.info("Error[400] ..............................................")
             logging.info(e)
 
+    def train_run_image_pretrain(self, input_data, test_data):
+        # TrainImageClassifier().train_image_classifier(self, input_data, test_data)
+        print('a')
+
     def run(self, conf_data):
         '''
         Train run init
@@ -184,17 +187,16 @@ class NeuralNetNodeImage(NeuralNetNode):
             # Label Setup (1: HDF label row)
             self.labels, self.labels_cnt = self._get_netconf_labels(self.netconf, input_data, 1)
 
-            # get model
             self.channel = self.dataconf["preprocess"]["channel"]
             self.x_size = self.dataconf["preprocess"]["x_size"]
             self.y_size = self.dataconf["preprocess"]["y_size"]
-
-            self.keras_get_model()
-
-            # Train
             self.train_cnt = self.netconf["param"]["traincnt"]
             self.batch_size = self.netconf["param"]["batch_size"]
             self.predlog = self.netconf["param"]["predictlog"]
+            self.optimizer = self.netconf["config"]["optimizer"]
+
+            # get model
+            self.keras_get_model()
 
             for i in range(self.train_cnt):
                 # Train
