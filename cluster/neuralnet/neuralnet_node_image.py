@@ -35,19 +35,28 @@ class NeuralNetNodeImage(NeuralNetNode):
         except Exception as e:
             logging.info("None to restore checkpoint. Initializing variables instead." + self.last_chk_path)
             logging.info(e)
+
+            # if self.optimizer == 'sgd':
+            #     self.optimizer = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
+            #     # optimizers.SGD(lr=0.01, momentum=0.0, decay=0.0, nesterov=False)
+            # elif self.optimizer == 'rmsprop':
+            #     self.optimizer = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
+            # elif self.optimizer == 'adagrad':
+            #     self.optimizer = optimizers.Adagrad(lr=0.01, epsilon=1e-08, decay=0.0)
+            # elif self.optimizer == 'adadelta':
+            #     self.optimizer = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
+            # elif self.optimizer == 'adam':
+            #     self.optimizer = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+            # elif self.optimizer == 'adamax':
+            #     self.optimizer = optimizers.Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+            # elif self.optimizer == 'nadam':
+            #     self.optimizer = optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
+
             if self.net_type == 'inceptionv4':
                 # self.labels_cnt = 1001
-                self.model = inception_v4_model(self.x_size, self.y_size, self.channel, self.labels_cnt, dropout_keep_prob=0.2)
-            # elif self.net_type == 'inception_resnet_v2':
-            #     self.labels_cnt = 1000
-            #     self.model = InceptionResNetV2(include_top=True,
-            #                                       weights='imagenet',
-            #                                       input_tensor=None,
-            #                                       input_shape=None,
-            #                                       pooling=None,
-            #                                       classes=self.labels_cnt,
-            #                                       dropout_keep_prob=0.8)
-
+                self.model = inception_v4_model(self.labels_cnt, 0.2, self.pretrain_model_path)
+            # elif self.net_type == 'nasnet':
+            #     self.model = NASNetLarge(input_shape=(331, 331, 3))
             elif self.net_type == 'resnet':
                 numoutputs = self.netconf["config"]["layeroutputs"]
 
@@ -82,7 +91,6 @@ class NeuralNetNodeImage(NeuralNetNode):
 
         self.lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
         self.early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
-        self.csv_logger = CSVLogger('resnet.csv')
 
         try:
             while_cnt = 0
@@ -115,7 +123,7 @@ class NeuralNetNodeImage(NeuralNetNode):
                                                  epochs=self.epoch,
                                                  validation_data=(x_tbatch, y_tbatch),
                                                  shuffle=True,
-                                                 callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+                                                 callbacks=[self.lr_reducer, self.early_stopper])
                     else:
                         # This will do preprocessing and realtime data augmentation:
                         datagen = ImageDataGenerator(
@@ -140,7 +148,7 @@ class NeuralNetNodeImage(NeuralNetNode):
                             steps_per_epoch=x_batch.shape[0] // self.batch_size,
                             validation_data=(x_tbatch, y_tbatch),
                             epochs=self.epoch, verbose=1, max_q_size=100,
-                            callbacks=[self.lr_reducer, self.early_stopper, self.csv_logger])
+                            callbacks=[self.lr_reducer, self.early_stopper])
 
                     self.loss += history.history["loss"][len(history.history["loss"])-1]
                     self.acc += history.history["acc"][len(history.history["acc"])-1]

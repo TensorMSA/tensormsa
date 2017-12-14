@@ -69,6 +69,9 @@ class NeuralNetNode(WorkFlowCommonNode):
         config = {"nn_id": pself.nn_id, "nn_wf_ver_id": pself.nn_wf_ver_id, "nn_batch_ver_id": pself.train_batch}
         pself.acc_loss_result = TrainSummaryAccLossInfo(config)
 
+        # pre train model path
+        pself.pretrain_model_path = get_pretrain_path()
+
         return pself
 
     def _init_pred_parm(self, pself, nn_id, ver):

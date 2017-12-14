@@ -10,7 +10,7 @@ from keras import regularizers
 from keras import initializers
 from keras.layers.merge import concatenate
 from keras.utils.data_utils import get_file
-
+import wget, os
 from sklearn.metrics import log_loss
 
 def conv2d_bn(x, nb_filter, num_row, num_col,
@@ -204,7 +204,7 @@ def inception_v4_base(input):
     return net
 
 
-def inception_v4_model(img_rows, img_cols, color_type=1, num_classes=None, dropout_keep_prob=0.2):
+def inception_v4_model(num_classes=None, dropout_keep_prob=0.2, weights_path=None):
     '''
     Inception V4 Model for Keras
 
@@ -234,10 +234,10 @@ def inception_v4_model(img_rows, img_cols, color_type=1, num_classes=None, dropo
     # Final pooling and prediction
 
     # 8 x 8 x 1536
-    net = AveragePooling2D((8, 8), padding='valid')(net)
+    net_old = AveragePooling2D((8, 8), padding='valid')(net)
 
     # 1 x 1 x 1536
-    net_old = Dropout(dropout_keep_prob)(net)
+    net_old = Dropout(dropout_keep_prob)(net_old)
     net_old = Flatten()(net_old)
 
     # 1536
@@ -247,26 +247,31 @@ def inception_v4_model(img_rows, img_cols, color_type=1, num_classes=None, dropo
 
     WEIGHTS_PATH = 'https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-v4_weights_tf_dim_ordering_tf_kernels.h5'
 
-    weights_path = get_file(
-        'inception-v4_weights_tf_dim_ordering_tf_kernels.h5',
-        WEIGHTS_PATH,
-        cache_subdir='models',
-        md5_hash='9fe79d77f793fe874470d84ca6ba4a3b')
+    # weights_path = get_file(
+    #     'inception-v4_weights_tf_dim_ordering_tf_kernels.h5',
+    #     WEIGHTS_PATH,
+    #     cache_subdir='models',
+    #     md5_hash='9fe79d77f793fe874470d84ca6ba4a3b')
+
+    weights_path = weights_path + '/' + 'inception-v4_weights_tf_dim_ordering_tf_kernels.h5'
+    if not os.path.exists(weights_path):
+        wget.download(WEIGHTS_PATH, weights_path)
 
     model.load_weights(weights_path, by_name=True)
 
     # Truncate and replace softmax layer for transfer learning
     # Cannot use model.layers.pop() since model is not of Sequential() type
     # The method below works since pre-trained weights are stored in layers but not in the model
-    net_ft = Dropout(dropout_keep_prob)(net)
+    net_ft = AveragePooling2D((8, 8), padding='valid')(net)
+    net_ft = Dropout(dropout_keep_prob)(net_ft)
     net_ft = Flatten()(net_ft)
     net_ft = Dense(units=num_classes, activation='softmax')(net_ft)
 
     model = Model(inputs, net_ft, name='inception_v4')
 
-    # Learning rate is changed to 0.001
-    sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
-    model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+    # # Learning rate is changed to 0.001
+    # sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+    # model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
 

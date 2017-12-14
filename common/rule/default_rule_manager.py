@@ -984,7 +984,7 @@ def set_automl_rule() :
                         , "fit_size": {"type": "int", "option": 1000, "auto": False}
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
-                                , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
+                                , "optimizer": {"type": "sel", "option": [], "auto": ["adam", "sgd", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
                                 # , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}

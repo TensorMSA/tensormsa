@@ -51,6 +51,11 @@ def get_yolo_path() :
     set_filepaths(path)
     return path
 
+def get_pretrain_path() :
+    path = "/hoya_model_root/pretrain"
+    set_filepaths(path)
+    return path
+
 def get_filepaths(directory, file_type = "*"):
     """
     utils return file paths under directory
