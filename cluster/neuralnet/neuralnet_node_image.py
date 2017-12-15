@@ -14,6 +14,7 @@ from common.graph.nn_graph_manager import NeuralNetModel
 import tensorflow as tf
 import numpy as np
 from cluster.common.train_summary_info import TrainSummaryInfo
+from keras import optimizers
 
 # from third_party.slim.train_image_classifier import TrainImageClassifier
 
@@ -73,7 +74,7 @@ class NeuralNetNodeImage(NeuralNetNode):
                 elif numoutputs == 200:
                     self.model = resnet.ResnetBuilder.build_resnet_200((self.channel, self.x_size, self.y_size), self.labels_cnt)
 
-        self.model.compile(loss='categorical_crossentropy', optimizer=self.optimizer, metrics=['accuracy'])
+            self.model.compile(loss='categorical_crossentropy', optimizer=self.optimizer, metrics=['accuracy'])
 
     def train_run_image(self, input_data, test_data):
         '''
