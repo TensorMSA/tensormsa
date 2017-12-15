@@ -88,7 +88,12 @@ class AutoMlRunManager :
         :param survive: number of gene to survive 
         :return: dict type result info with extra flag 
         """
-        networksNew = copy.deepcopy(sorted(networks, key=lambda x: x.get('acc'), reverse=True))
+
+        # Regression sorting order add
+        if self.net_type.rfind("_reg") != -1:
+            networksNew = copy.deepcopy(sorted(networks, key=lambda x: x.get('acc'), reverse=False))
+        else:
+            networksNew = copy.deepcopy(sorted(networks, key=lambda x: x.get('acc'), reverse=True))
         # result = list(map(lambda x : self.set_value(x, 'survive', True) , networks[0:survive]))
         # self.summary['best'] = result
         # result = result + list(map(lambda x : self.set_value(x, 'survive', False) , networks[survive:]))

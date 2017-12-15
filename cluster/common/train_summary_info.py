@@ -1,5 +1,6 @@
 from master import models
 from master import serializers
+import numpy as np
 
 class TrainSummaryInfo:
     def __init__(self, conf = None, type=None):
@@ -123,11 +124,12 @@ class TrainSummaryInfo:
         """
         if self.type == 'regression':
             gab = 0
-            for labels, predicts in zip(self.result_info["labels"], self.result_info["predicts"]) :
-                labels = float(labels)
-                predicts = float(predicts)
-                gab = gab + abs(labels - predicts)
-            return -float(gab/len(self.result_info["labels"]))
+            _meanerror = np.sqrt(((np.array(self.result_info["labels"]) - np.array(self.result_info["predicts"])) **2).mean())
+            #for labels, predicts in zip(self.result_info["labels"], self.result_info["predicts"]) :
+            #    labels = float(labels)
+            #    predicts = float(predicts)
+            #    gab = gab + abs(labels - predicts)
+            return _meanerror
         elif self.type == 'category' or self.type == 'deep':
             correct = 0
             sum = 0
