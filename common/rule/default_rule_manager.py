@@ -281,6 +281,14 @@ def set_submenu_rule():
                 "wf_node_class_path": "cluster.preprocess.pre_node_feed_text2fasttext",
                 "wf_node_class_name": "PreNodeFeedText2FastText"
             },
+            {
+                "wf_task_menu_id": "preprocess",
+                "wf_task_submenu_id": "pre_feed_fr2xg",
+                "wf_task_submenu_name": "pre_feed_fr2xg",
+                "wf_task_submenu_desc": "pre_feed_fr2xg",
+                "wf_node_class_path": "cluster.preprocess.pre_node_feed_fr2xg",
+                "wf_node_class_name": "PreNodeFeedFr2xg"
+            },
             #########################################################################
             {
                 "wf_task_menu_id": "dataconf",
@@ -324,6 +332,14 @@ def set_submenu_rule():
                 "wf_task_submenu_desc": "nf_wdnn",
                 "wf_node_class_path": "cluster.neuralnet.neuralnet_node_wdnn",
                 "wf_node_class_name": "NeuralNetNodeWdnn"
+            },
+            {
+                "wf_task_menu_id": "netconf",
+                "wf_task_submenu_id": "nf_xgboost",
+                "wf_task_submenu_name": "nf_xgboost",
+                "wf_task_submenu_desc": "nf_xgboost",
+                "wf_node_class_path": "cluster.neuralnet.neuralnet_node_xgboost",
+                "wf_node_class_name": "NeuralNetNodeXgboost"
             },
             {
                 "wf_task_menu_id": "netconf",
@@ -436,6 +452,14 @@ def set_submenu_rule():
                 "wf_task_submenu_desc": "eval_extra",
                 "wf_node_class_path": "cluster.eval.eval_node_extra",
                 "wf_node_class_name": "EvalNodeExtra"
+            },
+            {
+                "wf_task_menu_id": "eval",
+                "wf_task_submenu_id": "eval_normal",
+                "wf_task_submenu_name": "eval_normal",
+                "wf_task_submenu_desc": "eval_normal",
+                "wf_node_class_path": "cluster.eval.eval_node_normal",
+                "wf_node_class_name": "EvalNodeNormal"
             }
         ]
         for conf in confs :
@@ -775,6 +799,29 @@ def set_node_alias_rule():
             , {
                 "graph_flow_info_id": 12, "graph_seq": 7, "graph_node": "netconf_data_conf",
                 "graph_node_name": "dataconf_node"
+            }
+            ##############################################################################################################################
+            # Network Create 13 : XGBoost
+            ##############################################################################################################################
+            , {
+                "graph_flow_info_id": 13, "graph_seq": 1, "graph_node": "netconf_node",
+                "graph_node_name": "netconf_node"
+            }
+            , {
+                "graph_flow_info_id": 13, "graph_seq": 2, "graph_node": "netconf_data",
+                "graph_node_name": "data_node"
+            }
+            , {
+                "graph_flow_info_id": 13, "graph_seq": 3, "graph_node": "netconf_feed",
+                "graph_node_name": "pre_feed_fr2xg_train"
+            }
+            , {
+                "graph_flow_info_id": 13, "graph_seq": 4, "graph_node": "eval_node",
+                "graph_node_name": "eval_node"
+            }
+            , {
+                "graph_flow_info_id": 13, "graph_seq": 5, "graph_node": "eval_data",
+                "graph_node_name": "evaldata"
             }
         ]
         for conf in confs :
@@ -1237,6 +1284,112 @@ def set_automl_rule() :
             }
         }
         AutoMlRule().set_graph_type_list('wdnn', conf)
+
+        # set netconf for xgboost
+        conf = {
+            "auto": {
+                "data_node":
+                    {
+                        "type": {"type": "sel", "option": ["csv"], "auto": False}
+                        , "preprocess": {"type": "str", "option": "preprocess_v1.py","auto": False}
+                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                        , "store_path": {"type": "str", "option": None, "auto": False}
+                        , "source_path": {"type": "str", "option": None, "auto": False}
+                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                        , "predict_path": {"type": "str", "option": None, "auto": False}
+                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
+                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": {"type": "str", "option": None, "auto": False}
+                        , "hidden_layers": {"type": "int", "option": None, "auto": False}
+                        , "activation_function": {"type": "sel", "option": None, "auto": False}
+                        , "batch_size": {"type": "int", "option": 1000, "auto": False}
+                        , "epoch": {"type": "int", "option": None, "auto": [1, 1000, 10]}
+                        , "model_type": {"type": "sel", "option": ["regression","category"], "auto": False}
+                        , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
+                        , "train": {"type": "sel", "option": ["True"], "auto": False}
+                        , "optimizer_type": {"type": "str", "option": None , "auto": False}
+                        , "learning_rates": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}#eta
+                        , "n_estimator":{"type": "int", "option": None, "auto": [100, 10000, 10]}
+                        , "max_depth": {"type": "int", "option": None, "auto": [6, 10, 1]}
+                        , "min_child_weight": {"type": "int", "option": None, "auto": False}
+                        , "gamma": {"type": "int", "option": None, "auto": [0, 100, 1]}
+                        , "subsample": {"type": "int", "option": None, "auto": [0, 1, 0.1]}
+                        , "colsample_bytree": {"type": "int", "option": None, "auto": [0, 1, 0.1]}
+
+                    }
+                , "evaldata":
+                    {
+                        "type": {"type": "sel", "option": ["csv"], "auto": False}
+                        , "preprocess": {"type": "str", "option": "preprocess_v1.py","auto": False}
+                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                        , "store_path": {"type": "str", "option": None, "auto": False}
+                        , "source_path": {"type": "str", "option": None, "auto": False}
+                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                        , "predict_path": {"type": "str", "option": None, "auto": False}
+                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
+                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                    }
+                , "eval_node":
+                    {
+                        "type": {"type": "sel", "option": ["regression","category"], "auto": False}
+                    }
+            }, "single": {
+                "data_node":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": None,
+                        "multi_node_flag": False,
+                        "preprocess": "preprocess_v1.py",
+                        "store_path": None,
+                        "source_type": "local"
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": None,
+                        "hidden_layers": None,
+                        "activation_function": None,
+                        "batch_size": 500,
+                        "epoch": 500,
+                        "model_type": "regression",
+                        "train": True,
+                        "optimizer_type": "GD",
+                        "learning_rates": 0.01,
+                        "n_estimator": 1000,
+                        "max_depth": 7,
+                        "min_child_weight": 5,
+                        "gamma": 50,
+                        "subsample": 0.5,
+                        "colsample_bytree": 0.5
+                    }
+                ,"evaldata":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": None,
+                        "multi_node_flag": False,
+                        "preprocess": "preprocess_v1.py",
+                        "store_path": None,
+                        "source_type": "local"
+                    }
+                , "eval_node":
+                    {
+                        "type": "regression",
+                    }
+            }
+        }
+        AutoMlRule().set_graph_type_list('xgboost_reg', conf)
 
         # set netconf for ML
         conf = {
@@ -1801,6 +1954,7 @@ def set_automl_rule_etc():
             ,"inceptionv4":"inceptionv4 Network Description"
             # ,"inception_resnet_v2": "inception_resnet_v2 Network Description"
             ,"ngram_mro":"ngram mro custom"
+            ,"xgboost_reg": "xgboost_reg"
         }
         AutoMlRule().update_graph_type_list('graph_flow_desc', conf)
 
@@ -1825,6 +1979,7 @@ def set_automl_rule_etc():
             ,"inceptionv4" : "2"
             # ,"inception_resnet_v2": "2"
             ,"ngram_mro": "4"
+            ,"xgboost_reg": "1"
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 
@@ -1849,6 +2004,7 @@ def set_automl_rule_etc():
             , "inceptionv4" : "inceptionv4_train.zip"
             # , "inception_resnet_v2" : "inception_resnet_v2_train.zip"
             , "ngram_mro": "ngram_mro_train.tsv"
+            , "xgboost_reg": "xg_train.csv"
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
 
@@ -1871,7 +2027,8 @@ def set_automl_rule_etc():
             , "bilstmcrf_iob": "bilstmcrf_iob_test.csv"
             , "fasttext_txt": "fasttext_txt_test.csv"
             , "inceptionv4":"inceptionv4_test.zip"
-            # , "inception_resnet_v2": "inception_resnet_v2_test.zip"
+            , "inception_resnet_v2": "inception_resnet_v2_test.zip"
+            , "xgboost_reg": "xg_test.csv"
         }
         AutoMlRule().update_graph_type_list('eval_file_path', conf)
 
@@ -1896,6 +2053,7 @@ def set_automl_rule_etc():
             , "inceptionv4" :1
             # , "inception_resnet_v2": 1
             , "ngram_mro": 2
+            , "xgboost_reg": 13
         }
         AutoMlRule().update_graph_type_list('graph_flow_info_id', conf)
 
@@ -1921,6 +2079,7 @@ def set_automl_rule_etc():
             , "inceptionv4" : "Y"
             # , "inception_resnet_v2": "Y"
             , "ngram_mro": "Y"
+            , "xgboost_reg": "Y"
         }
         AutoMlRule().update_graph_type_list('active_flag', conf)
 

@@ -12,6 +12,7 @@ from cluster.service.service_predict_anomaly import PredictNetAnomaly
 from cluster.service.service_predict_wcnn import PredictNetWcnn
 from cluster.service.service_predict_bilstmcrf import PredictNetBiLstmCrf
 from cluster.service.service_predict_ngram import PredictNetNgram
+from cluster.service.service_predict_xgboostreg import PredictNetXgboost
 from common.utils import *
 import coreapi
 
@@ -63,6 +64,8 @@ class ServiceManagerPredict(APIView):
                     return_data = PredictNetBiLstmCrf().run(nnid, request.data)
                 elif (type == "ngram_mro"):
                     return_data = PredictNetNgram().run(type, nnid, ver, request.data)
+                elif (type == "xgboost_reg"):
+                    return_data = PredictNetXgboost().run(nnid, ver, request.FILES)
                 else :
                     raise Exception ("Not defined type error")
             else :
@@ -83,6 +86,8 @@ class ServiceManagerPredict(APIView):
                     return_data = PredictNetImage().run(nnid, ver, request.FILES)
                 elif (type == "ngram_mro"):
                     return_data = PredictNetNgram().run(type, nnid, ver, request.data)
+                elif (type == "xgboost_reg"):
+                    return_data = PredictNetXgboost().run(nnid, ver, request.FILES)
                 else:
                     raise Exception("Not defined type error")
 

@@ -11,6 +11,7 @@ import os
 import datetime
 from common.utils import *
 from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
+import pandas as pd
 
 import logging
 
@@ -264,17 +265,6 @@ class NeuralNetNode(WorkFlowCommonNode):
                 serializer = serializers.TRAIN_SUMMARY_ACCLOSS_INFO_Serializer(data=input_data)
                 if serializer.is_valid():
                     serializer.save()
-
-
-            # input_data['acc_info'] = result.get_acc_info()
-            # input_data['loss_info'] = result.get_loss_info()
-            #
-            #
-            # obj = models.TRAIN_SUMMARY_ACCLOSS_INFO.objects.get(nn_batch_ver_id=str(input_data['nn_batch_ver_id']))
-            # setattr(obj, 'acc_info', input_data['acc_info'])
-            # setattr(obj, 'loss_info', input_data['loss_info'])
-            # obj.save()
-
 
         except Exception as e:
             raise Exception(e)
@@ -692,3 +682,29 @@ class NeuralNetNode(WorkFlowCommonNode):
         result.append(strResult)
         logging.info(
             "###################################################################################################")
+
+    def load_data_from_h5(self, file_path):
+        """
+        just pass hdf5 file chunk
+        :param file_path:
+        :param index:
+        :return:
+        """
+        # try:
+        #     h5file = h5py.File(file_path, mode='r')
+        #     raw_data = h5file['rawdata']
+        #     return raw_data[index.start : index.stop]
+        # except Exception as e:
+        #     raise Exception(e)
+        # finally:
+        #     h5file.close()
+        # type4 partial read
+        #Todo 할때마다 계속 파일을 읽는게 올바른 것인가?
+        try:
+            store = pd.HDFStore(file_path)
+            _data = store.select('table1')
+        except Exception as e:
+             raise Exception(e)
+        finally:
+            store.close()
+        return _data

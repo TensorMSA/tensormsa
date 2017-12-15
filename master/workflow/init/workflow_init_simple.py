@@ -110,6 +110,8 @@ class WorkFlowSimpleManager :
             self._create_predefined_nodes_fasttext_txt(state_id)
         elif(type == 'ngram_mro'):
             self._create_predefined_nodes_frame(state_id)
+        elif(type == 'xgboost_reg'):
+            self._create_predefined_nodes_xgboost(state_id)
         else :
             if self.group_id == '1': #Frame
                 self._create_predefined_nodes_frame(state_id)
@@ -361,6 +363,32 @@ class WorkFlowSimpleManager :
             raise Exception(e)
         finally:
             return True
+    def _create_predefined_nodes_xgboost(self, wf_state_id):
+        """
+
+        :return:
+        """
+        try:
+            # netconf info pre_feed_fr2wdnn
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_data, 'data_frame')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_fr2xg')
+            self._set_nn_wf_node_info( wf_state_id, self.netconf_node, 'nf_xgboost')
+            self._set_nn_wf_node_info(wf_state_id, self.eval_data, 'data_frame')
+            self._set_nn_wf_node_info(wf_state_id, self.eval_node, 'eval_normal')
+
+            # netconf relation
+            self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_node)
+            #self._set_nn_wf_node_relation(wf_state_id, self.netconf_feed, self.netconf_node)
+            #self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_node)
+            #self._set_nn_wf_node_relation(wf_state_id, self.netconf_node, self.eval_data)
+            #self._set_nn_wf_node_relation(wf_state_id, self.eval_data, self.eval_node)
+
+
+        except Exception as e:
+            raise Exception(e)
+        finally:
+            return True
+
 
     def _create_predefined_nodes_ml(self, wf_state_id):
         """

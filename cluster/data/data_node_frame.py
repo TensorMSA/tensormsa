@@ -15,6 +15,7 @@ from common.utils import *
 import shutil
 from master.workflow.data.workflow_data_frame import WorkFlowDataFrame as wf_data_frame
 from sklearn import preprocessing
+import importlib.util
 
 class DataNodeFrame(DataNode):
     """
@@ -198,39 +199,71 @@ class DataNodeFrame(DataNode):
             dir = self.data_src_path + "/backup"  # backup 디렉토리 만들고
             if not os.path.exists(dir):
                 os.makedirs(dir)
-
-            try:
-                data_conf_node_id = self.check_eval_node_for_wdnn(conf_data)
-                data_dfconf_list = data_conf_node_id
+            #if len(_preprocess_type) > 1 :
+            if _preprocess_type:
                 for file_path in fp_list:
-                    if len(data_dfconf_list) == 0:  #WDNN이 아닌것
-                        df_csv_read = self.load_csv_by_pandas(file_path)
-                        self.create_hdf5(self.data_store_path, df_csv_read)
-                    if len(data_dfconf_list) > 0:   #WDNN인것
-                        df_csv_read = self.load_csv_by_pandas(file_path)
-                        if 'dataconf' in data_dfconf_list: #이미 여기서 Dataconf인지 판단
-                            self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'],
-                                                                    data_conf_node_id)  # make columns type of csv
-                            # eval 것도 같이 가져와서 unique value를 구해야함
-                            # Todo 만약 eval과 train의 데이터 타입이 틀리면 Category로 해야하는 로직이 필요함
-                        _label,_labe_type = self.make_label_values(data_dfconf_list, df_csv_read)   # WDNN인 경우 Label Values를 Dataconf에 넣음
+                    #Train data convert
+                    df_csv_read = self.load_csv_by_pandas(file_path)
+                    preprocess_path = utils.get_preprocess_path(self.net_id, self.net_ver, self.node_id)
+                    logging.info("preprocess_path {0}".format(preprocess_path))
+                    logging.info("preprocess_file {0}".format(_preprocess_type))
 
-                        drop_dup_df_csv_read = self.make_drop_duplicate(df_csv_read, _drop_duplicate,_label)
-                        _pre_df_csv_read = self.make_preprocessing_pandas(drop_dup_df_csv_read, _preprocess_type,_label )
-                        temp_preprocess_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_pre.csvbk"
-                        _pre_df_csv_read.to_csv(self.data_src_path + "/backup/" + temp_preprocess_filename)
-                        self.create_hdf5(self.data_store_path, _pre_df_csv_read)
-                        if _multi_node_flag == True:
-                            skip_header = False
-                            # Todo Have to remove if production
-                            self.save_tfrecord(file_path, self.data_store_path, skip_header, _pre_df_csv_read,_label, _labe_type)
+                    spec = importlib.util.spec_from_file_location("data_preprocess", "/hoya_src_root/data_preprocess.py")
+                    foo = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(foo)
+                    _pre_df_csv_read = foo.data_preprocess_by_file(df_csv_read)
+                    self.create_hdf5(self.data_store_path, _pre_df_csv_read)
 
-                    file_name_bk = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".csvbk"
-                    shutil.copy(file_path,self.data_src_path+"/backup/"+file_name_bk )
-                    #os.remove(file_path) #승우씨것
-            except Exception as e:
-                logging.error("Datanode making h5 or tfrecord error".format(e))
-                raise Exception(e)
+                eval_fp_list = utils.get_filepaths(self.data_src_eval_path, file_type='csv')
+
+                for eval_file_path in eval_fp_list:
+                    # Eval data convert
+                    df_csv_eval_read = self.load_csv_by_pandas(eval_file_path)
+                    preprocess_path = utils.get_preprocess_path(self.net_id, self.net_ver, self.node_id)
+                    logging.info("preprocess_path {0}".format(preprocess_path))
+                    logging.info("preprocess_file {0}".format(_preprocess_type))
+                    spec = importlib.util.spec_from_file_location("data_preprocess",
+                                                                  "/hoya_src_root/data_preprocess.py")
+
+                    foo = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(foo)
+                    _pre_df_csv_eval_read = foo.data_preprocess_by_file(df_csv_eval_read)
+                    self.create_hdf5(self.data_store_eval_path, _pre_df_csv_eval_read)
+
+            else:
+
+                try:
+                    data_conf_node_id = self.check_eval_node_for_wdnn(conf_data)
+                    data_dfconf_list = data_conf_node_id
+                    for file_path in fp_list:
+                        if len(data_dfconf_list) == 0:  #WDNN이 아닌것
+                            df_csv_read = self.load_csv_by_pandas(file_path)
+                            self.create_hdf5(self.data_store_path, df_csv_read)
+                        if len(data_dfconf_list) > 0:   #WDNN인것
+                            df_csv_read = self.load_csv_by_pandas(file_path)
+                            if 'dataconf' in data_dfconf_list: #이미 여기서 Dataconf인지 판단
+                                self.data_conf = self.make_column_types(df_csv_read, conf_data['node_id'],
+                                                                        data_conf_node_id)  # make columns type of csv
+                                # eval 것도 같이 가져와서 unique value를 구해야함
+                                # Todo 만약 eval과 train의 데이터 타입이 틀리면 Category로 해야하는 로직이 필요함
+                            _label,_labe_type = self.make_label_values(data_dfconf_list, df_csv_read)   # WDNN인 경우 Label Values를 Dataconf에 넣음
+
+                            drop_dup_df_csv_read = self.make_drop_duplicate(df_csv_read, _drop_duplicate,_label)
+                            #_pre_df_csv_read = self.make_preprocessing_pandas(drop_dup_df_csv_read, _preprocess_type,_label )
+                            #temp_preprocess_filename = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + "_pre.csvbk"
+                            #_pre_df_csv_read.to_csv(self.data_src_path + "/backup/" + temp_preprocess_filename)
+                            self.create_hdf5(self.data_store_path, df_csv_read)
+                            if _multi_node_flag == True:
+                                skip_header = False
+                                # Todo Have to remove if production
+                                self.save_tfrecord(file_path, self.data_store_path, skip_header, df_csv_read,_label, _labe_type)
+
+                        file_name_bk = strftime("%Y-%m-%d-%H:%M:%S", gmtime()) + ".csvbk"
+                        shutil.copy(file_path,self.data_src_path+"/backup/"+file_name_bk )
+                        #os.remove(file_path) #승우씨것
+                except Exception as e:
+                    logging.error("Datanode making h5 or tfrecord error".format(e))
+                    raise Exception(e)
             logging.info("Data node end : {0}".format(conf_data['node_id']))
             return None
         except Exception as e:
@@ -572,13 +605,15 @@ class DataNodeFrame(DataNode):
             wf_data_frame = WorkFlowDataFrame(key)
             self.type = wf_data_frame.object_type
             self.data_sql_stmt = wf_data_frame.sql_stmt
-            #self.data_src_path = wf_data_frame.source_path
             self.data_src_path = utils.get_source_path(self.net_id, self.net_ver, self.node_id)
+            #xgboost train eval all together
+            self.data_src_eval_path = utils.get_source_path(self.net_id, self.net_ver, 'evaldata')
             self.data_src_type = wf_data_frame.src_type
             self.data_server_type = wf_data_frame.src_server
             self.data_preprocess_type = wf_data_frame.step_preprocess
-            #self.data_store_path = wf_data_frame.step_store
+            # xgboost train eval all together
             self.data_store_path = utils.get_store_path(self.net_id, self.net_ver, self.node_id)
+            self.data_store_eval_path = utils.get_store_path(self.net_id, self.net_ver, 'evaldata')
             self.sent_max_len = wf_data_frame.max_sentence_len
             self.multi_node_flag = wf_data_frame.multi_node_flag
             self.drop_duplicate = wf_data_frame.drop_duplicate

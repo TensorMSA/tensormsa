@@ -35,6 +35,11 @@ def get_store_path(nn_id, wf_ver, name) :
     set_filepaths(path)
     return path
 
+def get_preprocess_path(nn_id, wf_ver, name) :
+    path = ''.join(["/hoya_src_root", "/", str(nn_id), "/common/", str(name),"/","preprocess"])
+    set_filepaths(path)
+    return path
+
 def get_model_path(nn_id, wf_ver, name) :
     """
     get model save path
