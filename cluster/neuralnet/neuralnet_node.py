@@ -630,31 +630,31 @@ class NeuralNetNode(WorkFlowCommonNode):
                 else:
                     strLog = 'False'
 
+                pname_list = ''
+                for pname in range(len(eval_data.pred_name[plog])):
+                    if pname_list == '':
+                        pname_list = '[' + str(eval_data.pred_name[plog][pname])
+                    else:
+                        pname_list += ', ' + str(eval_data.pred_name[plog][pname])
+                if pname_list != '':
+                    pname_list += ']'
+
+                pvalu_list = ''
+                for pvalu in range(len(eval_data.pred_value[plog])):
+                    if pvalu_list == '':
+                        pvalu_list = '[' + str(eval_data.pred_value[plog][pvalu])
+                    else:
+                        pvalu_list += ', ' + str(eval_data.pred_value[plog][pvalu])
+                if pvalu_list != '':
+                    pvalu_list += ']'
+
                 if pred_log == 'A':
-                    logging.info(strLog + " FileName=" + eval_data.file_name[plog] )
-                    logging.info(eval_data.true_name[plog] + ' || ' + eval_data.pred_name[plog] + '(' + eval_data.pred_value[plog] + ')')
+                    logging.info(strLog + " File:" + str(eval_data.file_name[plog]) +
+                                 ' True:' + str(eval_data.true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
                 elif pred_log == 'T' and strLog == 'True':
-                    logging.info(strLog + " FileName=" + eval_data.file_name[plog] + eval_data.true_name[plog])
-                    logging.info(eval_data.true_name[plog] + ' || ' + eval_data.pred_name[plog] + '(' + eval_data.pred_value[plog] + ')')
+                    logging.info(strLog + " File:" + str(eval_data.file_name[plog]) +
+                                 ' True:' + str(eval_data.true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
                 elif pred_log == 'F' and strLog == 'False':
-                    pname_list = ''
-                    for pname in range(len(eval_data.pred_name[plog])):
-                        if pname_list == '':
-                            pname_list = '['+str(eval_data.pred_name[plog][pname])
-                        else:
-                            pname_list += ', '+str(eval_data.pred_name[plog][pname])
-                    if pname_list != '':
-                        pname_list += ']'
-
-                    pvalu_list = ''
-                    for pvalu in range(len(eval_data.pred_value[plog])):
-                        if pvalu_list == '':
-                            pvalu_list = '['+str(eval_data.pred_value[plog][pvalu])
-                        else:
-                            pvalu_list += ', '+str(eval_data.pred_value[plog][pvalu])
-                    if pvalu_list != '':
-                        pvalu_list += ']'
-
                     logging.info(strLog + " File:" + str(eval_data.file_name[plog]) +
                                  ' True:'+str(eval_data.true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
 
