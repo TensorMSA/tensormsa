@@ -90,8 +90,7 @@ class EntityAnalyzer(ShareData):
         input_file = ChatKnowledgeMemDict.data.get(self.cb_id).get(key)
         if input_file is not None:
             for line in input_file:
-                if(self.proper_noun.get(key)[2]
-                   and line.lower().strip().find(value) > -1):
+                if self.proper_noun.get(key)[2] and line.lower().strip().find(value) > -1:
                     exist = True
                     break
                 elif line.lower().strip() == value:
