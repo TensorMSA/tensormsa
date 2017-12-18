@@ -15,20 +15,14 @@ import tensorflow as tf
 import numpy as np
 from cluster.common.train_summary_info import TrainSummaryInfo
 from keras import optimizers
+from keras.utils import multi_gpu_model
+from django.conf import settings
 
 # from third_party.slim.train_image_classifier import TrainImageClassifier
 
 class NeuralNetNodeImage(NeuralNetNode):
     def keras_get_model(self):
         keras.backend.tensorflow_backend.clear_session()
-
-        # config = tf.ConfigProto()
-        #
-        # config.gpu_options.allow_growth = True
-        #
-        # config.gpu_options.per_process_gpu_memory_fraction = 0.5
-        #
-        # keras.backend.set_session(tf.Session(config=config))
 
         try:
             self.model = keras.models.load_model(self.last_chk_path)
@@ -55,6 +49,7 @@ class NeuralNetNodeImage(NeuralNetNode):
 
             if self.net_type == 'inceptionv4':
                 # self.labels_cnt = 1001
+                self.optimizer = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
                 self.model = inception_v4_model(self.labels_cnt, 0.2, self.pretrain_model_path)
             # elif self.net_type == 'nasnet':
             #     self.model = NASNetLarge(input_shape=(331, 331, 3))
@@ -71,9 +66,9 @@ class NeuralNetNodeImage(NeuralNetNode):
                     self.model = resnet.ResnetBuilder.build_resnet_101((self.channel, self.x_size, self.y_size), self.labels_cnt)
                 elif numoutputs == 152:
                     self.model = resnet.ResnetBuilder.build_resnet_152((self.channel, self.x_size, self.y_size), self.labels_cnt)
-                elif numoutputs == 200:
-                    self.model = resnet.ResnetBuilder.build_resnet_200((self.channel, self.x_size, self.y_size), self.labels_cnt)
 
+            if settings.GPU_FLAG == True:
+                self.model = multi_gpu_model(self.model, gpus=4)
             self.model.compile(loss='categorical_crossentropy', optimizer=self.optimizer, metrics=['accuracy'])
 
     def train_run_image(self, input_data, test_data):
