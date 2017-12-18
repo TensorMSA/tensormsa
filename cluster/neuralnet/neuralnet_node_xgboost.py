@@ -285,8 +285,8 @@ class NeuralNetNodeXgboost(NeuralNetNode):
 
         _predict_path = utils.get_source_predict_path(node_id.split('_')[0], node_id.split('_')[1], 'predict')
 
-        predict_result_dir = utils.make_and_exist_directory(_predict_path + "/" + str(node_id) + "/")
-        predict_result_filename = predict_result_dir + "result_" + strftime("%Y-%m-%d-%H:%M:%S",
+        predict_result_dir = utils.make_and_exist_directory(_predict_path + "/" + "result" + "/")
+        predict_result_filename = predict_result_dir + str(node_id) +"_" + strftime("%Y-%m-%d-%H:%M:%S",
                                                                             gmtime()) + ".csv"
         df.to_csv(predict_result_filename)
 

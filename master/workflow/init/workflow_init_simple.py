@@ -371,10 +371,10 @@ class WorkFlowSimpleManager :
         try:
             # netconf info pre_feed_fr2wdnn
             self._set_nn_wf_node_info( wf_state_id, self.netconf_data, 'data_frame')
-            self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_fr2xg')
+            #self._set_nn_wf_node_info( wf_state_id, self.netconf_feed, 'pre_feed_fr2xg')
             self._set_nn_wf_node_info( wf_state_id, self.netconf_node, 'nf_xgboost')
-            self._set_nn_wf_node_info(wf_state_id, self.eval_data, 'data_frame')
-            self._set_nn_wf_node_info(wf_state_id, self.eval_node, 'eval_normal')
+            #self._set_nn_wf_node_info(wf_state_id, self.eval_data, 'data_frame')
+            #self._set_nn_wf_node_info(wf_state_id, self.eval_node, 'eval_normal')
 
             # netconf relation
             self._set_nn_wf_node_relation(wf_state_id, self.netconf_data, self.netconf_node)
