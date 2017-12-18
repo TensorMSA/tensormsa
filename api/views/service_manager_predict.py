@@ -1,6 +1,7 @@
 import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from master.network.nn_common_manager import NNCommonManager
 from cluster.service.service_predict_d2v import PredictNetD2V
 from cluster.service.service_predict_w2v import PredictNetW2V
 from cluster.service.service_predict_cnn import PredictNetCnn
@@ -40,56 +41,34 @@ class ServiceManagerPredict(APIView):
             within 1.0 sec
         """
         try:
-            if(ver == 'active') :
-                if(type == 'w2v') :
+            if ver == 'active':
+                condition = {'nn_id': nnid}
+                ver = NNCommonManager().get_nn_info(condition)[0]['nn_wf_ver_id']
+
+            if (type == "resnet" or type == "inceptionv4"):
+                return_data = PredictNetImage().run(nnid, ver, request)
+            elif(type == 'w2v') :
                     return_data = PredictNetW2V().run(nnid, request.data)
-                elif(type == "d2v"):
-                    return_data = PredictNetD2V().run(nnid, request.data)
-                elif(type == "cnn"):
-                    # TO-DO : need predict function for active taged version
-                    raise Exception("on developing now !")
-                elif (type == "wdnn"):
-                    return_data = PredictNetWdnn().run(nnid, ver, request)
-                elif(type == "seq2seq"):
-                    return_data = PredictNetSeq2Seq().run(nnid, request.data)
-                elif(type == "autoencoder"):
-                    return_data = PredictNetAutoEncoder().run(nnid, request.data)
-                elif (type == "resnet"):
-                    return_data = PredictNetImage().run(nnid, ver, request.FILES)
-                elif (type == "anomaly"):
-                    return_data = PredictNetAnomaly().run(nnid, request.data)
-                elif (type == "wcnn"):
-                    return_data = PredictNetWcnn().run(nnid, request.data)
-                elif (type == "bilstmcrf"):
-                    return_data = PredictNetBiLstmCrf().run(nnid, request.data)
-                elif (type == "ngram_mro"):
-                    return_data = PredictNetNgram().run(type, nnid, ver, request.data)
-                elif (type == "xgboost_reg"):
-                    return_data = PredictNetXgboost().run(nnid, ver, request.FILES)
-                else :
-                    raise Exception ("Not defined type error")
-            else :
-                if (type == 'w2v'):
-                    # TO-DO : need predict function for specific  version
-                    raise Exception("on developing now !")
-                elif (type == "d2v"):
-                    # TO-DO : need predict function for specific  version
-                    raise Exception("on developing now !")
-                elif (type == "cnn"):
-                    return_data = PredictNetCnn().run(nnid, ver, request.FILES)
-                elif (type == "wdnn"):
-                    return_data = PredictNetWdnn().run(nnid, ver, request)
-                elif (type == "seq2seq"):
-                    # TO-DO : need predict function for specific  version
-                    raise Exception("on developing now !")
-                elif (type == "resnet"):
-                    return_data = PredictNetImage().run(nnid, ver, request.FILES)
-                elif (type == "ngram_mro"):
-                    return_data = PredictNetNgram().run(type, nnid, ver, request.data)
-                elif (type == "xgboost_reg"):
-                    return_data = PredictNetXgboost().run(nnid, ver, request.FILES)
-                else:
-                    raise Exception("Not defined type error")
+            elif(type == "d2v"):
+                return_data = PredictNetD2V().run(nnid, request.data)
+            elif (type == "cnn"):
+                return_data = PredictNetCnn().run(nnid, ver, request.FILES)
+            elif (type == "wdnn"):
+                return_data = PredictNetWdnn().run(nnid, ver, request)
+            elif(type == "seq2seq"):
+                return_data = PredictNetSeq2Seq().run(nnid, request.data)
+            elif(type == "autoencoder"):
+                return_data = PredictNetAutoEncoder().run(nnid, request.data)
+            elif (type == "anomaly"):
+                return_data = PredictNetAnomaly().run(nnid, request.data)
+            elif (type == "wcnn"):
+                return_data = PredictNetWcnn().run(nnid, request.data)
+            elif (type == "bilstmcrf"):
+                return_data = PredictNetBiLstmCrf().run(nnid, request.data)
+            elif (type == "ngram_mro"):
+                return_data = PredictNetNgram().run(type, nnid, ver, request.data)
+            elif (type == "xgboost_reg"):
+                return_data = PredictNetXgboost().run(nnid, ver, request.FILES)
 
             return Response(return_data)
         except Exception as e:

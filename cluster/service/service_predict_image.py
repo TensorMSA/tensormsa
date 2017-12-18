@@ -12,12 +12,8 @@ class PredictNetImage(PredictNet):
         :param parm:
         :return:
         """
-        if(self._valid_check(parm)) :
-            if ver == 'active':
-                condition = {'nn_id': nn_id}
-                ver = NNCommonManager().get_nn_info(condition)[0]['nn_wf_ver_id']
-
-            return NeuralNetNodeImage().predict(nn_id, ver, parm)
+        if(self._valid_check(parm.FILES)) :
+            return NeuralNetNodeImage().predict(nn_id, ver, parm.FILES)
 
     def _valid_check(self, parm):
         return True

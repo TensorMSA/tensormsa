@@ -54,54 +54,55 @@ class RunManagerMoniter(RunManager):
         """
         # cel = celery.task.control.inspect()
         # celActive = cel.active()
-
-        furl = "{0}:{1}".format(os.environ['HOSTNAME'], settings.FLOWER_PORT)
-        resp = requests.get('http://' + furl + '/api/tasks')
         return_data = []
-        resp_data = resp.text
-        resp_data = json.loads(resp_data)
-        for re in resp_data:
-            re_data = {}
-            nn_id = ''
-            nn_wf_ver_id = ''
-            if resp_data[re]['args'] != None:
-                replace_data = resp_data[re]['args'].replace("'", '').replace("(", '').replace(")", '')
-                replace_data = replace_data.split(',')
-                nn_id = replace_data[0]
-                nn_wf_ver_id = replace_data[1]
+        if settings.CELERY_FLAG == True:
+            furl = "{0}:{1}".format(os.environ['HOSTNAME'], settings.FLOWER_PORT)
+            resp = requests.get('http://' + furl + '/api/tasks')
 
-            if type == 'run_check' :
-                if nn_id != id:
-                    continue
-                substate = resp_data[re]['state']
-                if substate == 'PENDING' or substate == 'SUCCESS' or substate == 'FAILURE' or substate == 'REVOKED' or substate == 'RETRY':
-                    continue
-            re_data['nn_id'] = nn_id
-            re_data['nn_wf_ver_id'] = nn_wf_ver_id
-            re_data['uuid'] = resp_data[re]['uuid']
-            re_data['clock'] = resp_data[re]['clock']
-            re_data['name'] = resp_data[re]['name']
-            re_data['failed'] = resp_data[re]['failed']
-            re_data['result'] = resp_data[re]['result']
-            re_data['state'] = resp_data[re]['state']
+            resp_data = resp.text
+            resp_data = json.loads(resp_data)
+            for re in resp_data:
+                re_data = {}
+                nn_id = ''
+                nn_wf_ver_id = ''
+                if resp_data[re]['args'] != None:
+                    replace_data = resp_data[re]['args'].replace("'", '').replace("(", '').replace(")", '')
+                    replace_data = replace_data.split(',')
+                    nn_id = replace_data[0]
+                    nn_wf_ver_id = replace_data[1]
 
-            re_data['received'] = self.change_float_str_time(resp_data[re]['received'])
-            re_data['started'] = self.change_float_str_time(resp_data[re]['started'])
-            re_data['succeeded'] = self.change_float_str_time(resp_data[re]['succeeded'])
-            re_data['rejected'] = self.change_float_str_time(resp_data[re]['rejected'])
-            re_data['timestamp'] = self.change_float_str_time(resp_data[re]['timestamp'])
+                if type == 'run_check' :
+                    if nn_id != id:
+                        continue
+                    substate = resp_data[re]['state']
+                    if substate == 'PENDING' or substate == 'SUCCESS' or substate == 'FAILURE' or substate == 'REVOKED' or substate == 'RETRY':
+                        continue
+                re_data['nn_id'] = nn_id
+                re_data['nn_wf_ver_id'] = nn_wf_ver_id
+                re_data['uuid'] = resp_data[re]['uuid']
+                re_data['clock'] = resp_data[re]['clock']
+                re_data['name'] = resp_data[re]['name']
+                re_data['failed'] = resp_data[re]['failed']
+                re_data['result'] = resp_data[re]['result']
+                re_data['state'] = resp_data[re]['state']
 
-            re_data['receivedtime'] = resp_data[re]['received']
-            re_data['startedtime'] = resp_data[re]['started']
-            re_data['succeededtime'] = resp_data[re]['succeeded']
-            re_data['rejectedtime'] = resp_data[re]['rejected']
-            re_data['timestamptime'] = resp_data[re]['timestamp']
+                re_data['received'] = self.change_float_str_time(resp_data[re]['received'])
+                re_data['started'] = self.change_float_str_time(resp_data[re]['started'])
+                re_data['succeeded'] = self.change_float_str_time(resp_data[re]['succeeded'])
+                re_data['rejected'] = self.change_float_str_time(resp_data[re]['rejected'])
+                re_data['timestamp'] = self.change_float_str_time(resp_data[re]['timestamp'])
 
-            return_data.append(re_data)
-            # url = 'http://' + furl + '/api/task/info/'+return_data[re]['uuid']
-            # respd = requests.get(url)
-            # return_data[re]['worker'] = respd
-            # print(respd)
+                re_data['receivedtime'] = resp_data[re]['received']
+                re_data['startedtime'] = resp_data[re]['started']
+                re_data['succeededtime'] = resp_data[re]['succeeded']
+                re_data['rejectedtime'] = resp_data[re]['rejected']
+                re_data['timestamptime'] = resp_data[re]['timestamp']
+
+                return_data.append(re_data)
+                # url = 'http://' + furl + '/api/task/info/'+return_data[re]['uuid']
+                # respd = requests.get(url)
+                # return_data[re]['worker'] = respd
+                # print(respd)
 
         return return_data
 
