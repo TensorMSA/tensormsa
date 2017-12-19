@@ -41,6 +41,8 @@ DEBUG = True
 CELERY_FLAG = False
 # Rule init setup True = always setup, False = Once setup
 RULE_FLAG = True
+# GPU Multi Train or Predict Flag
+GPU_FLAG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -109,7 +111,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD' : 'postgres',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
