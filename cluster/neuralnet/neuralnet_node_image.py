@@ -15,14 +15,20 @@ import tensorflow as tf
 import numpy as np
 from cluster.common.train_summary_info import TrainSummaryInfo
 from keras import optimizers
-from keras.utils import multi_gpu_model
+from keras import backend as backendK
+# from keras.utils import multi_gpu_model
 from django.conf import settings
 
 # from third_party.slim.train_image_classifier import TrainImageClassifier
 
 class NeuralNetNodeImage(NeuralNetNode):
     def keras_get_model(self):
-        keras.backend.tensorflow_backend.clear_session()
+        # keras.backend.tensorflow_backend.clear_session()
+        backendK.clear_session()
+        if settings.GPU_FLAG == True:
+            gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
+            sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+            backendK.set_session(sess)
 
         try:
             self.model = keras.models.load_model(self.last_chk_path)
@@ -67,8 +73,8 @@ class NeuralNetNodeImage(NeuralNetNode):
                 elif numoutputs == 152:
                     self.model = resnet.ResnetBuilder.build_resnet_152((self.channel, self.x_size, self.y_size), self.labels_cnt)
 
-            if settings.GPU_FLAG == True:
-                self.model = multi_gpu_model(self.model, gpus=4)
+            # if settings.GPU_FLAG == True:
+            #     self.model = multi_gpu_model(self.model, gpus=1)
             self.model.compile(loss='categorical_crossentropy', optimizer=self.optimizer, metrics=['accuracy'])
 
     def train_run_image(self, input_data, test_data):
