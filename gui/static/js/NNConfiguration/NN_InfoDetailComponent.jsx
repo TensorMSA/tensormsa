@@ -306,7 +306,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                     }
                     
                     //Single Config Save
-                    if(this.state.autoParam == "Single"){
+                    if(this.state.configEditFlag == "Y"){
                         let conf = this.refs.netconfig
                         if(conf != undefined){
                             let params = conf.getConfigData()
@@ -461,7 +461,7 @@ export default class NN_InfoDetailComponent extends React.Component {
                 this.state.nn_batch_id = this.state.NN_TableWFData[i]["train_batch_ver_id"]
                 this.state.NN_TableWFDataAccLoss = this.state.NN_TableWFData[i]
                 //active version만 수정할 수 있다.
-                if(this.state.NN_TableWFData[i]["active_flag"] == "Y" && this.state.autoParam == "Single"){
+                if(this.state.NN_TableWFData[i]["active_flag"] == "Y" ){// && this.state.autoParam == "Single"
                     this.state.configEditFlag = "Y"
                 }else{
                     this.state.configEditFlag = "N"

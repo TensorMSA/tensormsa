@@ -954,14 +954,14 @@ def set_automl_rule() :
                 "netconf_node": {
                     "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
                         , "epoch": {"type": "int", "option": 5, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [60, 300, 10]}
+                        , "batch_size": {"type": "int", "option": None, "auto": [100, 5000, 100]}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
-                        , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
+                        , "augmentation": {"type": "sel", "option": ["Y", "N"], "auto": False}
                               }
-                    , "config": {"layeroutputs": {"type": "sel", "option": [18,34,50,101,152], "auto": False} #[18,34,50,101,152]
+                    , "config": {"layeroutputs": {"type": "str", "option": [], "auto": ['18','34','50','101','152']} #[18,34,50,101,152]
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
-                        , "optimizer": {"type": "sel", "option": ["adam", "rmsp"], "auto": False}
+                        , "optimizer": {"type": "str", "option": [], "auto": ["adam", "sgd", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
                         # , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
@@ -989,8 +989,8 @@ def set_automl_rule() :
                         , "epoch": 5
                         , "batch_size": 80
                         , "predictcnt": 2
-                        , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
-                        , "augmentation": "N"
+                        , "predictlog": "F"  # T:Ture, F:False, A:True&False
+                        , "augmentation": "Y"
                               },
                     "config": {"layeroutputs": 18,  # 18, 34, 50, 101, 152, 200
                                "optimizer": "adam",  #
@@ -1031,7 +1031,7 @@ def set_automl_rule() :
                         , "fit_size": {"type": "int", "option": 10000000, "auto": False}
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
-                                , "optimizer": {"type": "sel", "option": [], "auto": ["adam", "sgd", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
+                                , "optimizer": {"type": "str", "option": [], "auto": ["sgd", "adam", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
                                 # , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
@@ -1063,7 +1063,7 @@ def set_automl_rule() :
                         , "augmentation": "Y"
                         , "fit_size": 10000000
                               },
-                    "config": {"optimizer": "adam",  #
+                    "config": {"optimizer": "sgd",  #
                                "eval_type": "category",
                                # "pre_train":"Y"
                                }

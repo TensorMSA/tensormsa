@@ -10,6 +10,7 @@ from cluster.neuralnet_model.inception_v4 import inception_v4_model
 from master.workflow.netconf.workflow_netconf import WorkFlowNetConf
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
+from keras.callbacks import LearningRateScheduler
 from common.graph.nn_graph_manager import NeuralNetModel
 import tensorflow as tf
 import numpy as np
@@ -18,10 +19,31 @@ from keras import optimizers
 from keras import backend as backendK
 # from keras.utils import multi_gpu_model
 from django.conf import settings
-
+# from tools import threadsafe_generator
 # from third_party.slim.train_image_classifier import TrainImageClassifier
 
 class NeuralNetNodeImage(NeuralNetNode):
+    def lr_schedule(self, epoch):
+        """Learning Rate Schedule
+        Learning rate is scheduled to be reduced after 80, 120, 160, 180 epochs.
+        Called automatically every epoch as part of callbacks during training.
+        # Arguments
+            epoch (int): The number of epochs
+        # Returns
+            lr (float32): learning rate
+        """
+        lr = 1e-3
+        if epoch > 180:
+            lr *= 0.5e-3
+        elif epoch > 160:
+            lr *= 1e-3
+        elif epoch > 120:
+            lr *= 1e-2
+        elif epoch > 80:
+            lr *= 1e-1
+
+        return lr
+
     def keras_get_model(self):
         # keras.backend.tensorflow_backend.clear_session()
         backendK.clear_session()
@@ -37,25 +59,24 @@ class NeuralNetNodeImage(NeuralNetNode):
             logging.info("None to restore checkpoint. Initializing variables instead." + self.last_chk_path)
             logging.info(e)
 
-            # if self.optimizer == 'sgd':
-            #     self.optimizer = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
-            #     # optimizers.SGD(lr=0.01, momentum=0.0, decay=0.0, nesterov=False)
-            # elif self.optimizer == 'rmsprop':
-            #     self.optimizer = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-            # elif self.optimizer == 'adagrad':
-            #     self.optimizer = optimizers.Adagrad(lr=0.01, epsilon=1e-08, decay=0.0)
-            # elif self.optimizer == 'adadelta':
-            #     self.optimizer = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
-            # elif self.optimizer == 'adam':
-            #     self.optimizer = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-            # elif self.optimizer == 'adamax':
-            #     self.optimizer = optimizers.Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-            # elif self.optimizer == 'nadam':
-            #     self.optimizer = optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
+            if self.optimizer == 'sgd':
+                self.optimizer = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
+            elif self.optimizer == 'rmsprop':
+                self.optimizer = optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=1e-6)
+            elif self.optimizer == 'adagrad':
+                self.optimizer = optimizers.Adagrad(lr=0.01, epsilon=1e-08, decay=1e-6)
+            elif self.optimizer == 'adadelta':
+                self.optimizer = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=1e-6)
+            elif self.optimizer == 'adam':
+                # self.optimizer = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
+                self.optimizer = optimizers.Adam(lr=self.lr_schedule(0))
+            elif self.optimizer == 'adamax':
+                self.optimizer = optimizers.Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
+            elif self.optimizer == 'nadam':
+                self.optimizer = optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
 
             if self.net_type == 'inceptionv4':
                 # self.labels_cnt = 1001
-                self.optimizer = optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
                 self.model = inception_v4_model(self.labels_cnt, 0.2, self.pretrain_model_path)
             # elif self.net_type == 'nasnet':
             #     self.model = NASNetLarge(input_shape=(331, 331, 3))
@@ -76,6 +97,7 @@ class NeuralNetNodeImage(NeuralNetNode):
             # if settings.GPU_FLAG == True:
             #     self.model = multi_gpu_model(self.model, gpus=1)
             self.model.compile(loss='categorical_crossentropy', optimizer=self.optimizer, metrics=['accuracy'])
+            # self.model.summary()
 
     def train_run_image(self, input_data, test_data):
         '''
@@ -91,6 +113,7 @@ class NeuralNetNodeImage(NeuralNetNode):
         except:
             self.fit_size = 9999999999
 
+        self.lr_scheduler = LearningRateScheduler(self.lr_schedule)
         self.lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=np.sqrt(0.1), cooldown=0, patience=5, min_lr=0.5e-6)
         self.early_stopper = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10)
 
@@ -119,13 +142,29 @@ class NeuralNetNodeImage(NeuralNetNode):
                     x_batch = self.get_convert_img_x(input_set[0], self.x_size, self.y_size, self.channel)  # img_data_batch
                     y_batch = self.get_convert_img_y(input_set[1], self.labels, self.labels_cnt)  # label_data_batch
 
+                    if len(x_batch) < self.batch_size:
+                        self.batch_size = len(x_batch)
+
+                    # Normalize data.
+                    x_batch = x_batch.astype('float32') / 255
+                    x_tbatch = x_tbatch.astype('float32') / 255
+
+                    # Subtracting pixel mean improves accuracy
+                    subtract_pixel_mean = True
+
+                    # If subtract pixel mean is enabled
+                    if subtract_pixel_mean:
+                        x_train_mean = np.mean(x_batch, axis=0)
+                        x_batch -= x_train_mean
+                        x_tbatch -= x_train_mean
+
                     if self.data_augmentation == "N" or self.data_augmentation == "n":
                         history = self.model.fit(x_batch, y_batch,
                                                  batch_size=self.batch_size,
                                                  epochs=self.epoch,
                                                  validation_data=(x_tbatch, y_tbatch),
                                                  shuffle=True,
-                                                 callbacks=[self.lr_reducer, self.early_stopper])
+                                                 callbacks=[self.lr_reducer, self.early_stopper, self.lr_scheduler])
                     else:
                         # This will do preprocessing and realtime data augmentation:
                         datagen = ImageDataGenerator(
@@ -147,10 +186,9 @@ class NeuralNetNodeImage(NeuralNetNode):
                         # Fit the model on the batches generated by datagen.flow().
                         history = self.model.fit_generator(
                             datagen.flow(x_batch, y_batch, batch_size=self.batch_size),
-                            steps_per_epoch=x_batch.shape[0] // self.batch_size,
                             validation_data=(x_tbatch, y_tbatch),
-                            epochs=self.epoch, verbose=1, max_q_size=100,
-                            callbacks=[self.lr_reducer, self.early_stopper])
+                            epochs=self.epoch, verbose=1, workers=5,
+                            callbacks=[self.lr_reducer, self.early_stopper, self.lr_scheduler])
 
                     self.loss += history.history["loss"][len(history.history["loss"])-1]
                     self.acc += history.history["acc"][len(history.history["acc"])-1]
@@ -169,10 +207,6 @@ class NeuralNetNodeImage(NeuralNetNode):
         except Exception as e:
             logging.info("Error[400] ..............................................")
             logging.info(e)
-
-    def train_run_image_pretrain(self, input_data, test_data):
-        # TrainImageClassifier().train_image_classifier(self, input_data, test_data)
-        print('a')
 
     def run(self, conf_data):
         '''

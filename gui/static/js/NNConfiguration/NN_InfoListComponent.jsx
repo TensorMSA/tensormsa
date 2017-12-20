@@ -264,23 +264,23 @@ export default class NN_InfoListComponent extends React.Component {
                                                                     alt = {row["nn_id"]}
                                                                     onClick = {this.handleClickCheckBox.bind(this)}
                                                                     style={{"textAlign":"center", "width":"100%"}} />  </td>)
-            // colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["biz_cate"]}
-            //                                             maxLength = "10"
-            //                                              alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
-            // colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["biz_sub_cate"]} 
-            //                                             maxLength = "10"
-            //                                              alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
-            // colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["nn_title"]} 
-            //                                              maxLength = "100"
-            //                                              alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
-            // colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["nn_desc"]} 
-            //                                              maxLength = "5000"
-            //                                              alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
+            colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["biz_cate"]}
+                                                        maxLength = "10"
+                                                         alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
+            colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["biz_sub_cate"]} 
+                                                        maxLength = "10"
+                                                         alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
+            colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["nn_title"]} 
+                                                         maxLength = "100"
+                                                         alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
+            colData.push(<td key={k++} > < input type = {"string"} style={{"textAlign":"center", "width":"100%"}} defaultValue = {row["nn_desc"]} 
+                                                         maxLength = "5000"
+                                                         alt = {row["nn_id"]} onChange = {this.handleChange.bind(this)} />  </td>)
             
-            colData.push(<td key={k++} alt = {row["nn_id"]} > {row["biz_cate"]} </td>) 
-            colData.push(<td key={k++} alt = {row["nn_id"]} > {row["biz_sub_cate"]} </td>) 
-            colData.push(<td key={k++} alt = {row["nn_id"]} > {row["nn_title"]}  </td>) 
-            colData.push(<td key={k++} alt = {row["nn_id"]} > {row["nn_desc"]} </td>) 
+            // colData.push(<td key={k++} alt = {row["nn_id"]} > {row["biz_cate"]} </td>) 
+            // colData.push(<td key={k++} alt = {row["nn_id"]} > {row["biz_sub_cate"]} </td>) 
+            // colData.push(<td key={k++} alt = {row["nn_id"]} > {row["nn_title"]}  </td>) 
+            // colData.push(<td key={k++} alt = {row["nn_id"]} > {row["nn_desc"]} </td>) 
 
 
 
@@ -313,30 +313,35 @@ export default class NN_InfoListComponent extends React.Component {
         nnInfoNewListTable.push(<thead ref='thead' key={k++} className="center">{tableHeader}</thead>)
         nnInfoNewListTable.push(<tbody ref='tbody' key={k++} className="center" >{tableData}</tbody>)
 
-                    //         <div>
-                    //     <h1> Network List </h1>
-                    //     < input type = {"string"} style={{ "width":500, "height":30}}
-                    //                 placeholder="Search for names.." ref='search_text'
-                    //                  onChange = {this.handleSearch.bind(this)} />
-                    //     <br style={{ "height":20}}></br>
-
-                    // </div>
+                    //         
                         // <button type="button" className="search" onClick={() => this.searchCommonNNInfo()} >Search</button> 
-                        // <button type="button" className="modify" onClick={() => this.updateCommonNNInfo()} >Modify</button>
+                        // 
         return (
             <section>
                 <h1 className="hidden">tensor MSA main table</h1>
                 <div className="container paddingT10">
+                
+
                     <div className="tblBtnArea">
                         <button type="button" className="addnew" style={{"marginRight":"5px"}} onClick={() => this.getCommonNNInfo("all")} >Search</button>
                         <button type="button" className="addnew" 
                                 style={{"marginRight":"5px"}}
                                 onClick={() => this.addCommonNNInfo() } >Add Net</button>
+                        <button type="button" className="modify" style={{"marginRight":"5px"}} onClick={() => this.updateCommonNNInfo()} >Modify</button>
                         <button type="button" className="delete" onClick={() => this.deleteCommonNNInfo()} >Delete</button>
                     </div>
 
                     <div style={{ "overflow":"auto", "height":830}}>
                         <h1 className="bullet"> Network List </h1>
+                        <div>
+                         
+                         < input type = {"string"} style={{ "width":500, "height":30}}
+                                     placeholder="Search for names.." ref='search_text'
+                                      onChange = {this.handleSearch.bind(this)} />
+                         <br style={{ "height":20}}></br>
+
+                     </div>
+
                         <table className="table detail" ref= 'master2' >
                             {nnInfoNewListTable}
                         </table>
