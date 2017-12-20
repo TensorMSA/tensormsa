@@ -188,6 +188,7 @@ class NeuralNetNodeImage(NeuralNetNode):
                             datagen.flow(x_batch, y_batch, batch_size=self.batch_size),
                             validation_data=(x_tbatch, y_tbatch),
                             epochs=self.epoch, verbose=1, workers=5,
+                            steps_per_epoch=x_batch.shape[0] // self.batch_size,
                             callbacks=[self.lr_reducer, self.early_stopper, self.lr_scheduler])
 
                     self.loss += history.history["loss"][len(history.history["loss"])-1]
