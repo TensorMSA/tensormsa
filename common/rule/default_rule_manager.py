@@ -1024,11 +1024,11 @@ def set_automl_rule() :
                 "netconf_node": {
                     "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
                         , "epoch": {"type": "int", "option": 5, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [60, 300, 10]}
+                        , "batch_size": {"type": "int", "option": None, "auto": [10, 60, 10]}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
-                        , "augmentation": {"type": "sel", "option": ["N", "Y"], "auto": False}
-                        , "fit_size": {"type": "int", "option": 1000, "auto": False}
+                        , "augmentation": {"type": "sel", "option": [ "Y", "N" ], "auto": False}
+                        , "fit_size": {"type": "int", "option": 10000000, "auto": False}
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
                                 , "optimizer": {"type": "sel", "option": [], "auto": ["adam", "sgd", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
@@ -1057,11 +1057,11 @@ def set_automl_rule() :
                 "netconf_node": {
                     "param": {"traincnt": 5
                         , "epoch": 5
-                        , "batch_size": 80
+                        , "batch_size": 60
                         , "predictcnt": 2
-                        , "predictlog": "N"  # T:Ture, F:False, A:True&False, TT:Ture, FF:False, AA:True&False, N:None
-                        , "augmentation": "N"
-                        , "fit_size": 1000
+                        , "predictlog": "F"  # T:Ture, F:False, A:True&False
+                        , "augmentation": "Y"
+                        , "fit_size": 10000000
                               },
                     "config": {"optimizer": "adam",  #
                                "eval_type": "category",
