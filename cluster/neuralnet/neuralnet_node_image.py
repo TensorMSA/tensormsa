@@ -149,11 +149,8 @@ class NeuralNetNodeImage(NeuralNetNode):
                     x_batch = x_batch.astype('float32') / 255
                     x_tbatch = x_tbatch.astype('float32') / 255
 
-                    # Subtracting pixel mean improves accuracy
-                    subtract_pixel_mean = True
-
                     # If subtract pixel mean is enabled
-                    if subtract_pixel_mean:
+                    if self.subtract_pixel_mean:
                         x_train_mean = np.mean(x_batch, axis=0)
                         x_batch -= x_train_mean
                         x_tbatch -= x_train_mean
@@ -239,6 +236,8 @@ class NeuralNetNodeImage(NeuralNetNode):
             self.batch_size = self.netconf["param"]["batch_size"]
             self.predlog = self.netconf["param"]["predictlog"]
             self.optimizer = self.netconf["config"]["optimizer"]
+            # Subtracting pixel mean improves accuracy
+            self.subtract_pixel_mean = True
 
             # get model
             self.keras_get_model()
@@ -300,6 +299,15 @@ class NeuralNetNodeImage(NeuralNetNode):
             while (data.has_next()):
                 data_set = data[0:data.data_size()]
                 x_batch = self.get_convert_img_x(data_set[0], self.x_size, self.y_size, self.channel)  # img_data_batch
+
+                # Normalize data.
+                x_batch = x_batch.astype('float32') / 255
+
+                # If subtract pixel mean is enabled
+                if self.subtract_pixel_mean:
+                    x_train_mean = np.mean(x_batch, axis=0)
+                    x_batch -= x_train_mean
+
                 logits = self.model.predict(x_batch)
 
                 y_batch = self.get_convert_img_y_eval(data_set[1])
@@ -374,6 +382,14 @@ class NeuralNetNodeImage(NeuralNetNode):
         for i in range(len(filename_arr)):
             file_name = filename_arr[i]
             file_data = filedata_arr[i]
+
+            # Normalize data.
+            file_data = file_data.astype('float32') / 255
+
+            # If subtract pixel mean is enabled
+            if self.subtract_pixel_mean:
+                x_train_mean = np.mean(file_data, axis=0)
+                file_data -= x_train_mean
 
             try:
                 logits = self.model.predict(file_data)
