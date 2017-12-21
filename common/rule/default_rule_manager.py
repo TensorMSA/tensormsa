@@ -959,7 +959,7 @@ def set_automl_rule() :
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["Y", "N"], "auto": False}
                               }
-                    , "config": {"layeroutputs": {"type": "str", "option": [], "auto": ['18','34','50','101','152']} #[18,34,50,101,152]
+                    , "config": {"layeroutputs": {"type": "str", "option": [], "auto": ['18','34','50']} #[18,34,50,101,152]
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
                         , "optimizer": {"type": "str", "option": [], "auto": ["adam", "sgd", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
                         # , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
@@ -1024,7 +1024,7 @@ def set_automl_rule() :
                 "netconf_node": {
                     "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
                         , "epoch": {"type": "int", "option": 5, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [40, 60, 10]}
+                        , "batch_size": {"type": "int", "option": 60, "auto": False}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": [ "Y", "N" ], "auto": False}
@@ -1087,6 +1087,79 @@ def set_automl_rule() :
             }
         }
         AutoMlRule().set_graph_type_list('inceptionv4', conf)
+
+        # set netconf for nasnet_a_large
+        conf = {
+            "auto": {
+                "netconf_node": {
+                    "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
+                        , "epoch": {"type": "int", "option": 5, "auto": False}
+                        , "batch_size": {"type": "int", "option": 60, "auto": False}
+                        , "predictcnt": {"type": "int", "option": 2, "auto": False}
+                        , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
+                        , "augmentation": {"type": "sel", "option": ["Y", "N"], "auto": False}
+                        , "fit_size": {"type": "int", "option": 10000000, "auto": False}
+                              }
+                    , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
+                        , "optimizer": {"type": "str", "option": [],
+                                        "auto": ["sgd", "adam", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
+                                 # , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
+                                 }
+                    , "labels": {"type": "str", "option": [], "auto": False}
+                }
+                , "netconf_data": {
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False}
+                # ["imgdata", "framedata", "textdata", "iobdata"]
+                    , "preprocess": {"x_size": {"type": "int", "option": 331, "auto": False}
+                        , "y_size": {"type": "int", "option": 331, "auto": False}
+                        , "channel": {"type": "int", "option": 3, "auto": False}
+                        , "filesize": {"type": "int", "option": 1000000, "auto": False}
+                                     }
+                }
+                , "eval_data": {
+                    "type": {"type": "sel", "option": ["imgdata"], "auto": False}
+                # ["imgdata", "framedata", "textdata", "iobdata"]
+                    , "preprocess": {"x_size": {"type": "int", "option": 331, "auto": False}
+                        , "y_size": {"type": "int", "option": 331, "auto": False}
+                        , "channel": {"type": "int", "option": 3, "auto": False}
+                        , "filesize": {"type": "int", "option": 1000000, "auto": False}
+                                     }
+                }
+            },
+            "single": {
+                "netconf_node": {
+                    "param": {"traincnt": 5
+                        , "epoch": 5
+                        , "batch_size": 60
+                        , "predictcnt": 2
+                        , "predictlog": "F"  # T:Ture, F:False, A:True&False
+                        , "augmentation": "Y"
+                        , "fit_size": 10000000
+                              },
+                    "config": {"optimizer": "sgd",  #
+                               "eval_type": "category",
+                               # "pre_train":"Y"
+                               }
+                    # , "labels": []
+                }
+                , "netconf_data": {
+                    "preprocess": {"x_size": 331,
+                                   "y_size": 331,
+                                   "channel": 3,
+                                   "filesize": 1000000
+                                   }
+                }
+                , "eval_data": {
+                    "preprocess": {"x_size": 331,
+                                   "y_size": 331,
+                                   "channel": 3,
+                                   "filesize": 1000000
+                                   }
+                }
+
+            }
+        }
+        AutoMlRule().set_graph_type_list('nasnet_a_large', conf)
 
         # # set netconf for inception_resnet_v2
         # conf = {
@@ -1955,6 +2028,7 @@ def set_automl_rule_etc():
             # ,"inception_resnet_v2": "inception_resnet_v2 Network Description"
             ,"ngram_mro":"ngram mro custom"
             ,"xgboost_reg": "xgboost_reg"
+            ,"nasnet_a_large":"nasnet_a_large"
         }
         AutoMlRule().update_graph_type_list('graph_flow_desc', conf)
 
@@ -1980,6 +2054,7 @@ def set_automl_rule_etc():
             # ,"inception_resnet_v2": "2"
             ,"ngram_mro": "4"
             ,"xgboost_reg": "1"
+            ,"nasnet_a_large":"2"
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 
@@ -2005,6 +2080,7 @@ def set_automl_rule_etc():
             # , "inception_resnet_v2" : "inception_resnet_v2_train.zip"
             , "ngram_mro": "ngram_mro_train.tsv"
             , "xgboost_reg": "xg_train.csv"
+            , "nasnet_a_large":"resnet_train.zip"
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
 
@@ -2029,6 +2105,7 @@ def set_automl_rule_etc():
             , "inceptionv4":"inceptionv4_test.zip"
             , "inception_resnet_v2": "inception_resnet_v2_test.zip"
             , "xgboost_reg": "xg_test.csv"
+            , "nasnet_a_large": "resnet_test.zip"
         }
         AutoMlRule().update_graph_type_list('eval_file_path', conf)
 
@@ -2054,6 +2131,7 @@ def set_automl_rule_etc():
             # , "inception_resnet_v2": 1
             , "ngram_mro": 2
             , "xgboost_reg": 13
+            , "nasnet_a_large":1
         }
         AutoMlRule().update_graph_type_list('graph_flow_info_id', conf)
 
@@ -2080,6 +2158,7 @@ def set_automl_rule_etc():
             # , "inception_resnet_v2": "Y"
             , "ngram_mro": "Y"
             , "xgboost_reg": "Y"
+            , "nasnet_a_large":"N"
         }
         AutoMlRule().update_graph_type_list('active_flag', conf)
 
