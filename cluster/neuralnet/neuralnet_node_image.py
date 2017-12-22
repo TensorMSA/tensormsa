@@ -354,6 +354,7 @@ class NeuralNetNodeImage(NeuralNetNode):
         :return: 
         '''
         logging.info("run NeuralNetNodeImage Predict")
+        self.subtract_pixel_mean = True
         self = NeuralNetNode()._init_pred_parm(self, nn_id, ver)
         # net   config setup
         self.netconf = WorkFlowNetConf().get_node_info(nn_id, ver, self.netconf_name)
