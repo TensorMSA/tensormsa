@@ -954,7 +954,7 @@ def set_automl_rule() :
                 "netconf_node": {
                     "param": {"traincnt": {"type": "int", "option": 5, "auto": False}
                         , "epoch": {"type": "int", "option": 5, "auto": False}
-                        , "batch_size": {"type": "int", "option": None, "auto": [100, 1000, 100]}
+                        , "batch_size": {"type": "int", "option": None, "auto": [1000, 1000, 100]}
                         , "predictcnt": {"type": "int", "option": 2, "auto": False}
                         , "predictlog": {"type": "sel", "option": ["N", "T", "F", "A"], "auto": False}
                         , "augmentation": {"type": "sel", "option": ["Y", "N"], "auto": False}
