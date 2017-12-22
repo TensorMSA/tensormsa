@@ -14,7 +14,8 @@ from hoyai.celery import app
 @app.task(bind=True)
 def train(self, nn_id, wf_ver) :
 
-    log_home = "/hoya_log_root/"+nn_id+"/"+wf_ver+"/"
+    # log_home = "/hoya_log_root/"+nn_id+"/"+wf_ver+"/"
+    log_home = get_log_path(nn_id, wf_ver)
     # _celery_log_dir = make_celery_dir_by_datetime(log_home)
     celery_log_dir = make_and_exist_directory(log_home)
 

@@ -9,6 +9,7 @@ from .path_util import get_model_path
 from .path_util import get_yolo_path
 from .path_util import get_source_predict_path
 from .path_util import get_pretrain_path
+from .path_util import get_log_path
 from .file_upload_util import save_upload_file
 from .file_upload_util import hdf_create
 from .path_util import del_filepaths

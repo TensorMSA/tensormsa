@@ -68,8 +68,8 @@ class NeuralNetNodeImage(NeuralNetNode):
             elif self.optimizer == 'adadelta':
                 self.optimizer = optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=1e-6)
             elif self.optimizer == 'adam':
-                # self.optimizer = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
-                self.optimizer = optimizers.Adam(lr=self.lr_schedule(0))
+                self.optimizer = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
+                # self.optimizer = optimizers.Adam(lr=self.lr_schedule(0))
             elif self.optimizer == 'adamax':
                 self.optimizer = optimizers.Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=1e-6)
             elif self.optimizer == 'nadam':

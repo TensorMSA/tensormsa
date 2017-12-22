@@ -2,6 +2,7 @@ from master.runmanager.run_manager import RunManager
 import celery
 import os, requests, json, time
 from django.conf import settings
+from common.utils import *
 
 class RunManagerMoniter(RunManager):
     """
@@ -116,7 +117,8 @@ class RunManagerMoniter(RunManager):
         line = int(line)
         return_data = []
         re_data = {}
-        file = '/hoya_log_root/'+id
+        # file = '/hoya_log_root/'+id
+        file = get_log_path()+id
         f = open(file)
 
         f.seek(line)

@@ -35,6 +35,9 @@ CACHE_BACKEND = 'memcached://' + host + ':11211/'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'p8eici$0t2b!$=2xdb41o+bid)5qa^fs6ej-9&h8(n$x1(k^zf'
 
+# Path Root
+FILE_PATH = '/home/dev/tensormsaFile/'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 # Celery Flag True = On, False = Off

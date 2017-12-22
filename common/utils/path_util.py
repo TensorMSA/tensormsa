@@ -1,5 +1,6 @@
 import os
 from django.core.cache import cache
+from django.conf import settings
 
 def get_source_path(nn_id, wf_ver, name) :
     """
@@ -11,7 +12,7 @@ def get_source_path(nn_id, wf_ver, name) :
     """
 
     #path = ''.join([cache.get("source_root"), "/", nn_id, "/", wf_ver, "/", name])
-    path = ''.join(["/hoya_src_root", "/", nn_id, "/common/", name])
+    path = ''.join([settings.FILE_PATH, "hoya_src_root/", nn_id, "/common/", name])
     set_filepaths(path)
     return path
 
@@ -25,18 +26,18 @@ def get_source_predict_path(nn_id, wf_ver, predict) :
     """
 
     #path = ''.join([cache.get("source_root"), "/", nn_id, "/", wf_ver, "/", name])
-    path = ''.join(["/hoya_src_root", "/", nn_id, "/", wf_ver, "/", predict])
+    path = ''.join([settings.FILE_PATH, "hoya_src_root/", nn_id, "/", wf_ver, "/", predict])
     set_filepaths(path)
     return path
 
 def get_store_path(nn_id, wf_ver, name) :
 
-    path = ''.join(["/hoya_str_root", "/", str(nn_id), "/common/", str(name)])
+    path = ''.join([settings.FILE_PATH, "hoya_str_root/", str(nn_id), "/common/", str(name)])
     set_filepaths(path)
     return path
 
 def get_preprocess_path(nn_id, wf_ver, name) :
-    path = ''.join(["/hoya_src_root", "/", str(nn_id), "/common/", str(name),"/","preprocess"])
+    path = ''.join([settings.FILE_PATH, "hoya_src_root/", str(nn_id), "/common/", str(name),"/","preprocess"])
     set_filepaths(path)
     return path
 
@@ -46,7 +47,7 @@ def get_model_path(nn_id, wf_ver, name) :
     :param name:
     :return:
     """
-    path = ''.join(["/hoya_model_root", "/", nn_id, "/", str(wf_ver), "/", name])
+    path = ''.join([settings.FILE_PATH, "hoya_model_root/", nn_id, "/", str(wf_ver), "/", name])
     #path = ''.join([cache.get("model_root") , "/" , str(nn_id) , "/" , str(wf_ver) , "/" , str(name)])
     set_filepaths(path)
     return path
@@ -57,7 +58,7 @@ def get_yolo_path() :
     return path
 
 def get_pretrain_path() :
-    path = "/hoya_model_root/pretrain"
+    path = ''.join([settings.FILE_PATH, "/hoya_model_root/", "pretrain"])
     set_filepaths(path)
     return path
 
@@ -97,3 +98,11 @@ def del_filepaths(directory, file_type = "*"):
 def set_filepaths(path):
     if not os.path.exists(path):
         os.makedirs(path)
+
+def get_log_path(nn_id=None, wf_ver=None) :
+    path = ''.join([settings.FILE_PATH, "/hoya_log_root/"])
+    if nn_id == None:
+        return path
+    path = ''.join([path, str(nn_id), '/', str(wf_ver), '/'])
+    set_filepaths(path)
+    return path
