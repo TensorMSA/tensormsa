@@ -3,6 +3,7 @@ import celery
 import os, requests, json, time
 from django.conf import settings
 from common.utils import *
+import socket
 
 class RunManagerMoniter(RunManager):
     """
@@ -57,8 +58,8 @@ class RunManagerMoniter(RunManager):
         # celActive = cel.active()
         return_data = []
         if settings.CELERY_FLAG == True:
-            furl = "{0}:{1}".format(os.environ['HOSTNAME'], settings.FLOWER_PORT)
-            resp = requests.get('http://' + furl + '/api/tasks')
+            # furl = "{0}:{1}".format(os.environ['HOSTNAME'], settings.FLOWER_PORT)
+            resp = requests.get('http://' + settings.FLOWER_PORT + '/api/tasks')
 
             resp_data = resp.text
             resp_data = json.loads(resp_data)
