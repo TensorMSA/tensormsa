@@ -47,10 +47,10 @@ class NeuralNetNodeImage(NeuralNetNode):
     def keras_get_model(self):
         # keras.backend.tensorflow_backend.clear_session()
         backendK.clear_session()
-        if settings.GPU_FLAG == True:
-            gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
-            sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
-            backendK.set_session(sess)
+        # if settings.GPU_FLAG == True:
+        #     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
+        #     sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+        #     backendK.set_session(sess)
 
         try:
             self.model = keras.models.load_model(self.last_chk_path)
