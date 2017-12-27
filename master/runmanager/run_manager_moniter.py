@@ -79,6 +79,9 @@ class RunManagerMoniter(RunManager):
                     substate = resp_data[re]['state']
                     if substate == 'PENDING' or substate == 'SUCCESS' or substate == 'FAILURE' or substate == 'REVOKED' or substate == 'RETRY':
                         continue
+
+                if id != 'all' and id != nn_id:
+                    continue
                 re_data['nn_id'] = nn_id
                 re_data['nn_wf_ver_id'] = nn_wf_ver_id
                 re_data['uuid'] = resp_data[re]['uuid']
