@@ -212,7 +212,7 @@ export default class NN_InfoListComponent extends React.Component {
     }
 
     viewMonitering(row){
-        this.props.setActiveItem(row.target.alt, 'U', null, null, null, null, null, null);
+        this.props.setActiveItem(row.target.attributes.alt.value, 'U', null, null, null, null, null, null);
         return this.props.getHeaderEvent(33); //call Net Monitergin
     }
 
@@ -302,7 +302,7 @@ export default class NN_InfoListComponent extends React.Component {
             if (row["m_state"] == "Action"){
                 m_stateClsss = "state_action" 
             }
-            colData.push(<td key={k++} width="50"  ><span className={m_stateClsss}  alt = {row["nn_wf_ver_id"]} 
+            colData.push(<td key={k++} width="50"  ><span className={m_stateClsss}  alt = {row["nn_id"]} 
                                         style ={{"cursor":"pointer"}}
                                         onClick = {this.viewMonitering.bind(this)} > {row["m_state"]} </span> </td>)
             tableData.push(<tr key={k++}>{colData}</tr>)

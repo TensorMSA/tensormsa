@@ -28,7 +28,13 @@ export default class NN_InfoMonitering extends React.Component {
 
     componentDidMount(){
         this.props.setActiveItem('init', null, null, null, null, null, null, null);
-        this.getTaskInfo("all");// 화면에 들어 올때 검색을 해준다.
+        let nn_id = ''
+        if (this.props.nn_id == undefined){
+            nn_id = 'all'
+        }else{
+            nn_id = this.props.nn_id
+        }
+        this.getTaskInfo("all", nn_id);// 화면에 들어 올때 검색을 해준다.
     }
 
     getTaskInfo(params) {
