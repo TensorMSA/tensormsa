@@ -11,8 +11,8 @@ class dbConnection():
 
         sql = "select "
         sql += "inventory_item_id, segment1, 'leaf_node' as leaf, description "
-        sql += "from inv.mtl_system_items_b "
-        sql += "where segment1 like 'Q43250%' "
+        sql += "from table "
+        sql += "where item_code like 'Q43250%' "
 
         cur.execute(sql)
 
