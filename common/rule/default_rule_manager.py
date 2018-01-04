@@ -1971,12 +1971,16 @@ def set_automl_rule() :
             "auto": {
                 "netconf_node":
                     {
-                        "standard": {"type": "int", "option": None, "auto": [0.90, 0.99, 0.01]}
+                        "standard": {"type": "int", "option": None, "auto": [0.90, 0.99, 0.01]},
+                        "datatype": {"type": "sel", "option": ['db', 'file'], "auto": False},
+                        "conninfo": {"type": "str", "option": 'apps/****@IP:PORT/SID', "auto": False}
                     }
             }, "single": {
                 "netconf_node":
                     {
-                        'standard': 0.95
+                        'standard': 0.95,
+                        'datatype': 'db',
+                        'conninfo': 'apps/****@IP:PORT/SID'
                     }
             }
         }
