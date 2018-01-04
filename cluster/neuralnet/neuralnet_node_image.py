@@ -21,6 +21,7 @@ from keras import backend as backendK
 from django.conf import settings
 # from tools import threadsafe_generator
 # from third_party.slim.train_image_classifier import TrainImageClassifier
+import matplotlib.pyplot as plt
 
 class NeuralNetNodeImage(NeuralNetNode):
     def lr_schedule(self, epoch):
@@ -145,15 +146,15 @@ class NeuralNetNodeImage(NeuralNetNode):
                     if len(x_batch) < self.batch_size:
                         self.batch_size = len(x_batch)
 
-                    # Normalize data.
-                    x_batch = x_batch.astype('float32') / 255
-                    x_tbatch = x_tbatch.astype('float32') / 255
+                    # # Normalize data.
+                    # x_batch = x_batch.astype('float32') / 255
+                    # x_tbatch = x_tbatch.astype('float32') / 255
 
-                    # If subtract pixel mean is enabled
-                    if self.subtract_pixel_mean:
-                        x_train_mean = np.mean(x_batch, axis=0)
-                        x_batch -= x_train_mean
-                        x_tbatch -= x_train_mean
+                    # # If subtract pixel mean is enabled
+                    # if self.subtract_pixel_mean:
+                    #     x_train_mean = np.mean(x_batch, axis=0)
+                    #     x_batch -= x_train_mean
+                    #     x_tbatch -= x_train_mean
 
                     if self.data_augmentation == "N" or self.data_augmentation == "n":
                         history = self.model.fit(x_batch, y_batch,
@@ -300,13 +301,13 @@ class NeuralNetNodeImage(NeuralNetNode):
                 data_set = data[0:data.data_size()]
                 x_batch = self.get_convert_img_x(data_set[0], self.x_size, self.y_size, self.channel)  # img_data_batch
 
-                # Normalize data.
-                x_batch = x_batch.astype('float32') / 255
+                # # Normalize data.
+                # x_batch = x_batch.astype('float32') / 255
 
-                # If subtract pixel mean is enabled
-                if self.subtract_pixel_mean:
-                    x_train_mean = np.mean(x_batch, axis=0)
-                    x_batch -= x_train_mean
+                # # If subtract pixel mean is enabled
+                # if self.subtract_pixel_mean:
+                #     x_train_mean = np.mean(x_batch, axis=0)
+                #     x_batch -= x_train_mean
 
                 logits = self.model.predict(x_batch)
 
@@ -371,26 +372,26 @@ class NeuralNetNodeImage(NeuralNetNode):
         ## create tensorflow graph
         if (NeuralNetModel.dict.get(unique_key)):
             self = NeuralNetModel.dict.get(unique_key)
-            graph = NeuralNetModel.graph.get(unique_key)
+            # graph = NeuralNetModel.graph.get(unique_key)
         else:
             self.keras_get_model()
 
             NeuralNetModel.dict[unique_key] = self
             NeuralNetModel.graph[unique_key] = tf.get_default_graph()
-            graph = tf.get_default_graph()
+            # graph = tf.get_default_graph()
 
         pred_return_data = {}
         for i in range(len(filename_arr)):
             file_name = filename_arr[i]
             file_data = filedata_arr[i]
 
-            # Normalize data.
-            file_data = file_data.astype('float32') / 255
+            # # Normalize data.
+            # file_data = file_data.astype('float32') / 255
 
-            # If subtract pixel mean is enabled
-            if self.subtract_pixel_mean:
-                x_train_mean = np.mean(file_data, axis=0)
-                file_data -= x_train_mean
+            # # If subtract pixel mean is enabled
+            # if self.subtract_pixel_mean:
+            #     x_train_mean = np.mean(file_data, axis=0)
+            #     file_data -= x_train_mean
 
             try:
                 logits = self.model.predict(file_data)
@@ -399,7 +400,7 @@ class NeuralNetNodeImage(NeuralNetNode):
 
                 NeuralNetModel.dict[unique_key] = self
                 NeuralNetModel.graph[unique_key] = tf.get_default_graph()
-                graph = tf.get_default_graph()
+                # graph = tf.get_default_graph()
                 logits = self.model.predict(file_data)
 
             labels = self.netconf["labels"]
