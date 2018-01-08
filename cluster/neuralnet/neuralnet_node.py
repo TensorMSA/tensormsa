@@ -10,7 +10,7 @@ import io
 import os
 import datetime
 from common.utils import *
-from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
+
 import pandas as pd
 
 import logging
@@ -55,23 +55,17 @@ class NeuralNetNode(WorkFlowCommonNode):
 
         pself.feed_node = pself.get_prev_node()
 
-        # set batch
-        pself.load_batch = self.get_eval_batch(pself.node_id)
-        _, pself.train_batch = self.make_batch(pself.node_id)
-
         # model check
         pself.model_path = get_model_path(pself.nn_id, str(pself.nn_wf_ver_id), pself.netconf_name)
         pself.model_name = pself.nn_id + "_" + str(pself.nn_wf_ver_id)
-        pself.file_end = '.bin'
-        pself.last_chk_path = pself.model_path + "/" + str(pself.load_batch) + pself.file_end
-        pself.save_path = pself.model_path + "/" + str(pself.train_batch) + pself.file_end
-
-        # Acc & Loss Init
-        config = {"nn_id": pself.nn_id, "nn_wf_ver_id": pself.nn_wf_ver_id, "nn_batch_ver_id": pself.train_batch}
-        pself.acc_loss_result = TrainSummaryAccLossInfo(config)
 
         # pre train model path
         pself.pretrain_model_path = get_pretrain_path()
+
+        # set batch
+        pself.file_end = '.bin'
+        pself.load_batch = self.get_eval_batch(pself.node_id)
+        pself.last_chk_path = pself.model_path + "/" + str(pself.load_batch) + pself.file_end
 
         return pself
 

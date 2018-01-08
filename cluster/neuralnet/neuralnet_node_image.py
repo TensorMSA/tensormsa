@@ -22,6 +22,7 @@ from django.conf import settings
 # from tools import threadsafe_generator
 # from third_party.slim.train_image_classifier import TrainImageClassifier
 import matplotlib.pyplot as plt
+from cluster.common.train_summary_accloss_info import TrainSummaryAccLossInfo
 
 class NeuralNetNodeImage(NeuralNetNode):
     def lr_schedule(self, epoch):
@@ -243,28 +244,37 @@ class NeuralNetNodeImage(NeuralNetNode):
             # get model
             self.keras_get_model()
 
-            for i in range(self.train_cnt):
-                # Train
-                self.train_run_image(input_data, test_data)
-
-                # Model Save :  _init_node_parm : self.save_path
-                keras.models.save_model(self.model, self.save_path)
-
-                # Acc Loss Save : _init_node_parm : self.acc_loss_result
-                self.set_acc_loss_result(self.acc_loss_result, self.loss, self.acc, self.val_loss, self.val_acc)
-
-                # Eval & Result Save
-                self.eval(self.node_id, self.conf_data, test_data, None)
-
-                # Eval Result Print
-                self.eval_result_print(self.eval_data, self.predlog)
-
             if self.train_cnt == 0:
+                self.train_batch = self.load_batch
                 # Eval & Result Save
                 self.eval(self.node_id, self.conf_data, test_data, None)
 
                 # Eval Result Print
                 self.eval_result_print(self.eval_data, self.predlog)
+            else:
+                _, self.train_batch = self.make_batch(self.node_id)
+                self.save_path = self.model_path + "/" + str(self.train_batch) + self.file_end
+
+                # Acc & Loss Init
+                config = {"nn_id": self.nn_id, "nn_wf_ver_id": self.nn_wf_ver_id,
+                          "nn_batch_ver_id": self.train_batch}
+                self.acc_loss_result = TrainSummaryAccLossInfo(config)
+
+                for i in range(self.train_cnt):
+                    # Train
+                    self.train_run_image(input_data, test_data)
+
+                    # Model Save :  _init_node_parm : self.save_path
+                    keras.models.save_model(self.model, self.save_path)
+
+                    # Acc Loss Save : _init_node_parm : self.acc_loss_result
+                    self.set_acc_loss_result(self.acc_loss_result, self.loss, self.acc, self.val_loss, self.val_acc)
+
+                    # Eval & Result Save
+                    self.eval(self.node_id, self.conf_data, test_data, None)
+
+                    # Eval Result Print
+                    self.eval_result_print(self.eval_data, self.predlog)
 
             return None
         except Exception as e :
