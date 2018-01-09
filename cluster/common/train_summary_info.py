@@ -22,10 +22,6 @@ class TrainSummaryInfo:
             self.nn_id = conf.get('nn_id')
             self.nn_wf_ver_id = conf.get('nn_wf_ver_id')
             self.nn_batch_ver_id = conf.get('nn_batch_ver_id')
-            self.file_name = []
-            self.true_name = []
-            self.pred_name = []
-            self.pred_value = []
 
     def set_result_data_format(self, config):
         """
@@ -34,13 +30,13 @@ class TrainSummaryInfo:
         :return:
         """
         if self.type == 'regression':
-            self.result_info = {"labels":[], "predicts":[]}
+            self.result_info = {"labels":[], "predicts":[], "file_name":[], "true_name":[], "pred_name":[], "pred_value":[]}
         elif self.type == 'category' or self.type == 'deep':
             predicts = [[0 for col in range(len(config["labels"]))] for row in range(len(config["labels"]))]
             for i in range(0, len(config["labels"]) - 1, 1):
                 for j in range(0, len(config["labels"]) - 1, 1):
                     predicts[i][j] = 0
-            self.result_info = {"labels": config["labels"], "predicts": predicts}
+            self.result_info = {"labels": config["labels"], "predicts": predicts, "file_name":[], "true_name":[], "pred_name":[], "pred_value":[]}
             self.labels = config["labels"]
         elif self.type == 'w2v':
             self.result_info = {"word":[], "x":[], "y":[]}
@@ -91,10 +87,10 @@ class TrainSummaryInfo:
             self.result_info['accuracy'].append(acc)
 
     def set_tf_log(self, file_name, true_name, pred_name, pred_value):
-        self.file_name.append(file_name)
-        self.true_name.append(true_name)
-        self.pred_name.append(pred_name)
-        self.pred_value.append(pred_value)
+        self.result_info['file_name'].append(file_name)
+        self.result_info['true_name'].append(true_name)
+        self.result_info['pred_name'].append(pred_name)
+        self.result_info['pred_value'].append(pred_value)
 
     def save_result_info(self, result):
         input_data = {}

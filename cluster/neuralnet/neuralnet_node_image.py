@@ -276,7 +276,7 @@ class NeuralNetNodeImage(NeuralNetNode):
                     # Eval Result Print
                     self.eval_result_print(self.eval_data, self.predlog)
 
-            return None
+            return self.eval_data
         except Exception as e :
             logging.info("===Error on Train  : {0}".format(e))
 
@@ -334,9 +334,9 @@ class NeuralNetNodeImage(NeuralNetNode):
                     pred_value = retrun_data["val"]
                     #예측값이 배열로 넘어온다 한개라도 맞으면참
                     t_pred_name = pred_name[0]
-                    for pred in pred_name:
-                        if pred == true_name:
-                            t_pred_name = pred
+                    for p_cnt in range(pred_cnt):
+                        if pred_name[p_cnt] == true_name:
+                            t_pred_name = pred_name[p_cnt]
 
                     # eval result
                     self.eval_data.set_result_info(true_name, t_pred_name)

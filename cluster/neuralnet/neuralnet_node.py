@@ -349,11 +349,15 @@ class NeuralNetNode(WorkFlowCommonNode):
         data_sub = {}
         data_sub_key = []
         data_sub_val = []
-        for i in range(pred_cnt):
+        for i in range(len(labels)):
+            # val = round(onesort[i][1], 4) * 100
+            val = onesort[i][1] * 100
+            if val < 0.01 and i >= pred_cnt:
+                continue
+            val = str(val)[:4]
+            # if val < 0:
+            #     val = 0
             data_sub_key.append(labels[int(onesort[i][0])])
-            val = round(onesort[i][1], 2) * 100
-            if val < 0:
-                val = 0
             data_sub_val.append(val)
         data_sub["key"] = data_sub_key
         data_sub["val"] = data_sub_val
@@ -606,41 +610,46 @@ class NeuralNetNode(WorkFlowCommonNode):
         labels = eval_data.result_info['labels']
         predicts = eval_data.result_info['predicts']
 
+        file_name = eval_data.result_info['file_name']
+        true_name = eval_data.result_info['true_name']
+        pred_name = eval_data.result_info['pred_name']
+        pred_value = eval_data.result_info['pred_value']
+
         if pred_log !=None and pred_log != 'N' and pred_log != 'n':
-            for plog in range(len(eval_data.true_name)):
+            for plog in range(len(true_name)):
                 strLog = ''
-                if eval_data.true_name[plog] == eval_data.pred_name[plog][0]:
+                if true_name[plog] == pred_name[plog][0]:
                     strLog = 'True'
                 else:
                     strLog = 'False'
 
                 pname_list = ''
-                for pname in range(len(eval_data.pred_name[plog])):
+                for pname in range(len(pred_name[plog])):
                     if pname_list == '':
-                        pname_list = '[' + str(eval_data.pred_name[plog][pname])
+                        pname_list = '[' + str(pred_name[plog][pname])
                     else:
-                        pname_list += ', ' + str(eval_data.pred_name[plog][pname])
+                        pname_list += ', ' + str(pred_name[plog][pname])
                 if pname_list != '':
                     pname_list += ']'
 
                 pvalu_list = ''
-                for pvalu in range(len(eval_data.pred_value[plog])):
+                for pvalu in range(len(pred_value[plog])):
                     if pvalu_list == '':
-                        pvalu_list = '[' + str(eval_data.pred_value[plog][pvalu])
+                        pvalu_list = '[' + str(pred_value[plog][pvalu])
                     else:
-                        pvalu_list += ', ' + str(eval_data.pred_value[plog][pvalu])
+                        pvalu_list += ', ' + str(pred_value[plog][pvalu])
                 if pvalu_list != '':
                     pvalu_list += ']'
 
                 if pred_log == 'A':
-                    logging.info(strLog + " File:" + str(eval_data.file_name[plog]) +
-                                 ' True:' + str(eval_data.true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
+                    logging.info(strLog + " File:" + str(file_name[plog]) +
+                                 ' True:' + str(true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
                 elif pred_log == 'T' and strLog == 'True':
-                    logging.info(strLog + " File:" + str(eval_data.file_name[plog]) +
-                                 ' True:' + str(eval_data.true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
+                    logging.info(strLog + " File:" + str(file_name[plog]) +
+                                 ' True:' + str(true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
                 elif pred_log == 'F' and strLog == 'False':
-                    logging.info(strLog + " File:" + str(eval_data.file_name[plog]) +
-                                 ' True:'+str(eval_data.true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
+                    logging.info(strLog + " File:" + str(file_name[plog]) +
+                                 ' True:'+str(true_name[plog]) + ', Pred:' + pname_list + '(' + pvalu_list + ')')
 
         for i in range(len(labels)):
             truecnt = 0
