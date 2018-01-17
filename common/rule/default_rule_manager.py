@@ -961,7 +961,7 @@ def set_automl_rule() :
                               }
                     , "config": {"layeroutputs": {"type": "str", "option": [], "auto": ['18','34','50']} #[18,34,50,101,152]
                         , "eval_type": {"type": "sel", "option": ["category"], "auto": False}
-                        , "optimizer": {"type": "str", "option": [], "auto": ["adam", "sgd", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
+                        , "optimizer": {"type": "str", "option": [], "auto": ["adam", "sgd", "adagrad", "adadelta", "adamax", "nadam"]} # , "rmsprop"
                         # , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
@@ -1031,7 +1031,7 @@ def set_automl_rule() :
                         , "fit_size": {"type": "int", "option": 10000000, "auto": False}
                               }
                     , "config": {"eval_type": {"type": "sel", "option": ["category"], "auto": False}
-                                , "optimizer": {"type": "str", "option": [], "auto": ["sgd", "adam", "rmsprop", "adagrad", "adadelta", "adamax", "nadam"]}
+                                , "optimizer": {"type": "str", "option": [], "auto": ["sgd", "adam", "adagrad", "adadelta", "adamax", "nadam"]} # , "rmsprop"
                                 # , "pre_train": {"type": "sel", "option": ["Y", "N"], "auto": False}
                                  }
                     , "labels": {"type": "str", "option": [], "auto": False}
