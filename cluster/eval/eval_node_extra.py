@@ -30,7 +30,7 @@ class EvalNodeExtra(EvalNode):
             # run eval for each network
             result = net_node[0].eval(conf_data['node_id'], conf_data, data=data_node[0], result=result)
 
-            if result is None:
+            if result is None or result == '':
                 return {}
             # set parms for db store
             input_data = TrainSummaryInfo.save_result_info(self, result)

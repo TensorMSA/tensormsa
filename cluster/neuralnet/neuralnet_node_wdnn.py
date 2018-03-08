@@ -169,11 +169,19 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                                 input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                                                                           data_set, data_conf_info), steps=200)
                             logging.info("wdnn training complete count from h5 : {0} ".format(len(data_set)))
+                            if self.model_type == 'regression':
+                                acc = eval_result['loss']
+                                loss = eval_result['loss']
+                                acc_result.loss_info["loss"].append(str(eval_result['loss']))
+                                acc_result.acc_info["acc"].append(str(eval_result['loss']))
+                            else:
+                                acc = eval_result['accuracy']
+                                loss = eval_result['loss']
+                                acc_result.loss_info["loss"].append(str(eval_result['loss']))
+                                acc_result.acc_info["acc"].append(str(eval_result['accuracy']))
 
-                            acc = eval_result['accuracy']
-                            loss = eval_result['loss']
-                            acc_result.loss_info["loss"].append(str(eval_result['loss']))
-                            acc_result.acc_info["acc"].append(str(eval_result['accuracy']))
+                            #acc_result.loss_info["loss"].append(str(eval_result['loss']))
+                            #acc_result.acc_info["acc"].append(str(eval_result['accuracy']))
                             #train_result = wdnn_model.fit(
                             #    input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,
                             #                                              data_set, data_conf_info), steps=self.epoch)
@@ -415,10 +423,21 @@ class NeuralNetNodeWdnn(NeuralNetNode):
                                                                      data_set, data_conf_info), steps=200)
                         #print("model fitting h5 " + str(data_set))
 
-                        acc = eval_result['accuracy']
-                        loss = eval_result['loss']
-                        acc_result.loss_info["loss"].append(str(eval_result['loss']))
-                        acc_result.acc_info["acc"].append(str(eval_result['accuracy']))
+                        if self.model_type == 'regression':
+                            acc = eval_result['loss']
+                            loss = eval_result['loss']
+                            acc_result.loss_info["loss"].append(str(eval_result['loss']))
+                            acc_result.acc_info["acc"].append(str(eval_result['loss']))
+                        else:
+                            acc = eval_result['accuracy']
+                            loss = eval_result['loss']
+                            acc_result.loss_info["loss"].append(str(eval_result['loss']))
+                            acc_result.acc_info["acc"].append(str(eval_result['accuracy']))
+
+                        # acc = eval_result['accuracy']
+                        # loss = eval_result['loss']
+                        # acc_result.loss_info["loss"].append(str(eval_result['loss']))
+                        # acc_result.acc_info["acc"].append(str(eval_result['accuracy']))
 
                         predict_value = wdnn_model.predict(
                             input_fn=lambda: train_data_set.input_fn2(tf.contrib.learn.ModeKeys.TRAIN, file_queue,

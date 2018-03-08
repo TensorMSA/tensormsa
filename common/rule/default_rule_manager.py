@@ -1358,6 +1358,131 @@ def set_automl_rule() :
         }
         AutoMlRule().set_graph_type_list('wdnn', conf)
 
+        # set netconf for wdnn
+        conf = {
+            "auto": {
+                "data_node":
+                    {
+                        "type": {"type": "sel", "option": ["csv"], "auto": False}
+                        , "preprocess": {"type": "sel",
+                                         "option": ["null"],
+                                         "auto": False}
+                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                        , "store_path": {"type": "str", "option": None, "auto": False}
+                        , "source_path": {"type": "str", "option": None, "auto": False}
+                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                        , "predict_path": {"type": "str", "option": None, "auto": False}
+                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
+                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                    }
+                , "dataconf_node":
+                    {
+                        "label": {"type": "str", "option": "LABEL", "auto": False}
+                        , "Transformations": {"type": "str", "option": {}, "auto": False}
+                        , "cross_cell": {"type": "str", "option": {}, "auto": False}
+                        , "cell_feature": {"type": "str", "option": {}, "auto": False}
+                        , "extend_cell_feature": {"type": "str", "option": {}, "auto": False}
+                        , "cell_feature_unique": {"type": "str", "option": [], "auto": False}
+                        , "label_values": {"type": "str", "option": [], "auto": False}
+                        , "label_type": {"type": "sel", "option": ["CONTINUOUS"], "auto": False}
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": {"type": "str", "option": None, "auto": False}
+                        , "hidden_layers": {"type": "int", "option": None, "auto": [[1, 4, 1], [1, 100, 1]]}
+                        , "activation_function": {"type": "sel", "option": ["relu"], "auto": False}
+                        , "batch_size": {"type": "int", "option": 1000, "auto": False}
+                        , "epoch": {"type": "int", "option": None, "auto": [1, 10, 1]}
+                        , "model_type": {"type": "sel", "option": ["regression"], "auto": False}
+                        , "auto_demension": {"type": "sel", "option": ["False"], "auto": False}
+                        , "train": {"type": "sel", "option": ["True"], "auto": False}
+                        , "optimizer_type": {"type": "str", "option": [] , "auto": ["GD","Adagrad","Adam","PGD","RMS"]}
+                        , "learning_rates": {"type": "int", "option": None, "auto": [0.0001, 0.1, 0.001]}
+                        #, "learning_rates": {"type": "int", "option": None, "auto": [[1, 4, 1], [1, 100, 1]]}
+                        #optimizer_type
+                        #learning_rates
+                    }
+                , "evaldata":
+                    {
+                        "type": {"type": "sel", "option": ["csv"], "auto": False}
+                        , "preprocess": {"type": "sel",
+                                         "option": ["null"],
+                                         "auto": False}
+                        , "source_sql": {"type": "sel", "option": ["all"], "auto": False}
+                        , "store_path": {"type": "str", "option": None, "auto": False}
+                        , "source_path": {"type": "str", "option": None, "auto": False}
+                        , "source_type": {"type": "sel", "option": ["local"], "auto": False}
+                        , "predict_path": {"type": "str", "option": None, "auto": False}
+                        , "source_server": {"type": "sel", "option": ["local"], "auto": False}
+                        , "drop_duplicate": {"type": "sel", "option": ["False"], "auto": False}
+                        , "multi_node_flag": {"type": "sel", "option": ["False"], "auto": False}
+                        , "max_sentence_len": {"type": "int", "option": 0, "auto": False}
+                        , "source_parse": {"type": "str", "option": "raw", "auto": False}
+                    }
+                , "eval_node":
+                    {
+                        "type": {"type": "sel", "option": ["regression"], "auto": False}
+                    }
+            }, "single": {
+                "data_node":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": None,
+                        "multi_node_flag": False,
+                        "preprocess": "null",
+                        "store_path": None,
+                            "source_type": "local"
+
+                    }
+                , "dataconf_node":
+                    {
+                        "label": "LABEL",
+                        "Transformations": {},
+                        "cross_cell": {},
+                        "cell_feature": {},
+                        "extend_cell_feature": {},
+                        "cell_feature_unique":{},
+                        "label_values": [],
+                        "label_type": "CONTINUOUS"
+                    }
+                , "netconf_node":
+                    {
+                        "model_path": None,
+                        "hidden_layers": [50, 50, 50, 30],
+                        "activation_function": "Relu",
+                        "batch_size": 500,
+                        "epoch": 500,
+                        "model_type": "regression",
+                        "train": True,
+                        "optimizer_type": "GD",
+                        "learning_rates": 0.01
+                    }
+                , "evaldata":
+                    {
+                        "type": "csv",
+                        "source_server": "local",
+                        "source_sql": "all",
+                        "source_path": None,
+                        "multi_node_flag": False,
+                        "preprocess": "null",
+                        "store_path": None,
+                        "source_type": "local"
+
+                    }
+                , "eval_node":
+                    {
+                        "type": "regression",
+                    }
+
+            }
+        }
+        AutoMlRule().set_graph_type_list('wdnn_reg', conf)
+
         # set netconf for xgboost
         conf = {
             "auto": {
@@ -2033,6 +2158,7 @@ def set_automl_rule_etc():
             ,"ngram_mro":"ngram mro custom"
             ,"xgboost_reg": "xgboost_reg"
             ,"nasnet_a_large":"nasnet_a_large"
+            ,"wdnn_reg":"기존에 기억된 결과로만 예측하는 와이드모델과 너무 일반화가 되서 엉뚱한 결과가 나올 수 있는 딥모델의 문제를 해결하기 위해 두 모델을 합친 Wide & Deep 모델"
         }
         AutoMlRule().update_graph_type_list('graph_flow_desc', conf)
 
@@ -2059,6 +2185,7 @@ def set_automl_rule_etc():
             ,"ngram_mro": "4"
             ,"xgboost_reg": "1"
             ,"nasnet_a_large":"2"
+            ,"wdnn_reg":"1"
         }
         AutoMlRule().update_graph_type_list('graph_flow_group_id', conf)
 
@@ -2085,6 +2212,7 @@ def set_automl_rule_etc():
             , "ngram_mro": "ngram_mro_train.tsv"
             , "xgboost_reg": "xg_train.csv"
             , "nasnet_a_large":"resnet_train.zip"
+            , "wdnn_reg": "wdnn_train.csv"
         }
         AutoMlRule().update_graph_type_list('train_file_path', conf)
 
@@ -2110,6 +2238,7 @@ def set_automl_rule_etc():
             , "inception_resnet_v2": "inception_resnet_v2_test.zip"
             , "xgboost_reg": "xg_test.csv"
             , "nasnet_a_large": "resnet_test.zip"
+            , "wdnn_reg": "wdnn_test.csv"
         }
         AutoMlRule().update_graph_type_list('eval_file_path', conf)
 
@@ -2136,6 +2265,7 @@ def set_automl_rule_etc():
             , "ngram_mro": 2
             , "xgboost_reg": 13
             , "nasnet_a_large":1
+            , "wdnn_reg" :2
         }
         AutoMlRule().update_graph_type_list('graph_flow_info_id', conf)
 
@@ -2163,6 +2293,7 @@ def set_automl_rule_etc():
             , "ngram_mro": "Y"
             , "xgboost_reg": "Y"
             , "nasnet_a_large":"N"
+            , "wdnn_reg":"Y"
         }
         AutoMlRule().update_graph_type_list('active_flag', conf)
 
